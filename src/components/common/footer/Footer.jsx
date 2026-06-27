@@ -1,27 +1,21 @@
 import "./Footer.css";
 
-// import logo from "../../../assets/img/logo.png";
-
 import {
   MapPin,
   Phone,
   Mail,
-  ChevronRight,
-  Facebook,
-  Instagram,
-  Linkedin,
-  Youtube
+  ChevronRight
 } from "lucide-react";
 
 function Footer() {
 
 return (
 
-<section className="footer-section">
+<footer className="footer-section">
 
 <div className="container">
 
-<div className="row gy-3">
+<div className="row gy-2">
 
 
 
@@ -29,11 +23,11 @@ return (
 
 <div className="col-lg-3 col-md-6">
 
-{/* <img
-src={logo}
-alt=""
-className="footer-logo"
-/> */}
+<h4 className="footer-title">
+
+EventCert
+
+</h4>
 
 
 <p className="footer-desc">
@@ -61,7 +55,6 @@ to celebrate achievements effortlessly.
 Get In Touch
 
 </h4>
-
 
 
 <div className="footer-contact">
@@ -95,7 +88,7 @@ Kottivakkam
 
 <br/>
 
-Chennai – 41, India
+Chennai – 41
 
 </span>
 
@@ -140,28 +133,39 @@ info@eventcert.com
 
 <a href="#">
 
-<Facebook size={16}/>
+<i className="bi bi-facebook"></i>
 
 </a>
 
 
+
 <a href="#">
 
-<Youtube size={16}/>
+<i className="bi bi-twitter-x"></i>
 
 </a>
 
 
+
 <a href="#">
 
-<Instagram size={16}/>
+<i className="bi bi-youtube"></i>
 
 </a>
 
 
+
 <a href="#">
 
-<Linkedin size={16}/>
+<i className="bi bi-instagram"></i>
+
+</a>
+
+
+
+<a href="#">
+
+<i className="bi bi-linkedin"></i>
 
 </a>
 
@@ -185,7 +189,7 @@ info@eventcert.com
 
 <h4 className="footer-title">
 
-Popular Link
+Popular Links
 
 </h4>
 
@@ -196,16 +200,17 @@ Popular Link
 
 <li>
 
-<ChevronRight size={15}/>
+<ChevronRight size={14}/>
 
 Preview
 
 </li>
 
 
+
 <li>
 
-<ChevronRight size={15}/>
+<ChevronRight size={14}/>
 
 Terms & Conditions
 
@@ -215,7 +220,7 @@ Terms & Conditions
 
 <li>
 
-<ChevronRight size={15}/>
+<ChevronRight size={14}/>
 
 Shipping & Delivery
 
@@ -225,7 +230,7 @@ Shipping & Delivery
 
 <li>
 
-<ChevronRight size={15}/>
+<ChevronRight size={14}/>
 
 Privacy Policy
 
@@ -235,7 +240,7 @@ Privacy Policy
 
 <li>
 
-<ChevronRight size={15}/>
+<ChevronRight size={14}/>
 
 Cancellation & Refund
 
@@ -247,7 +252,6 @@ Cancellation & Refund
 
 
 </div>
-
 
 
 
@@ -274,16 +278,17 @@ Our Services
 
 <li>
 
-<ChevronRight size={15}/>
+<ChevronRight size={14}/>
 
 FAQ
 
 </li>
 
 
+
 <li>
 
-<ChevronRight size={15}/>
+<ChevronRight size={14}/>
 
 Organization Benefits
 
@@ -293,7 +298,7 @@ Organization Benefits
 
 <li>
 
-<ChevronRight size={15}/>
+<ChevronRight size={14}/>
 
 Individual Benefits
 
@@ -303,7 +308,7 @@ Individual Benefits
 
 <li>
 
-<ChevronRight size={15}/>
+<ChevronRight size={14}/>
 
 Key Features
 
@@ -313,7 +318,7 @@ Key Features
 
 <li>
 
-<ChevronRight size={15}/>
+<ChevronRight size={14}/>
 
 Why Choose EventCert
 
@@ -323,7 +328,7 @@ Why Choose EventCert
 
 <li>
 
-<ChevronRight size={15}/>
+<ChevronRight size={14}/>
 
 Get Started In Minutes
 
@@ -335,7 +340,6 @@ Get Started In Minutes
 
 
 </div>
-
 
 
 </div>
@@ -362,10 +366,10 @@ Kavin India Pvt Ltd ©
 
 </div>
 
-</section>
+</footer>
 
 )
 
 }
 
-export default Footer
+export default Footer;
