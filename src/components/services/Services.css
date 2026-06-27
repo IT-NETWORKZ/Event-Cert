@@ -1,0 +1,354 @@
+/*====================================================
+                SERVICES PAGE
+=====================================================*/
+
+.services-section {
+    position: relative;
+    padding: 20px 0;
+    background: linear-gradient(180deg, #F7FFFE 0%, #EDF9F8 100%);
+    overflow: hidden;
+}
+
+/* Decorative circles */
+
+.services-section::before {
+    content: "";
+    position: absolute;
+    top: -120px;
+    left: -120px;
+    width: 280px;
+    height: 280px;
+    background: rgba(15,123,116,.08);
+    border-radius: 50%;
+}
+
+.services-section::after {
+    content: "";
+    position: absolute;
+    right: -120px;
+    bottom: -120px;
+    width: 320px;
+    height: 320px;
+    background: rgba(67,198,189,.12);
+    border-radius: 50%;
+}
+
+/*==========================
+        TITLE
+===========================*/
+
+.services-title{
+
+    font-size:48px;
+
+    font-weight:700;
+
+    color:#0F7B74;
+
+    text-align:center;
+
+    margin-bottom:12px;
+
+    letter-spacing:.5px;
+
+}
+
+.line1{
+
+    width:90px;
+
+    height:5px;
+
+    margin:auto auto 50px;
+
+    border-radius:20px;
+
+    background:linear-gradient(90deg,#0F7B74,#43C6BD);
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.line1::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:-100%;
+
+    width:100%;
+
+    height:100%;
+
+    background:rgba(255,255,255,.6);
+
+    animation:shine 3s linear infinite;
+
+}
+
+@keyframes shine{
+
+100%{
+
+left:120%;
+
+}
+
+}
+
+/*==========================
+      SERVICE CARD
+===========================*/
+
+.text-section{
+
+    position:relative;
+
+    background:#fff;
+
+    border-radius:22px;
+
+    padding:50px;
+
+    box-shadow:
+        0 18px 50px rgba(15,123,116,.10);
+
+    border-top:6px solid #43C6BD;
+
+    transition:.45s;
+
+}
+
+.text-section:hover{
+
+    transform:translateY(-10px);
+
+    box-shadow:
+        0 30px 70px rgba(15,123,116,.18);
+
+}
+
+/*==========================
+        HEADINGS
+===========================*/
+
+.align h5{
+
+    color:#0F7B74;
+
+    font-size:25px;
+
+    font-weight:700;
+
+    margin-top:35px;
+
+    margin-bottom:15px;
+
+    position:relative;
+
+    padding-left:18px;
+
+}
+
+.align h5::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    top:5px;
+
+    width:6px;
+
+    height:22px;
+
+    background:#43C6BD;
+
+    border-radius:20px;
+
+}
+
+/*==========================
+        PARAGRAPH
+===========================*/
+
+.align p{
+
+    color:#555;
+
+    font-size:17px;
+
+    line-height:2;
+
+    text-align:justify;
+
+    margin-bottom:25px;
+
+}
+
+/*==========================
+          LIST
+===========================*/
+
+.align ul{
+
+    padding-left:30px;
+
+    margin-bottom:25px;
+
+}
+
+.align ul li{
+
+    color:#555;
+
+    line-height:2;
+
+    margin-bottom:12px;
+
+    transition:.3s;
+
+}
+
+.align ul li::marker{
+
+    color:#43C6BD;
+
+}
+
+.align ul li:hover{
+
+    color:#0F7B74;
+
+    transform:translateX(5px);
+
+}
+
+.align strong{
+
+    color:#0F7B74;
+
+}
+
+/*==========================
+      SECTION DIVIDER
+===========================*/
+
+.align h5:not(:first-child){
+
+    border-top:1px solid #E8F3F2;
+
+    padding-top:30px;
+
+}
+
+/*==========================
+      CUSTOM SCROLLBAR
+===========================*/
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#43C6BD;
+
+    border-radius:20px;
+
+}
+
+/*==========================
+        RESPONSIVE
+===========================*/
+
+@media(max-width:992px){
+
+.text-section{
+
+padding:35px;
+
+}
+
+.services-title{
+
+font-size:40px;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.services-section{
+
+padding:60px 0;
+
+}
+
+.text-section{
+
+padding:28px;
+
+}
+
+.services-title{
+
+font-size:34px;
+
+}
+
+.align h5{
+
+font-size:21px;
+
+}
+
+.align p{
+
+font-size:16px;
+
+text-align:left;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.services-title{
+
+font-size:28px;
+
+}
+
+.text-section{
+
+padding:22px;
+
+border-radius:18px;
+
+}
+
+.align h5{
+
+font-size:19px;
+
+}
+
+.align p{
+
+font-size:15px;
+
+line-height:1.8;
+
+}
+
+}
