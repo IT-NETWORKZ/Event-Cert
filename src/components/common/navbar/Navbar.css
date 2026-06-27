@@ -1,0 +1,111 @@
+.sticky-top {
+    top: -150px;
+    transition: .5s;
+}
+
+
+.navbar {
+    padding: 15px 0;
+
+    font-family: "Space Grotesk", sans-serif;
+
+    font-size: 18px;
+}
+
+
+
+.navbar .navbar-nav .nav-link {
+
+    margin-left: 30px;
+
+    padding: 0;
+
+    outline: none;
+
+    color: #082728;
+}
+
+
+
+.navbar .navbar-nav .nav-link:hover,
+.navbar .navbar-nav .nav-link.active {
+
+    color: #0d726d;
+
+}
+
+
+
+.navbar .dropdown-toggle::after {
+
+
+    border:none;
+
+    content:"▼";
+
+    font-size:12px;
+
+    margin-left:8px;
+
+}
+
+
+
+.navbar .dropdown-menu .dropdown-item:hover{
+
+background:#0d726d;
+
+color:white;
+
+}
+
+
+
+@media(max-width:991px){
+
+.navbar .navbar-nav .nav-link{
+
+margin-left:0;
+
+padding:10px 0;
+
+}
+
+}
+
+
+
+@media(min-width:992px){
+
+
+.navbar .nav-item .dropdown-menu{
+
+display:block;
+
+border:none;
+
+margin-top:0;
+
+top:150%;
+
+opacity:0;
+
+visibility:hidden;
+
+transition:.5s;
+
+}
+
+
+
+.navbar .nav-item:hover .dropdown-menu{
+
+top:100%;
+
+visibility:visible;
+
+opacity:1;
+
+}
+
+}

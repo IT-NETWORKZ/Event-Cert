@@ -1,0 +1,124 @@
+/* Main Section Wrapper */
+.certificates-section {
+  background-color: #fafbfc;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  margin-top: 0 !important;
+  padding-top: 2rem !important;
+  padding-bottom: 5rem !important;
+}
+
+/* Section Main Heading matching About Typography */
+.section-main-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a2e2b;
+}
+
+/* Matching Highlight style block */
+.section-main-title .highlight {
+  color: #0d4e43;
+  margin: 0 12px;
+}
+
+/* Matching bottom line border decoration */
+.title-line {
+  width: 60px;
+  height: 3px;
+  background-color: #0d4e43;
+  margin: 10px auto 0 auto;
+}
+
+.category-header {
+  min-height: 54px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.category-title {
+  color: #0d4e43;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.category-subtitle {
+  color: #5c726f;
+  font-weight: 500;
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   Card Structure & Proper Fixed Sizing
+   ========================================================================== */
+
+.cert-item-card {
+  border-radius: 16px !important;
+  background-color: #ffffff;
+  padding: 1rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 220px; /* Lock standard sizing across all instances */
+}
+
+.cert-item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(13, 78, 67, 0.08) !important;
+}
+
+/* Image Wrapper - FIXED CONTAINER SIZE */
+.image-wrapper {
+  background-color: #fafafa;
+  border-radius: 10px;
+  width: 100%;
+  height: 140px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 8px; 
+}
+
+.cert-image {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain; 
+  display: block;
+}
+
+/* Card item label text */
+.card-item-name {
+  color: #4a5d5a;
+  font-weight: 500;
+  font-size: 0.95rem;
+  letter-spacing: -0.1px;
+}
+
+
+@media (max-width: 992px) {
+  .category-header {
+    min-height: auto;
+    margin-bottom: 1rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .section-main-title {
+    font-size: 1.75rem;
+  }
+  
+  .cert-item-card {
+    border-radius: 12px !important;
+    padding: 0.75rem;
+    min-height: 190px;
+  }
+
+  .image-wrapper {
+    height: 110px;
+  }
+}
