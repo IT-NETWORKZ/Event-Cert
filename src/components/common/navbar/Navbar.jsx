@@ -54,7 +54,7 @@ function Navbar() {
 
 
 
-              
+
 
 
               <Link to="/services" className="nav-item nav-link">
@@ -71,21 +71,21 @@ function Navbar() {
               </Link>
 
 
-              <Link to="/facilitie" className="nav-item nav-link">
+              <Link to="/facilities" className="nav-item nav-link">
 
                 Facilities
 
 
               </Link>
 
- <Link to="/subscription" className="nav-item nav-link">
+              <Link to="/subscription" className="nav-item nav-link">
 
                 Subscription
 
 
               </Link>
 
-               <Link to="/contact" className="nav-item nav-link">
+              <Link to="/contact" className="nav-item nav-link">
 
                 Contact
 
@@ -142,7 +142,7 @@ function Navbar() {
 
 
 
-              
+
 
 
             </div>
