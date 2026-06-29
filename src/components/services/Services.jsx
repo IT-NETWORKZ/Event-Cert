@@ -1,7 +1,11 @@
 import React from "react";
 import "./Services.css";
+import InnerNavbar from "../common/navbar/InnerNavbar";
+import Footer from "../common/footer/Footer";
 
 const Services = () => (
+  <>
+  <InnerNavbar />
   <section className="services-section">
     <h2 className="text-center mt-5">Our Services</h2>
     <div className="line1"></div>
@@ -132,6 +136,8 @@ const Services = () => (
       </div>
     </div>
   </section>
+  <Footer />
+  </>
 );
 
 export default Services;
