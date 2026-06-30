@@ -1,5 +1,6 @@
 // import Navbar from "../components/common/navbar/Navbar";
 import Footer from "../components/common/footer/Footer";
+import Navbar from "../components/common/navbar/Navbar";
 import About from "../components/home/about/About";
 import Certificates from "../components/home/certificates/Certificates";
 import EventHighlights from "../components/home/eventhighlights/EventHighlights";
@@ -16,6 +17,16 @@ function Home() {
 
       <Hero />
 
+<>
+<Hero />
+<Eventinfo />
+<Certificates />
+<About />
+<Facilities />
+<WhyChooseUs />
+<EventHighlights />
+<Services />
+<Footer />
       <div data-aos="fade-up">
         <Eventinfo />
       </div>

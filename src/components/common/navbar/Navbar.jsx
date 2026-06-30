@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 function Navbar() {
   return (
 
-    <div className="container-fluid sticky-top">
+    <div className="container-fluid sticky-top " >
 
       <div className="container">
 

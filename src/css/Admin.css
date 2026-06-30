@@ -1,0 +1,21 @@
+.admin-layout {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Sidebar stays fixed width */
+.admin-layout .sidebar {
+    width: 280px;
+    flex-shrink: 0;
+}
+
+/* Dashboard takes remaining space */
+.admin-content {
+    flex: 1;
+    height: 100vh;
+    overflow-y: auto;
+    background: #f6f7fb;
+    transition: margin-left 0.35s ease;
+}
