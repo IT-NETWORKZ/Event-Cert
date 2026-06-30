@@ -1,6 +1,6 @@
-// import Navbar from "../components/common/navbar/Navbar";
-import Footer from "../components/common/footer/Footer";
 import Navbar from "../components/common/navbar/Navbar";
+import Footer from "../components/common/footer/Footer";
+
 import About from "../components/home/about/About";
 import Certificates from "../components/home/certificates/Certificates";
 import EventHighlights from "../components/home/eventhighlights/EventHighlights";
@@ -11,16 +11,14 @@ import Services from "../components/home/services/Services";
 import WhyChooseUs from "../components/home/whychooseus/WhyChooseUs";
 
 function Home() {
-    return (
+  return (
+<>
+<Navbar />
+<Hero />
 
-
-        <>
-        <Navbar/>
-            <Hero />
-           
-            <div data-aos="fade-up">
-                <Eventinfo />
-            </div>
+      <div data-aos="fade-up">
+        <Eventinfo />
+      </div>
 
             <div data-aos="fade-up" data-aos-delay="100">
                 <Certificates />
