@@ -1,11 +1,10 @@
 import { Routes, Route } from 'react-router-dom'
-import Home from '../pages/Home'
 import Services from '../components/services/Services'
 import Facilities from '../components/Facilities/Facilities'
 import Dashboard from '../components/admin/Dashboard/Dashboard'
 import Admin from '../pages/Admin'
 import Contact from '../components/Contact/Contact'
-
+import Home from "../pages/Home"
 
 function AppRoutes() {
 
@@ -13,7 +12,7 @@ function AppRoutes() {
 
         <Routes>
             {/* Home Page */}
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home/>} />
             {/* Services page */}
             <Route path="/services" element={<Services />} />
             {/* Facilities */}
