@@ -5,6 +5,8 @@ import Dashboard from '../components/admin/Dashboard/Dashboard'
 import Admin from '../pages/Admin'
 import Contact from '../components/Contact/Contact'
 import Home from "../pages/Home"
+import Register from '../pages/register/Register'
+import Subscription from '../components/Subscription/Subscription'
 
 function AppRoutes() {
 
@@ -23,6 +25,15 @@ function AppRoutes() {
 
              {/* Contact */}
             <Route path="/contact" element={<Contact />} />
+
+              {/* Register */}
+            <Route path="/register" element={<Register />} />
+
+             <Route path="/subscription" element={<Subscription />} />
+
+
+
+
 
         </Routes>
 

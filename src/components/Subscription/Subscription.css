@@ -1,0 +1,321 @@
+/* Container framework configurations */
+.sub-page-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+  color: #333333;
+}
+
+/* ==========================================================================
+   Header Navbar Layout Elements 
+   ========================================================================== */
+.sub-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 8%;
+  background-color: #ffffff;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.sub-header-logo {
+  max-height: 48px;
+  width: auto;
+  object-fit: contain;
+}
+
+.sub-nav-links {
+  display: flex;
+  gap: 28px;
+}
+
+.sub-nav-links a {
+  text-decoration: none;
+  color: #4a5568;
+  font-size: 15px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.sub-nav-links a:hover {
+  color: #007367;
+}
+
+.sub-nav-links a.active-nav {
+  color: #007367;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   Main Core Content Layout Blocks
+   ========================================================================== */
+.sub-main-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 50px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sub-heading {
+  font-size: 32px;
+  font-weight: 600;
+  color: #0c2340;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.sub-underline {
+  width: 50px;
+  height: 3px;
+  background-color: #007367;
+  margin-bottom: 35px;
+  border-radius: 2px;
+}
+
+/* Category pills styling structure */
+.sub-tabs-wrapper {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 60px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.sub-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 28px;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #ffffff;
+  border: 1.5px solid #007367;
+  color: #007367;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sub-circle-indicator {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid #007367;
+  display: inline-block;
+  background-color: transparent;
+  transition: all 0.2s ease;
+}
+
+/* Active Category Pill properties */
+.sub-tab-btn.selected {
+  background: #007367;
+  color: #ffffff;
+  box-shadow: 0 10px 20px rgba(0, 115, 103, 0.25);
+}
+
+.sub-tab-btn.selected .sub-circle-indicator {
+  border-color: #ffffff;
+  background-color: #ffffff;
+}
+
+/* ==========================================================================
+   Accordion List Grid Elements
+   ========================================================================== */
+.sub-pricing-stack {
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sub-price-row-card {
+  width: 100%;
+  background: linear-gradient(135deg, #00bfa5 0%, #007367 100%);
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 115, 103, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sub-price-row-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 115, 103, 0.25);
+}
+
+.sub-card-main-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 35px;
+}
+
+.sub-card-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.sub-duration-lbl {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 4px;
+}
+
+.sub-price-lbl {
+  font-size: 34px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+/* Collapsible Dropdown Arrow Icon Circle */
+.sub-arrow-toggle-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sub-arrow-toggle-btn.rotated {
+  transform: rotate(180deg);
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Drawer transitions mechanics setup */
+.sub-card-dropdown-drawer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.sub-price-row-card.expanded .sub-card-dropdown-drawer {
+  max-height: 200px; /* Expands to safe height buffer boundaries */
+}
+
+.sub-drawer-inner-content {
+  padding: 0px 35px 25px 35px;
+  color: #ffffff;
+}
+
+.sub-drawer-inner-content p {
+  font-size: 14.5px;
+  line-height: 1.6;
+  margin: 0 0 15px 0;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.sub-purchase-action-btn {
+  background-color: #ffffff;
+  color: #007367;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.sub-purchase-action-btn:hover {
+  background-color: #f0fdfa;
+}
+
+/* Responsive configurations for small viewports */
+@media (max-width: 768px) {
+  .sub-navbar {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+  }
+  
+  .sub-heading {
+    font-size: 24px;
+  }
+
+  .sub-card-main-row {
+    padding: 20px;
+  }
+  
+  .sub-price-lbl {
+    font-size: 28px;
+  }
+}
+/* ==========================================================================
+   Plan Additional Information & FAQ Section Styles
+   ========================================================================== */
+.sub-info-section {
+  width: 100%;
+  max-width: 680px;
+  margin-top: 40px;
+}
+
+.sub-divider {
+  border: 0;
+  height: 1px;
+  background-color: #e2e8f0;
+  margin-bottom: 40px;
+}
+
+.sub-features-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+  text-align: left;
+}
+
+.sub-feature-box h3 {
+  font-size: 20px;
+  color: #0c2340;
+  margin: 0 0 15px 0;
+  font-weight: 600;
+}
+
+.sub-feature-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sub-feature-box ul li {
+  font-size: 14.5px;
+  color: #4a5568;
+  line-height: 1.5;
+}
+
+.sub-faq-item {
+  margin-bottom: 20px;
+}
+
+.sub-faq-item h4 {
+  font-size: 15px;
+  color: #007367;
+  margin: 0 0 6px 0;
+  font-weight: 600;
+}
+
+.sub-faq-item p {
+  font-size: 14px;
+  color: #718096;
+  line-height: 1.6;
+  margin: 0;
+}

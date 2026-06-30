@@ -1,19 +1,23 @@
 import "./InnerNavbar.css";
 import { Link } from "react-router-dom";
+import logo from "../../../assets/img/logo_EventCert.png";
 
 function InnerNavbar() {
   return (
     <div
       className="container-fluid inner-navbar-wrapper"
       data-aos="fade-down"
-      data-aos-duration="700"
+      data-aos-duration="300"
       data-aos-easing="ease-in-out"
     >
       <div className="container">
         <nav className="navbar navbar-expand-lg">
 
-          <Link to="/" className="navbar-brand">
+          {/* <Link to="/" className="navbar-brand">
             <h1>EventCert</h1>
+          </Link> */}
+             <Link to="/" className="navbar-brand">
+            <img src={logo} alt="EventCert Logo" className="navbar-logo" />
           </Link>
 
           <button
