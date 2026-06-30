@@ -240,7 +240,7 @@ Don't have an account?
         {/* Bottom Features */}
 
 
-        <div className="row g-5">
+        {/* <div className="row g-5">
 
 
           <div className="col-md-6 col-lg-3">
@@ -363,7 +363,7 @@ Don't have an account?
 
 
 
-        </div>
+        </div> */}
 
 
 

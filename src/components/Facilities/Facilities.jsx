@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import "./Facilities.css";
+import InnerNavbar from '../common/navbar/InnerNavbar';
+import Footer from '../common/footer/Footer';
 
 function Facilities() {
 
@@ -29,7 +31,7 @@ function Facilities() {
     <>
       {/* Scope-specific Styles (You can also move these to a separate .css file) */}
 
-
+<InnerNavbar />
       <h2 className="text-center mt-5">Facilities</h2>
       <div className="line1" data-aos="fade-up" data-aos-delay="200"></div>
 
@@ -287,6 +289,7 @@ function Facilities() {
       </div>
       <br />
       <br />
+      <Footer />
     </>
   );
 }

@@ -178,16 +178,17 @@ function About() {
             <div className="about-footer">
 
 
-              <button className="btn-about-read">
-
-                Read More
-
-              </button>
 
 
 
               <div className="social-icons">
 
+
+              <button className="btn-about-read">
+
+                Read More
+
+              </button>
 
                 <a href="#">
                   <i className="bi bi-facebook"></i>
