@@ -20,34 +20,34 @@ function Home() {
         <Eventinfo />
       </div>
 
-      <div data-aos="fade-up" data-aos-delay="100">
-        <Certificates />
-      </div>
+            <div data-aos="fade-up" data-aos-delay="100">
+                <Certificates />
+            </div>
 
-      <div data-aos="fade-up" data-aos-delay="150">
-        <About />
-      </div>
+            <div data-aos="fade-up" data-aos-delay="150">
+                <About />
+            </div>
 
-      <div data-aos="fade-up" data-aos-delay="200">
-        <Facilities />
-      </div>
+            <div data-aos="fade-up" data-aos-delay="200">
+                <Facilities />
+            </div>
 
-      <div data-aos="fade-up" data-aos-delay="250">
-        <WhyChooseUs />
-      </div>
+            <div data-aos="fade-up" data-aos-delay="250">
+                <WhyChooseUs />
+            </div>
 
-      <div data-aos="fade-up" data-aos-delay="300">
-        <EventHighlights />
-      </div>
+            <div data-aos="fade-up" data-aos-delay="300">
+                <EventHighlights />
+            </div>
 
-      <div data-aos="fade-up" data-aos-delay="350">
-        <Services />
-      </div>
+            <div data-aos="fade-up" data-aos-delay="350">
+                <Services />
+            </div>
 
-      <Footer />
-    </>
-  );
+            <Footer />
+        </>
+    );
 }
 
-export default Home;
 
+export default Home
