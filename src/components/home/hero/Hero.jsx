@@ -29,7 +29,9 @@ function Hero() {
 
 
   return (
+    <>
 
+{/* <Navbar /> */}
     <div className="container-fluid  hero-header bg-light ">
 
       {/* <Navbar /> */}
@@ -371,7 +373,7 @@ Don't have an account?
 
 
     </div>
-
+</>
   );
 }
 
