@@ -1,5 +1,5 @@
 import "./Hero.css";
-import Navbar from "../../common/navbar/Navbar";
+// import Navbar from "../../common/navbar/Navbar";
 
 import { useState, useEffect } from "react";
 
@@ -32,7 +32,7 @@ function Hero() {
 
     <div className="container-fluid  hero-header bg-light ">
 
-      <Navbar />
+      {/* <Navbar /> */}
 
 
       <div className="container  pt-5 pb-3">

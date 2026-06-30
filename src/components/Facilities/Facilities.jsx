@@ -8,7 +8,7 @@ function Facilities() {
     const icons = document.querySelectorAll('.zigzag-icon');
     let current = 0;
 
-    if (icons.length === 0) return;
+    if (icons.length === 0) return;  
 
     const blinkIcon = () => {
       icons.forEach((icon) => {
