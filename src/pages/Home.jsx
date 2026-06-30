@@ -1,4 +1,4 @@
-// import Navbar from "../components/common/navbar/Navbar";
+import Navbar from "../components/common/navbar/Navbar";
 import Footer from "../components/common/footer/Footer";
 import About from "../components/home/about/About";
 import Certificates from "../components/home/certificates/Certificates";
@@ -12,7 +12,7 @@ import WhyChooseUs from "../components/home/whychooseus/WhyChooseUs";
 function Home() {
   return (
     <>
-      {/* <Navbar /> */}
+      <Navbar />
 
       <Hero />
 

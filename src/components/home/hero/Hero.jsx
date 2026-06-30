@@ -29,10 +29,12 @@ function Hero() {
 
 
   return (
+    <>
 
+{/* <Navbar /> */}
     <div className="container-fluid  hero-header bg-light ">
 
-      <Navbar />
+      
 
 
       <div className="container  pt-5 pb-3">
@@ -371,7 +373,7 @@ Don't have an account?
 
 
     </div>
-
+</>
   );
 }
 

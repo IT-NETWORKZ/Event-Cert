@@ -1,21 +1,40 @@
 import "./Navbar.css";
 import { Link } from "react-router-dom";
+import logo from "../../../assets/img/logo_EventCert.png";
+import { useEffect, useState } from "react";
 
 function Navbar() {
+  const [sticky, setSticky] = useState(false);
+
+useEffect(() => {
+  const handleScroll = () => {
+    setSticky(window.scrollY > 250); // Change after Hero
+  };
+
+  window.addEventListener("scroll", handleScroll);
+
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
   return (
 
-    <div className="container-fluid sticky-top">
+    
+
+    // <div className="container-fluid fixed-top px-0">
+    <div className={`container-fluid navbar-wrapper ${sticky ? "navbar-fixed" : ""}`}>
 
       <div className="container">
 
         <nav className="navbar navbar-expand-lg navbar-light border-bottom border-2 border-white">
 
 
-          <Link to="/" className="navbar-brand">
+          {/* <Link to="/" className="navbar-brand">
 
             <h1>EventCert</h1>
 
-          </Link>
+          </Link> */}
+          <Link to="/" className="navbar-brand">
+  <img src={logo} alt="EventCert Logo" className="navbar-logo" />
+</Link>
 
 
 
