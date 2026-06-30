@@ -7,6 +7,8 @@ import {
   ChevronRight
 } from "lucide-react";
 
+import logo from "../../../assets/img/logo_EventCert.png";
+
 function Footer() {
 
 return (
@@ -23,11 +25,11 @@ return (
 
 <div className="col-lg-3 col-md-6">
 
-<h4 className="footer-title">
-
-EventCert
-
-</h4>
+<img
+  src={logo}
+  alt="EventCert"
+  className="footer-logo"
+/>
 
 
 <p className="footer-desc">

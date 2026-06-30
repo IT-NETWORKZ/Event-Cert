@@ -1,0 +1,253 @@
+.register-screen-bg {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  /* Replaces previous background with your full certificate template */
+  background-image: url('../../assets/img/register-bg.jpg'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Semi-transparent overlay over background image so input texts remain highly readable */
+.bg-dark-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* background-color: rgba(10, 10, 10, 0.75);  */
+  z-index: 1;
+}
+
+/* ==========================================================================
+   Centered Compact Sign-Up Card
+   ========================================================================== */
+.register-form-card {
+  background: #ffffff !important;
+  width: 100%;
+  max-width: 380px; /* Made slightly smaller and compact for a premium look */
+  border-radius: 20px;
+  padding: 35px 25px 25px 25px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  z-index: 2; /* Sits cleanly above the backdrop dim layer */
+}
+
+/* Pink Accent Notch */
+.magenta-top-bar {
+  position: absolute;
+  top: 0;
+  width: 100px;
+  height: 16px;
+  background:linear-gradient(45deg,#009688, #B2DFDB);
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.register-logo-wrap {
+  margin-top: 5px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.register-main-logo {
+  max-height: 50px; /* Scales down logo slightly to match compact card size */
+  width: auto;
+  object-fit: contain;
+}
+
+.register-card-title {
+  font-size: 22px;
+  color: #1a1a1a;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+}
+
+.register-card-subtitle {
+  font-size: 13px;
+  color: #718096;
+  margin: 0 0 20px 0;
+}
+
+.register-actual-form {
+  width: 100%;
+}
+
+/* Form Layout Elements */
+.register-field-group {
+  width: 100%;
+  margin-bottom: 14px;
+}
+
+.register-field-group input, 
+.register-inline-group input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 13.5px;
+  background-color: #fcfdfe;
+  color: #2d3748;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.register-field-group input:focus, 
+.register-inline-group input:focus {
+  border-color: #5c62ec;
+}
+
+/* Custom OTP Switch */
+.register-radio-wrap {
+  width: 100%;
+  display: flex;
+  margin-bottom: 14px;
+}
+
+.register-radio-label {
+  display: flex;
+  align-items: center;
+  font-size: 13.5px;
+  color: #2d3748;
+  font-weight: 600;
+  cursor: pointer;
+  gap: 8px;
+}
+
+.register-radio-label input {
+  display: none;
+}
+
+.register-custom-radio {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+}
+
+.register-radio-label input:checked + .register-custom-radio {
+  border-color: #5c62ec;
+}
+
+.register-radio-label input:checked + .register-custom-radio::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background-color: #5c62ec;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Email + Button Lineup */
+.register-inline-group {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.register-inline-group input {
+  flex: 1;
+}
+
+.register-btn-send-otp {
+  background:linear-gradient(45deg,#009688, #B2DFDB);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 0 16px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Individual Block Box Grid (OTP) */
+.register-otp-block {
+  width: 100%;
+  margin-bottom: 22px;
+}
+
+.register-otp-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #4a5568;
+  margin-bottom: 6px;
+  text-align: left;
+}
+
+.register-otp-grid {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.register-otp-grid input {
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  outline: none;
+  background-color: #fcfdfe;
+  box-sizing: border-box;
+}
+
+.register-otp-grid input:focus {
+  border-color: #5c62ec;
+}
+
+/* CTAs & Redirects */
+.register-btn-submit {
+  width: 110px;
+  padding: 11px 0;
+ background:linear-gradient(45deg,#009688, #B2DFDB);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto 16px auto;
+  box-shadow: 0 4px 12px rgba(92, 98, 236, 0.3);
+}
+
+.register-bottom-redirect {
+  font-size: 13px;
+  color: #718096;
+  margin: 0;
+  font-weight: 500;
+}
+
+.register-login-link {
+  color: #0066ff;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.register-login-link:hover {
+  text-decoration: underline;
+}

@@ -2,6 +2,7 @@ import "./Hero.css";
 // import Navbar from "../../common/navbar/Navbar";
 
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 import hero1 from "../../../assets/img/hero-slider-1.jpg";
 import hero2 from "../../../assets/img/hero-slider-2.jpg";
@@ -169,7 +170,8 @@ function Hero() {
 
 Don't have an account?
 
-<a href="#"> Register</a>
+{/* <a href="#"> Register</a> */}
+<Link to="/register">Register</Link>
 
 </p>
 
