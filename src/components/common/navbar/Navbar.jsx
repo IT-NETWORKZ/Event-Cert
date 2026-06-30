@@ -17,9 +17,7 @@ useEffect(() => {
 }, []);
   return (
 
-    
-
-    // <div className="container-fluid fixed-top px-0">
+    // <div className="container-fluid sticky-top " >
     <div className={`container-fluid navbar-wrapper ${sticky ? "navbar-fixed" : ""}`}>
 
       <div className="container">

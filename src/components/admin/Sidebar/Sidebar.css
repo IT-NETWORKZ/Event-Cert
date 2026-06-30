@@ -1,0 +1,168 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ===========================================
+    REACT-PRO-SIDEBAR CUSTOM WRAPPERS
+=========================================== */
+.custom-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 280px !important;
+    min-width: 280px !important;
+    background: linear-gradient(180deg, #6663d8 0%, #8b84f3 100%) !important;
+    border: none !important;
+    box-shadow: 8px 0 25px rgba(0, 0, 0, .12);
+    transition: width 0.3s ease, min-width 0.3s ease !important;
+    z-index: 1000;
+}
+
+/* Handle system width when collapsed state hits */
+.custom-sidebar.ps-collapsed {
+    width: 80px !important;
+    min-width: 80px !important;
+}
+
+.custom-sidebar .ps-sidebar-container {
+    background: transparent !important;
+    overflow-y: auto;
+}
+
+/* ===========================================
+    SIDEBAR HEADER & TOGGLE BUTTON ALIGNMENT
+=========================================== */
+.sidebar-header {
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, .15);
+    position: relative;
+}
+
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    max-width: 150px;
+}
+
+.sidebar-logo img {
+    width: 100%;
+    object-fit: contain;
+}
+
+.hamburger-btn {
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.hamburger-btn:hover {
+    background: #ffc42d;
+    color: #1b2856;
+}
+
+/* Align button perfectly centered in the middle of the bar width when collapsed */
+.hamburger-btn.sidebar-is-collapsed {
+    margin: 0 auto;
+}
+
+/* ===========================================
+    MENU & ITEMS RE-STYLING
+=========================================== */
+.custom-sidebar .ps-menu-root {
+    padding: 20px 0;
+}
+
+.custom-sidebar .ps-menuitem-root {
+    margin: 4px 0;
+}
+
+/* Target internal interactive button handles created by the library */
+.custom-sidebar .ps-menu-button {
+    height: 50px !important;
+    color: #fff !important;
+    padding-left: 20px !important;
+    background: transparent !important;
+    transition: background 0.3s ease, color 0.3s ease !important;
+}
+
+.custom-sidebar .ps-menu-button:hover {
+    background: rgba(255, 255, 255, .08) !important;
+}
+
+/* Style icon wrappers natively provided by the library */
+.custom-sidebar .ps-icon {
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 14px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.custom-sidebar .ps-menuitem-root:hover .ps-icon,
+.custom-sidebar .ps-submenu-root:hover .ps-open .ps-icon {
+    background: #ffc42d !important;
+    color: #1b2856 !important;
+}
+
+/* Active Class Configuration styles */
+.custom-sidebar .active-item .ps-menu-button {
+    border-left: 4px solid #ffc42d;
+    background: rgba(255, 255, 255, .08) !important;
+}
+
+.custom-sidebar .active-item .ps-icon {
+    background: #ffc42d !important;
+    color: #1b2856 !important;
+}
+
+/* Submenu layout popout clean overrides */
+.custom-sidebar .ps-submenu-content {
+    background: linear-gradient(180deg, #6663d8 0%, #8b84f3 100%) !important;
+
+}
+
+/* ===========================================
+    RESPONSIVE OVERLAYS (Mobile & Tablet)
+=========================================== */
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+}
+
+@media (max-width: 768px) {
+
+    /* Ensure header remains completely visible during mobile breakpoint toggles */
+    .sidebar-header {
+        justify-content: center;
+        padding: 0;
+    }
+
+    .sidebar-logo {
+        display: none;
+        /* Hide logo completely on small mobile items */
+    }
+}
