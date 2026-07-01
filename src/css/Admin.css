@@ -18,4 +18,42 @@
     overflow-y: auto;
     background: #f6f7fb;
     transition: margin-left 0.35s ease;
+
+    /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: #009688 #E0F2F1;
+}
+
+/* Chrome, Edge & Safari */
+.admin-content::-webkit-scrollbar {
+    width: 10px;
+}
+
+.admin-content::-webkit-scrollbar-track {
+    background: #E0F2F1;
+    border-radius: 20px;
+}
+
+.admin-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        180deg,
+        #009688,
+        #26A69A,
+        #4DB6AC
+    );
+    border-radius: 20px;
+    border: 2px solid #E0F2F1;
+    transition: all 0.3s ease;
+}
+
+.admin-content::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+        180deg,
+        #00796B,
+        #009688
+    );
+}
+
+.admin-content::-webkit-scrollbar-corner {
+    background: transparent;
 }

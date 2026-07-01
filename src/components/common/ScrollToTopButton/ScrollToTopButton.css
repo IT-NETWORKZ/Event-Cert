@@ -1,0 +1,115 @@
+.scroll-top-btn {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 45px;
+  height: 45px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(121deg, #009688, #349b92);
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 8px 25px rgba(0, 150, 136, 0.35);
+  transition: all 0.35s ease;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Floating Animation */
+  animation: floatBtn 2s ease-in-out infinite;
+}
+
+/* Up Down Floating */
+@keyframes floatBtn {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* Glow Pulse */
+.scroll-top-btn::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: rgba(0, 150, 136, 0.25);
+  z-index: -1;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: .7;
+  }
+
+  70% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+/* Hover */
+.scroll-top-btn:hover {
+  transform: translateY(-10px) scale(1.12);
+  box-shadow: 0 12px 35px rgba(0, 150, 136, 0.55);
+}
+
+/* Click */
+.scroll-top-btn:active {
+  transform: scale(0.92);
+}
+.animate-show {
+  animation:
+    showBtn .4s ease,
+    floatBtn 2s ease-in-out .4s infinite;
+}
+
+@keyframes showBtn {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(.6);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+/* Tablet */
+@media (max-width: 768px) {
+  .scroll-top-btn {
+    width: 48px;
+    height: 48px;
+    right: 18px;
+    bottom: 18px;
+    font-size: 18px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .scroll-top-btn {
+    width: 44px;
+    height: 44px;
+    right: 15px;
+    bottom: 15px;
+    font-size: 16px;
+  }
+}

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./Sidebar.css";
+import logo from "../../../assets/img/logo_EventCert.png";
+
 import {
   ProSidebarProvider,
   Sidebar,
@@ -39,13 +41,14 @@ const SidebarComponent = () => {
         toggled={toggled}
         breakPoint="md"
         onBackdropClick={() => setToggled(false)}
+        backgroundColor="transparent" /* Controlled cleanly via our CSS gradient */
         className="custom-sidebar"
       >
         {/* Top Header Section: Holds Logo & Toggle Button cleanly aligned */}
         <div className="sidebar-header">
           {!collapsed && (
             <div className="sidebar-logo">
-              <img src="/images/logo.png" alt="EventCert Logo" />
+              <img src={logo} alt="EventCert Logo" />
             </div>
           )}
 
