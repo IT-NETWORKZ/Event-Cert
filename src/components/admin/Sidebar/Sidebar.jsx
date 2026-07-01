@@ -39,7 +39,6 @@ const SidebarComponent = () => {
         toggled={toggled}
         breakPoint="md"
         onBackdropClick={() => setToggled(false)}
-        backgroundColor="transparent" /* Controlled cleanly via our CSS gradient */
         className="custom-sidebar"
       >
         {/* Top Header Section: Holds Logo & Toggle Button cleanly aligned */}
