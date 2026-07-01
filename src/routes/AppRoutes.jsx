@@ -13,7 +13,7 @@ function AppRoutes() {
 
     return (
 
-       <Routes>
+        <Routes>
 
             <Route path="/" element={<Home />} />
 
