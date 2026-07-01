@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './Register.css';
 
 // Importing assets
-import logo from '../../assets/img/logo_EventCert.png'; 
+import logo from '../../../assets/img/logo_EventCert.png'; 
 
 const Register = () => {
   const [formData, setFormData] = useState({
