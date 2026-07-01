@@ -11,20 +11,28 @@
     flex-shrink: 0;
 }
 
-/* Dashboard takes remaining space */
-.admin-content {
+/* Fixes the main container to occupy remaining horizontal space */
+.admin-main {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Prevents layout bursting from large tables/grids */
     height: 100vh;
+}
+
+/* Dashboard content takes remaining vertical space below the Navbar */
+.admin-content {
+    flex: 1; 
     overflow-y: auto;
     background: #f6f7fb;
-    transition: margin-left 0.35s ease;
+    padding: 20px; /* Optional: adds nice spacing inside your dashboard */
 
-    /* Firefox */
+    /* Firefox Scrollbar */
     scrollbar-width: thin;
     scrollbar-color: #009688 #E0F2F1;
 }
 
-/* Chrome, Edge & Safari */
+/* --- Chrome, Edge & Safari Scrollbar Styles --- */
 .admin-content::-webkit-scrollbar {
     width: 10px;
 }
