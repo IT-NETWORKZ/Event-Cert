@@ -2,10 +2,10 @@ import { Routes, Route } from 'react-router-dom'
 import Services from '../components/services/Services'
 import Facilities from '../components/Facilities/Facilities'
 import Dashboard from '../components/admin/Dashboard/Dashboard'
-import Admin from '../pages/Admin'
+import Admin from '../pages/Admin/Admin'
 import Contact from '../components/Contact/Contact'
-import Home from "../pages/Home"
-import Register from '../pages/register/Register'
+import Home from "../pages/HomeDefault/Home"
+import Register from '../components/home/register/Register'
 import Subscription from '../components/Subscription/Subscription'
 import Profile from '../pages/Admin/Profile'
 
