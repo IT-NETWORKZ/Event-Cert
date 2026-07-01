@@ -21,7 +21,7 @@ import {
   FaCommentDots,
   FaReceipt,
 } from "react-icons/fa";
-
+import { NavLink } from "react-router-dom";
 const SidebarComponent = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [toggled, setToggled] = useState(false); // Default false for clean mobile view initialization
@@ -63,14 +63,14 @@ const SidebarComponent = () => {
             {!collapsed ? <FaTimes /> : <FaBars />}
           </button>
         </div>
-
+ 
         {/* Navigation Menu */}
         <Menu className="sidebar-menu">
-          <MenuItem icon={<FaThLarge />} title="Dashboard" className="active-item">Dashboard</MenuItem>
-          <MenuItem icon={<FaCreditCard />} title="Subscription">Subscription</MenuItem>
-          <MenuItem icon={<FaUser />} title="Profile">Profile</MenuItem>
-          <MenuItem icon={<FaUser />} title="Greeting">Greeting</MenuItem>
-          <MenuItem icon={<FaFileAlt />} title="Square Certificate">Square Certificate</MenuItem>
+          <MenuItem icon={<FaThLarge />}   component={<NavLink to="/admin/dashboard" />} title="Dashboard" className="active-item">Dashboard</MenuItem>
+          <MenuItem icon={<FaCreditCard />} component={<NavLink to="/admin/subscription" />} title="Subscription">Subscription</MenuItem>
+          <MenuItem icon={<FaUser />}  component={<NavLink to="/admin/profile" />} title="Profile">Profile</MenuItem>
+          <MenuItem icon={<FaUser />} component={<NavLink to="/admin/greeting" />}  title="Greeting">Greeting</MenuItem>
+          <MenuItem icon={<FaFileAlt />} component={<NavLink to="/admin/square_certificate" />}  title="Square Certificate">Square Certificate</MenuItem>
 
           {/* Quick Submenu */}
           <SubMenu icon={<FaAward />} title="Quick" label="Quick">

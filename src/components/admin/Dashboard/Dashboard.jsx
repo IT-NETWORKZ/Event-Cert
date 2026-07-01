@@ -4,6 +4,7 @@ import confetti from "canvas-confetti";
 import { Modal } from "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import { useLocation } from "react-router-dom";
 
 import {
     FaCalendarAlt,
@@ -21,6 +22,8 @@ import {
 import Sidebar from "../Sidebar/Sidebar";
 
 const Dashboard = () => {
+    const location = useLocation();
+
     const [dashboardData] = useState({
         eventsUsed: 2450,
         designs: "20000+",
@@ -105,7 +108,10 @@ const Dashboard = () => {
             theme: "card-theme-success",
         },
     ];
+
     useEffect(() => {
+        if (location.pathname !== "/admin/dashboard") return;
+
         setWelcomeText("Welcome to CertWala!");
 
         startConfetti();
@@ -123,7 +129,18 @@ const Dashboard = () => {
         } else {
             popup.close();
         }
-    }, []);
+    }, [location.pathname]);
+
+    useEffect(() => {
+        if (location.pathname !== "/admin/dashboard") return;
+
+        startConfetti();
+
+        return () => {
+            confetti.reset();
+        };
+    }, [location.pathname]);
+
     const handlePopupOk = () => {
         localStorage.setItem("profilePopupShown", "true");
         setShowProfilePopup(false);
@@ -133,6 +150,8 @@ const Dashboard = () => {
         navigator.clipboard.writeText(code);
         alert("Promo code copied successfully.");
     };
+
+
     const startConfetti = () => {
         const defaults = {
             spread: 60,
@@ -181,326 +200,222 @@ const Dashboard = () => {
     };
     return (
         <>
-        <main className="app-content content default_container">
-            {/* Welcome Section */}
+            <main className="app-content content default_container">
+                {/* Welcome Section */}
 
-            <section id="welcome-message" className="text-center">
-    <h1 className="welcome-title">
-        Welcome to
-    </h1>
+                <section id="welcome-message" className="text-center">
+                    <h1 className="welcome-title">
+                        Welcome to
+                    </h1>
 
-    <h2 className="eventcert-logo">
-        EVENT<span>CERT</span>
-    </h2>
+                    <h2 className="eventcert-logo">
+                        EVENT<span>CERT</span>
+                    </h2>
 
-</section>
+                </section>
 
-            {/* Dashboard */}
+                {/* Dashboard */}
 
-            <section className="dashboard-wrapper">
-                <div className="container-fluid dashboard-container">
-                    <div className="row g-4">
-                        {cards.map((card, index) => (
-                            <div
-                                className="col-xl-3 col-lg-6 col-md-6 col-sm-12"
-                                key={index}
-                            >
-                                <div className={`premium-card ${card.theme}`}>
-                                    <div className="d-flex justify-content-between align-items-center">
-                                        <div className="card-icon">
-                                            {card.icon}
+                <section className="dashboard-wrapper">
+                    <div className="container-fluid dashboard-container">
+                        <div className="row g-4">
+                            {cards.map((card, index) => (
+                                <div
+                                    className="col-xl-3 col-lg-6 col-md-6 col-sm-12"
+                                    key={index}
+                                >
+                                    <div className={`premium-card ${card.theme}`}>
+                                        <div className="d-flex justify-content-between align-items-center">
+                                            <div className="card-icon">
+                                                {card.icon}
+                                            </div>
+
+                                            <div>
+                                                <h3 className="mb-0">{card.value.toLocaleString("en-IN")}</h3>
+                                            </div>
                                         </div>
 
-                                        <div>
-                                            <h3 className="mb-0">{card.value.toLocaleString("en-IN")}</h3>
+                                        <div className="card-content">
+
+                                            <p>{card.title}</p>
                                         </div>
-                                    </div>
-
-                                    <div className="card-content">
-
-                                        <p>{card.title}</p>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Quick Links */}
-
-                    <div className="quick-links mt-5">
-                        <ul className="top-menu">
-                            <li>
-                                <a href="#">
-                                    <FaCreditCard />
-                                    <span>Payment</span>
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="#">
-                                    <FaCommentAlt />
-                                    <span>Feedback</span>
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="#">
-                                    <FaFileContract />
-                                    <span>T & C</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-
-            {/* PROFILE POPUP */}
-
-            {showProfilePopup && (
-                <div className="profile-popup show">
-
-                    <div className="profile-popup-box">
-
-                        <div className="icon smile-happy">
-                            😁
+                            ))}
                         </div>
 
-                        <h3>Reminder</h3>
+                        {/* Quick Links */}
 
-                        <h2>Profile Required</h2>
+                        <div className="quick-links mt-5">
+                            <ul className="top-menu">
+                                <li>
+                                    <a href="#">
+                                        <FaCreditCard />
+                                        <span>Payment</span>
+                                    </a>
+                                </li>
 
-                        <p>
-                            Profile creation is mandatory to generate
-                            <strong> Certificates.</strong>
-                        </p>
+                                <li>
+                                    <a href="#">
+                                        <FaCommentAlt />
+                                        <span>Feedback</span>
+                                    </a>
+                                </li>
 
-                        <button
-                            className="frutiger-button"
-                            onClick={handlePopupOk}
-                        >
-                            <div className="inner">
-
-                                <div className="top-white"></div>
-
-                                <span className="text">
-                                    OK
-                                </span>
-
-                            </div>
-                        </button>
-
+                                <li>
+                                    <a href="#">
+                                        <FaFileContract />
+                                        <span>T & C</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
+                </section>
 
-                </div>
-            )}
+                {/* PROFILE POPUP */}
 
-            {/* PROMO BUTTON*/}
+                {showProfilePopup && (
+                    <div className="profile-popup show">
 
-            <div
-                className="promo-fab"
-                data-bs-toggle="modal"
-                data-bs-target="#promoModal"
-            >
-                <button className="vertical-btn right-btn">
-                    Promo Code
-                </button>
-            </div>
+                        <div className="profile-popup-box">
 
-            {/* PROMO MODAL */}
+                            <div className="icon smile-happy">
+                                😁
+                            </div>
 
-            <div
-                className="modal fade"
-                id="promoModal"
-                tabIndex="-1"
-            >
+                            <h3>Reminder</h3>
 
-                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <h2>Profile Required</h2>
 
-                    <div className="modal-content promo-toggle-container">
-
-                        <div className="modal-header">
-
-                            <h3 className="modal-title w-100 text-center">
-                                Available Offers
-                            </h3>
+                            <p>
+                                Profile creation is mandatory to generate
+                                <strong> Certificates.</strong>
+                            </p>
 
                             <button
-                                className="btn-close"
-                                data-bs-dismiss="modal"
-                            ></button>
+                                className="frutiger-button"
+                                onClick={handlePopupOk}
+                            >
+                                <div className="inner">
+
+                                    <div className="top-white"></div>
+
+                                    <span className="text">
+                                        OK
+                                    </span>
+
+                                </div>
+                            </button>
 
                         </div>
 
-                        <div className="modal-body">
+                    </div>
+                )}
 
-                            {promoCodes.map((promo) => (
+                {/* PROMO BUTTON*/}
 
-                                <div
-                                    className="coupon-cardd mb-4"
-                                    key={promo.id}
-                                >
+                <div
+                    className="promo-fab"
+                    data-bs-toggle="modal"
+                    data-bs-target="#promoModal"
+                >
+                    <button className="vertical-btn right-btn">
+                        Promo Code
+                    </button>
+                </div>
 
-                                    <div className="coupon-top">
+                {/* PROMO MODAL */}
 
-                                        <div className="gift-icon">
-                                            🎁
+                <div
+                    className="modal fade"
+                    id="promoModal"
+                    tabIndex="-1"
+                >
+
+                    <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+
+                        <div className="modal-content promo-toggle-container">
+
+                            <div className="modal-header">
+
+                                <h3 className="modal-title w-100 text-center">
+                                    Available Offers
+                                </h3>
+
+                                <button
+                                    className="btn-close"
+                                    data-bs-dismiss="modal"
+                                ></button>
+
+                            </div>
+
+                            <div className="modal-body">
+
+                                {promoCodes.map((promo) => (
+
+                                    <div
+                                        className="coupon-cardd mb-4"
+                                        key={promo.id}
+                                    >
+
+                                        <div className="coupon-top">
+
+                                            <div className="gift-icon">
+                                                🎁
+                                            </div>
+
+                                            <h2>
+                                                {promo.discount} OFF
+                                            </h2>
+
+                                            <p>on your purchase</p>
+
+                                            <p>
+                                                Valid For :
+                                                <b> {promo.plan}</b>
+                                            </p>
+
                                         </div>
 
-                                        <h2>
-                                            {promo.discount} OFF
-                                        </h2>
+                                        <div className="promo-code-section">
 
-                                        <p>on your purchase</p>
+                                            <span className="promo-code-label">
+                                                Promo Code
+                                            </span>
 
-                                        <p>
-                                            Valid For :
-                                            <b> {promo.plan}</b>
-                                        </p>
+                                            <div className="code-display">
 
-                                    </div>
+                                                <h3 className="promo-text">
+                                                    {promo.code}
+                                                </h3>
 
-                                    <div className="promo-code-section">
+                                                <span
+                                                    className="copy-link"
+                                                    onClick={() => copyPromo(promo.code)}
+                                                >
+                                                    Copy Code
+                                                </span>
 
-                                        <span className="promo-code-label">
-                                            Promo Code
-                                        </span>
+                                            </div>
 
-                                        <div className="code-display">
-
-                                            <h3 className="promo-text">
-                                                {promo.code}
-                                            </h3>
-
-                                            <span
-                                                className="copy-link"
-                                                onClick={() => copyPromo(promo.code)}
-                                            >
-                                                Copy Code
+                                            <span className="valid-until">
+                                                Valid Till {promo.valid}
                                             </span>
 
                                         </div>
 
-                                        <span className="valid-until">
-                                            Valid Till {promo.valid}
-                                        </span>
+                                        <div className="coupon-footer">
+
+                                            <button className="btn-fly">
+                                                Unlock Benefits
+                                            </button>
+
+                                        </div>
 
                                     </div>
 
-                                    <div className="coupon-footer">
-
-                                        <button className="btn-fly">
-                                            Unlock Benefits
-                                        </button>
-
-                                    </div>
-
-                                </div>
-
-                            ))}
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-            {/* ==========================
-        GUIDE MODAL
-=========================== */}
-
-            <div
-                className="modal fade"
-                id="guideModal"
-                tabIndex="-1"
-            >
-
-                <div className="modal-dialog modal-lg">
-
-                    <div className="modal-content">
-
-                        <div className="modal-header">
-
-                            <h5 className="modal-title">
-                                Enable Pop-ups & Redirects
-                            </h5>
-
-                            <button
-                                className="btn-close"
-                                data-bs-dismiss="modal"
-                            ></button>
-
-                        </div>
-
-                        <div className="modal-body">
-
-                            <div
-                                id="carouselExampleIndicators"
-                                className="carousel slide"
-                                data-bs-ride="carousel"
-                            >
-
-                                <div className="carousel-inner">
-
-                                    <div className="carousel-item active">
-
-                                        <img
-                                            src="/img/Pop-ups_Redirects/step_1.png"
-                                            className="d-block w-100"
-                                            alt=""
-                                        />
-
-                                    </div>
-
-                                    <div className="carousel-item">
-
-                                        <img
-                                            src="/img/Pop-ups_Redirects/step_2.png"
-                                            className="d-block w-100"
-                                            alt=""
-                                        />
-
-                                    </div>
-
-                                    <div className="carousel-item">
-
-                                        <img
-                                            src="/img/Pop-ups_Redirects/step_3.png"
-                                            className="d-block w-100"
-                                            alt=""
-                                        />
-
-                                    </div>
-
-                                    <div className="carousel-item">
-
-                                        <img
-                                            src="/img/Pop-ups_Redirects/step_4.png"
-                                            className="d-block w-100"
-                                            alt=""
-                                        />
-
-                                    </div>
-
-                                </div>
-
-                                <button
-                                    className="carousel-control-prev"
-                                    type="button"
-                                    data-bs-target="#carouselExampleIndicators"
-                                    data-bs-slide="prev"
-                                >
-                                    <span className="carousel-control-prev-icon"></span>
-                                </button>
-
-                                <button
-                                    className="carousel-control-next"
-                                    type="button"
-                                    data-bs-target="#carouselExampleIndicators"
-                                    data-bs-slide="next"
-                                >
-                                    <span className="carousel-control-next-icon"></span>
-                                </button>
+                                ))}
 
                             </div>
 
@@ -509,9 +424,113 @@ const Dashboard = () => {
                     </div>
 
                 </div>
+                {/* ==========================
+        GUIDE MODAL
+=========================== */}
 
-            </div>
-        </main>
+                <div
+                    className="modal fade"
+                    id="guideModal"
+                    tabIndex="-1"
+                >
+
+                    <div className="modal-dialog modal-lg">
+
+                        <div className="modal-content">
+
+                            <div className="modal-header">
+
+                                <h5 className="modal-title">
+                                    Enable Pop-ups & Redirects
+                                </h5>
+
+                                <button
+                                    className="btn-close"
+                                    data-bs-dismiss="modal"
+                                ></button>
+
+                            </div>
+
+                            <div className="modal-body">
+
+                                <div
+                                    id="carouselExampleIndicators"
+                                    className="carousel slide"
+                                    data-bs-ride="carousel"
+                                >
+
+                                    <div className="carousel-inner">
+
+                                        <div className="carousel-item active">
+
+                                            <img
+                                                src="/img/Pop-ups_Redirects/step_1.png"
+                                                className="d-block w-100"
+                                                alt=""
+                                            />
+
+                                        </div>
+
+                                        <div className="carousel-item">
+
+                                            <img
+                                                src="/img/Pop-ups_Redirects/step_2.png"
+                                                className="d-block w-100"
+                                                alt=""
+                                            />
+
+                                        </div>
+
+                                        <div className="carousel-item">
+
+                                            <img
+                                                src="/img/Pop-ups_Redirects/step_3.png"
+                                                className="d-block w-100"
+                                                alt=""
+                                            />
+
+                                        </div>
+
+                                        <div className="carousel-item">
+
+                                            <img
+                                                src="/img/Pop-ups_Redirects/step_4.png"
+                                                className="d-block w-100"
+                                                alt=""
+                                            />
+
+                                        </div>
+
+                                    </div>
+
+                                    <button
+                                        className="carousel-control-prev"
+                                        type="button"
+                                        data-bs-target="#carouselExampleIndicators"
+                                        data-bs-slide="prev"
+                                    >
+                                        <span className="carousel-control-prev-icon"></span>
+                                    </button>
+
+                                    <button
+                                        className="carousel-control-next"
+                                        type="button"
+                                        data-bs-target="#carouselExampleIndicators"
+                                        data-bs-slide="next"
+                                    >
+                                        <span className="carousel-control-next-icon"></span>
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </main>
         </>
     );
 };
