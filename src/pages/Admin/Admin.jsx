@@ -13,6 +13,7 @@ const Admin = () => {
             <main className="admin-content">
 
                 <Outlet />
+                
 
             </main>
 

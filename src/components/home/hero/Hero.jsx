@@ -171,7 +171,7 @@ function Hero() {
 Don't have an account?
 
 {/* <a href="#"> Register</a> */}
-<Link to="/register">Register</Link>
+<Link to="/register"> Register</Link>
 
 </p>
 
