@@ -4,165 +4,437 @@
     box-sizing: border-box;
 }
 
-/* ===========================================
-    REACT-PRO-SIDEBAR CUSTOM WRAPPERS
-=========================================== */
+/* ===========================
+        SIDEBAR
+=========================== */
+
 .custom-sidebar {
     position: fixed;
     left: 0;
     top: 0;
-    height: 100vh;
     width: 280px !important;
     min-width: 280px !important;
-    background: linear-gradient(180deg, #6663d8 0%, #8b84f3 100%) !important;
+    height: 100vh;
+
+    background: linear-gradient(45deg, #009688, #B2DFDB) !important;
+
     border: none !important;
-    box-shadow: 8px 0 25px rgba(0, 0, 0, .12);
-    transition: width 0.3s ease, min-width 0.3s ease !important;
+
+    box-shadow: 0 15px 40px rgba(0, 150, 136, .25);
+
+    overflow: hidden;
+
+    transition: all .35s ease;
+
     z-index: 1000;
 }
 
-/* Handle system width when collapsed state hits */
 .custom-sidebar.ps-collapsed {
     width: 80px !important;
     min-width: 80px !important;
 }
 
+.custom-sidebar::before {
+    content: "";
+    position: absolute;
+
+    width: 220px;
+    height: 220px;
+
+    background: rgba(255, 255, 255, .15);
+
+    border-radius: 50%;
+
+    right: -70px;
+    top: -70px;
+}
+
+.custom-sidebar::after {
+    content: "";
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    background: rgba(255, 255, 255, .08);
+
+    border-radius: 50%;
+
+    left: -60px;
+    bottom: -60px;
+}
+
 .custom-sidebar .ps-sidebar-container {
     background: transparent !important;
     overflow-y: auto;
+    overflow-x: hidden;
+
+    /* Firefox */
+    scrollbar-width: none;
+
+    /* IE & Edge */
+    -ms-overflow-style: none;
 }
 
-/* ===========================================
-    SIDEBAR HEADER & TOGGLE BUTTON ALIGNMENT
-=========================================== */
+
+
+/* Chrome, Safari & Edge */
+.custom-sidebar .ps-sidebar-container::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+.custom-sidebar .ps-sidebar-container::-webkit-scrollbar-track {
+    display: none;
+}
+
+.custom-sidebar .ps-sidebar-container::-webkit-scrollbar-thumb {
+    display: none;
+}
+
+
+/* ===========================
+      HEADER
+=========================== */
+
 .sidebar-header {
+
     height: 90px;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, .15);
+
+    padding: 0 22px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, .25);
+
     position: relative;
+
 }
 
 .sidebar-logo {
+
     display: flex;
     align-items: center;
+
     max-width: 150px;
 }
 
 .sidebar-logo img {
+
     width: 100%;
+
     object-fit: contain;
+
+    transition: .35s;
 }
 
+.sidebar-logo img:hover {
+
+    transform: scale(1.05);
+}
+
+
+/* ===========================
+      HAMBURGER
+=========================== */
+
 .hamburger-btn {
-    width: 42px;
-    height: 42px;
+
+    width: 44px;
+    height: 44px;
+
     border: none;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.15);
+
+    border-radius: 12px;
+
+    background: rgba(255, 255, 255, .18);
+
     color: #fff;
-    font-size: 18px;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
+    font-size: 18px;
+
     cursor: pointer;
-    transition: all 0.3s ease;
-    flex-shrink: 0;
+
+    transition: .35s;
 }
 
 .hamburger-btn:hover {
-    background: #ffc42d;
-    color: #1b2856;
+
+    background: #fff;
+
+    color: #009688;
+
+    transform: rotate(180deg);
+
+    box-shadow: 0 10px 25px rgba(255, 255, 255, .25);
+
 }
 
-/* Align button perfectly centered in the middle of the bar width when collapsed */
 .hamburger-btn.sidebar-is-collapsed {
-    margin: 0 auto;
+
+    margin: auto;
 }
 
-/* ===========================================
-    MENU & ITEMS RE-STYLING
-=========================================== */
+
+/* ===========================
+        MENU
+=========================== */
+
 .custom-sidebar .ps-menu-root {
+
     padding: 20px 0;
+
 }
 
 .custom-sidebar .ps-menuitem-root {
-    margin: 4px 0;
+
+    margin: 5px 0;
 }
 
-/* Target internal interactive button handles created by the library */
+
+/* Menu Button */
+
 .custom-sidebar .ps-menu-button {
-    height: 50px !important;
+
+    height: 54px !important;
+
+    margin: 0 12px;
+
+    border-radius: 14px;
+
     color: #fff !important;
-    padding-left: 20px !important;
-    background: transparent !important;
-    transition: background 0.3s ease, color 0.3s ease !important;
+
+    transition: .35s;
+
+    font-size: 15px;
+
+    font-weight: 500;
+
 }
 
 .custom-sidebar .ps-menu-button:hover {
-    background: rgba(255, 255, 255, .08) !important;
+
+    background: rgba(255, 255, 255, .18) !important;
+
+    transform: translateX(8px);
+
 }
 
-/* Style icon wrappers natively provided by the library */
+
+/* ===========================
+        ICONS
+=========================== */
+
 .custom-sidebar .ps-icon {
-    width: 44px !important;
-    min-width: 44px !important;
-    height: 44px !important;
+
+    width: 42px !important;
+    min-width: 42px !important;
+
+    height: 42px !important;
+
     border-radius: 12px;
-    background: rgba(255, 255, 255, .15);
+
+    background: rgba(255, 255, 255, .18);
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     margin-right: 14px;
-    font-size: 16px;
-    transition: all 0.3s ease;
+
+    color: #fff;
+
+    transition: .35s;
 }
 
-.custom-sidebar .ps-menuitem-root:hover .ps-icon,
-.custom-sidebar .ps-submenu-root:hover .ps-open .ps-icon {
-    background: #ffc42d !important;
-    color: #1b2856 !important;
+.custom-sidebar .ps-menuitem-root:hover .ps-icon {
+
+    background: #fff !important;
+
+    color: #009688 !important;
+
+    transform: rotate(-10deg) scale(1.12);
+
 }
 
-/* Active Class Configuration styles */
+
+/* ===========================
+        ACTIVE
+=========================== */
+
 .custom-sidebar .active-item .ps-menu-button {
-    border-left: 4px solid #ffc42d;
-    background: rgba(255, 255, 255, .08) !important;
+
+    background: #fff !important;
+
+    color: #009688 !important;
+
+    font-weight: 600;
+
+    box-shadow: 0 10px 25px rgba(0, 150, 136, .30);
+
 }
 
 .custom-sidebar .active-item .ps-icon {
-    background: #ffc42d !important;
-    color: #1b2856 !important;
+
+    background: linear-gradient(45deg, #009688, #26A69A) !important;
+
+    color: #fff !important;
+
 }
 
-/* Submenu layout popout clean overrides */
+
+/* ===========================
+        SUBMENU
+=========================== */
+
 .custom-sidebar .ps-submenu-content {
-    background: linear-gradient(180deg, #6663d8 0%, #8b84f3 100%) !important;
+
+    background: rgba(255, 255, 255, .12) !important;
+
+    backdrop-filter: blur(20px);
+
+    border-radius: 12px;
+
+    margin: 5px 15px;
 
 }
 
-/* ===========================================
-    RESPONSIVE OVERLAYS (Mobile & Tablet)
-=========================================== */
+.custom-sidebar .ps-submenu-content .ps-menu-button {
+
+    margin: 4px 8px;
+
+    height: 46px !important;
+
+    font-size: 14px;
+
+}
+
+.custom-sidebar .ps-submenu-content .ps-menu-button:hover {
+
+    background: rgba(255, 255, 255, .18) !important;
+
+}
+
+
+/* Arrow */
+
+.custom-sidebar .ps-submenu-expand-icon {
+
+    color: #fff;
+
+}
+
+
+/* ===========================
+      OVERLAY
+=========================== */
+
 .sidebar-overlay {
+
     position: fixed;
+
     inset: 0;
-    z-index: 999;
+
 }
 
-@media (max-width: 768px) {
+.css-1t8x7v1>.ps-menu-button {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    height: 50px;
+    -webkit-text-decoration: none;
+    text-decoration: none;
+    color: inherit;
+    box-sizing: border-box;
+    cursor: pointer;
+    padding-right: 10px !important;
+    padding-left: 10px !important;
+}
 
-    /* Ensure header remains completely visible during mobile breakpoint toggles */
+/* ===========================
+      RESPONSIVE
+=========================== */
+
+@media(max-width:992px) {
+
+    .custom-sidebar {
+
+        width: 260px !important;
+
+        min-width: 260px !important;
+
+    }
+
+}
+
+
+@media(max-width:768px) {
+
     .sidebar-header {
+
         justify-content: center;
+
         padding: 0;
+
     }
 
     .sidebar-logo {
+
         display: none;
-        /* Hide logo completely on small mobile items */
+
     }
+
+    .custom-sidebar {
+
+        width: 260px !important;
+
+        min-width: 260px !important;
+
+    }
+
+}
+
+
+@media(max-width:576px) {
+
+    .custom-sidebar {
+
+        width: 240px !important;
+
+        min-width: 240px !important;
+
+    }
+
+    .custom-sidebar .ps-menu-button {
+
+        height: 50px !important;
+
+        font-size: 14px;
+
+    }
+
+    .custom-sidebar .ps-icon {
+
+        width: 38px !important;
+
+        min-width: 38px !important;
+
+        height: 38px !important;
+
+        font-size: 15px;
+
+    }
+
 }

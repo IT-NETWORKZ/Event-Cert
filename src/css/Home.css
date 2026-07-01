@@ -1,0 +1,66 @@
+/* ==========================================================================
+   GLOBAL STYLE LAYOUT & SMOOTH SCROLLING
+   ========================================================================== */
+html, body {
+    scroll-behavior: smooth;
+    overflow-x: hidden; /* Prevent global horizontal scaling issues */
+}
+
+.home-page {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Force-kills any secondary outer scrollbars from appearing */
+    background-color: #ffffff;
+}
+
+/* ==========================================================================
+   THEME CUSTOM SCROLLBAR (Global Level Setup)
+   ========================================================================== */
+
+/* Modern Standard Syntax (Firefox) */
+html {
+    scrollbar-width: auto;
+    scrollbar-color: #009688 #F5F5F5; /* thumb | track */
+}
+
+/* Webkit Engine Layout Rules (Chrome, Safari, Edge, Opera) */
+::-webkit-scrollbar {
+    width: 10px; 
+    height: 10px; 
+}
+
+/* Scrollbar Track */
+::-webkit-scrollbar-track {
+    background: #F5F5F5;
+}
+
+/* Scrollbar Thumb */
+::-webkit-scrollbar-thumb {
+    background: #009688; 
+    border-radius: 50px; 
+    border: 2px solid #F5F5F5; 
+    transition: background 0.3s ease;
+}
+
+/* Interactive Hover States */
+::-webkit-scrollbar-thumb:hover {
+    background: #00796B; 
+}
+
+/* ==========================================================================
+   AOS WRAPPER OVERRIDES & SPACING FIXES
+   ========================================================================== */
+
+/* Safely spaces sections apart and isolates horizontal overflowing elements */
+.home-page > div[data-aos] {
+    position: relative;
+    width: 100%;
+    overflow-x: hidden; /* Restricts horizontal leakages from animations without breaking global scroll */
+}
+
+/* Custom Micro-adjustments for Hero Section separation */
+.home-page > div[data-aos-delay="100"]:first-of-type {
+    margin-top: 0; 
+}
