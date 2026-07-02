@@ -1,0 +1,429 @@
+.subscription-page {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  padding-bottom: 4rem;
+  overflow-x: hidden; 
+  box-sizing: border-box;
+}
+
+.subscription-page *, 
+.subscription-page *::before, 
+.subscription-page *::after {
+  box-sizing: inherit;
+}
+
+.subscription-hero {
+  background: linear-gradient(45deg, #009688, #B2DFDB);
+  margin: 50px auto 0 auto; 
+  max-width: 900px; 
+  padding: 1.25rem 1.5rem 2.5rem 1.5rem; 
+  text-align: center;
+  color: #ffffff;
+  border-radius: 20px; 
+  box-shadow: 0 4px 12px rgba(0, 150, 136, 0.1);
+  width: 100%;
+  }
+.subscription-overlay h1 {
+  font-size: 2rem;
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.subscription-overlay p {
+  font-size: 0.95rem;
+  max-width: 600px;
+  margin: 0 auto;
+  opacity: 0.95;
+  line-height: 1.4;
+}
+
+.subscription-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: -22px auto 1.5rem auto; 
+  position: relative;
+  z-index: 10;
+  max-width: 540px;
+  background: #ffffff;
+  padding: 5px;
+  border-radius: 50px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.subscription-tabs button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border: none;
+  background: transparent;
+  color: #555;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  white-space: nowrap;
+}
+
+.subscription-tabs button:hover {
+  color: #009688;
+}
+
+.subscription-tabs button.active {
+  background-color: #009688;
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(0, 150, 136, 0.2);
+}
+
+
+.plans-wrapper {
+  max-width: 950px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px; 
+}
+
+.plan-card {
+  display: grid;
+  grid-template-columns: 65px 1fr 180px;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  min-height: 140px; 
+  width: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.plan-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.04);
+}
+
+
+.plan-duration {
+  background-color: #e0f2f1;
+  color: #00796b;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  text-transform: uppercase;
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  padding: 10px 0;
+  border-right: 1px solid rgba(0, 150, 136, 0.06);
+}
+
+/* Internal Layout Connector */
+.plan-content-inner {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+
+.price-box {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  border-right: 1px solid #f1f5f9;
+  height: 100%;
+}
+
+.old-price {
+  font-size: 0.85rem;
+  color: #ef4444;
+  text-decoration: line-through;
+  font-weight: 500;
+}
+
+.price-box h2 {
+  font-size: 1.6rem;
+  color: #1e293b;
+  margin: 1px 0;
+  font-weight: 700;
+}
+
+.discount {
+  font-size: 0.7rem;
+  color: #009688;
+  background-color: #e0f2f1;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+
+.plan-features {
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.plan-features h3 {
+  font-size: 0.9rem;
+  color: #0f172a;
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.plan-features ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 8px 16px;
+}
+
+.plan-features li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.plan-features li svg {
+  color: #009688;
+  flex-shrink: 0;
+  font-size: 0.9rem;
+}
+
+
+.buy-section {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-left: 1px solid #f1f5f9;
+  height: 100%;
+}
+
+.buy-now-btn {
+  background-color: #ffffff;
+  color: #009688;
+  border: 1px solid #009688;
+  padding: 9px 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  max-width: 140px;
+}
+
+.buy-now-btn:hover {
+  background-color: #009688;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 150, 136, 0.15);
+}
+
+
+@media (max-width: 900px) {
+  .plan-card {
+    grid-template-columns: 60px 1fr;
+  }
+
+  .plan-content-inner {
+    grid-template-columns: 140px 1fr;
+  }
+
+  .buy-section {
+    grid-column: 1 / -1;
+    border-left: none;
+    border-top: 1px dashed #e2e8f0;
+    justify-content: flex-end;
+    padding: 10px 20px;
+    height: auto;
+  }
+
+  .buy-now-btn {
+    max-width: none;
+    width: auto;
+    padding: 8px 28px;
+  }
+}
+
+
+@media (max-width: 640px) {
+  .subscription-hero {
+    margin: 20px auto 0 auto;
+    padding: 1.25rem 1rem 2rem 1rem;
+  }
+
+  .subscription-overlay h1 {
+    font-size: 1.6rem;
+  }
+
+  .subscription-tabs {
+    flex-wrap: wrap;
+    border-radius: 12px;
+    margin: -20px 10px 1.25rem 10px;
+    padding: 4px;
+    gap: 4px;
+  }
+
+  .subscription-tabs button {
+    width: calc(50% - 2px); 
+    flex: none;
+    padding: 8px 4px;
+    font-size: 0.8rem;
+  }
+
+  .plan-card {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: auto;
+  }
+
+  .plan-duration {
+    writing-mode: horizontal-tb;
+    transform: none;
+    height: auto;
+    padding: 6px 16px;
+    justify-content: flex-start;
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 150, 136, 0.06);
+  }
+
+  .plan-content-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .price-box {
+    padding: 12px 16px 4px 16px;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    border-right: none;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .price-box h2 {
+    margin: 0;
+  }
+
+  .plan-features {
+    padding: 12px 16px;
+  }
+
+  .plan-features ul {
+    grid-template-columns: 1fr; 
+    gap: 6px;
+  }
+
+  .buy-section {
+    padding: 10px 16px 14px 16px;
+    border-top: 1px solid #f1f5f9;
+  }
+
+  .buy-now-btn {
+    width: 100%;
+  }
+}
+
+.plans-footer-info {
+  max-width: 850px;
+  margin: 3.5rem auto 1rem auto;
+  text-align: center; 
+  padding: 0 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+}
+
+.plans-footer-info h2 {
+  font-size: 1.6rem;
+  color: #1e293b;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  width: 100%;
+}
+
+.plans-footer-info h2::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 2px;
+  background-color: #009688;
+  margin: 8px auto 0 auto; 
+}
+
+.footer-tagline {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  width: 100%;
+}
+
+.footer-description {
+  font-size: 0.95rem;
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  width: 100%;
+}
+
+.footer-subtext-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 0.25rem;
+  text-align: center;
+  width: 100%;
+}
+
+.footer-subtext-body {
+  font-size: 0.9rem;
+  color: #64748b;
+  text-align: center;
+  width: 100%;
+}
+
+
+@media (max-width: 640px) {
+  .plans-footer-info {
+    margin-top: 2.5rem;
+  }
+  
+  .plans-footer-info h2 {
+    font-size: 1.4rem;
+  }
+  
+  .footer-description {
+    font-size: 0.85rem;
+  }
+}

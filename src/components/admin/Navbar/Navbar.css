@@ -167,3 +167,162 @@
         height: 38px;
     }
 }
+
+/* =====================================
+        PROFILE
+===================================== */
+
+.navbar-profile{
+    position:relative;
+    display:flex;
+    align-items:center;
+}
+.profile-trigger{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:8px 14px;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.profile-trigger:hover{
+
+    background:#f5f7fa;
+
+}
+
+ .profile-trigger span{
+
+    font-size:16px;
+
+    font-weight:600;
+
+    color:#333;
+    
+
+}
+
+.user-icon{
+    width:42px;
+    height:42px;
+    color:#009688;
+    transition:.3s;
+}
+
+.profile-trigger:hover .user-icon{
+    transform:scale(1.08);
+}
+
+/* ==========================
+        PROFILE
+========================== */
+
+.navbar-profile{
+    position: relative;
+}
+
+/* ==========================
+      DROPDOWN
+========================== */
+
+.profile-dropdown{
+    position: absolute;
+    top: 70px;
+    right: 0;
+
+    width: 220px;
+
+    background: #fff;
+    border-radius: 12px;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,.12);
+
+    overflow: hidden;
+
+    border: 1px solid #ececec;
+
+    z-index: 999;
+}
+
+/* Buttons */
+
+.profile-dropdown button{
+    width: 100%;
+
+    height: 55px;
+
+    border: none;
+
+    background: #fff;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 0 20px;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+    font-weight: 500;
+
+    color: #444;
+
+    transition: .3s;
+}
+
+/* Divider */
+
+.profile-dropdown button:first-child{
+    border-bottom: 1px solid #ececec;
+}
+
+/* Icons */
+
+.profile-dropdown button svg{
+    font-size: 18px;
+    color: #009688;
+}
+
+/* Hover */
+
+.profile-dropdown button:hover{
+    background: #f5f7fa;
+}
+
+/* Logout */
+
+.profile-dropdown button:last-child{
+    color: #ef4444;
+}
+
+.profile-dropdown button:last-child svg{
+    color: #ef4444;
+}
+
+.profile-dropdown button:last-child:hover{
+    background: #fff3f3;
+}
+
+/* Mobile */
+
+@media(max-width:576px){
+
+    .profile-dropdown{
+        width: 200px;
+    }
+
+}
