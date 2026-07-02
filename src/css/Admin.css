@@ -21,15 +21,22 @@
 }
 
 /* Dashboard content takes remaining vertical space below the Navbar */
-.admin-content {
+/* .admin-content {
     flex: 1; 
     overflow-y: auto;
     background: #f6f7fb;
-    padding: 20px; /* Optional: adds nice spacing inside your dashboard */
+    padding: 20px; 
 
-    /* Firefox Scrollbar */
+    
     scrollbar-width: thin;
     scrollbar-color: #009688 #E0F2F1;
+} */
+ .admin-content{
+
+    overflow-y:auto;
+
+    height:calc(100vh - 72px);
+
 }
 
 /* --- Chrome, Edge & Safari Scrollbar Styles --- */
