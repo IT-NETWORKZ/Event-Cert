@@ -1,9 +1,13 @@
+import { useState, useRef, useEffect } from "react";
 import "./Navbar.css";
-import logo from "../../../assets/img/logo_EventCert.png";
+import { NavLink } from "react-router-dom";
 
 import {
     FaBars,
-    FaUserCircle
+    FaUserCircle,
+    FaUser,
+    FaSignOutAlt,
+    FaChevronDown
 } from "react-icons/fa";
 
 function Navbar({
@@ -12,6 +16,32 @@ function Navbar({
     toggled,
     setToggled
 }) {
+
+    const [showMenu, setShowMenu] = useState(false);
+
+    const menuRef = useRef(null);
+
+    useEffect(() => {
+
+        function handleClickOutside(e){
+
+            if(menuRef.current && !menuRef.current.contains(e.target)){
+
+                setShowMenu(false);
+
+            }
+
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+
+            document.removeEventListener("mousedown", handleClickOutside);
+
+        };
+
+    }, []);
 
     return (
 
@@ -40,29 +70,62 @@ function Navbar({
 
                 </button>
 
-                <img
-                    src={logo}
-                    alt=""
-                    className="navbar-logo"
-                />
-
             </div>
 
-            <div className="navbar-right">
+            <div
+                className="navbar-profile"
+                ref={menuRef}
+            >
 
-                <span>
+                <div
+                    className="profile-trigger"
+                    onClick={() => setShowMenu(!showMenu)}
+                >
 
-                    Welcome Saumya
+                    <span>
 
-                </span>
+                        Welcome Saumya
 
-                <FaUserCircle className="user-icon"/>
+                    </span>
+
+                    <FaUserCircle className="user-icon"/>
+
+                    {/* <FaChevronDown
+                        className={`arrow ${showMenu ? "rotate" : ""}`}
+                    /> */}
+
+                </div>
+
+                {showMenu && (
+
+                    <div className="profile-dropdown">
+
+                        <button>
+
+                            <FaUser/>
+
+                            My Profile
+
+                        </button>
+
+                        <button>
+
+                            <FaSignOutAlt/>
+
+                            Logout
+
+                        </button>
+
+                    </div>
+                    
+
+                )}
 
             </div>
 
         </div>
 
-    )
+    );
 
 }
 
