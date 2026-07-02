@@ -1,5 +1,4 @@
 import "./Navbar.css";
-import logo from "../../../assets/img/logo_EventCert.png";
 
 import {
     FaBars,
@@ -40,11 +39,7 @@ function Navbar({
 
                 </button>
 
-                <img
-                    src={logo}
-                    alt=""
-                    className="navbar-logo"
-                />
+               
 
             </div>
 
