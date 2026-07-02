@@ -7,9 +7,13 @@ import Contact from "../components/Contact/Contact";
 import Register from "../components/home/register/Register";
 import Subscription from "../components/Subscription/Subscription";
 
+
 import Admin from "../pages/Admin/Admin";
 import Dashboard from "../components/admin/Dashboard/Dashboard";
 import Profile from "../pages/Admin/Profile";
+import Subscriptionplan from "../components/admin/Subscription/Subscriptionplan";
+import FeedbackForm from "../components/admin/FeedbackForm/FeedbackForm";
+
 
 function AppRoutes() {
     return (
@@ -41,6 +45,13 @@ function AppRoutes() {
 
                 {/* /admin/profile */}
                 <Route path="profile" element={<Profile />} />
+
+                {/* /admin/subscriptionplan */}
+                <Route path="subscriptionplan" element={<Subscriptionplan />} />
+
+
+                {/* /admin/feedback */}
+                <Route path="feedback" element={<FeedbackForm />} />
 
             </Route>
 

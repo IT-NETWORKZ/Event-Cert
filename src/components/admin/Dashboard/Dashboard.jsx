@@ -174,6 +174,7 @@ const Dashboard = () => {
 
       <section className="dashboard-wrapper">
         <div className="container-fluid dashboard-container">
+       
           <div className="row g-4">
             {cards.map((card, index) => (
               <div className="col-12 col-sm-6 col-lg-3 d-flex" key={index}>
@@ -205,7 +206,7 @@ const Dashboard = () => {
               <li>
                 <a href="#">
                   <FaFileContract />
-                  <span>T & C</span>
+                  <span>T&C</span>
                 </a>
               </li>
             </ul>
