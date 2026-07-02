@@ -22,9 +22,8 @@ const Admin = () => {
             />
 
             <div
-                className={`admin-main ${
-                    collapsed ? "sidebar-collapsed" : ""
-                }`}
+                className={`admin-main ${collapsed ? "sidebar-collapsed" : ""
+                    }`}
             >
 
                 <Navbar
@@ -33,6 +32,7 @@ const Admin = () => {
                     toggled={toggled}
                     setToggled={setToggled}
                 />
+
 
                 <main className="admin-content">
 

@@ -1,19 +1,21 @@
-import { Routes, Route } from 'react-router-dom'
-import Services from '../components/services/Services'
-import Facilities from '../components/Facilities/Facilities'
-import Dashboard from '../components/admin/Dashboard/Dashboard'
-import Admin from '../pages/Admin/Admin'
-import Contact from '../components/Contact/Contact'
-import Home from "../pages/HomeDefault/Home"
-import Register from '../components/home/register/Register'
-import Subscription from '../components/Subscription/Subscription'
-import Profile from '../pages/Admin/Profile'
+import { Routes, Route } from "react-router-dom";
+
+import Home from "../pages/HomeDefault/Home";
+import Services from "../components/services/Services";
+import Facilities from "../components/Facilities/Facilities";
+import Contact from "../components/Contact/Contact";
+import Register from "../components/home/register/Register";
+import Subscription from "../components/Subscription/Subscription";
+
+import Admin from "../pages/Admin/Admin";
+import Dashboard from "../components/admin/Dashboard/Dashboard";
+import Profile from "../pages/Admin/Profile";
 
 function AppRoutes() {
-
     return (
-
         <Routes>
+
+            {/* Public Routes */}
 
             <Route path="/" element={<Home />} />
 
@@ -27,20 +29,23 @@ function AppRoutes() {
 
             <Route path="/subscription" element={<Subscription />} />
 
-            {/* Admin Routes */}
+            {/* Admin Layout */}
+
             <Route path="/admin" element={<Admin />}>
 
+                {/* Default page -> /admin */}
+                <Route index element={<Dashboard />} />
+
+                {/* /admin/dashboard */}
                 <Route path="dashboard" element={<Dashboard />} />
 
+                {/* /admin/profile */}
                 <Route path="profile" element={<Profile />} />
 
             </Route>
 
         </Routes>
-
-    )
-
+    );
 }
 
-
-export default AppRoutes
+export default AppRoutes;
