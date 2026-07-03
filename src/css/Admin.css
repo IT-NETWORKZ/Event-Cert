@@ -33,7 +33,7 @@
 } */
  .admin-content{
 
-    overflow-y:auto;
+  
 
     height:calc(100vh - 72px);
 
@@ -71,4 +71,12 @@
 
 .admin-content::-webkit-scrollbar-corner {
     background: transparent;
+}
+
+@media (max-width: 768px) {
+
+.admin-content{
+    overflow-y: auto;
+
+} 
 }
