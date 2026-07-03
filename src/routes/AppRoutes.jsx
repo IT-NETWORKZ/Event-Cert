@@ -14,6 +14,7 @@ import Profile from "../pages/Admin/Profile";
 import Subscriptionplan from "../components/admin/Subscription/Subscriptionplan";
 import FeedbackForm from "../components/admin/FeedbackForm/FeedbackForm";
 import CustomPlus from "../pages/Admin/CustomPlus";
+import Payment from "../components/admin/Payment/Payment";
 
 
 function AppRoutes() {
@@ -53,6 +54,9 @@ function AppRoutes() {
 
                 {/* /admin/feedback */}
                 <Route path="feedback" element={<FeedbackForm />} />
+
+                 {/* /admin/payment */}
+                <Route path="payment" element={<Payment />} />
 
             </Route>
 

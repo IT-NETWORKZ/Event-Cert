@@ -4,9 +4,7 @@
     box-sizing: border-box;
 }
 
-/* =====================================
-        SIDEBAR BASE (PERFORMANCE CONFIG)
-===================================== */
+
 .custom-sidebar {
     height: 100vh;
     background: linear-gradient(270deg, #009688, #60b0a9) !important;
@@ -148,16 +146,46 @@
 /* =====================================
           ACTIVE LINK STATES
 ===================================== */
-.custom-sidebar .active-item .ps-menu-button {
+/* .custom-sidebar .active-item .ps-menu-button {
     background: #fff !important;
     color: #009688 !important;
     font-weight: 600;
     box-shadow: 0 10px 25px rgba(0, 150, 136, .30);
+
+
+} */
+ .custom-sidebar .active-item > .ps-menu-button {
+    background: #fff !important;
+    color: #009688 !important;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(0,150,136,.30);
 }
 
-.custom-sidebar .active-item .ps-icon {
+.custom-sidebar:not(.ps-collapsed) .active-item > .ps-menu-button .ps-icon {
     background: linear-gradient(45deg, #009688, #26A69A) !important;
     color: #fff !important;
+  
+}
+
+.custom-sidebar.ps-collapsed .active-item > .ps-menu-button {
+    background: transparent !important; /* Removes the broken, wide white box layout */
+    box-shadow: none !important;
+    background: white !important;
+    display: flex;
+    justify-content: center;
+}
+
+/* .custom-sidebar .active-item .ps-icon { */
+.custom-sidebar .active-item > .ps-menu-button .ps-icon {
+    background: linear-gradient(45deg, #009688, #26A69A) !important;
+    color: #fff !important;
+   
+}
+
+.custom-sidebar .ps-submenu-root.ps-active > .ps-menu-button {
+    background: rgba(255,255,255,.18) !important;
+    color: #fff !important;
+    box-shadow: none !important;
 }
 
 /* =====================================
@@ -178,6 +206,7 @@
 
 .custom-sidebar .ps-submenu-expand-icon {
     color: #fff;
+    
 }
 
 /* =====================================

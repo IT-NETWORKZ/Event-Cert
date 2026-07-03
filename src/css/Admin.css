@@ -1970,21 +1970,9 @@ canvas {
 .cp-input-group {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-}
-
-.cp-input-group label {
-    font-size: 13px;
-    font-weight: 600;
-}
-
-.cp-input-group input,
-.cp-input-group select {
-    width: 120px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    outline: none;
+    min-width: 0; /* Prevents layout bursting from large tables/grids */
+    height: 100vh;
+    
 }
 
 .cp-multiply {
