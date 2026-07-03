@@ -1,0 +1,21 @@
+.payment-page{
+    padding:24px;
+    
+    
+}
+
+.payment-header{
+    margin-bottom:20px;
+}
+
+.payment-header h2{
+    font-size:26px;
+    font-weight:700;
+    color:#222;
+}
+
+.payment-header p{
+    margin-top:6px;
+    color:#777;
+    font-size:15px;
+}

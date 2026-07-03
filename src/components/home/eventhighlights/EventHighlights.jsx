@@ -48,7 +48,7 @@ text:"Promote, Participate, Appreciate\n(1000+ Combinations)"
 
 return(
 
-<section className="highlight-section">
+<section id="eventhub" className="highlight-section">
 
 <div className="container-fluid p-90">
 
