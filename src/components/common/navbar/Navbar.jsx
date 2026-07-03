@@ -1,178 +1,117 @@
 import "./Navbar.css";
-import { Link } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 import logo from "../../../assets/img/logo_EventCert.png";
 import { useEffect, useState } from "react";
 
 function Navbar() {
+  const location = useLocation();
   const [sticky, setSticky] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // Track if mobile menu is open
 
-useEffect(() => {
-  const handleScroll = () => {
-    setSticky(window.scrollY > 250); // Change after Hero
+  useEffect(() => {
+    const handleScroll = () => {
+      setSticky(window.scrollY > 250);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Helper to toggle the menu state
+  const toggleNavbar = () => {
+    setIsOpen(!isOpen);
   };
 
-  window.addEventListener("scroll", handleScroll);
+  // Helper to automatically close menu when a link is clicked
+  const closeNavbar = () => {
+    setIsOpen(false);
+  };
 
-  return () => window.removeEventListener("scroll", handleScroll);
-}, []);
   return (
-
-    // <div className="container-fluid sticky-top " >
     <div className={`container-fluid navbar-wrapper ${sticky ? "navbar-fixed" : ""}`}>
-
       <div className="container">
-
         <nav className="navbar navbar-expand-lg navbar-light border-bottom border-2 border-white">
+          
+          <Link to="/" className="navbar-brand" onClick={closeNavbar}>
+            <img src={logo} alt="EventCert Logo" className="navbar-logo" />
+          </Link>
 
-
-          {/* <Link to="/" className="navbar-brand">
-
-            <h1>EventCert</h1>
-
-          </Link> */}
-          <Link to="/" className="navbar-brand">
-  <img src={logo} alt="EventCert Logo" className="navbar-logo" />
-</Link>
-
-
-
+          {/* Toggle Button managed by React State */}
           <button
-
             type="button"
-
             className="navbar-toggler ms-auto me-0"
-
-            data-bs-toggle="collapse"
-
-            data-bs-target="#navbarCollapse"
-
+            onClick={toggleNavbar}
+            aria-expanded={isOpen}
+            aria-label="Toggle navigation"
           >
-
             <span className="navbar-toggler-icon"></span>
-
           </button>
 
-
-
+          {/* Conditionally apply 'show' class based on React State */}
           <div
-            className="collapse navbar-collapse"
+            className={`collapse navbar-collapse ${isOpen ? "show" : ""}`}
             id="navbarCollapse"
           >
-
-
             <div className="navbar-nav ms-auto">
+              
+<NavLink
+  to="/"
+  className={() =>
+    `nav-item nav-link ${
+      location.pathname === "/" && location.hash !== "#eventhub" ? "active" : ""
+    }`
+  }
+  onClick={closeNavbar}
+>
+  Home
+</NavLink>
 
-
-              <Link to="/" className="nav-item nav-link active">
-
-                Home
-
-              </Link>
-
-
-
-
-
-
-              <Link to="/services" className="nav-item nav-link">
-
+              <NavLink
+                to="/services"
+                className={({ isActive }) => `nav-item nav-link ${isActive ? "active" : ""}`}
+                onClick={closeNavbar}
+              >
                 Services
+              </NavLink>
 
-              </Link>
-
-              <Link to="/eventhub" className="nav-item nav-link">
-
+              <HashLink
+                smooth
+                to="/#eventhub"
+                className={`nav-item nav-link ${location.hash === "#eventhub" ? "active" : ""}`}
+                onClick={closeNavbar}
+              >
                 EventHub
+              </HashLink>
 
-
-              </Link>
-
-
-              <Link to="/facilities" className="nav-item nav-link">
-
+              <NavLink
+                to="/facilities"
+                className={({ isActive }) => `nav-item nav-link ${isActive ? "active" : ""}`}
+                onClick={closeNavbar}
+              >
                 Facilities
+              </NavLink>
 
-
-              </Link>
-
-              <Link to="/subscription" className="nav-item nav-link">
-
+              <NavLink
+                to="/subscription"
+                className={({ isActive }) => `nav-item nav-link ${isActive ? "active" : ""}`}
+                onClick={closeNavbar}
+              >
                 Subscription
+              </NavLink>
 
-
-              </Link>
-
-              <Link to="/contact" className="nav-item nav-link">
-
+              <NavLink
+                to="/contact"
+                className={({ isActive }) => `nav-item nav-link ${isActive ? "active" : ""}`}
+                onClick={closeNavbar}
+              >
                 Contact
-
-              </Link>
-
-
-
-              <div className="nav-item dropdown">
-
-
-                {/* <a
-
-                  href="#"
-
-                  className="nav-link dropdown-toggle"
-
-                  data-bs-toggle="dropdown"
-
-                >
-
-                  Pages
-
-                </a> */}
-
-
-
-                <div className="dropdown-menu bg-light mt-2">
-
-                  <a href="#" className="dropdown-item">
-
-                    Features
-
-                  </a>
-
-
-                  <a href="#" className="dropdown-item">
-
-                    Team
-
-                  </a>
-
-
-                  <a href="#" className="dropdown-item">
-
-                    Testimonials
-
-                  </a>
-
-
-
-                </div>
-
-              </div>
-
-
-
-
-
-
+              </NavLink>
             </div>
-
-
           </div>
-
         </nav>
-
       </div>
-
     </div>
-
   );
 }
 

@@ -18,6 +18,7 @@
     flex-direction: column;
     min-width: 0; /* Prevents layout bursting from large tables/grids */
     height: 100vh;
+    
 }
 
 /* Dashboard content takes remaining vertical space below the Navbar */
