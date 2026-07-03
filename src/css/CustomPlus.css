@@ -114,6 +114,7 @@ ul {
     padding: 15px 0;
 
     overflow-y: auto;
+    overflow-x: hidden;
 
     box-shadow: 3px 0 12px rgba(0, 0, 0, .05);
 
@@ -761,85 +762,59 @@ ul {
 
     background: #edf1f7;
 
-    min-height: 0;
-
 }
 
 
 /* ======================================
    FABRIC WRAPPER
-   (outer container FabricCanvas measures against
-   to calculate its fit-to-screen scale)
 ====================================== */
 
 .cp-canvas-wrapper {
-
     position: relative;
-
     flex: 1;
-
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
     width: 100%;
-
     height: 100%;
-
     min-width: 0;
-
     min-height: 0;
-
-    overflow: hidden !important;
-
+    overflow: auto;
+    background: #eef0f4;
+    padding: 20px;
     box-sizing: border-box;
-
 }
 
-
-/* ======================================
-   SCALED BOX
-   Reserves the exact ON-SCREEN footprint
-   of the scaled canvas so layout doesn't
-   leave dead space around it
-====================================== */
-
+/* Exact footprint the scaled canvas occupies in layout (no leftover gaps) */
 .cp-canvas-scaled-box {
-
     position: relative;
-
     flex-shrink: 0;
-
 }
-
 
 /* ======================================
    CANVAS SHADOW
-   True-pixel-size box (matches canvasSize
-   exactly) that gets visually scaled via
-   CSS transform. No padding here — padding
-   would offset it from the scale math.
 ====================================== */
 
 .cp-canvas-shadow {
 
-    position: absolute;
+    display: flex;
 
-    top: 0;
+    justify-content: center;
 
-    left: 0;
+    align-items: center;
 
-    background: #ffffff;
+    background: #fff;
 
-    border-radius: 6px;
+    border-radius: 10px;
 
-    box-shadow: 0 15px 40px rgba(0, 0, 0, .14);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, .12);
 
-    overflow: hidden;
+    transition: all .35s ease;
 
-    transition: box-shadow .25s ease;
+    padding: 10px;
+
+    flex-shrink: 0;
+
 
 }
 
@@ -852,41 +827,9 @@ ul {
 
     display: block;
 
+    border: 1px solid #dddddd;
+
     background: #ffffff;
-
-}
-
-
-/* ======================================
-   ZOOM BADGE
-   Shows current fit-to-screen percentage
-====================================== */
-
-.cp-zoom-badge {
-
-    position: absolute;
-
-    bottom: 16px;
-
-    right: 16px;
-
-    background: rgba(17, 17, 17, .75);
-
-    color: #fff;
-
-    font-size: 12px;
-
-    font-weight: 600;
-
-    padding: 4px 10px;
-
-    border-radius: 20px;
-
-    pointer-events: none;
-
-    user-select: none;
-
-    z-index: 3;
 
 }
 
@@ -1874,7 +1817,7 @@ canvas {
 }
 
 .cp-resize-modal {
-    width: 900px;
+    width: 1100px;
     max-width: 95%;
     max-height: 90vh;
     background: #ffffff;
@@ -1889,7 +1832,7 @@ canvas {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 24px;
+    padding-bottom: 0px;
     border-bottom: 1px solid #ececec;
 }
 
@@ -1928,10 +1871,11 @@ canvas {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin: 20px 24px;
-    padding: 12px 16px;
+    margin: 10px 10px;
+    padding: 5px 16px;
     border: 1px solid #ddd;
-    border-radius: 12px;
+    border-radius: 13px;
+
 }
 
 .cp-search-icon {
@@ -1949,8 +1893,8 @@ canvas {
 /* Custom Size */
 
 .cp-custom-size {
-    margin: 0 24px 20px;
-    padding: 20px;
+    margin: 0 10px 15px;
+    padding: 10px;
     background: #f8f9fc;
     border-radius: 12px;
 }
@@ -2085,9 +2029,8 @@ canvas {
 /* Footer */
 
 .cp-resize-footer {
-    padding: 20px 24px;
+    padding: 10px 25px;
     border-top: 1px solid #ececec;
-    display: flex;
     justify-content: flex-end;
 }
 

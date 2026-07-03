@@ -13,6 +13,7 @@ import Dashboard from "../components/admin/Dashboard/Dashboard";
 import Profile from "../pages/Admin/Profile";
 import Subscriptionplan from "../components/admin/Subscription/Subscriptionplan";
 import FeedbackForm from "../components/admin/FeedbackForm/FeedbackForm";
+import CustomPlus from "../pages/Admin/CustomPlus";
 
 
 function AppRoutes() {
@@ -34,7 +35,7 @@ function AppRoutes() {
             <Route path="/subscription" element={<Subscription />} />
 
             {/* Admin Layout */}
-
+            <Route path="/admin/customplus" element={<CustomPlus />} />
             <Route path="/admin" element={<Admin />}>
 
                 {/* Default page -> /admin */}

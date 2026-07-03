@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 
 import Navbar from "../../components/admin/Navbar/Navbar";
 import Sidebar from "../../components/admin/Sidebar/Sidebar";
@@ -11,33 +11,47 @@ const Admin = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [toggled, setToggled] = useState(false);
 
+    const location = useLocation();
+
+    const isCustomPlus = location.pathname === "/admin/customplus";
+
     return (
 
         <div className="admin-layout">
 
-            <Sidebar
-                collapsed={collapsed}
-                toggled={toggled}
-                setToggled={setToggled}
-            />
-
-            <div
-                className={`admin-main ${collapsed ? "sidebar-collapsed" : ""
-                    }`}
-            >
-
-                <Navbar
+            {/* Hide Sidebar */}
+            {!isCustomPlus && (
+                <Sidebar
                     collapsed={collapsed}
-                    setCollapsed={setCollapsed}
                     toggled={toggled}
                     setToggled={setToggled}
                 />
+            )}
 
+            <div
+                className={`admin-main ${
+                    !isCustomPlus && collapsed ? "sidebar-collapsed" : ""
+                }`}
+            >
 
-                <main className="admin-content">
+                {/* Hide Navbar */}
+                {!isCustomPlus && (
+                    <Navbar
+                        collapsed={collapsed}
+                        setCollapsed={setCollapsed}
+                        toggled={toggled}
+                        setToggled={setToggled}
+                    />
+                )}
 
+                <main
+                    className={
+                        isCustomPlus
+                            ? "customplus-page"
+                            : "admin-content"
+                    }
+                >
                     <Outlet />
-
                 </main>
 
             </div>
@@ -49,4 +63,3 @@ const Admin = () => {
 };
 
 export default Admin;
-
