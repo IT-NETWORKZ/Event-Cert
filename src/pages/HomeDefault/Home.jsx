@@ -11,55 +11,79 @@ import Services from "../../components/home/services/Services";
 import WhyChooseUs from "../../components/home/whychooseus/WhyChooseUs";
 import ScrollToTopButton from "../../components/common/ScrollToTopButton/ScrollToTopButton";
 
+import { motion } from "framer-motion";
+
+const fadeUp = {
+    hidden: {
+        opacity: 0,
+        y: 80,
+    },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: 0.8,
+            ease: "easeOut",
+        },
+    },
+};
+
+const FadeSection = ({ children, delay = 0 }) => (
+    <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ delay }}
+    >
+        {children}
+    </motion.div>
+);
+
 function Home() {
     return (
-        <>
-            <div className="home-page">
+        <div className="home-page">
+            <Navbar />
 
+            <FadeSection delay={0}>
+                <Hero />
+            </FadeSection>
 
-                <Navbar />
+            <FadeSection delay={0.1}>
+                <Eventinfo />
+            </FadeSection>
 
-                
+            <FadeSection delay={0.2}>
+                <Certificates />
+            </FadeSection>
 
-                    <Hero />
-               
+            <FadeSection delay={0.3}>
+                <About />
+            </FadeSection>
 
-                
-                    <Eventinfo />
-                
+            <FadeSection delay={0.4}>
+                <Facilities />
+            </FadeSection>
 
-              
-                    <Certificates />
-              
+            <FadeSection delay={0.5}>
+                <WhyChooseUs />
+            </FadeSection>
 
-               
-                    <About />
-                
+            <FadeSection delay={0.6}>
+                <EventHighlights />
+            </FadeSection>
 
-                
-                    <Facilities />
-                
+            <FadeSection delay={0.7}>
+                <Services />
+            </FadeSection>
 
-                
-                    <WhyChooseUs />
-                
+            <FadeSection delay={0.8}>
+                <Footer />
+            </FadeSection>
 
-               
-                    <EventHighlights />
-            
-
-             
-                    <Services />
-               
-               
-                    <Footer />
-
-               
-                <ScrollToTopButton />
-            </div>
-        </>
+            <ScrollToTopButton />
+        </div>
     );
 }
 
-
-export default Home
+export default Home;

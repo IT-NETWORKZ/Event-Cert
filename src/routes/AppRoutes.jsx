@@ -55,7 +55,7 @@ function AppRoutes() {
                 {/* /admin/feedback */}
                 <Route path="feedback" element={<FeedbackForm />} />
 
-                 {/* /admin/payment */}
+                {/* /admin/payment */}
                 <Route path="payment" element={<Payment />} />
 
             </Route>

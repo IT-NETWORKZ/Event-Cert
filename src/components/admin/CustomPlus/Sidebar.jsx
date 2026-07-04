@@ -13,27 +13,32 @@ import {
     FaFileImage,
     FaFilePdf,
 } from "react-icons/fa";
+
 import { fabric } from "fabric";
 import { useCanvas } from "../../../context/CanvasContext";
-import Resize from "./Resize"; // adjust path if needed
+import Resize from "./Resize";
+import StickerLibrary from "./StickersLibrary";
+
+// Import Sticker Library
 
 const Sidebar = ({ activeMenu, setActiveMenu }) => {
 
-    const {
-        canvas,
-        setCanvasSize
-    } = useCanvas();
+    const { canvas } = useCanvas();
 
     const [showResize, setShowResize] = useState(false);
 
+    // Sticker Library
+    const [showStickerLibrary, setShowStickerLibrary] = useState(false);
+
     const designFileInputRef = useRef(null);
 
-    // ============ TEXT ============
+    // ==========================
+    // TEXT
+    // ==========================
 
     const addHeading = () => {
 
-        if (!canvas)
-            return;
+        if (!canvas) return;
 
         const text = new fabric.IText("Add Heading", {
             left: 100,
@@ -51,13 +56,17 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
 
     };
 
-    // ============ DESIGN (open file explorer) ============
+    // ==========================
+    // DESIGN
+    // ==========================
 
     const handleDesignClick = () => {
 
         if (designFileInputRef.current) {
-            designFileInputRef.current.value = null; // allow re-selecting same file
+
+            designFileInputRef.current.value = null;
             designFileInputRef.current.click();
+
         }
 
     };
@@ -66,17 +75,20 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
 
         const file = e.target.files[0];
 
-        if (!file)
-            return;
+        if (!file) return;
 
         if (!file.type.startsWith("image/")) {
+
             alert("Please select a valid image file.");
             return;
+
         }
 
         if (!canvas) {
+
             alert("Canvas is not ready yet.");
             return;
+
         }
 
         const reader = new FileReader();
@@ -85,45 +97,41 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
 
             const dataUrl = evt.target.result;
 
-            fabric.Image.fromURL(dataUrl, (img) => {
+            fabric.Image.fromURL(
+                dataUrl,
+                (img) => {
 
-                const canvasWidth = canvas.getWidth();
+                    const canvasWidth = canvas.getWidth();
+                    const canvasHeight = canvas.getHeight();
 
-                const canvasHeight = canvas.getHeight();
+                    img.set({
 
-                // fit image exactly to canvas size (full width & height)
+                        left: 0,
+                        top: 0,
 
-                img.set({
+                        scaleX: canvasWidth / img.width,
+                        scaleY: canvasHeight / img.height,
 
-                    left: 0,
+                        selectable: true,
+                        evented: true,
+                        hasControls: true,
+                        hasBorders: true,
 
-                    top: 0,
+                        isDesignImage: true,
 
-                    scaleX: canvasWidth / img.width,
+                    });
 
-                    scaleY: canvasHeight / img.height,
+                    canvas.add(img);
+                    canvas.setActiveObject(img);
+                    canvas.renderAll();
 
-                    selectable: true,
+                    setActiveMenu("design");
 
-                    evented: true,
-
-                    hasControls: true,
-
-                    hasBorders: true,
-
-                    isDesignImage: true // tag so Reset button can find it later
-
-                });
-
-                canvas.add(img);
-
-                canvas.setActiveObject(img);
-
-                canvas.renderAll();
-
-                setActiveMenu("design");
-
-            }, { crossOrigin: "anonymous" });
+                },
+                {
+                    crossOrigin: "anonymous",
+                }
+            );
 
         };
 
@@ -131,46 +139,82 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
 
     };
 
-    // ============ SIDEBAR CLICK ROUTER ============
+    // ==========================
+    // SIDEBAR CLICK
+    // ==========================
 
     const handleClick = (id) => {
 
         switch (id) {
 
             case "resize":
+
                 setShowResize(true);
+                setActiveMenu(id);
+
                 break;
 
             case "design":
+
                 handleDesignClick();
+                setActiveMenu(id);
+
                 break;
 
             case "text":
+
                 addHeading();
                 setActiveMenu(id);
+
+                break;
+
+            case "sticker":
+
+                setShowStickerLibrary(true);
+                setActiveMenu(id);
+
                 break;
 
             default:
+
                 setActiveMenu(id);
+
                 break;
 
         }
 
     };
 
+    // ==========================
+    // MENU
+    // ==========================
+
     const menu = [
+
         { id: "menu", icon: <FaBars />, title: "Menu" },
+
         { id: "resize", icon: <FaExpandArrowsAlt />, title: "Resize" },
+
         { id: "design", icon: <FaImages />, title: "Design" },
+
         { id: "text", icon: <FaFont />, title: "Text" },
+
         { id: "sticker", icon: <FaIcons />, title: "Sticker" },
+
         { id: "upload", icon: <FaUpload />, title: "Upload" },
+
         { id: "preview", icon: <FaSearchPlus />, title: "Preview" },
+
         { id: "invitation", icon: <FaEnvelopeOpenText />, title: "Invitation" },
+
         { id: "greeting", icon: <FaRegImage />, title: "Greeting" },
+
         { id: "certificate", icon: <FaCertificate />, title: "Certificate" },
+
         { id: "png", icon: <FaFileImage />, title: "PNG" },
+
         { id: "pdf", icon: <FaFilePdf />, title: "PDF" },
+
     ];
 
     return (
@@ -180,17 +224,24 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
             <div className="cp-sidebar">
 
                 {menu.map((item) => (
+
                     <button
                         key={item.id}
                         onClick={() => handleClick(item.id)}
                         className={`cp-sidebar-item ${activeMenu === item.id ? "active" : ""}`}
                     >
-                        <div className="cp-sidebar-icon">{item.icon}</div>
+
+                        <div className="cp-sidebar-icon">
+                            {item.icon}
+                        </div>
+
                         <span>{item.title}</span>
+
                     </button>
+
                 ))}
 
-                {/* Hidden file input for Design — stays invisible, triggered programmatically */}
+                {/* Hidden File Input */}
 
                 <input
                     type="file"
@@ -199,12 +250,21 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
                     style={{ display: "none" }}
                     onChange={handleDesignFileChange}
                 />
-             
+
             </div>
+
+            {/* Resize Popup */}
 
             <Resize
                 open={showResize}
                 onClose={() => setShowResize(false)}
+            />
+
+            {/* Sticker Sidebar */}
+
+            <StickerLibrary
+                isOpen={showStickerLibrary}
+                onClose={() => setShowStickerLibrary(false)}
             />
 
         </>
