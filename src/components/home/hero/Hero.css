@@ -4,149 +4,221 @@
     background: url('../../../assets/img/hero-bg.jpg') center top/cover no-repeat;
     overflow: hidden;
 }
-input:focus, select:focus, textarea:focus {
+
+input:focus,
+select:focus,
+textarea:focus {
     outline: none;
     border-color: var(--primary);
     background: #fff;
     box-shadow: 0 0 0 4px rgba(37, 99, 235, .12);
     border: none;
 }
-/* ================= LOGIN CARD ================= */
 
+/* ================= LOGIN CARD ================= */
+/* ================= LOGIN CARD ================= */
 .login-card {
     background: #0F7B74;
-    width: 400px;
-    padding: 22px 24px;
+    width: 100%;
+    max-width: 415px;
+    padding: 15px 15px;
     border-radius: 16px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, .18);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
     color: #fff;
-    margin-right: auto;
+    margin: 10px auto;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
 }
 
 .login-card h1 {
-    font-size: 40px;
-    font-weight: 500;
+    font-size: 36px;
+    font-weight: 700;
     text-align: center;
-    margin-bottom: 6px;
-    line-height: 1.2;
+    margin: 0 0 8px 0;
+    letter-spacing: 1px;
 }
 
 .login-card p {
     text-align: center;
-    font-size: 16px;
-    margin-bottom: 18px;
-    color: #fff;
+    font-size: 14px;
+    margin: 0 0 24px 0;
+    color: rgba(255, 255, 255, 0.85);
 }
 
 /* ================= OTP OPTIONS ================= */
-
 .otp-options {
     display: flex;
     justify-content: center;
-    gap: 18px;
-    margin-bottom: 18px;
-    color: #fff !important;
+    gap: 24px;
+    margin-bottom: 20px;
 }
 
 .otp-options label {
     font-size: 15px;
-        color: #fff !important;
-
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* Clean gap between dot and text */
 }
 
-.otp-options input {
-    width: 80%;
-    height: 20px;
-    padding: 0 0px;
-    font-size: 14px;
-    color: #ffffff;
-    background: #fff;
-    border: 1px solid #d1d5db;
+/* Target only the actual radio types to avoid sizing breaks */
+.otp-options input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: #B2DFDB;
+    /* Matches your gradient beautifully */
+}
+
+/* ================= ROW EMAIL/MOBILE INPUT ================= */
+.input-row-group {
+    display: flex;
+    background: #ffffff;
     border-radius: 10px;
-    transition: all .25s ease;
-    border: none;
-}
-
-/* ================= EMAIL INPUT ================= */
-
-.input-group {
     overflow: hidden;
-    border-radius: 10px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 .form-control {
-    height: 46px;
+    flex: 1;
+    /* Automatically stretches to take maximum available row space */
+    height: 48px;
     border: none !important;
-    box-shadow: none !important;
-    padding-left: 15px;
+    outline: none !important;
+    padding: 0 16px;
     font-size: 15px;
+    color: #333;
+    background: transparent;
+    width: 100%;
+}
+
+.form-control::placeholder {
+    color: #9ca3af;
 }
 
 .otp-btn {
-    width: 110px;
+    padding: 0 20px;
     border: none;
-    background: linear-gradient(45deg, #009688, #B2DFDB);
+    background: linear-gradient(45deg, #009688, #26a69a);
     color: #fff;
-    font-size: 15px;
-    transition: .3s;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    /* Prevents text formatting wraps inside rows */
 }
 
 .otp-btn:hover {
-    background: #31b4ab;
+    background: #00796b;
+    filter: brightness(1.1);
 }
 
 /* ================= OTP BOXES ================= */
+.login-card h6 {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 0 10px 0;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
 .otp-boxes {
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
+    /* Even responsive spacing across layout scale */
     gap: 8px;
-    margin: 15px 0 22px;
+    margin-bottom: 26px;
 }
 
 .otp-boxes input {
-    width: 42px;
-    height: 42px;
-    border: none;
-    border-radius: 10px;
+    width: 100%;
+    max-width: 46px;
+    height: 46px;
+    border: 2px solid transparent;
+    border-radius: 8px;
     text-align: center;
     font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    background: #fff;
     outline: none;
+    transition: all 0.2s;
 }
 
-/* ================= BUTTON ================= */
+.otp-boxes input:focus {
+    border-color: #B2DFDB;
+    box-shadow: 0 0 8px rgba(178, 223, 219, 0.5);
+}
+
+/* ================= SUBMIT BUTTONS & FOOTER ================= */
+.submit-btn-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .submit-btn {
-    width: 140px;
-    height: 40px;
+    height: 46px;
+    padding: 0px 30px;
     border: none;
     border-radius: 10px;
-    background: linear-gradient(45deg, #009688, #B2DFDB);
-    ;
+    background: linear-gradient(45deg, #009688, #80cbc4);
     color: #fff;
     font-size: 16px;
-    display: block;
-    margin: 0 auto;
-    transition: .3s;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin: auto;
 }
 
 .submit-btn:hover {
-    background: #31b4ab;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* ================= REGISTER ================= */
-
 .register {
-    margin-top: 22px;
     text-align: center;
-    font-size: 15px;
+    font-size: 14px;
+    margin-top: 24px !important;
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .register a {
-    color: #fff;
-    font-weight: 600;
+    color: #B2DFDB;
     text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+    transition: color 0.2s;
 }
+
+.register a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.register .text-blue {
+    color: #38bdf8 !important;
+    /* A vibrant, modern sky blue that pops against the teal background */
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+    transition: color 0.2s ease;
+}
+
+.register .text-blue:hover {
+    color: #ffffff !important;
+    /* Turns white on hover so the user knows it's clickable */
+    text-decoration: underline;
+}
+
+
 
 /* ================= SLIDER ================= */
 

@@ -32,22 +32,22 @@ function Hero() {
   return (
     <>
 
-{/* <Navbar /> */}
-    <div className="container-fluid  hero-header bg-light ">
-
       {/* <Navbar /> */}
+      <div className="container-fluid  hero-header bg-light ">
+
+        {/* <Navbar /> */}
 
 
-      <div className="container  pt-5 pb-3">
+        <div className="container  pt-5 pb-3">
 
 
-        {/* <div className="row g-5 align-items-center mb-5">
+          {/* <div className="row g-5 align-items-center mb-5">
          */}
-         <div className="row align-items-center mb-5 hero-row">
+          <div className="row align-items-center mb-5 hero-row">
 
 
-          {/* Left Side */}
-{/* 
+            {/* Left Side */}
+            {/* 
           <div className="col-lg-6">
 
 
@@ -76,175 +76,127 @@ function Hero() {
 
           </div> */}
 
-          {/* <div className="col-lg-5"> */}
-          <div className="col-lg-5 col-md-12">
+            {/* <div className="col-lg-5"> */}
+            <div className="col-lg-5 col-md-12">
 
-    <div className="login-card">
+              <div className="login-card">
+                <h1>LOGIN</h1>
+                <p>Login to continue your journey</p>
 
-        <h1>LOGIN</h1>
+                <div className="otp-options">
+                  <label>
+                    <input type="radio" name="otp" defaultChecked />
+                    Email OTP
+                  </label>
+                  <label>
+                    <input type="radio" name="otp" />
+                    Mobile OTP
+                  </label>
+                </div>
 
-        <p>
-            Login to continue your journey
-        </p>
+                {/* Input and Button locked cleanly in one responsive row layout */}
+                <div className="input-row-group">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Email Id / Mobile No."
+                  />
+                  <button type="button" className="otp-btn">
+                    Send OTP
+                  </button>
+                </div>
 
+                <h6>Enter OTP</h6>
 
-        <div className="otp-options">
+                <div className="otp-boxes">
+                  <input type="text" maxLength="1" pattern="\d*" inputMode="numeric" />
+                  <input type="text" maxLength="1" pattern="\d*" inputMode="numeric" />
+                  <input type="text" maxLength="1" pattern="\d*" inputMode="numeric" />
+                  <input type="text" maxLength="1" pattern="\d*" inputMode="numeric" />
+                  <input type="text" maxLength="1" pattern="\d*" inputMode="numeric" />
+                  <input type="text" maxLength="1" pattern="\d*" inputMode="numeric" />
+                </div>
 
-            <label>
-
-                <input
-                    type="radio"
-                    name="otp"
-                />
-
-                Email OTP
-
-            </label>
-
-
-            <label>
-
-                <input
-                    type="radio"
-                    name="otp"
-                />
-
-                Mobile OTP
-
-            </label>
-
-        </div>
-
-
-
-        <div className="input-group mb-4">
-
-            <input
-                type="text"
-                className="form-control"
-                placeholder="Email Id / Mobile No."
-            />
-
-            <button
-                className="otp-btn"
-            >
-
-                Send OTP
-
-            </button>
-
-        </div>
+                <div className="submit-btn-wrapper">
+                  <button type="submit" className="submit-btn">
+                    Submit
+                  </button>
+                </div>
 
 
+                <p className="register">
+                  Don't have an account?
+                  <Link to="/register" className="text-blue">Register</Link>
+                </p>
+              </div>
 
-        <h6>
-
-            Enter OTP
-
-        </h6>
-
-
-
-        <div className="otp-boxes">
-
-            <input maxLength="1" />
-            <input maxLength="1" />
-            <input maxLength="1" />
-            <input maxLength="1" />
-            <input maxLength="1" />
-            <input maxLength="1" />
-
-        </div>
-
-
-
-        <button className="submit-btn">
-
-            Submit
-
-        </button>
-
-
-
-     <p className="register">
-
-Don't have an account?
-
-{/* <a href="#"> Register</a> */}
-<Link to="/register"> Register</Link>
-
-</p>
-
-
-    </div>
-
-</div>
+            </div>
 
 
 
 
-          {/* Right Side */}
+            {/* Right Side */}
 
-          {/* <div className="col-lg-6"> */}
-<div className="col-lg-6 col-md-12 slider-col">
+            {/* <div className="col-lg-6"> */}
+            <div className="col-lg-6 col-md-12 slider-col">
 
-            <div className="header-carousel">
+              <div className="header-carousel">
 
 
-              <img
+                <img
 
-                src={slides[current]}
+                  src={slides[current]}
 
-                // className="img-fluid"
+                  // className="img-fluid"
                   className="img-fluid slider-image"
 
-                alt=""
+                  alt=""
 
-              />
-
-
+                />
 
 
-              <div className="slider-dots">
 
 
-                {slides.map((_, index) => (
+                <div className="slider-dots">
 
 
-                  <span
-
-                    key={index}
-
-                    className={current === index ? "active-dot" : ""}
+                  {slides.map((_, index) => (
 
 
-                  ></span>
+                    <span
+
+                      key={index}
+
+                      className={current === index ? "active-dot" : ""}
 
 
-                ))}
+                    ></span>
+
+
+                  ))}
+
+
+
+                </div>
 
 
 
               </div>
 
 
-
             </div>
+
 
 
           </div>
 
 
 
-        </div>
+
+          {/* Bottom Features */}
 
 
-
-
-        {/* Bottom Features */}
-
-
-        {/* <div className="row g-5">
+          {/* <div className="row g-5">
 
 
           <div className="col-md-6 col-lg-3">
@@ -371,11 +323,11 @@ Don't have an account?
 
 
 
+        </div>
+
+
       </div>
-
-
-    </div>
-</>
+    </>
   );
 }
 

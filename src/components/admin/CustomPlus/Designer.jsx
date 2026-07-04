@@ -1,7 +1,6 @@
 import { useState } from "react";
 import "../../../css/CustomPlus.css";
 import Sidebar from "./Sidebar";
-import TemplateSection from "./TemplateSection";
 import PagePanel from "./PagePanel";
 import CanvasArea from "./CanvasArea";
 
@@ -20,16 +19,14 @@ const Designer = () => {
                     setActiveMenu={setActiveMenu}
                 />
 
-                <TemplateSection
-                    activeMenu={activeMenu}
-                />
+
 
                 <PagePanel />
 
                 <CanvasArea />
 
             </div>
-            
+
         </>
     );
 
