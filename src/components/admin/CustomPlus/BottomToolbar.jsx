@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import { useCanvas } from "../../../context/CanvasContext";
 
+
 const BottomToolbar = () => {
   const excelRef = useRef(null);
   

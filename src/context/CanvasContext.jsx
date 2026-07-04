@@ -1,70 +1,94 @@
-import {
-    createContext,
-    useContext,
-    useState
-} from "react";
+import React, { createContext, useContext, useState, useCallback } from "react";
 
 const CanvasContext = createContext();
 
 export const CanvasProvider = ({ children }) => {
+  // Fabric Canvas Instance
+  const [canvas, setCanvas] = useState(null);
 
-    // Fabric Canvas Instance
-    const [canvas, setCanvas] = useState(null);
+  // Undo/Redo History Stacks
+  const [past, setPast] = useState([]);
+  const [future, setFuture] = useState([]);
 
-    // Canvas Size
-    const [canvasSize, setCanvasSize] = useState({
-        width: 450,
-        height: 450,
+  // Canvas Size
+  const [canvasSize, setCanvasSize] = useState({
+    width: 450,
+    height: 450,
+  });
+
+  // Pages
+  const [pages, setPages] = useState([
+    {
+      id: 1,
+      json: null,
+      name: "Page 1",
+    },
+  ]);
+
+  // Active Page
+  const [activePage, setActivePage] = useState(1);
+
+  // Zoom
+  const [zoom, setZoom] = useState(1);
+
+  // Clipboard
+  const [clipboard, setClipboard] = useState(null);
+
+  // Helper to capture a snapshot of the current canvas state
+  const saveState = useCallback((canvasInstance) => {
+    const activeCanvas = canvasInstance || canvas;
+    if (!activeCanvas) return;
+
+    const currentJson = JSON.stringify(activeCanvas.toJSON());
+    
+    setPast((prevPast) => {
+      // Avoid pushing duplicate consecutive snapshots
+      if (prevPast.length > 0 && prevPast[prevPast.length - 1] === currentJson) {
+        return prevPast;
+      }
+      return [...prevPast, currentJson];
     });
+    
+    // Any new action clears the forward redo history
+    setFuture([]);
+  }, [canvas]);
 
-    // Pages
-    const [pages, setPages] = useState([
-        {
-            id: 1,
-            json: null,
-            name: "Page 1"
-        }
-    ]);
+  return (
+    <CanvasContext.Provider
+      value={{
+        // Fabric
+        canvas,
+        setCanvas,
 
-    // Active Page
-    const [activePage, setActivePage] = useState(1);
+        // History Management
+        past,
+        setPast,
+        future,
+        setFuture,
+        saveState,
 
-    // Zoom
-    const [zoom, setZoom] = useState(1);
+        // Canvas Size
+        canvasSize,
+        setCanvasSize,
 
-    // Clipboard
-    const [clipboard, setClipboard] = useState(null);
+        // Pages
+        pages,
+        setPages,
+        activePage,
+        setActivePage,
 
-    return (
-        <CanvasContext.Provider
-            value={{
-                // Fabric
-                canvas,
-                setCanvas,
+        // Zoom
+        zoom,
+        setZoom,
 
-                // Canvas Size
-                canvasSize,
-                setCanvasSize,
-
-                // Pages
-                pages,
-                setPages,
-
-                activePage,
-                setActivePage,
-
-                // Zoom
-                zoom,
-                setZoom,
-
-                // Clipboard
-                clipboard,
-                setClipboard,
-            }}
-        >
-            {children}
-        </CanvasContext.Provider>
-    );
+        // Clipboard
+        clipboard,
+        setClipboard,
+      }}
+    >
+      {children}
+    </CanvasContext.Provider>
+  );
 };
 
 export const useCanvas = () => useContext(CanvasContext);

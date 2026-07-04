@@ -1,16 +1,34 @@
 import React, { useState } from 'react';
 import './Subscription.css';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Replace with your actual logo file path if necessary
 import logo from '../../assets/img/logo_EventCert.png'; 
 import InnerNavbar from '../common/navbar/InnerNavbar';
 import Footer from '../common/footer/Footer';
 
+// Global Animation Variants
+const fadeUpVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" }
+  }
+};
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
 const Subscription = () => {
   const [activeTab, setActiveTab] = useState('certificate');
   const [openCardIndex, setOpenCardIndex] = useState(null);
 
-  // Dynamic pricing data structure depending on selected toggle block
   const plansData = {
     certificate: [
       { duration: '1 MONTH/S', price: '₹199', details: 'Access to custom certificate templates, high-res downloads, and standard email verification tools.' },
@@ -37,14 +55,31 @@ const Subscription = () => {
     <>
       <InnerNavbar />
       <div className="sub-page-container">
-       
-        {/* Main Content Body */}
+        
         <main className="sub-main-content">
-          <h1 className="sub-heading">Smart Pricing & All-in-One Features</h1>
-          <div className="sub-underline"></div>
+          <motion.h1 
+            className="sub-heading"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            Smart Pricing & All-in-One Features
+          </motion.h1>
+          <motion.div 
+            className="sub-underline"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            style={{ originX: 0.5 }}
+          ></motion.div>
 
-          {/* Categories Dynamic Selector Control */}
-          <div className="sub-tabs-wrapper">
+          {/* Categories Control */}
+          <motion.div 
+            className="sub-tabs-wrapper"
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
             <button 
               className={`sub-tab-btn ${activeTab === 'certificate' ? 'selected' : ''}`}
               onClick={() => { setActiveTab('certificate'); setOpenCardIndex(null); }}
@@ -68,15 +103,23 @@ const Subscription = () => {
               <span className="sub-circle-indicator"></span>
               Event + Certificate
             </button>
-          </div>
+          </motion.div>
 
           {/* Pricing Rows Grid */}
-          <div className="sub-pricing-stack">
+          <motion.div 
+            className="sub-pricing-stack"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            key={activeTab} // Resets initial grid sequence trigger during tab swap
+          >
             {plansData[activeTab].map((plan, index) => {
               const isOpen = openCardIndex === index;
               return (
-                <div 
+                <motion.div 
                   key={index} 
+                  layout
+                  variants={fadeUpVariants}
                   className={`sub-price-row-card ${isOpen ? 'expanded' : ''}`}
                   onClick={() => toggleAccordion(index)}
                 >
@@ -93,20 +136,36 @@ const Subscription = () => {
                     </button>
                   </div>
 
-                  {/* Dropdown collapsible view info */}
-                  <div className="sub-card-dropdown-drawer">
-                    <div className="sub-drawer-inner-content">
-                      <p>{plan.details}</p>
-                      <button className="sub-purchase-action-btn">Choose Plan</button>
-                    </div>
-                  </div>
-                </div>
+                  {/* Dropdown collapsible view info with dynamic slide-open behavior */}
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div 
+                        className="sub-card-dropdown-drawer"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                      >
+                        <div className="sub-drawer-inner-content">
+                          <p>{plan.details}</p>
+                          <button className="sub-purchase-action-btn">Choose Plan</button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
 
-          {/* New Info Section Added Below */}
-          <section className="sub-info-section">
+          {/* Info Section Triggered on Scroll Viewport */}
+          <motion.section 
+            className="sub-info-section"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeUpVariants}
+          >
             <hr className="sub-divider" />
             
             <div className="sub-features-grid">
@@ -132,7 +191,7 @@ const Subscription = () => {
                 </div>
               </div>
             </div>
-          </section>
+          </motion.section>
 
         </main>
       </div>

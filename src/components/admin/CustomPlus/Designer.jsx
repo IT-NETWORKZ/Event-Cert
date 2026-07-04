@@ -1,7 +1,6 @@
 import { useState } from "react";
 import "../../../css/CustomPlus.css";
 import Sidebar from "./Sidebar";
-import TemplateSection from "./TemplateSection";
 import PagePanel from "./PagePanel";
 import CanvasArea from "./CanvasArea";
 import BottomToolbar from "./BottomToolbar";
@@ -21,9 +20,7 @@ const Designer = () => {
                     setActiveMenu={setActiveMenu}
                 />
 
-                <TemplateSection
-                    activeMenu={activeMenu}
-                />
+
 
                 <PagePanel />
 
@@ -38,9 +35,9 @@ const Designer = () => {
         setActiveMenu={setActiveMenu}
     />
 
-    <TemplateSection
+    {/* <TemplateSection
         activeMenu={activeMenu}
-    />
+    /> */}
 
     <div className="cp-main">
 
