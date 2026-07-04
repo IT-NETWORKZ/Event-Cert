@@ -1,3 +1,4 @@
+import { TbFileCertificate } from "react-icons/tb"; 
 import React from "react";
 import "./Sidebar.css";
 import logo from "../../../assets/img/logo_EventCert.png";
@@ -92,6 +93,14 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
           >
             Profile
           </MenuItem>
+          <MenuItem
+            icon={<TbFileCertificate />
+}
+            component={<NavLink to="customplus" />}
+            className={isActive("/customplus") ? "active-item" : ""}
+          >
+            Custom Plus
+          </MenuItem>
 
           <MenuItem
             icon={<FaUser />}
@@ -131,7 +140,7 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
             <MenuItem component={<NavLink to="/admin/advance/badge" />} className={isActive("/admin/advance/badge") ? "active-item" : ""}>Badge</MenuItem>
           </SubMenu>
 
-          <MenuItem 
+          <MenuItem
             icon={<FaFileAlt />}
             component={<NavLink to="/admin/backpage" />}
             className={isActive("/admin/backpage") ? "active-item" : ""}
@@ -139,7 +148,7 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
             Backpage
           </MenuItem>
 
-          <MenuItem 
+          <MenuItem
             icon={<FaFileAlt />}
             component={<NavLink to="/admin/add-participants" />}
             className={isActive("/admin/add-participants") ? "active-item" : ""}
@@ -155,7 +164,7 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
             Feedback
           </MenuItem>
 
-          <MenuItem 
+          <MenuItem
             icon={<FaReceipt />}
             component={<NavLink to="/admin/payment" />}
             className={isActive("/admin/payment") ? "active-item" : ""}

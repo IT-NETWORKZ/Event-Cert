@@ -19,42 +19,42 @@ function Home() {
 
                 <Navbar />
 
-                <div data-aos="fade-up" data-aos-delay="100">
+                
 
                     <Hero />
-                </div>
+               
 
-                <div data-aos="fade-up">
+                
                     <Eventinfo />
-                </div>
+                
 
-                <div data-aos="fade-up" data-aos-delay="100">
+              
                     <Certificates />
-                </div>
+              
 
-                <div data-aos="fade-up" data-aos-delay="150">
+               
                     <About />
-                </div>
+                
 
-                <div data-aos="fade-up" data-aos-delay="200">
+                
                     <Facilities />
-                </div>
+                
 
-                <div data-aos="fade-up" data-aos-delay="250">
+                
                     <WhyChooseUs />
-                </div>
+                
 
-                <div data-aos="fade-up" data-aos-delay="250">
+               
                     <EventHighlights />
-                </div>
+            
 
-                <div data-aos="fade-up" data-aos-delay="350">
+             
                     <Services />
-                </div>
-                <div data-aos="fade-up" data-aos-delay="200">
+               
+               
                     <Footer />
 
-                </div>
+               
                 <ScrollToTopButton />
             </div>
         </>
