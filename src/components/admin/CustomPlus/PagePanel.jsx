@@ -5,9 +5,10 @@ import {
     FaTimes
 } from "react-icons/fa";
 import { useCanvas } from "../../../context/CanvasContext";
+import { useNavigate } from "react-router-dom";
 
 const MAX_PAGES = 6;
-import { useNavigate } from "react-router-dom";
+
 const PagePanel = () => {
     const navigate = useNavigate();
     const {

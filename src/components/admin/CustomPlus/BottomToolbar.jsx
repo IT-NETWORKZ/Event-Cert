@@ -10,9 +10,16 @@ import {
   FaChartBar,
   FaTimes,
 } from "react-icons/fa";
+import { useCanvas } from "../../../context/CanvasContext";
+
 
 const BottomToolbar = () => {
   const excelRef = useRef(null);
+  
+  const {
+    canvas,
+    setCanvasSize,
+} = useCanvas();
 
   const uploadExcel = (e) => {
     const file = e.target.files[0];
@@ -22,10 +29,68 @@ const BottomToolbar = () => {
     console.log("Excel Uploaded :", file.name);
   };
 
-  return (
-    <div className="cp-bottom-toolbar">
+  // reset image size function
+const resetImageSize = () => {
 
-      <button className="cp-bottom-btn">
+    if (!canvas) return;
+
+    const image = canvas
+        .getObjects()
+        .find(obj => obj.isDesignImage);
+
+    if (!image) return;
+
+    const MAX_SIZE = 450;
+
+    const ratio = image.originalWidth / image.originalHeight;
+
+    let width;
+    let height;
+
+    if (ratio >= 1) {
+
+        width = MAX_SIZE;
+
+        height = MAX_SIZE / ratio;
+
+    } else {
+
+        height = MAX_SIZE;
+
+        width = MAX_SIZE * ratio;
+
+    }
+
+    // Resize the Fabric canvas
+    setCanvasSize({
+        width,
+        height,
+    });
+
+    setTimeout(() => {
+
+        image.set({
+
+            left: 0,
+
+            top: 0,
+
+            scaleX: width / image.originalWidth,
+
+            scaleY: height / image.originalHeight,
+
+        });
+
+        canvas.renderAll();
+
+    }, 50);
+
+};
+
+  return (
+    <div className="cp-bottom-toolbar ">
+
+      <button className="cp-bottom-btn" onClick={resetImageSize}>
         <FaExpandArrowsAlt />
         <span>Reset Image Size</span>
       </button>

@@ -36,25 +36,25 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
     // TEXT
     // ==========================
 
-    const addHeading = () => {
+    // const addHeading = () => {
 
-        if (!canvas) return;
+    //     if (!canvas) return;
 
-        const text = new fabric.IText("Add Heading", {
-            left: 100,
-            top: 100,
-            fontSize: 36,
-            fontWeight: "bold",
-            fontFamily: "Arial",
-            fill: "#000",
-            editable: true,
-        });
+    //     const text = new fabric.IText("Add Heading", {
+    //         left: 100,
+    //         top: 100,
+    //         fontSize: 36,
+    //         fontWeight: "bold",
+    //         fontFamily: "Arial",
+    //         fill: "#000",
+    //         editable: true,
+    //     });
 
-        canvas.add(text);
-        canvas.setActiveObject(text);
-        canvas.renderAll();
+    //     canvas.add(text);
+    //     canvas.setActiveObject(text);
+    //     canvas.renderAll();
 
-    };
+    // };
 
     // ==========================
     // DESIGN
@@ -104,22 +104,43 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
                     const canvasWidth = canvas.getWidth();
                     const canvasHeight = canvas.getHeight();
 
+                    // img.set({
+
+                    //     left: 0,
+                    //     top: 0,
+
+                    //     scaleX: canvasWidth / img.width,
+                    //     scaleY: canvasHeight / img.height,
+
+                    //     selectable: true,
+                    //     evented: true,
+                    //     hasControls: true,
+                    //     hasBorders: true,
+
+                    //     isDesignImage: true,
+
+                    // });
+
                     img.set({
 
-                        left: 0,
-                        top: 0,
+    left: 0,
+    top: 0,
 
-                        scaleX: canvasWidth / img.width,
-                        scaleY: canvasHeight / img.height,
+    scaleX: canvasWidth / img.width,
+    scaleY: canvasHeight / img.height,
 
-                        selectable: true,
-                        evented: true,
-                        hasControls: true,
-                        hasBorders: true,
+    selectable: true,
+    evented: true,
+    hasControls: true,
+    hasBorders: true,
 
-                        isDesignImage: true,
+    isDesignImage: true,
 
-                    });
+    // Save original size
+    originalWidth: img.width,
+    originalHeight: img.height,
+
+});
 
                     canvas.add(img);
                     canvas.setActiveObject(img);
