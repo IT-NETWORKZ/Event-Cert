@@ -5,10 +5,12 @@ import {
     FaTimes
 } from "react-icons/fa";
 import { useCanvas } from "../../../context/CanvasContext";
+import { useNavigate } from "react-router-dom";
 
 const MAX_PAGES = 6;
 
 const PagePanel = () => {
+    const navigate = useNavigate();
 
     const {
         pages,
@@ -52,7 +54,7 @@ const PagePanel = () => {
     return (
         <div className="cp-page-panel">
 
-            <button className="cp-back-btn">
+            <button className="cp-back-btn" onClick={() => navigate("/admin/dashboard")}>
                 <FaArrowLeft />
                 <span>Back</span>
             </button>

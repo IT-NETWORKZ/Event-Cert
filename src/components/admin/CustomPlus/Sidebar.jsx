@@ -93,27 +93,64 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
 
                 // fit image exactly to canvas size (full width & height)
 
-                img.set({
+                // img.set({
 
-                    left: 0,
+                //     left: 0,
 
-                    top: 0,
+                //     top: 0,
 
-                    scaleX: canvasWidth / img.width,
+                //     scaleX: canvasWidth / img.width,
 
-                    scaleY: canvasHeight / img.height,
+                //     scaleY: canvasHeight / img.height,
 
-                    selectable: true,
+                //     selectable: true,
 
-                    evented: true,
+                //     evented: true,
 
-                    hasControls: true,
+                //     hasControls: true,
 
-                    hasBorders: true,
+                //     hasBorders: true,
 
-                    isDesignImage: true // tag so Reset button can find it later
+                //     isDesignImage: true, // tag so Reset button can find it later
 
-                });
+                //     // sam changes 
+
+                //     originalWidth: img.width,
+                //     originalHeight: img.height,
+
+                //     // 
+
+                // });
+                const fitScale = Math.min(
+    canvasWidth / img.width,
+    canvasHeight / img.height
+);
+
+img.set({
+
+    left: (canvasWidth - img.width * fitScale) / 2,
+
+    top: (canvasHeight - img.height * fitScale) / 2,
+
+    scaleX: fitScale,
+
+    scaleY: fitScale,
+
+    selectable: true,
+
+    evented: true,
+
+    hasControls: true,
+
+    hasBorders: true,
+
+    isDesignImage: true,
+
+    originalWidth: img.width,
+
+    originalHeight: img.height,
+
+});
 
                 canvas.add(img);
 

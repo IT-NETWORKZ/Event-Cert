@@ -4,6 +4,7 @@ import Sidebar from "./Sidebar";
 import TemplateSection from "./TemplateSection";
 import PagePanel from "./PagePanel";
 import CanvasArea from "./CanvasArea";
+import BottomToolbar from "./BottomToolbar";
 
 
 
@@ -13,7 +14,7 @@ const Designer = () => {
 
     return (
         <>
-            <div className="cp-layout">
+            {/* <div className="cp-layout">
 
                 <Sidebar
                     activeMenu={activeMenu}
@@ -29,7 +30,33 @@ const Designer = () => {
                 <CanvasArea />
 
             </div>
-            
+             */}
+             <div className="cp-layout">
+
+    <Sidebar
+        activeMenu={activeMenu}
+        setActiveMenu={setActiveMenu}
+    />
+
+    <TemplateSection
+        activeMenu={activeMenu}
+    />
+
+    <div className="cp-main">
+
+        <div className="cp-editor">
+
+            <PagePanel />
+
+            <CanvasArea />
+
+        </div>
+
+        <BottomToolbar />
+
+    </div>
+
+</div>
         </>
     );
 
