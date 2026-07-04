@@ -13,7 +13,8 @@ const Designer = () => {
 
     return (
         <>
-            {/* <div className="cp-layout">
+
+            <div className="cp-layout">
 
                 <Sidebar
                     activeMenu={activeMenu}
@@ -22,38 +23,21 @@ const Designer = () => {
 
 
 
-                <PagePanel />
+                <div className="cp-main">
 
-                <CanvasArea />
+                    <div className="cp-editor">
+
+                        <PagePanel />
+
+                        <CanvasArea />
+
+                    </div>
+
+                    <BottomToolbar />
+
+                </div>
 
             </div>
-             */}
-             <div className="cp-layout">
-
-    <Sidebar
-        activeMenu={activeMenu}
-        setActiveMenu={setActiveMenu}
-    />
-
-    {/* <TemplateSection
-        activeMenu={activeMenu}
-    /> */}
-
-    <div className="cp-main">
-
-        <div className="cp-editor">
-
-            <PagePanel />
-
-            <CanvasArea />
-
-        </div>
-
-        <BottomToolbar />
-
-    </div>
-
-</div>
         </>
     );
 
