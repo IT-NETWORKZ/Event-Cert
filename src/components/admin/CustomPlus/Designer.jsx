@@ -3,6 +3,7 @@ import "../../../css/CustomPlus.css";
 import Sidebar from "./Sidebar";
 import PagePanel from "./PagePanel";
 import CanvasArea from "./CanvasArea";
+import BottomToolbar from "./BottomToolbar";
 
 
 
@@ -12,6 +13,7 @@ const Designer = () => {
 
     return (
         <>
+
             <div className="cp-layout">
 
                 <Sidebar
@@ -21,12 +23,21 @@ const Designer = () => {
 
 
 
-                <PagePanel />
+                <div className="cp-main">
 
-                <CanvasArea />
+                    <div className="cp-editor">
+
+                        <PagePanel />
+
+                        <CanvasArea />
+
+                    </div>
+
+                    <BottomToolbar />
+
+                </div>
 
             </div>
-
         </>
     );
 

@@ -7,9 +7,9 @@ import {
 import { useCanvas } from "../../../context/CanvasContext";
 
 const MAX_PAGES = 6;
-
+import { useNavigate } from "react-router-dom";
 const PagePanel = () => {
-
+    const navigate = useNavigate();
     const {
         pages,
         setPages,
@@ -51,8 +51,7 @@ const PagePanel = () => {
 
     return (
         <div className="cp-page-panel">
-
-            <button className="cp-back-btn">
+<button className="cp-back-btn" onClick={() => navigate("/admin/dashboard")}>
                 <FaArrowLeft />
                 <span>Back</span>
             </button>
@@ -76,9 +75,8 @@ const PagePanel = () => {
 
                     <div
                         key={page.id}
-                        className={`cp-page-card ${
-                            activePage === page.id ? "active" : ""
-                        }`}
+                        className={`cp-page-card ${activePage === page.id ? "active" : ""
+                            }`}
                         onClick={() => setActivePage(page.id)}
                     >
 
