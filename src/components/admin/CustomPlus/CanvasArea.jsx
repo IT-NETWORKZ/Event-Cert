@@ -7,7 +7,6 @@ import {
 } from "react-icons/fa";
 import CanvasToolbar from "./CanvasToolbar";
 import FabricCanvas from "./FabricCanvas";
-import BottomToolbar from "./BottomToolbar";
 import { useCanvas } from "../../../context/CanvasContext";
 
 
@@ -61,7 +60,7 @@ setCanvas
 
 
             </div>
-            <BottomToolbar />
+           
             {/* <div className="cp-workspace-footer">
 
                 <div className="cp-footer-left">
