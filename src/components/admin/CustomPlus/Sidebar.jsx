@@ -104,43 +104,27 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
                     const canvasWidth = canvas.getWidth();
                     const canvasHeight = canvas.getHeight();
 
-                    // img.set({
-
-                    //     left: 0,
-                    //     top: 0,
-
-                    //     scaleX: canvasWidth / img.width,
-                    //     scaleY: canvasHeight / img.height,
-
-                    //     selectable: true,
-                    //     evented: true,
-                    //     hasControls: true,
-                    //     hasBorders: true,
-
-                    //     isDesignImage: true,
-
-                    // });
 
                     img.set({
 
-    left: 0,
-    top: 0,
+                        left: 0,
+                        top: 0,
 
-    scaleX: canvasWidth / img.width,
-    scaleY: canvasHeight / img.height,
+                        scaleX: canvasWidth / img.width,
+                        scaleY: canvasHeight / img.height,
 
-    selectable: true,
-    evented: true,
-    hasControls: true,
-    hasBorders: true,
+                        selectable: true,
+                        evented: true,
+                        hasControls: true,
+                        hasBorders: true,
 
-    isDesignImage: true,
+                        isDesignImage: true,
 
-    // Save original size
-    originalWidth: img.width,
-    originalHeight: img.height,
+                        // Save original size
+                        originalWidth: img.width,
+                        originalHeight: img.height,
 
-});
+                    });
 
                     canvas.add(img);
                     canvas.setActiveObject(img);
@@ -182,9 +166,14 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
 
                 break;
 
+            // case "text":
+
+            //     addHeading();
+            //     setActiveMenu(id);
+
+            //     break;
             case "text":
 
-                addHeading();
                 setActiveMenu(id);
 
                 break;
