@@ -3,13 +3,13 @@ import "./Hero.css";
 
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
+import { useRef } from "react";
 import hero1 from "../../../assets/img/hero-slider-1.jpg";
 import hero2 from "../../../assets/img/hero-slider-2.jpg";
 import hero3 from "../../../assets/img/hero-slider-3.jpg";
 
 function Hero() {
-
+  const otpRefs = useRef([]);
   const slides = [hero1, hero2, hero3];
 
   const [current, setCurrent] = useState(0);
@@ -27,16 +27,37 @@ function Hero() {
 
   }, []);
 
+  const handleOTPChange = (e, index) => {
+    const value = e.target.value;
 
+    // Allow only numbers
+    if (!/^\d?$/.test(value)) {
+      e.target.value = "";
+      return;
+    }
+
+    // Move to next input
+    if (value && index < 5) {
+      otpRefs.current[index + 1].focus();
+    }
+  };
+
+  const handleKeyDown = (e, index) => {
+    // Move to previous input on Backspace
+    if (
+      e.key === "Backspace" &&
+      !e.target.value &&
+      index > 0
+    ) {
+      otpRefs.current[index - 1].focus();
+    }
+  };
 
   return (
     <>
 
       {/* <Navbar /> */}
       <div className="container-fluid  hero-header bg-light ">
-
-        {/* <Navbar /> */}
-
 
         <div className="container  pt-5 pb-3">
 
@@ -45,35 +66,7 @@ function Hero() {
           <div className="row align-items-center mb-5 hero-row">
 
 
-            {/* Left Side */}
-            {/* 
-          <div className="col-lg-6">
 
-
-            <h1 className="display-1 mb-4">
-
-              We Make Your
-
-              <span className="text-primary">
-
-                {" "}Home{" "}
-
-              </span>
-
-              Better
-
-            </h1>
-
-
-
-            <h5 className="d-inline-block border border-2 border-white py-3 px-5 mb-0">
-
-              An Award Winning Studio Since 1990
-
-            </h5>
-
-
-          </div> */}
 
             {/* <div className="col-lg-5"> */}
             <div className="col-lg-5 col-md-12">
@@ -106,14 +99,19 @@ function Hero() {
                 </div>
 
                 <h6>Enter OTP</h6>
-
                 <div className="otp-boxes">
-                  <input type="text" maxLength="1" pattern="\d*" inputMode="numeric" />
-                  <input type="text" maxLength="1" pattern="\d*" inputMode="numeric" />
-                  <input type="text" maxLength="1" pattern="\d*" inputMode="numeric" />
-                  <input type="text" maxLength="1" pattern="\d*" inputMode="numeric" />
-                  <input type="text" maxLength="1" pattern="\d*" inputMode="numeric" />
-                  <input type="text" maxLength="1" pattern="\d*" inputMode="numeric" />
+                  {[...Array(6)].map((_, index) => (
+                    <input
+                      key={index}
+                      type="text"
+                      maxLength={1}
+                      inputMode="numeric"
+                      pattern="\d*"
+                      ref={(el) => (otpRefs.current[index] = el)}
+                      onChange={(e) => handleOTPChange(e, index)}
+                      onKeyDown={(e) => handleKeyDown(e, index)}
+                    />
+                  ))}
                 </div>
 
                 <div className="submit-btn-wrapper">
@@ -122,10 +120,25 @@ function Hero() {
                   </button>
                 </div>
 
+                {/* OR Divider */}
+                <div className="divider">
+                  <span>OR</span>
+                </div>
+
+                {/* Google Sign In */}
+                <button type="button" className="google-btn">
+                  <img
+                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                    alt="Google"
+                  />
+                  Continue with Google
+                </button>
 
                 <p className="register">
                   Don't have an account?
-                  <Link to="/register" className="text-blue">Register</Link>
+                  <Link to="/register" className="text-blue">
+                    Register
+                  </Link>
                 </p>
               </div>
 

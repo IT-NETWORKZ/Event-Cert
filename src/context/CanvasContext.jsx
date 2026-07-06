@@ -12,8 +12,8 @@ export const CanvasProvider = ({ children }) => {
 
   // Canvas Size
   const [canvasSize, setCanvasSize] = useState({
-    width: 600,
-    height: 600,
+    width: 900,
+    height: 900,
   });
 
   // Pages

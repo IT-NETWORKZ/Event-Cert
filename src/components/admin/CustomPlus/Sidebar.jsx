@@ -18,8 +18,8 @@ import { fabric } from "fabric";
 import { useCanvas } from "../../../context/CanvasContext";
 import Resize from "./Resize";
 import StickerLibrary from "./StickersLibrary";
-
-// Import Sticker Library
+import InvitationLibrary from "./InvitationLibrary";
+import GreetingLibrary from "./GreetingLibrary"; // Integrated: Greeting library module
 
 const Sidebar = ({ activeMenu, setActiveMenu }) => {
 
@@ -27,103 +27,58 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
 
     const [showResize, setShowResize] = useState(false);
 
-    // Sticker Library
+    // Sidebar Library Window Visibility States
     const [showStickerLibrary, setShowStickerLibrary] = useState(false);
-
+    const [showInvitationLibrary, setShowInvitationLibrary] = useState(false);
+    const [showGreetingLibrary, setShowGreetingLibrary] = useState(false); // Integrated: State tracking for Greeting view drawer
+    
     const designFileInputRef = useRef(null);
 
-    // ==========================
-    // TEXT
-    // ==========================
-
-    // const addHeading = () => {
-
-    //     if (!canvas) return;
-
-    //     const text = new fabric.IText("Add Heading", {
-    //         left: 100,
-    //         top: 100,
-    //         fontSize: 36,
-    //         fontWeight: "bold",
-    //         fontFamily: "Arial",
-    //         fill: "#000",
-    //         editable: true,
-    //     });
-
-    //     canvas.add(text);
-    //     canvas.setActiveObject(text);
-    //     canvas.renderAll();
-
-    // };
-
-    // ==========================
-    // DESIGN
-    // ==========================
-
     const handleDesignClick = () => {
-
         if (designFileInputRef.current) {
-
             designFileInputRef.current.value = null;
             designFileInputRef.current.click();
-
         }
-
     };
 
     const handleDesignFileChange = (e) => {
-
         const file = e.target.files[0];
 
         if (!file) return;
 
         if (!file.type.startsWith("image/")) {
-
             alert("Please select a valid image file.");
             return;
-
         }
 
         if (!canvas) {
-
             alert("Canvas is not ready yet.");
             return;
-
         }
 
         const reader = new FileReader();
 
         reader.onload = (evt) => {
-
             const dataUrl = evt.target.result;
 
             fabric.Image.fromURL(
                 dataUrl,
                 (img) => {
-
                     const canvasWidth = canvas.getWidth();
                     const canvasHeight = canvas.getHeight();
 
-
                     img.set({
-
                         left: 0,
                         top: 0,
-
                         scaleX: canvasWidth / img.width,
                         scaleY: canvasHeight / img.height,
-
                         selectable: true,
                         evented: true,
                         hasControls: true,
                         hasBorders: true,
-
                         isDesignImage: true,
-
-                        // Save original size
                         originalWidth: img.width,
                         originalHeight: img.height,
-
                     });
 
                     canvas.add(img);
@@ -131,128 +86,91 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
                     canvas.renderAll();
 
                     setActiveMenu("design");
-
                 },
                 {
                     crossOrigin: "anonymous",
                 }
             );
-
         };
 
         reader.readAsDataURL(file);
-
     };
 
     // ==========================
-    // SIDEBAR CLICK
+    // SIDEBAR CLICK ROUTER
     // ==========================
-
     const handleClick = (id) => {
-
         switch (id) {
-
             case "resize":
-
                 setShowResize(true);
                 setActiveMenu(id);
-
                 break;
 
             case "design":
-
                 handleDesignClick();
                 setActiveMenu(id);
-
                 break;
 
-            // case "text":
-
-            //     addHeading();
-            //     setActiveMenu(id);
-
-            //     break;
             case "text":
-
                 setActiveMenu(id);
-
                 break;
 
             case "sticker":
-
                 setShowStickerLibrary(true);
                 setActiveMenu(id);
+                break;
 
+            case "invitation":
+                setShowInvitationLibrary(true);
+                setActiveMenu(id);
+                break;
+
+            case "greeting": // Integrated: Case handler map to set structural popover visibility
+                setShowGreetingLibrary(true);
+                setActiveMenu(id);
                 break;
 
             default:
-
                 setActiveMenu(id);
-
                 break;
-
         }
-
     };
 
     // ==========================
-    // MENU
+    // NAVIGATION LINK SCHEMA
     // ==========================
-
     const menu = [
-
         { id: "menu", icon: <FaBars />, title: "Menu" },
-
         { id: "resize", icon: <FaExpandArrowsAlt />, title: "Resize" },
-
         { id: "design", icon: <FaImages />, title: "Design" },
-
         { id: "text", icon: <FaFont />, title: "Text" },
-
         { id: "sticker", icon: <FaIcons />, title: "Sticker" },
-
         { id: "upload", icon: <FaUpload />, title: "Upload" },
-
         { id: "preview", icon: <FaSearchPlus />, title: "Preview" },
-
         { id: "invitation", icon: <FaEnvelopeOpenText />, title: "Invitation" },
-
         { id: "greeting", icon: <FaRegImage />, title: "Greeting" },
-
         { id: "certificate", icon: <FaCertificate />, title: "Certificate" },
-
         { id: "png", icon: <FaFileImage />, title: "PNG" },
-
         { id: "pdf", icon: <FaFilePdf />, title: "PDF" },
-
     ];
 
     return (
-
         <>
-
             <div className="cp-sidebar">
-
                 {menu.map((item) => (
-
                     <button
                         key={item.id}
                         onClick={() => handleClick(item.id)}
                         className={`cp-sidebar-item ${activeMenu === item.id ? "active" : ""}`}
                     >
-
                         <div className="cp-sidebar-icon">
                             {item.icon}
                         </div>
-
                         <span>{item.title}</span>
-
                     </button>
-
                 ))}
 
                 {/* Hidden File Input */}
-
                 <input
                     type="file"
                     accept="image/*"
@@ -260,27 +178,33 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
                     style={{ display: "none" }}
                     onChange={handleDesignFileChange}
                 />
-
             </div>
 
-            {/* Resize Popup */}
-
+            {/* Resize Overlay Layout Modal */}
             <Resize
                 open={showResize}
                 onClose={() => setShowResize(false)}
             />
 
-            {/* Sticker Sidebar */}
-
+            {/* Sticker Asset Sliding Deck Container */}
             <StickerLibrary
                 isOpen={showStickerLibrary}
                 onClose={() => setShowStickerLibrary(false)}
             />
 
+            {/* Invitation Template Deck Drawer */}
+            <InvitationLibrary
+                isOpen={showInvitationLibrary}
+                onClose={() => setShowInvitationLibrary(false)}
+            />
+
+            {/* Greeting Template Deck Drawer */}
+            <GreetingLibrary // Integrated: Embedded modal component layout node
+                isOpen={showGreetingLibrary}
+                onClose={() => setShowGreetingLibrary(false)}
+            />
         </>
-
     );
-
 };
 
 export default Sidebar;
