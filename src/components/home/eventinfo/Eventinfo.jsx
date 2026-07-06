@@ -1,5 +1,5 @@
 import React from 'react';
-import "./Eventinfo.css";
+import "./eventinfo.css";
 import { Search } from "lucide-react";
 
 function Eventinfo() {

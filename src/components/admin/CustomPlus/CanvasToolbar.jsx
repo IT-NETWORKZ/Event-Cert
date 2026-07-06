@@ -306,7 +306,7 @@ const CanvasToolbar = () => {
       <div style={{ borderLeft: "1px solid #eee", height: "24px", margin: "0 4px" }} />
 
       {/* Custom Graphic Media Upload */}
-      <button onClick={() => fileInputRef.current.click()} title="Insert Graphic/Sticker">
+      {/* <button onClick={() => fileInputRef.current.click()} title="Insert Graphic/Sticker">
         <FaImage />
       </button>
       <input
@@ -315,10 +315,10 @@ const CanvasToolbar = () => {
         hidden
         accept="image/*"
         onChange={uploadImage}
-      />
+      /> */}
 
       {/* Advanced Layout Formatting Tweaks */}
-      <button onClick={addDropShadow} title="Toggle Soft Glow Drop Shadow"><FaAdjust /></button>
+      {/* <button onClick={addDropShadow} title="Toggle Soft Glow Drop Shadow"><FaAdjust /></button> */}
       <button onClick={centerObject} title="Center Layout Alignment"><FaAlignCenter /></button>
       <button onClick={duplicate} title="Clone Object"><FaCopy /></button>
       <button onClick={bringForward} title="Move Layer Up"><FaArrowUp /></button>
