@@ -2567,19 +2567,13 @@ RESPONSIVE
 }
 
 /* Add Text Style */
-.cp-template-section {
-
+ .cp-template-section{
+    position: absolute;
+    left: 90px;          /* Sidebar width */
+    top: 130px;
     width: 220px;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: flex-start;
-
     padding: 20px 10px;
-
-    flex: 0 0 220px;
+    z-index: 50;
 
 }
 
@@ -2587,7 +2581,7 @@ RESPONSIVE
 
     width: 180px;
 
-    background: #c78652;
+    background: #565eea;
 
     border-radius: 20px;
 

@@ -16,7 +16,7 @@ const TemplateSection = ({ activeMenu,setActiveMenu }) => {
             fontSize: 28,
             fontWeight: "bold",
             fontFamily: "Roboto",
-            fill: "#B8860B",
+            fill: "black",
             editable: true,
         });
 

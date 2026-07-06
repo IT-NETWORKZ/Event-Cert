@@ -27,15 +27,15 @@ textarea:focus {
     color: #fff;
     margin: 10px auto;
     box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
+    font-family: '"Space Grotesk", sans-serif';
 }
 
 .login-card h1 {
-    font-size: 36px;
-    font-weight: 700;
+    font-size: 32px;
+    font-weight: 400;
     text-align: center;
     margin: 0 0 8px 0;
-    letter-spacing: 1px;
+    /* letter-spacing: 1px; */
 }
 
 .login-card p {
