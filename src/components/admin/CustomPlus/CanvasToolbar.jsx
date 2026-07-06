@@ -46,7 +46,7 @@ const CanvasToolbar = () => {
     const handleSelection = () => {
       const activeObj = canvas.getActiveObject();
       if (!activeObj) return;
-      
+
       const objColor = activeObj.get("fill") || activeObj.get("stroke");
       if (typeof objColor === "string" && objColor.startsWith("#")) {
         setCurrentColor(objColor);
@@ -163,7 +163,7 @@ const CanvasToolbar = () => {
   const toggleBold = () => {
     const activeObj = canvas.getActiveObject();
     if (!activeObj || activeObj.type !== "i-text") return;
-    
+
     const isBold = activeObj.get("fontWeight") === "bold";
     activeObj.set("fontWeight", isBold ? "normal" : "bold");
     canvas.renderAll();
@@ -269,9 +269,9 @@ const CanvasToolbar = () => {
       <div style={{ borderLeft: "1px solid #eee", height: "24px", margin: "0 4px" }} />
 
       {/* Dynamic Color Palette Options */}
-      <label 
-        title="Color Palette" 
-        style={{ 
+      <label
+        title="Color Palette"
+        style={{
           display: "flex", alignItems: "center", justifyContent: "center",
           cursor: "pointer", position: "relative", width: "36px", height: "36px",
           borderRadius: "8px", border: "1px solid #ddd", backgroundColor: currentColor, transition: "0.2s"
@@ -288,8 +288,8 @@ const CanvasToolbar = () => {
       </label>
 
       {/* Freehand Pencil Brush */}
-      <button 
-        onClick={toggleDrawingMode} 
+      <button
+        onClick={toggleDrawingMode}
         title="Draw Mode"
         style={{ backgroundColor: isDrawing ? "#e0f2fe" : "transparent", color: isDrawing ? "#0284c7" : "inherit" }}
       >
@@ -302,7 +302,7 @@ const CanvasToolbar = () => {
       <button onClick={addCreativeText} title="Add Custom Text"><FaFont /></button>
       <button onClick={toggleBold} title="Make Bold"><FaBold /></button>
       <button onClick={toggleItalic} title="Make Italic"><FaItalic /></button>
-      
+
       <div style={{ borderLeft: "1px solid #eee", height: "24px", margin: "0 4px" }} />
 
       {/* Custom Graphic Media Upload */}
