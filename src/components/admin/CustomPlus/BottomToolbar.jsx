@@ -15,11 +15,8 @@ import { useCanvas } from "../../../context/CanvasContext";
 
 const BottomToolbar = () => {
   const excelRef = useRef(null);
-  
-  const {
-    canvas,
-    setCanvasSize,
-} = useCanvas();
+
+  const { canvas, setCanvasSize } = useCanvas();
 
   const uploadExcel = (e) => {
     const file = e.target.files[0];
@@ -29,14 +26,14 @@ const BottomToolbar = () => {
     console.log("Excel Uploaded :", file.name);
   };
 
-  // reset image size function
-const resetImageSize = () => {
-
+  // Reset image size function that works with both designs and invitations
+  const resetImageSize = () => {
     if (!canvas) return;
 
+    // Search canvas for either the custom design layer flag or invitation template layer flag
     const image = canvas
-        .getObjects()
-        .find(obj => obj.isDesignImage);
+      .getObjects()
+      .find((obj) => obj.isDesignImage || obj.isInvitationImage);
 
     if (!image) return;
 
@@ -48,48 +45,34 @@ const resetImageSize = () => {
     let height;
 
     if (ratio >= 1) {
-
-        width = MAX_SIZE;
-
-        height = MAX_SIZE / ratio;
-
+      width = MAX_SIZE;
+      height = MAX_SIZE / ratio;
     } else {
-
-        height = MAX_SIZE;
-
-        width = MAX_SIZE * ratio;
-
+      height = MAX_SIZE;
+      width = MAX_SIZE * ratio;
     }
 
-    // Resize the Fabric canvas
+    // Resize the Fabric canvas dimensions via context state
     setCanvasSize({
-        width,
-        height,
+      width,
+      height,
     });
 
+    // Short timeout to let the canvas context resize complete before repositioning elements
     setTimeout(() => {
+      image.set({
+        left: 0,
+        top: 0,
+        scaleX: width / image.originalWidth,
+        scaleY: height / image.originalHeight,
+      });
 
-        image.set({
-
-            left: 0,
-
-            top: 0,
-
-            scaleX: width / image.originalWidth,
-
-            scaleY: height / image.originalHeight,
-
-        });
-
-        canvas.renderAll();
-
+      canvas.renderAll();
     }, 50);
-
-};
+  };
 
   return (
-    <div className="cp-bottom-toolbar ">
-
+    <div className="cp-bottom-toolbar">
       <button className="cp-bottom-btn" onClick={resetImageSize}>
         <FaExpandArrowsAlt />
         <span>Reset Image Size</span>
