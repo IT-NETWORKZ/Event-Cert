@@ -49,7 +49,7 @@
 
     font-family:"Space Grotesk",sans-serif;
 
-    font-size:18px;
+    font-size:17px;
 
     transition:.35s ease;
 
@@ -95,7 +95,7 @@
 
     padding:0;
 
-    font-size:18px;
+    font-size:17px;
 
     font-weight:500;
 
@@ -184,38 +184,27 @@
 /* ===========================
    Tablet
 =========================== */
+ @media (max-width:991px){
 
-@media(max-width:991px){
+    .navbar{
+        min-height:60px;
+        padding:4px 0;
+    }
 
-.navbar{
+    .navbar-logo{
+        width:170px;
+        height:45px;
+    }
 
-    min-height:auto;
+    .navbar .navbar-nav{
+        padding-top:8px;
+    }
 
-    padding:12px 0;
-
-}
-
-.navbar-logo{
-
-    width:180px;
-
-    height:50px;
-
-}
-
-.navbar .navbar-nav{
-
-    padding-top:15px;
-
-}
-
-.navbar .navbar-nav .nav-link{
-
-    margin-left:0;
-
-    padding:10px 0;
-
-}
+    .navbar .navbar-nav .nav-link{
+        margin-left:0;
+        padding:8px 0;
+        font-size:15px;
+    }
 
 }
 
@@ -223,27 +212,25 @@
 /* ===========================
    Mobile
 =========================== */
+ @media (max-width:576px){
 
-@media(max-width:576px){
+    .navbar{
+        min-height:56px;
+        padding:4px 0;
+    }
 
-.navbar-logo{
+    .navbar-logo{
+        width:150px;
+        height:40px;
+    }
 
-    width:160px;
+    .navbar .navbar-nav{
+        padding-top:5px;
+    }
 
-    height:45px;
-
-}
-
-.navbar{
-
-    padding:10px 0;
-
-}
-
-.navbar .navbar-nav .nav-link{
-
-    font-size:16px;
-
-}
+    .navbar .navbar-nav .nav-link{
+        padding:7px 0;
+        font-size:14px;
+    }
 
 }

@@ -42,7 +42,7 @@ const Dashboard = () => {
       theme: "card-theme-teal",
     },
     {
-      title: "Certificates / Cards Designs",
+      title: "Certificates/Cards Designs",
       value: dashboardData.designs,
       icon: <FaDraftingCompass />,
       theme: "card-theme-teal",
@@ -77,6 +77,7 @@ const Dashboard = () => {
       icon: <FaDollyFlatbed />,
       theme: "card-theme-error",
     },
+    
     {
       title: "Remaining Certificates Stock",
       value: dashboardData.certificateStock,

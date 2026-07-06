@@ -5,11 +5,10 @@
 }
 
 .about-title {
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-size: 1.8rem !important;
+  font-weight: 600;
   color: #1a2e2b;
 }
-
 .about-title .highlight {
   color: #0d4e43;
   margin: 0 8px;
