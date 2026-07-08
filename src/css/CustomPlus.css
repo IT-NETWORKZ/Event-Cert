@@ -2644,3 +2644,74 @@ RESPONSIVE
     opacity: .9;
 
 }
+
+/*Preview model style  */
+.cp-preview-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.75);
+    z-index:99999;
+
+    display:flex;
+    flex-direction:column;
+}
+
+.cp-preview-header{
+    height:70px;
+    background:#fff;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:0 30px;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+.cp-preview-header h3{
+    margin:0;
+    font-size:22px;
+    font-weight:600;
+}
+
+.cp-preview-close{
+    width:42px;
+    height:42px;
+
+    border:none;
+    border-radius:50%;
+
+    background:#f4f4f4;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    cursor:pointer;
+}
+
+.cp-preview-close:hover{
+    background:#e5e5e5;
+}
+
+.cp-preview-body{
+    flex:1;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    overflow:auto;
+
+    padding:40px;
+}
+
+.cp-preview-image{
+    max-width:95%;
+    max-height:95%;
+
+    box-shadow:0 15px 45px rgba(0,0,0,.3);
+
+    background:#fff;
+}

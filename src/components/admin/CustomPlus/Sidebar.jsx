@@ -20,12 +20,14 @@ import Resize from "./Resize";
 import StickerLibrary from "./StickersLibrary";
 import InvitationLibrary from "./InvitationLibrary";
 import GreetingLibrary from "./GreetingLibrary"; // Integrated: Greeting library module
+import PreviewModal from "./PreviewModal";
 
 const Sidebar = ({ activeMenu, setActiveMenu }) => {
 
     const { canvas } = useCanvas();
 
     const [showResize, setShowResize] = useState(false);
+    const [showPreview, setShowPreview] = useState(false);
 
     // Sidebar Library Window Visibility States
     const [showStickerLibrary, setShowStickerLibrary] = useState(false);
@@ -129,6 +131,10 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
                 setShowGreetingLibrary(true);
                 setActiveMenu(id);
                 break;
+            case "preview":
+    setShowPreview(true);
+    setActiveMenu(id);
+    break;    
 
             default:
                 setActiveMenu(id);
@@ -203,6 +209,11 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
                 isOpen={showGreetingLibrary}
                 onClose={() => setShowGreetingLibrary(false)}
             />
+
+            <PreviewModal
+    open={showPreview}
+    onClose={() => setShowPreview(false)}
+/>
         </>
     );
 };
