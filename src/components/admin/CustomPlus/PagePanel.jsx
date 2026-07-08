@@ -96,7 +96,7 @@ const PagePanel = () => {
                         <div className="cp-page-name">
                             {page.name}
                         </div>
-
+ 
                     </div>
 
                 ))}

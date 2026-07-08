@@ -1,9 +1,11 @@
 /* ==========================================================================
    GLOBAL STYLE LAYOUT & SMOOTH SCROLLING
    ========================================================================== */
-html, body {
+html,
+body {
     scroll-behavior: smooth;
-    overflow-x: hidden; /* Prevent global horizontal scaling issues */
+    overflow-x: hidden;
+    /* Prevent global horizontal scaling issues */
 }
 
 .home-page {
@@ -11,7 +13,8 @@ html, body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Force-kills any secondary outer scrollbars from appearing */
+    overflow: hidden;
+    /* Force-kills any secondary outer scrollbars from appearing */
     background-color: #ffffff;
 }
 
@@ -22,13 +25,14 @@ html, body {
 /* Modern Standard Syntax (Firefox) */
 html {
     scrollbar-width: auto;
-    scrollbar-color: #009688 #F5F5F5; /* thumb | track */
+    scrollbar-color: #009688 #F5F5F5;
+    /* thumb | track */
 }
 
 /* Webkit Engine Layout Rules (Chrome, Safari, Edge, Opera) */
 ::-webkit-scrollbar {
-    width: 10px; 
-    height: 10px; 
+    width: 10px;
+    height: 10px;
 }
 
 /* Scrollbar Track */
@@ -38,15 +42,15 @@ html {
 
 /* Scrollbar Thumb */
 ::-webkit-scrollbar-thumb {
-    background: #009688; 
-    border-radius: 50px; 
-    border: 2px solid #F5F5F5; 
+    background: #009688;
+    border-radius: 50px;
+    border: 2px solid #F5F5F5;
     transition: background 0.3s ease;
 }
 
 /* Interactive Hover States */
 ::-webkit-scrollbar-thumb:hover {
-    background: #00796B; 
+    background: #00796B;
 }
 
 /* ==========================================================================
@@ -54,13 +58,14 @@ html {
    ========================================================================== */
 
 /* Safely spaces sections apart and isolates horizontal overflowing elements */
-.home-page > div[data-aos] {
+.home-page>div[data-aos] {
     position: relative;
     width: 100%;
-    overflow-x: hidden; /* Restricts horizontal leakages from animations without breaking global scroll */
+    overflow-x: hidden;
+    /* Restricts horizontal leakages from animations without breaking global scroll */
 }
 
 /* Custom Micro-adjustments for Hero Section separation */
-.home-page > div[data-aos-delay="100"]:first-of-type {
-    margin-top: 0; 
+.home-page>div[data-aos-delay="100"]:first-of-type {
+    margin-top: 0;
 }

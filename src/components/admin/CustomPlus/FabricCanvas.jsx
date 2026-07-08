@@ -168,7 +168,7 @@ const FabricCanvas = () => {
                 </div>
 
             )}
-
+    
         </div>
 
     );
