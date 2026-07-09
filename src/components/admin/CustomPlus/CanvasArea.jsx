@@ -104,3 +104,4 @@ setCanvas
 };
 
 export default CanvasArea;
+
