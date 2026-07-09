@@ -33,7 +33,7 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
     const [showStickerLibrary, setShowStickerLibrary] = useState(false);
     const [showInvitationLibrary, setShowInvitationLibrary] = useState(false);
     const [showGreetingLibrary, setShowGreetingLibrary] = useState(false); // Integrated: State tracking for Greeting view drawer
-    
+
     const designFileInputRef = useRef(null);
 
     const handleDesignClick = () => {
@@ -132,9 +132,9 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
                 setActiveMenu(id);
                 break;
             case "preview":
-    setShowPreview(true);
-    setActiveMenu(id);
-    break;    
+                setShowPreview(true);
+                setActiveMenu(id);
+                break;
 
             default:
                 setActiveMenu(id);
@@ -211,9 +211,9 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
             />
 
             <PreviewModal
-    open={showPreview}
-    onClose={() => setShowPreview(false)}
-/>
+                open={showPreview}
+                onClose={() => setShowPreview(false)}
+            />
         </>
     );
 };

@@ -1,20 +1,15 @@
 /* ===========================================================
-   CUSTOM PLUS DESIGNER
-   PART 1
+   CUSTOM PLUS DESIGNER - STABLE PRODUCTIONS & LANDING FIX
    =========================================================== */
-
 
 /* ==========================
    GOOGLE FONT
 ========================== */
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-
 /* ==========================
-   RESET
+   RESET & SYSTEM GLOBAL RULES
 ========================== */
-
 * {
     margin: 0;
     padding: 0;
@@ -22,505 +17,229 @@
     font-family: 'Inter', sans-serif;
 }
 
+/* FIXED: Changed global system overflow to allow regular home pages to scroll naturally */
 html,
 body {
     width: 100%;
     height: 100%;
     background: #edf1f7;
+    overflow-x: hidden;
+    overflow-y: auto; 
 }
 
-
-
-
 /* ==========================
-   LAYOUT
+   LAYOUT ENGINE (App Wrapper Settings)
 ========================== */
-
 .cp-layout {
-
     width: 100%;
     height: 100vh;
-
     display: flex;
-
-    overflow: hidden;
-
+    overflow: hidden; /* Keeps screen strictly frozen inside the app view route */
     background: #edf1f7;
-
+    position: fixed;   /* Prevents global body scroll interference inside the app */
+    top: 0;
+    left: 0;
 }
 
-
-/* ==========================
-   COMMON
-========================== */
-
-button {
-
-    outline: none;
-
-}
-
-button:focus {
-
-    outline: none;
-
-}
-
-img {
-
-    max-width: 100%;
-
-    display: block;
-
-}
-
-a {
-
-    text-decoration: none;
-
-}
-
-ul {
-
-    list-style: none;
-
-}
-
-
-/* ==========================
-   SIDEBAR
-========================== */
-
-.cp-sidebar {
-
-    width: 90px;
-
-    min-width: 90px;
-
-    background: #ffffff;
-
-    border-right: 1px solid #e8e8e8;
-
+.cp-main {
+    flex: 1;
     display: flex;
-
     flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+}
 
+.cp-editor {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* ==========================
+   COMMON UTILITIES
+========================== */
+button { outline: none; }
+button:focus { outline: none; }
+img { max-width: 100%; display: block; }
+a { text-decoration: none; }
+ul { list-style: none; }
+
+/* ==========================
+   SIDEBAR (Main Left Options Panel)
+========================== */
+.cp-sidebar {
+    width: 90px;
+    min-width: 90px;
+    background: #ffffff;
+    border-right: 1px solid #e8e8e8;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-
     padding: 15px 0;
-
     overflow-y: auto;
     overflow-x: hidden;
-
     box-shadow: 3px 0 12px rgba(0, 0, 0, .05);
-
     z-index: 20;
-
 }
 
-.cp-sidebar::-webkit-scrollbar {
-
-    width: 6px;
-
-}
-
-.cp-sidebar::-webkit-scrollbar-thumb {
-
-    background: #d3d3d3;
-
-    border-radius: 20px;
-
-}
+.cp-sidebar::-webkit-scrollbar { width: 6px; }
+.cp-sidebar::-webkit-scrollbar-thumb { background: #d3d3d3; border-radius: 20px; }
 
 .cp-sidebar-item {
-
     width: 72px;
-
     border: none;
-
     background: none;
-
     border-radius: 14px;
-
     padding: 12px 4px;
-
     cursor: pointer;
-
     margin-bottom: 10px;
-
     display: flex;
-
     flex-direction: column;
-
     align-items: center;
-
     justify-content: center;
-
     transition: .30s;
-
     color: #555;
-
 }
 
 .cp-sidebar-item:hover {
-
     background: #edf3ff;
-
     color: #2563eb;
-
     transform: translateY(-2px);
-
 }
 
 .cp-sidebar-item.active {
-
     background: #2563eb;
-
     color: #fff;
-
 }
 
-.cp-sidebar-icon {
-
-    font-size: 22px;
-
-    margin-bottom: 6px;
-
-}
-
-.cp-sidebar-item span {
-
-    font-size: 12px;
-
-    font-weight: 600;
-
-    text-align: center;
-
-    line-height: 16px;
-
-}
-
+.cp-sidebar-icon { font-size: 22px; margin-bottom: 6px; }
+.cp-sidebar-item span { font-size: 12px; font-weight: 600; text-align: center; line-height: 16px; }
 
 /* ==========================
    TEMPLATE PANEL
 ========================== */
-
 .cp-template-panel {
-
     width: 300px;
-
     min-width: 300px;
-
     background: #ffffff;
-
     border-right: 1px solid #e8e8e8;
-
     overflow-y: auto;
-
     padding: 22px;
-
 }
 
-.cp-template-panel h3 {
-
-    font-size: 22px;
-
-    font-weight: 700;
-
-    color: #2563eb;
-
-    margin-bottom: 20px;
-
-}
-
-.cp-template-panel::-webkit-scrollbar {
-
-    width: 7px;
-
-}
-
-.cp-template-panel::-webkit-scrollbar-thumb {
-
-    background: #cccccc;
-
-    border-radius: 20px;
-
-}
-
+.cp-template-panel h3 { font-size: 22px; font-weight: 700; color: #2563eb; margin-bottom: 20px; }
+.cp-template-panel::-webkit-scrollbar { width: 7px; }
+.cp-template-panel::-webkit-scrollbar-thumb { background: #cccccc; border-radius: 20px; }
 
 /* ==========================
-   PANEL BUTTONS
+   PANEL GRIDS
 ========================== */
-
-.cp-panel-grid {
-
-    display: grid;
-
-    gap: 15px;
-
-}
-
+.cp-panel-grid { display: grid; gap: 15px; }
 .cp-panel-btn {
-
     width: 100%;
-
     padding: 14px;
-
     border: none;
-
     border-radius: 10px;
-
     background: #f3f5f9;
-
     cursor: pointer;
-
     transition: .30s;
-
     font-weight: 600;
-
     color: #333;
-
 }
-
-.cp-panel-btn:hover {
-
-    background: #2563eb;
-
-    color: white;
-
-}
-
-
-/* ==========================
-   UPLOAD BOX
-========================== */
+.cp-panel-btn:hover { background: #2563eb; color: white; }
 
 .cp-upload-box {
-
     height: 220px;
-
     border: 2px dashed #c7c7c7;
-
     border-radius: 14px;
-
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
 }
 
 .cp-upload-btn {
-
     border: none;
-
     padding: 13px 22px;
-
     border-radius: 8px;
-
     cursor: pointer;
-
     background: #2563eb;
-
     color: white;
-
     font-size: 15px;
-
     font-weight: 600;
-
 }
+.cp-upload-btn:hover { background: #174db7; }
 
-.cp-upload-btn:hover {
-
-    background: #174db7;
-
-}
-
-
-/* ==========================
-   TEMPLATE GRID
-========================== */
-
-.cp-template-grid {
-
-    display: grid;
-
-    grid-template-columns: repeat(2, 1fr);
-
-    gap: 18px;
-
-}
-
+.cp-template-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
 .cp-template-card {
-
     height: 140px;
-
     background: #f4f6fa;
-
     border-radius: 14px;
-
     border: 1px solid #e5e5e5;
-
     display: flex;
-
     justify-content: center;
-
     align-items: center;
-
     cursor: pointer;
-
     transition: .30s;
-
     font-weight: 700;
-
     color: #555;
-
 }
-
 .cp-template-card:hover {
-
     transform: translateY(-5px);
-
     background: white;
-
     box-shadow: 0 8px 20px rgba(0, 0, 0, .12);
-
 }
 
-
-/* ==========================
-   STICKER GRID
-========================== */
-
-.cp-sticker-grid {
-
-    display: grid;
-
-    grid-template-columns: repeat(3, 1fr);
-
-    gap: 18px;
-
-    font-size: 34px;
-
-    text-align: center;
-
-}
-
-.cp-sticker-grid div {
-
-    cursor: pointer;
-
-    transition: .25s;
-
-}
-
-.cp-sticker-grid div:hover {
-
-    transform: scale(1.25);
-
-}
-
-
-/* ==========================
-   PREVIEW BUTTON
-========================== */
+.cp-sticker-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; font-size: 34px; text-align: center; }
+.cp-sticker-grid div { cursor: pointer; transition: .25s; }
+.cp-sticker-grid div:hover { transform: scale(1.25); }
 
 .cp-preview-btn {
-
     width: 100%;
-
     padding: 15px;
-
     border: none;
-
     border-radius: 10px;
-
     background: #2563eb;
-
     color: white;
-
     cursor: pointer;
-
     font-size: 16px;
-
     font-weight: 700;
-
 }
-
-.cp-preview-btn:hover {
-
-    background: #174db7;
-
-}
-
+.cp-preview-btn:hover { background: #174db7; }
 
 /* ==========================
-   PAGE PANEL
+   PAGE PANEL (Thumbnails Sidebar Panel)
 ========================== */
-
 .cp-page-panel {
-
-
     width: 220px;
     min-width: 220px;
     height: 100%;
-
     background: #edf1f7;
-
     display: flex;
     flex-direction: column;
-
-
     padding: 15px;
-
     overflow: hidden;
-    border: none !important
+    border: none !important;
 }
 
 .cp-page-list {
-
     flex: 1;
-
     margin-top: 15px;
-
     display: flex;
     flex-direction: column;
     gap: 15px;
-
     overflow-y: auto;
-
     padding-right: 5px;
-
 }
 
-.cp-page-panel::-webkit-scrollbar {
-
-    width: 6px;
-
-}
-
-.cp-page-panel::-webkit-scrollbar-thumb {
-
-    background: #cfcfcf;
-
-    border-radius: 20px;
-
-}
-
-.cp-page-list::-webkit-scrollbar-track {
-
-    background: transparent;
-
-}
+.cp-page-panel::-webkit-scrollbar { width: 6px; }
+.cp-page-panel::-webkit-scrollbar-thumb { background: #cfcfcf; border-radius: 20px; }
 
 /* ==========================
-   PAGE BUTTONS
+   PAGE LIST CONTROLS & CARDS
 ========================== */
-
 .cp-back-btn,
 .cp-add-page-btn {
-
     width: 100%;
     border: none;
     padding: 10px;
@@ -534,1273 +253,362 @@ ul {
     gap: 10px;
     margin-bottom: 5px;
     transition: .30s;
-
 }
 
-.cp-back-btn {
-
-    background: #2563eb;
-
-    color: white;
-
-}
-
-.cp-back-btn:hover {
-
-    background: #174db7;
-
-}
-
-.cp-add-page-btn {
-
-    background: white;
-
-    color: #2563eb;
-
-    box-shadow: 0 4px 12px rgba(0, 0, 0, .08);
-
-}
-
-.cp-add-page-btn:hover {
-
-    transform: translateY(-2px);
-
-}
-
-
-/* ==========================
-   PAGE LIST
-========================== */
-
-.cp-page-list {
-
-    display: flex;
-    flex-direction: column;
-    overflow-x: hidden;
-    gap: 18px;
-}
+.cp-back-btn { background: #2563eb; color: white; }
+.cp-back-btn:hover { background: #174db7; }
+.cp-add-page-btn { background: white; color: #2563eb; box-shadow: 0 4px 12px rgba(0, 0, 0, .08); }
+.cp-add-page-btn:hover { transform: translateY(-2px); }
 
 .cp-page-card {
-
     background: white;
-
     border-radius: 14px;
-
     padding: 8px;
-
     border: 2px solid transparent;
-
     cursor: pointer;
-
     transition: .30s;
     margin-top: 10px;
     position: relative;
-
 }
+.cp-page-card:hover { transform: translateY(-3px); }
+.cp-page-card.active { border-color: #6d28d9; }
 
-.cp-page-card:hover {
-
-    transform: translateY(-3px);
-
-}
-
-.cp-page-card.active {
-
-    border-color: #6d28d9;
-
-}
-
-.cp-page-preview {
-
-    width: 100%;
-
-    height: 120px;
-
-    border-radius: 10px;
-
-    border: 1px solid #ddd;
-
-    background: white;
-
-}
-
-.cp-page-name {
-
-    text-align: center;
-
-    margin-top: 2px;
-
-    font-size: 13px;
-
-    font-weight: 700;
-
-}
+.cp-page-preview { width: 100%; height: 120px; border-radius: 10px; border: 1px solid #ddd; background: white; }
+.cp-page-name { text-align: center; margin-top: 2px; font-size: 13px; font-weight: 700; }
 
 .cp-delete-page {
-
     position: absolute;
-
     top: -8px;
-
     right: -8px;
-
     width: 24px;
-
     height: 24px;
-
     border: none;
-
     border-radius: 50%;
-
     background: #ef4444;
-
     color: white;
-
     cursor: pointer;
-
-}
-
-
-/* ==========================
-   COMMON BUTTON
-========================== */
-
-.cp-btn {
-
-    border: none;
-
-    cursor: pointer;
-
-    transition: .30s;
-
-    border-radius: 10px;
-
-}
-
-.cp-btn:hover {
-
-    transform: translateY(-2px);
-
-}
-
-
-/* ==========================
-   SCROLLBAR
-========================== */
-
-::-webkit-scrollbar {
-
-    width: 8px;
-
-    height: 8px;
-
-}
-
-::-webkit-scrollbar-thumb {
-
-    background: #c8c8c8;
-
-    border-radius: 30px;
-
-}
-
-::-webkit-scrollbar-track {
-
-    background: #f2f2f2;
-
 }
 
 /* ===========================================================
-   CUSTOM PLUS DESIGNER
-   PART 2
-   Canvas Area & Toolbar
-=========================================================== */
-
-
-/* ======================================
-   CANVAS AREA
-====================================== */
-
+   CANVAS VIEW ENGINE ARCHITECTURE
+   =========================================================== */
 .cp-canvas-area {
-
     flex: 1;
-
     min-width: 0;
-
     display: flex;
-
     flex-direction: column;
-
     background: #eef2f8;
-
     overflow: hidden;
-
 }
-
-
-/* ======================================
-   WORKSPACE
-====================================== */
 
 .cp-workspace {
-
     flex: 1;
-
     display: flex;
-
     justify-content: center;
-
     align-items: center;
-
     overflow: auto;
-
     padding: 45px;
-
     background: #edf1f7;
-
 }
-
-
-/* ======================================
-   FABRIC WRAPPER
-====================================== */
 
 .cp-canvas-wrapper {
     position: relative;
     flex: 1;
     display: flex;
-    align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 100%;
-    min-width: 0;
-    min-height: 0;
+    align-items: center;
     overflow: auto;
-    background: #eef0f4;
-    padding: 20px;
-    box-sizing: border-box;
 }
 
-/* Exact footprint the scaled canvas occupies in layout (no leftover gaps) */
 .cp-canvas-scaled-box {
     position: relative;
     flex-shrink: 0;
+    transform-origin: top left;
 }
-
-/* ======================================
-   CANVAS SHADOW
-====================================== */
 
 .cp-canvas-shadow {
-
     display: flex;
-
     justify-content: center;
-
     align-items: center;
-
-    background: #fff;
-
-    border-radius: 10px;
-
-    box-shadow: 0 15px 40px rgba(0, 0, 0, .12);
-
-    transition: all .35s ease;
-
-    padding: 10px;
-
-    flex-shrink: 0;
-
-
-}
-
-
-/* ======================================
-   FABRIC CANVAS
-====================================== */
-
-.cp-canvas-shadow canvas {
-
-    display: block;
-
-    border: 1px solid #dddddd;
-
-    background: #ffffff;
-
-}
-
-
-/* ======================================
-   TOOLBAR
-====================================== */
-
-.cp-toolbar {
-
     width: 100%;
-
-    min-height: 70px;
-
-    background: #ffffff;
-
-    border-bottom: 1px solid #e6e6e6;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 12px;
-
-    flex-wrap: wrap;
-
-    padding: 12px 20px;
-
-    box-shadow: 0 2px 10px rgba(0, 0, 0, .05);
-
-    z-index: 5;
-
+    height: 100%;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, .12);
+    overflow: hidden;
+    flex-shrink: 0;
 }
 
+.cp-canvas-shadow canvas { display: block; border: 1px solid #dddddd; background: #ffffff; }
 
 /* ======================================
-   TOOLBAR BUTTON
+   TOOLBARS & INTERFACES
 ====================================== */
+.cp-toolbar {
+    width: 100%;
+    min-height: 70px;
+    background: #ffffff;
+    border-bottom: 1px solid #e6e6e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 12px 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .05);
+    z-index: 5;
+    flex-shrink: 0;
+}
 
 .cp-toolbar button {
-
     width: 42px;
-
     height: 42px;
-
     border: none;
-
     border-radius: 10px;
-
     background: #f5f6f8;
-
     cursor: pointer;
-
     transition: .25s;
-
     display: flex;
-
     justify-content: center;
-
     align-items: center;
-
     font-size: 16px;
-
     color: #444;
-
 }
-
-.cp-toolbar button:hover {
-
-    background: #2563eb;
-
-    color: white;
-
-    transform: translateY(-2px);
-
-}
-
-.cp-toolbar button.danger:hover {
-
-    background: #ef4444;
-
-}
-
-
-/* ======================================
-   BOTTOM TOOLBAR
-====================================== */
+.cp-toolbar button:hover { background: #2563eb; color: white; transform: translateY(-2px); }
+.cp-toolbar button.danger:hover { background: #ef4444; }
 
 .cp-bottom-toolbar {
-
     width: 100%;
-
     background: #ffffff;
-
     border-top: 1px solid #dddddd;
-
     padding: 14px;
-
     display: flex;
-
     align-items: center;
-
     gap: 12px;
-
     overflow-x: auto;
-
     box-shadow: 0 -2px 10px rgba(0, 0, 0, .05);
-
+    flex-shrink: 0;
 }
-
-.cp-bottom-toolbar::-webkit-scrollbar {
-
-    height: 7px;
-
-}
-
-.cp-bottom-toolbar::-webkit-scrollbar-thumb {
-
-    background: #cccccc;
-
-    border-radius: 20px;
-
-}
-
-
-/* ======================================
-   BOTTOM BUTTON
-====================================== */
+.cp-bottom-toolbar::-webkit-scrollbar { height: 7px; }
+.cp-bottom-toolbar::-webkit-scrollbar-thumb { background: #cccccc; border-radius: 20px; }
 
 .cp-bottom-btn {
-
     border: none;
-
     padding: 11px 18px;
-
     border-radius: 10px;
-
     background: #f4f6f8;
-
     cursor: pointer;
-
     display: flex;
-
     align-items: center;
-
     gap: 8px;
-
     transition: .25s;
-
     white-space: nowrap;
-
     font-weight: 600;
-
     color: #444;
-
 }
-
-.cp-bottom-btn:hover {
-
-    background: #2563eb;
-
-    color: white;
-
-}
-
-.cp-bottom-btn.primary {
-
-    background: #2563eb;
-
-    color: white;
-
-}
-
-.cp-bottom-btn.success {
-
-    background: #16a34a;
-
-    color: white;
-
-}
-
-.cp-bottom-btn.danger {
-
-    background: #dc2626;
-
-    color: white;
-
-}
-
-.cp-bottom-btn.close {
-
-    width: 45px;
-
-    justify-content: center;
-
-    background: #ef4444;
-
-    color: white;
-
-}
-
-
-/* ======================================
-   WORKSPACE FOOTER
-====================================== */
+.cp-bottom-btn:hover { background: #2563eb; color: white; }
+.cp-bottom-btn.primary { background: #2563eb; color: white; }
+.cp-bottom-btn.success { background: #16a34a; color: white; }
+.cp-bottom-btn.danger { background: #dc2626; color: white; }
+.cp-bottom-btn.close { width: 45px; justify-content: center; background: #ef4444; color: white; }
 
 .cp-workspace-footer {
-
     height: 58px;
-
     background: white;
-
     border-top: 1px solid #dddddd;
-
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     padding: 0 25px;
-
+    flex-shrink: 0;
 }
 
-
-/* ======================================
-   FOOTER LEFT
-====================================== */
-
-.cp-footer-left {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 10px;
-
-    font-size: 14px;
-
-    font-weight: 600;
-
-}
-
-
-/* ======================================
-   FOOTER CENTER
-====================================== */
-
-.cp-footer-center {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 12px;
-
-}
-
+.cp-footer-left, .cp-footer-right { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; }
+.cp-footer-center { display: flex; align-items: center; gap: 12px; }
 .cp-footer-center button {
-
     width: 36px;
-
     height: 36px;
-
     border: none;
-
     border-radius: 8px;
-
     background: #f5f5f5;
-
     cursor: pointer;
-
     transition: .25s;
-
 }
-
-.cp-footer-center button:hover {
-
-    background: #2563eb;
-
-    color: white;
-
-}
-
-.cp-footer-center span {
-
-    font-size: 15px;
-
-    font-weight: 700;
-
-}
-
-
-/* ======================================
-   FOOTER RIGHT
-====================================== */
-
-.cp-footer-right {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 10px;
-
-    font-size: 14px;
-
-    font-weight: 600;
-
-}
-
-
-/* ======================================
-   ZOOM BOX
-====================================== */
-
-.cp-zoom-box {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 10px;
-
-}
-
-.cp-zoom-value {
-
-    min-width: 50px;
-
-    text-align: center;
-
-    font-weight: 700;
-
-}
-
-
-/* ======================================
-   COMMON ICON BUTTON
-====================================== */
-
-.cp-icon-btn {
-
-    width: 40px;
-
-    height: 40px;
-
-    border: none;
-
-    border-radius: 10px;
-
-    background: #f3f5f8;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    cursor: pointer;
-
-    transition: .25s;
-
-}
-
-.cp-icon-btn:hover {
-
-    background: #2563eb;
-
-    color: white;
-
-}
-
-
-/* ======================================
-   INPUT
-====================================== */
-
-.cp-input {
-
-    width: 100%;
-
-    height: 42px;
-
-    border: 1px solid #d7d7d7;
-
-    border-radius: 8px;
-
-    padding: 0 14px;
-
-    outline: none;
-
-    transition: .25s;
-
-}
-
-.cp-input:focus {
-
-    border-color: #2563eb;
-
-}
-
-
-/* ======================================
-   SELECT
-====================================== */
-
-.cp-select {
-
-    width: 100%;
-
-    height: 42px;
-
-    border-radius: 8px;
-
-    border: 1px solid #d8d8d8;
-
-    padding: 0 12px;
-
-    outline: none;
-
-}
-
-
-/* ======================================
-   CARD
-====================================== */
-
-.cp-card {
-
-    background: white;
-
-    border-radius: 14px;
-
-    padding: 18px;
-
-    box-shadow: 0 6px 18px rgba(0, 0, 0, .06);
-
-}
-
-
-/* ======================================
-   LOADER
-====================================== */
-
-.cp-loader {
-
-    width: 40px;
-
-    height: 40px;
-
-    border-radius: 50%;
-
-    border: 4px solid #ddd;
-
-    border-top-color: #2563eb;
-
-    animation: cpSpin .8s linear infinite;
-
-}
-
-
-@keyframes cpSpin {
-
-    to {
-
-        transform: rotate(360deg);
-
-    }
-
-}
+.cp-footer-center button:hover { background: #2563eb; color: white; }
+.cp-footer-center span { font-size: 15px; font-weight: 700; }
+
+.cp-zoom-box { display: flex; align-items: center; gap: 10px; }
+.cp-zoom-value { min-width: 50px; text-align: center; font-weight: 700; }
 
 /* ===========================================================
-   CUSTOM PLUS DESIGNER
-   PART 3
-   Responsive + Utilities + Animations
-===========================================================*/
-
-
-/*==========================================
-UPLOAD GRID
-==========================================*/
-
-.cp-upload-grid {
-
-    display: grid;
-
-    grid-template-columns: repeat(2, 1fr);
-
-    gap: 15px;
-
-    margin-top: 20px;
-
-}
-
-.cp-upload-card {
-
-    background: #fff;
-
-    border-radius: 12px;
-
-    overflow: hidden;
-
+   MODALS & INTERFACES REUSABLES
+   =========================================================== */
+.cp-icon-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    background: #f3f5f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
-
-    transition: .3s;
-
-    box-shadow: 0 6px 18px rgba(0, 0, 0, .06);
-
+    transition: .25s;
 }
+.cp-icon-btn:hover { background: #2563eb; color: white; }
 
-.cp-upload-card:hover {
-
-    transform: translateY(-4px);
-
-    box-shadow: 0 15px 30px rgba(0, 0, 0, .12);
-
-}
-
-.cp-upload-card img {
-
+.cp-input {
     width: 100%;
+    height: 42px;
+    border: 1px solid #d7d7d7;
+    border-radius: 8px;
+    padding: 0 14px;
+    outline: none;
+    transition: .25s;
+}
+.cp-input:focus { border-color: #2563eb; }
 
-    height: 130px;
-
-    object-fit: cover;
-
+.cp-select {
+    width: 100%;
+    height: 42px;
+    border-radius: 8px;
+    border: 1px solid #d8d8d8;
+    padding: 0 12px;
+    outline: none;
 }
 
-.cp-upload-card p {
+.cp-card { background: white; border-radius: 14px; padding: 18px; box-shadow: 0 6px 18px rgba(0, 0, 0, .06); }
 
-    padding: 10px;
-
-    font-size: 13px;
-
-    text-align: center;
-
-    font-weight: 600;
-
+.cp-loader {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 4px solid #ddd;
+    border-top-color: #2563eb;
+    animation: cpSpin .8s linear infinite;
 }
+@keyframes cpSpin { to { transform: rotate(360deg); } }
 
-
-/*==========================================
-DROP ZONE
-==========================================*/
+.cp-upload-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
+.cp-upload-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: .3s;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .06);
+}
+.cp-upload-card:hover { transform: translateY(-4px); box-shadow: 0 15px 30px rgba(0, 0, 0, .12); }
+.cp-upload-card img { width: 100%; height: 130px; object-fit: cover; }
+.cp-upload-card p { padding: 10px; font-size: 13px; text-align: center; font-weight: 600; }
 
 .cp-drop-zone {
-
     width: 100%;
-
     min-height: 220px;
-
     border: 2px dashed #bfbfbf;
-
     border-radius: 14px;
-
     display: flex;
-
     flex-direction: column;
-
     justify-content: center;
-
     align-items: center;
-
     gap: 12px;
-
     transition: .3s;
-
     cursor: pointer;
-
     background: #fafafa;
-
 }
-
-.cp-drop-zone:hover {
-
-    border-color: #2563eb;
-
-    background: #eef5ff;
-
-}
-
-.cp-drop-zone i {
-
-    font-size: 42px;
-
-    color: #2563eb;
-
-}
-
-
-/*==========================================
-EMPTY STATE
-==========================================*/
+.cp-drop-zone:hover { border-color: #2563eb; background: #eef5ff; }
+.cp-drop-zone i { font-size: 42px; color: #2563eb; }
 
 .cp-empty {
-
     width: 100%;
-
     min-height: 250px;
-
     display: flex;
-
     flex-direction: column;
-
     justify-content: center;
-
     align-items: center;
-
     gap: 15px;
-
     color: #888;
-
     text-align: center;
-
 }
+.cp-empty h4 { font-size: 20px; }
+.cp-empty p { font-size: 14px; }
 
-.cp-empty h4 {
+.cp-badge { padding: 5px 12px; border-radius: 30px; background: #2563eb; color: white; font-size: 12px; font-weight: 600; }
 
-    font-size: 20px;
-
-}
-
-.cp-empty p {
-
-    font-size: 14px;
-
-}
-
-
-/*==========================================
-BADGE
-==========================================*/
-
-.cp-badge {
-
-    padding: 5px 12px;
-
-    border-radius: 30px;
-
-    background: #2563eb;
-
-    color: white;
-
-    font-size: 12px;
-
-    font-weight: 600;
-
-}
-
-
-/*==========================================
-TOOLTIP
-==========================================*/
-
-.cp-tooltip {
-
-    position: relative;
-
-}
-
+.cp-tooltip { position: relative; }
 .cp-tooltip:hover::after {
-
     content: attr(data-title);
-
     position: absolute;
-
     bottom: -38px;
-
     left: 50%;
-
     transform: translateX(-50%);
-
     background: #222;
-
     color: #fff;
-
     padding: 6px 10px;
-
     border-radius: 6px;
-
     font-size: 12px;
-
     white-space: nowrap;
-
     z-index: 100;
-
 }
-
-
-/*==========================================
-MODAL
-==========================================*/
 
 .cp-modal {
-
     position: fixed;
-
     inset: 0;
-
     background: rgba(0, 0, 0, .45);
-
     display: flex;
-
     justify-content: center;
-
     align-items: center;
-
     z-index: 9999;
-
 }
 
 .cp-modal-content {
-
     width: 650px;
-
     max-width: 95%;
-
     background: white;
-
     border-radius: 16px;
-
     padding: 25px;
-
     animation: cpZoom .25s ease;
-
 }
-
-@keyframes cpZoom {
-
-    from {
-
-        transform: scale(.85);
-
-        opacity: 0;
-
-    }
-
-    to {
-
-        transform: scale(1);
-
-        opacity: 1;
-
-    }
-
-}
-
-
-/*==========================================
-FADE
-==========================================*/
-
-.cp-fade {
-
-    animation: cpFade .3s ease;
-
-}
-
-@keyframes cpFade {
-
-    from {
-
-        opacity: 0;
-
-    }
-
-    to {
-
-        opacity: 1;
-
-    }
-
-}
-
-
-/*==========================================
-SLIDE
-==========================================*/
-
-.cp-slide {
-
-    animation: cpSlide .35s ease;
-
-}
-
-@keyframes cpSlide {
-
-    from {
-
-        transform: translateX(-30px);
-
-        opacity: 0;
-
-    }
-
-    to {
-
-        transform: none;
-
-        opacity: 1;
-
-    }
-
-}
-
-
-/*==========================================
-COMMON FLEX
-==========================================*/
-
-.cp-flex {
-
-    display: flex;
-
-}
-
-.cp-center {
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-}
-
-.cp-between {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-}
-
-.cp-column {
-
-    display: flex;
-
-    flex-direction: column;
-
-}
-
-.cp-gap {
-
-    gap: 15px;
-
-}
-
-
-/*==========================================
-SPACING
-==========================================*/
-
-.mt-10 {
-    margin-top: 10px;
-}
-
-.mt-20 {
-    margin-top: 20px;
-}
-
-.mt-30 {
-    margin-top: 30px;
-}
-
-.mb-10 {
-    margin-bottom: 10px;
-}
-
-.mb-20 {
-    margin-bottom: 20px;
-}
-
-.mb-30 {
-    margin-bottom: 30px;
-}
-
-.p-10 {
-    padding: 10px;
-}
-
-.p-20 {
-    padding: 20px;
-}
-
-.p-30 {
-    padding: 30px;
-}
-
-
-/*==========================================
-TEXT
-==========================================*/
-
-.text-center {
-
-    text-align: center;
-
-}
-
-.text-right {
-
-    text-align: right;
-
-}
-
-.text-primary {
-
-    color: #2563eb;
-
-}
-
-.text-success {
-
-    color: #16a34a;
-
-}
-
-.text-danger {
-
-    color: #dc2626;
-
-}
-
-
-/*==========================================
-BUTTON EFFECT
-==========================================*/
-
-.cp-btn {
-
-    transition: .25s;
-
-}
-
-.cp-btn:hover {
-
-    transform: translateY(-2px);
-
-    box-shadow: 0 10px 20px rgba(0, 0, 0, .12);
-
-}
-
-
-/*==========================================
-FABRIC HELPER
-==========================================*/
-
-canvas {
-
-    touch-action: none;
-
-}
-
-.upper-canvas {
-
-    cursor: default;
-
-}
-
-.lower-canvas {
-
-    user-select: none;
-
-}
-
-/*==========================================
-    RESIZE MODAL
-==========================================*/
-
+@keyframes cpZoom { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.cp-fade { animation: cpFade .3s ease; }
+@keyframes cpFade { from { opacity: 0; } to { opacity: 1; } }
+
+.cp-slide { animation: cpSlide .35s ease; }
+@keyframes cpSlide { from { transform: translateX(-30px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+.cp-flex { display: flex; }
+.cp-center { display: flex; justify-content: center; align-items: center; }
+.cp-between { display: flex; justify-content: space-between; align-items: center; }
+.cp-column { display: flex; flex-direction: column; }
+.cp-gap { gap: 15px; }
+
+.mt-10 { margin-top: 10px; }
+.mt-20 { margin-top: 20px; }
+.mt-30 { margin-top: 30px; }
+.mb-10 { margin-bottom: 10px; }
+.mb-20 { margin-bottom: 20px; }
+.mb-30 { margin-bottom: 30px; }
+.p-10 { padding: 10px; }
+.p-20 { padding: 20px; }
+.p-30 { padding: 30px; }
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-primary { color: #2563eb; }
+.text-success { color: #16a34a; }
+.text-danger { color: #dc2626; }
+
+.cp-btn { transition: .25s; }
+.cp-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0, 0, 0, .12); }
+
+canvas { touch-action: none; }
+.upper-canvas { cursor: default; }
+.lower-canvas { user-select: none; }
+
+/* ==========================================
+   RESIZE MODAL GRAPHICS
+========================================== */
 .cp-resize-overlay {
     position: fixed;
     inset: 0;
@@ -1831,19 +639,8 @@ canvas {
     padding-bottom: 0px;
     border-bottom: 1px solid #ececec;
 }
-
-.cp-resize-header h2 {
-    margin: 0;
-    font-size: 24px;
-    font-weight: 700;
-    color: #222;
-}
-
-.cp-resize-header p {
-    margin-top: 6px;
-    color: #777;
-    font-size: 14px;
-}
+.cp-resize-header h2 { margin: 0; font-size: 24px; font-weight: 700; color: #222; }
+.cp-resize-header p { margin-top: 6px; color: #777; font-size: 14px; }
 
 .cp-close-btn {
     width: 42px;
@@ -1855,13 +652,7 @@ canvas {
     font-size: 18px;
     transition: .25s;
 }
-
-.cp-close-btn:hover {
-    background: #2563eb;
-    color: #fff;
-}
-
-/* Search */
+.cp-close-btn:hover { background: #2563eb; color: #fff; }
 
 .cp-search-wrapper {
     display: flex;
@@ -1871,22 +662,9 @@ canvas {
     padding: 5px 16px;
     border: 1px solid #ddd;
     border-radius: 13px;
-
 }
-
-.cp-search-icon {
-    color: #666;
-}
-
-.cp-search-input {
-    flex: 1;
-    border: none;
-    outline: none;
-    font-size: 15px;
-    background: transparent;
-}
-
-/* Custom Size */
+.cp-search-icon { color: #666; }
+.cp-search-input { flex: 1; border: none; outline: none; font-size: 15px; background: transparent; }
 
 .cp-custom-size {
     height: 150px;
@@ -1895,44 +673,12 @@ canvas {
     background: #edf1f7;
     border-radius: 12px;
 }
-
-.cp-custom-size h3 {
-    margin-bottom: 18px;
-    font-size: 18px;
-}
-
-.cp-custom-row {
-    display: flex;
-    gap: 15px;
-    align-items: flex-end;
-    flex-wrap: wrap;
-}
-
-.cp-input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.cp-input-group label {
-    font-size: 13px;
-    font-weight: 600;
-}
-
-.cp-input-group input,
-.cp-input-group select {
-    width: 120px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    outline: none;
-}
-
-.cp-multiply {
-    font-size: 24px;
-    font-weight: bold;
-    padding-bottom: 8px;
-}
+.cp-custom-size h3 { margin-bottom: 18px; font-size: 18px; }
+.cp-custom-row { display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap; }
+.cp-input-group { display: flex; flex-direction: column; gap: 6px; }
+.cp-input-group label { font-size: 13px; font-weight: 600; }
+.cp-input-group input, .cp-input-group select { width: 120px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
+.cp-multiply { font-size: 24px; font-weight: bold; padding-bottom: 8px; }
 
 .cp-apply-btn {
     padding: 11px 20px;
@@ -1944,35 +690,12 @@ canvas {
     font-weight: 600;
     transition: .25s;
 }
+.cp-apply-btn:hover { background: #1d4ed8; }
 
-.cp-apply-btn:hover {
-    background: #1d4ed8;
-}
-
-/* Presets */
-
-.cp-preset-container {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0 24px 24px;
-}
-
-.cp-category-block {
-    margin-bottom: 30px;
-}
-
-.cp-category-title {
-    margin-bottom: 16px;
-    font-size: 18px;
-    font-weight: 700;
-    color: #222;
-}
-
-.cp-size-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-    gap: 16px;
-}
+.cp-preset-container { flex: 1; overflow-y: auto; padding: 0 24px 24px; }
+.cp-category-block { margin-bottom: 30px; }
+.cp-category-title { margin-bottom: 16px; font-size: 18px; font-weight: 700; color: #222; }
+.cp-size-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
 
 .cp-size-card {
     display: flex;
@@ -1985,12 +708,7 @@ canvas {
     transition: .25s;
     background: #fff;
 }
-
-.cp-size-card:hover {
-    transform: translateY(-4px);
-    border-color: #2563eb;
-    box-shadow: 0 10px 25px rgba(37, 99, 235, .15);
-}
+.cp-size-card:hover { transform: translateY(-4px); border-color: #2563eb; box-shadow: 0 10px 25px rgba(37, 99, 235, .15); }
 
 .cp-size-icon {
     width: 55px;
@@ -2002,35 +720,11 @@ canvas {
     border-radius: 12px;
     font-size: 28px;
 }
+.cp-size-content h4 { margin: 0; font-size: 15px; }
+.cp-size-content span { display: block; margin-top: 5px; color: #777; font-size: 13px; }
+.cp-no-results { text-align: center; padding: 60px 20px; color: #777; }
 
-.cp-size-content h4 {
-    margin: 0;
-    font-size: 15px;
-}
-
-.cp-size-content span {
-    display: block;
-    margin-top: 5px;
-    color: #777;
-    font-size: 13px;
-}
-
-/* No Results */
-
-.cp-no-results {
-    text-align: center;
-    padding: 60px 20px;
-    color: #777;
-}
-
-/* Footer */
-
-.cp-resize-footer {
-    padding: 10px 25px;
-    border-top: 1px solid #ececec;
-    justify-content: flex-end;
-}
-
+.cp-resize-footer { padding: 10px 25px; border-top: 1px solid #ececec; justify-content: flex-end; }
 .cp-footer-cancel {
     padding: 10px 22px;
     border: none;
@@ -2040,44 +734,11 @@ canvas {
     font-weight: 600;
     transition: .25s;
 }
+.cp-footer-cancel:hover { background: #ddd; }
 
-.cp-footer-cancel:hover {
-    background: #ddd;
-}
-
-/* Responsive */
-
-@media(max-width:768px) {
-
-    .cp-resize-modal {
-        width: 96%;
-        height: 90vh;
-    }
-
-    .cp-custom-row {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .cp-input-group input,
-    .cp-input-group select {
-        width: 100%;
-    }
-
-    .cp-size-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .cp-apply-btn {
-        width: 100%;
-    }
-
-}
-
-/*==========================================================
-        RIGHT SIDEBAR GALLERY
-==========================================================*/
-
+/* ==========================
+   SIDEBAR SLIDER GALLERY
+========================== */
 .cp-sidebar-gallery-overlay {
     position: fixed;
     inset: 0;
@@ -2103,10 +764,6 @@ canvas {
     animation: sidebarSlide .35s ease;
 }
 
-/*==============================
-        HEADER
-==============================*/
-
 .cp-sidebar-gallery-header {
     display: flex;
     justify-content: space-between;
@@ -2118,13 +775,7 @@ canvas {
     top: 0;
     z-index: 5;
 }
-
-.cp-sidebar-gallery-header h3 {
-    margin: 0;
-    font-size: 22px;
-    font-weight: 700;
-    color: #2563eb;
-}
+.cp-sidebar-gallery-header h3 { margin: 0; font-size: 22px; font-weight: 700; color: #2563eb; }
 
 .cp-sidebar-gallery-close {
     width: 40px;
@@ -2136,44 +787,12 @@ canvas {
     font-size: 22px;
     transition: .3s;
 }
+.cp-sidebar-gallery-close:hover { background: #2563eb; color: #fff; }
 
-.cp-sidebar-gallery-close:hover {
-    background: #2563eb;
-    color: #fff;
-}
-
-/*==============================
-        BODY
-==============================*/
-
-.cp-sidebar-gallery-body {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px;
-}
-
-.cp-sidebar-gallery-body::-webkit-scrollbar {
-    width: 8px;
-}
-
-.cp-sidebar-gallery-body::-webkit-scrollbar-thumb {
-    background: #d4d4d4;
-    border-radius: 20px;
-}
-
-/*==============================
-        GRID
-==============================*/
-
-.cp-sidebar-gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-}
-
-/*==============================
-        CARD
-==============================*/
+.cp-sidebar-gallery-body { flex: 1; overflow-y: auto; padding: 20px; }
+.cp-sidebar-gallery-body::-webkit-scrollbar { width: 8px; }
+.cp-sidebar-gallery-body::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 20px; }
+.cp-sidebar-gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
 
 .cp-sidebar-gallery-card {
     background: #fff;
@@ -2184,34 +803,11 @@ canvas {
     transition: .3s;
     box-shadow: 0 5px 18px rgba(0, 0, 0, .05);
 }
+.cp-sidebar-gallery-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(37, 99, 235, .15); }
+.cp-sidebar-gallery-card img { width: 100%; height: 170px; object-fit: cover; display: block; transition: .35s; }
+.cp-sidebar-gallery-card:hover img { transform: scale(1.05); }
 
-.cp-sidebar-gallery-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(37, 99, 235, .15);
-}
-
-.cp-sidebar-gallery-card img {
-    width: 100%;
-    height: 170px;
-    object-fit: cover;
-    display: block;
-    transition: .35s;
-}
-
-.cp-sidebar-gallery-card:hover img {
-    transform: scale(1.05);
-}
-
-/*==============================
-        LOAD MORE
-==============================*/
-
-.cp-sidebar-gallery-footer {
-    padding: 20px;
-    border-top: 1px solid #ececec;
-    background: #fff;
-}
-
+.cp-sidebar-gallery-footer { padding: 20px; border-top: 1px solid #ececec; background: #fff; }
 .cp-sidebar-load-btn {
     width: 100%;
     border: none;
@@ -2224,494 +820,254 @@ canvas {
     cursor: pointer;
     transition: .3s;
 }
+.cp-sidebar-load-btn:hover { background: #174db7; transform: translateY(-2px); }
 
-.cp-sidebar-load-btn:hover {
-    background: #174db7;
-    transform: translateY(-2px);
-}
+@keyframes sidebarSlide { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
-/*==============================
-        ANIMATION
-==============================*/
-
-@keyframes sidebarSlide {
-
-    from {
-        transform: translateX(100%);
-    }
-
-    to {
-        transform: translateX(0);
-    }
-
-}
-
-.cp-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    overflow: hidden;
-}
-
-.cp-editor {
-    flex: 1;
-    display: flex;
-    min-height: 0;
-}
-
-.cp-bottom-toolbar {
-    flex-shrink: 0;
-}
-
-/*==========================================
-RESPONSIVE
-==========================================*/
-
-@media(max-width:1400px) {
-
-    .cp-template-panel {
-
-        width: 260px;
-        min-width: 260px;
-
-    }
-
-    .cp-page-panel {
-
-        width: 190px;
-        min-width: 190px;
-
-    }
-
-}
-
-
-
-@media(max-width:1200px) {
-
-    .cp-sidebar {
-
-        width: 75px;
-        min-width: 75px;
-
-    }
-
-    .cp-template-panel {
-
-        width: 240px;
-        min-width: 240px;
-
-    }
-
-    .cp-page-panel {
-
-        width: 180px;
-        min-width: 180px;
-
-    }
-
-    .cp-toolbar {
-
-        gap: 8px;
-
-    }
-
-}
-
-
-
-@media(max-width:992px) {
-
-    .cp-layout {
-
-        overflow: auto;
-
-    }
-
-    .cp-template-panel {
-
-        display: none;
-
-    }
-
-    .cp-page-panel {
-
-        width: 170px;
-
-        min-width: 170px;
-
-    }
-
-    .cp-toolbar {
-
-        padding: 10px;
-
-    }
-
-}
-
-
-
-@media(max-width:768px) {
-
-    .cp-layout {
-
-        flex-direction: column;
-
-        height: auto;
-
-        overflow: auto;
-
-    }
-
-    .cp-sidebar {
-
-        width: 100%;
-
-        height: 70px;
-
-        min-width: 100%;
-
-        flex-direction: row;
-
-        justify-content: flex-start;
-
-        overflow-x: auto;
-
-        overflow-y: hidden;
-
-        padding: 10px;
-
-    }
-
-    .cp-sidebar-item {
-
-        min-width: 70px;
-
-        margin: 0 6px;
-
-    }
-
-    .cp-page-panel {
-
-        width: 100%;
-
-        min-width: 100%;
-
-        height: 180px;
-
-        border-right: none;
-
-        border-bottom: 1px solid #ddd;
-
-    }
-
-    .cp-page-list {
-
-        flex-direction: row;
-
-        overflow-x: auto;
-
-
-    }
-
-    .cp-page-card {
-
-        min-width: 150px;
-
-    }
-
-    .cp-workspace {
-
-        padding: 20px;
-
-    }
-
-    .cp-bottom-toolbar {
-
-        flex-wrap: nowrap;
-
-    }
-
-    .cp-workspace-footer {
-
-        flex-direction: column;
-
-        height: auto;
-
-        gap: 10px;
-
-        padding: 15px;
-
-    }
-
-    .cp-sidebar-gallery {
-        width: 100%;
-    }
-
-    .cp-sidebar-gallery-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .cp-sidebar-gallery-card img {
-        height: 220px;
-    }
-}
-
-
-
-@media(max-width:576px) {
-
-    .cp-toolbar {
-
-        justify-content: flex-start;
-
-        overflow-x: auto;
-
-        flex-wrap: nowrap;
-
-    }
-
-    .cp-toolbar button {
-
-        min-width: 40px;
-
-    }
-
-    .cp-bottom-btn span {
-
-        display: none;
-
-    }
-
-    .cp-bottom-btn {
-
-        padding: 10px;
-
-    }
-
-    .cp-template-grid {
-
-        grid-template-columns: 1fr;
-
-    }
-
-    .cp-upload-grid {
-
-        grid-template-columns: 1fr;
-
-    }
-
-}
-
-
-
-@media(max-width:480px) {
-
-    .cp-sidebar-item {
-
-        min-width: 60px;
-
-    }
-
-    .cp-sidebar-item span {
-
-        font-size: 10px;
-
-    }
-
-    .cp-page-card {
-
-        min-width: 120px;
-
-    }
-
-    .cp-modal-content {
-
-        padding: 15px;
-
-    }
-
-    .cp-toolbar {
-
-        gap: 6px;
-
-    }
-
-    .cp-workspace {
-
-        padding: 12px;
-
-    }
-
-    .cp-sidebar-gallery-header {
-        padding: 16px;
-    }
-
-    .cp-sidebar-gallery-header h3 {
-        font-size: 18px;
-    }
-
-    .cp-sidebar-gallery-body {
-        padding: 15px;
-    }
-
-    .cp-sidebar-gallery-footer {
-        padding: 15px;
-    }
-
-    .cp-sidebar-gallery-card img {
-        height: 180px;
-    }
-}
-
-/* Add Text Style */
- .cp-template-section{
+.cp-template-section {
     position: absolute;
-    left: 90px;          /* Sidebar width */
+    left: 90px;
     top: 130px;
     width: 220px;
     padding: 20px 10px;
     z-index: 50;
-
 }
 
 .cp-text-box {
-
     width: 180px;
-
     background: #565eea;
-
     border-radius: 20px;
-
     padding: 24px 18px;
-
     display: flex;
-
     flex-direction: column;
-
     align-items: center;
-
     gap: 22px;
-
     box-shadow: 0 10px 25px rgba(0, 0, 0, .15);
-
 }
 
-.cp-text-box h3 {
-
-    margin: 0;
-
-    color: #fff;
-
-    text-align: center;
-
-    font-size: 24px;
-
-    font-weight: 700;
-
-    line-height: 1.2;
-
-}
-
+.cp-text-box h3 { margin: 0; color: #fff; text-align: center; font-size: 24px; font-weight: 700; line-height: 1.2; }
 .cp-text-box button {
-
     width: 100%;
-
     background: transparent;
-
     border: none;
-
     color: #fff;
-
     font-size: 18px;
-
     font-weight: 700;
-
     cursor: pointer;
-
     padding: 4px 0;
-
     transition: .2s;
+}
+.cp-text-box button:hover { transform: scale(1.03); opacity: .9; }
 
+/* ===========================================================
+   FIXED MOBILE REFLOW MEDIA QUERIES
+   =========================================================== */
+
+@media(max-width:1400px) {
+    .cp-template-panel { width: 260px; min-width: 260px; }
+    .cp-page-panel { width: 190px; min-width: 190px; }
 }
 
-.cp-text-box button:hover {
-
-    transform: scale(1.03);
-
-    opacity: .9;
-
+@media(max-width:1200px) {
+    .cp-sidebar { width: 75px; min-width: 75px; }
+    .cp-template-panel { width: 240px; min-width: 240px; }
+    .cp-page-panel { width: 180px; min-width: 180px; }
+    .cp-toolbar { gap: 8px; }
 }
 
-/*Preview model style  */
-.cp-preview-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.75);
-    z-index:99999;
-
-    display:flex;
-    flex-direction:column;
+@media(max-width:992px) {
+    .cp-template-panel { display: none; }
+    .cp-page-panel { width: 170px; min-width: 170px; }
+    .cp-toolbar { padding: 10px; }
 }
 
-.cp-preview-header{
-    height:70px;
-    background:#fff;
+/* Mobile Framing Overhaul
+*/
+@media(max-width:768px) {
+    /* FIXED: Prevent container property bleed over main body wrappers */
+    .cp-layout {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden !important; 
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
 
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+    /* Sets up precise vertical block stacking arrangement */
+    .cp-editor {
+        flex-direction: column;
+        overflow: hidden;
+        height: calc(100% - 70px);
+    }
 
-    padding:0 30px;
+    /* Shift primary option menu items up top to a scrollable rail */
+    .cp-sidebar {
+        width: 100%;
+        height: 70px;
+        min-width: 100%;
+        flex-direction: row;
+        justify-content: flex-start;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 10px;
+        border-right: none;
+        border-bottom: 1px solid #e8e8e8;
+    }
 
-    box-shadow:0 5px 20px rgba(0,0,0,.08);
+    .cp-sidebar-item {
+        min-width: 70px;
+        margin: 0 6px;
+        margin-bottom: 0;
+    }
+
+    /* MOBILE PAGE PANEL LAYOUT SETUP */
+    .cp-page-panel {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        width: 100% !important;
+        min-width: 100% !important;
+        height: 145px !important; 
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        flex-shrink: 0 !important;
+        padding: 10px !important;
+        gap: 8px !important;
+    }
+
+    /* Distribute top row actions evenly side-by-side */
+    .cp-page-panel > .cp-back-btn,
+    .cp-page-panel > .cp-add-page-btn {
+        flex: 1 !important; 
+        width: auto !important;
+        margin-bottom: 0 !important;
+        height: 38px !important;
+        font-size: 12px !important;
+        border-radius: 20px !important;
+    }
+
+    /* Fixed full screen rail underneath actions layout row */
+    .cp-page-list {
+        width: 100% !important; 
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        display: flex !important;
+        gap: 12px;
+        margin-top: 4px !important;
+        flex: none !important;
+        padding-bottom: 4px;
+    }
+
+    .cp-page-card {
+        min-width: 90px;
+        margin-top: 0;
+        padding: 4px;
+        height: auto !important; 
+    }
+
+    .cp-page-preview {
+        height: 40px !important; 
+    }
+
+    .cp-page-name {
+        font-size: 11px;
+        display: block !important;
+        margin-top: 4px !important;
+        line-height: 14px;
+    }
+
+    /* Core Dynamic Workspace Setup */
+    .cp-canvas-area {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .cp-workspace {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px;
+        overflow: auto;
+    }
+
+    .cp-canvas-wrapper {
+        flex: 1;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+    }
+
+    .cp-bottom-toolbar {
+        flex-wrap: nowrap;
+    }
+
+    .cp-workspace-footer {
+        flex-direction: column;
+        height: auto;
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .cp-resize-modal { width: 96%; height: 90vh; }
+    .cp-custom-row { flex-direction: column; align-items: stretch; }
+    .cp-input-group input, .cp-input-group select { width: 100%; }
+    .cp-size-grid { grid-template-columns: 1fr; }
+    .cp-apply-btn { width: 100%; }
+
+    .cp-sidebar-gallery { width: 100%; }
+    .cp-sidebar-gallery-grid { grid-template-columns: 1fr; }
+    .cp-sidebar-gallery-card img { height: 220px; }
 }
 
-.cp-preview-header h3{
-    margin:0;
-    font-size:22px;
-    font-weight:600;
+@media(max-width:576px) {
+    .cp-toolbar {
+        justify-content: flex-start;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding: 8px 12px;
+        min-height: 58px;
+    }
+
+    .cp-toolbar button {
+        min-width: 38px;
+        height: 38px;
+    }
+
+    .cp-bottom-btn span {
+        display: none;
+    }
+
+    .cp-bottom-btn {
+        padding: 10px;
+    }
+
+    .cp-template-grid,
+    .cp-upload-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
-.cp-preview-close{
-    width:42px;
-    height:42px;
-
-    border:none;
-    border-radius:50%;
-
-    background:#f4f4f4;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    cursor:pointer;
-}
-
-.cp-preview-close:hover{
-    background:#e5e5e5;
-}
-
-.cp-preview-body{
-    flex:1;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    overflow:auto;
-
-    padding:40px;
-}
-
-.cp-preview-image{
-    max-width:95%;
-    max-height:95%;
-
-    box-shadow:0 15px 45px rgba(0,0,0,.3);
-
-    background:#fff;
+@media(max-width:480px) {
+    .cp-sidebar-item { min-width: 60px; }
+    .cp-sidebar-item span { font-size: 10px; }
+    .cp-page-card { min-width: 90px; }
+    .cp-modal-content { padding: 15px; }
+    .cp-toolbar { gap: 6px; }
+    .cp-workspace { padding: 10px; }
+    
+    .cp-template-section {
+        left: 10px;
+        top: 80px;
+        width: calc(100% - 20px);
+    }
 }
