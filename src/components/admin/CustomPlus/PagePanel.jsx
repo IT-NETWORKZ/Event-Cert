@@ -154,9 +154,10 @@ const PagePanel = () => {
                             )}
                         </div>
 
-                        <div className="cp-page-name">
+                         <div className="cp-page-name">
                             Page {index + 1}
                         </div>
+ 
                     </div>
                 ))}
             </div>

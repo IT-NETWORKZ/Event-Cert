@@ -163,6 +163,7 @@ const FabricCanvas = () => {
                     {Math.round(scale * 100)}%
                 </div>
             )}
+    
         </div>
     );
 };
