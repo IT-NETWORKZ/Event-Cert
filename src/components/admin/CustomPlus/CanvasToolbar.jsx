@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import {
   FaFont,
-  FaImage,
   FaSearchPlus,
   FaSearchMinus,
   FaCopy,
@@ -15,24 +14,16 @@ import {
   FaBold,
   FaItalic,
   FaAlignCenter,
-  FaCloudDownloadAlt,
-  FaEraser,
-  FaAdjust
+  FaEraser
 } from "react-icons/fa";
 import { fabric } from "fabric";
 import { useCanvas } from "../../../context/CanvasContext";
+import "../../../css/CanvasToolbar.css"; 
 
-const AVAILABLE_FONTS = [
-  { label: "Outfit", value: "Outfit, sans-serif" },
-  { label: "Arial", value: "Arial, sans-serif" },
-  { label: "Times New Roman", value: "'Times New Roman', serif" },
-  { label: "Courier New", value: "'Courier New', monospace" },
-  { label: "Georgia", value: "Georgia, serif" },
-  { label: "Impact", value: "Impact, Charcoal, sans-serif" }
-];
+// Paste your actual active Google API key here
+const GOOGLE_FONTS_API_KEY = "AIzaSyDqNrCK8BuznkBj3trctRLNq3K3dhP9GQc";
 
 const CanvasToolbar = () => {
-  const fileInputRef = useRef(null);
   const {
     canvas,
     past,
@@ -43,12 +34,50 @@ const CanvasToolbar = () => {
   } = useCanvas();
 
   const [currentColor, setCurrentColor] = useState("#4F46E5");
-  const [currentFont, setCurrentFont] = useState("Outfit, sans-serif");
+  const [currentFont, setCurrentFont] = useState("Roboto");
   const [isDrawing, setIsDrawing] = useState(false);
+  const [availableFonts, setAvailableFonts] = useState([]);
+  
 
   const pastHistory = past || [];
   const futureHistory = future || [];
 
+  // 1. Automatically fetch the live popular fonts list using your API key
+  useEffect(() => {
+    const fetchGoogleFonts = async () => {
+      try {
+        const response = await fetch(
+          `https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=${GOOGLE_FONTS_API_KEY}`
+        );
+        const data = await response.json();
+        
+        if (data.items) {
+          // Takes the top 120 most popular fonts for a lightweight MS Word setup
+          setAvailableFonts(data.items.slice(0, 120));
+        }
+      } catch (err) {
+        console.error("Error fetching Google Fonts:", err);
+        // Robust UI layout fallback if your API key isn't verified yet
+        setAvailableFonts([
+          { family: "Roboto" },
+          { family: "Open Sans" },
+          { family: "Lato" },
+          { family: "Montserrat" },
+          { family: "Arial" }
+        ]);
+      }
+    };
+
+    if (GOOGLE_FONTS_API_KEY && GOOGLE_FONTS_API_KEY !== "YOUR_GOOGLE_FONTS_API_KEY_HERE") {
+      fetchGoogleFonts();
+    } else {
+      setAvailableFonts([
+        { family: "Roboto" }, { family: "Open Sans" }, { family: "Lato" }, { family: "Arial" }
+      ]);
+    }
+  }, []);
+
+  // 2. Read canvas selections to auto-update toolbar states
   useEffect(() => {
     if (!canvas) return;
 
@@ -68,7 +97,7 @@ const CanvasToolbar = () => {
 
     canvas.on("selection:created", handleSelection);
     canvas.on("selection:updated", handleSelection);
-    canvas.on("selection:cleared", () => setCurrentFont("Outfit, sans-serif"));
+    canvas.on("selection:cleared", () => setCurrentFont("Roboto"));
 
     return () => {
       canvas.off("selection:created", handleSelection);
@@ -78,7 +107,70 @@ const CanvasToolbar = () => {
 
   if (!canvas) return null;
 
-  // ---------------- History Management ----------------
+  // 3. Dynamic Font Head Injector & Canvas Re-renderer
+  const changeFontFamily = async (e) => {
+  const selectedFont = e.target.value;
+
+  setCurrentFont(selectedFont);
+
+  const activeObj = canvas.getActiveObject();
+
+  if (!activeObj) {
+    console.log("Please select a text object first");
+    return;
+  }
+
+  const isTextObject =
+    activeObj.type === "i-text" ||
+    activeObj.type === "textbox" ||
+    activeObj.type === "text";
+
+  if (!isTextObject) {
+    console.log("Selected object is not text:", activeObj.type);
+    return;
+  }
+
+  // Create Google Font stylesheet link
+  const fontId = `dynamic-font-${selectedFont
+    .replace(/\s+/g, "-")
+    .toLowerCase()}`;
+
+  if (!document.getElementById(fontId)) {
+    const link = document.createElement("link");
+
+    link.id = fontId;
+    link.rel = "stylesheet";
+
+    link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(
+      selectedFont
+    )}&display=swap`;
+
+    document.head.appendChild(link);
+  }
+
+  try {
+    // Wait until font is actually loaded
+    await document.fonts.load(`28px "${selectedFont}"`);
+
+    // Apply font to selected Fabric text
+    activeObj.set({
+      fontFamily: selectedFont,
+      dirty: true,
+    });
+
+    activeObj.setCoords();
+
+    canvas.requestRenderAll();
+
+    saveState(canvas);
+
+    console.log("Font changed successfully:", selectedFont);
+  } catch (error) {
+    console.error("Font loading failed:", error);
+  }
+};
+
+  // ---------------- Undo/Redo Engine ----------------
   const undo = () => {
     if (pastHistory.length === 0) return;
     const previousState = pastHistory[pastHistory.length - 1];
@@ -119,7 +211,7 @@ const CanvasToolbar = () => {
     });
   };
 
-  // ---------------- Creative/Editing Enhancements ----------------
+  // ---------------- Object and Brush Modifiers ----------------
   const changeColor = (e) => {
     const newColor = e.target.value;
     setCurrentColor(newColor);
@@ -172,18 +264,6 @@ const CanvasToolbar = () => {
     canvas.setActiveObject(text);
     canvas.renderAll();
     saveState(canvas);
-  };
-
-  const changeFontFamily = (e) => {
-    const selectedFont = e.target.value;
-    setCurrentFont(selectedFont);
-
-    const activeObj = canvas.getActiveObject();
-    if (activeObj && activeObj.type === "i-text") {
-      activeObj.set("fontFamily", selectedFont);
-      canvas.renderAll();
-      saveState(canvas);
-    }
   };
 
   const toggleBold = () => {
@@ -246,84 +326,80 @@ const CanvasToolbar = () => {
   };
 
   return (
-    <div style={styles.toolbarContainer}>
-      {/* History Layout */}
-      <button style={styles.button} onClick={undo} disabled={pastHistory.length === 0} title="Undo">
+    <div className="toolbar-container">
+      {/* Undo/Redo Controls */}
+      <button className="toolbar-button" onClick={undo} disabled={pastHistory.length === 0} title="Undo">
         <FaUndo style={{ opacity: pastHistory.length === 0 ? 0.4 : 1 }} />
       </button>
-      <button style={styles.button} onClick={redo} disabled={futureHistory.length === 0} title="Redo">
+      <button className="toolbar-button" onClick={redo} disabled={futureHistory.length === 0} title="Redo">
         <FaRedo style={{ opacity: futureHistory.length === 0 ? 0.4 : 1 }} />
       </button>
 
-      <div style={styles.divider} />
+      <div className="toolbar-divider" />
 
-      {/* Dynamic Color Palette Options */}
-      <label title="Color Palette" style={{ ...styles.colorLabel, backgroundColor: currentColor }}>
+      {/* Color Swatch Panel */}
+      <label title="Color Palette" className="color-label" style={{ backgroundColor: currentColor }}>
         <FaPalette style={{ color: "#fff", mixBlendMode: "difference" }} />
         <input
           type="color"
           value={currentColor}
           onChange={changeColor}
           onBlur={handleColorPickerBlur}
-          style={styles.hiddenColorInput}
+          className="hidden-color-input"
         />
       </label>
 
-      {/* Freehand Pencil Brush */}
+      {/* Brush Pencil Feature */}
       <button
         onClick={toggleDrawingMode}
         title="Draw Mode"
-        style={{ 
-          ...styles.button, 
-          backgroundColor: isDrawing ? "#e0f2fe" : "transparent", 
-          color: isDrawing ? "#0284c7" : "inherit" 
-        }}
+        className={`toolbar-button ${isDrawing ? "active" : ""}`}
       >
         <FaPencilAlt />
       </button>
 
-      <div style={styles.divider} />
-      {/* Custom Styled Dropdown Selection Option */}
+      <div className="toolbar-divider" />
+      
+      {/* MS Word Automated Typography Menu */}
       <select 
         value={currentFont} 
         onChange={changeFontFamily} 
         title="Font Family"
-        style={styles.selectDropdown}
+        className="select-dropdown"
       >
-        {AVAILABLE_FONTS.map((font) => (
-          <option key={font.value} value={font.value}>
-            {font.label}
+        {availableFonts.map((font) => (
+          <option key={font.family} value={font.family}>
+            {font.family}
           </option>
         ))}
       </select>
 
-      {/* Element Adding & Rich Typographic Settings */}
-      <button style={styles.button} onClick={addCreativeText} title="Add Custom Text"><FaFont /></button>
+      {/* Rich Text Node Settings */}
+      <button className="toolbar-button" onClick={addCreativeText} title="Add Custom Text"><FaFont /></button>
+      <button className="toolbar-button" onClick={toggleBold} title="Make Bold"><FaBold /></button>
+      <button className="toolbar-button" onClick={toggleItalic} title="Make Italic"><FaItalic /></button>
 
-      <button style={styles.button} onClick={toggleBold} title="Make Bold"><FaBold /></button>
-      <button style={styles.button} onClick={toggleItalic} title="Make Italic"><FaItalic /></button>
+      <div className="toolbar-divider" />
 
-      <div style={styles.divider} />
+      {/* Formatting & Layout Layout Engine Actions */}
+      <button className="toolbar-button" onClick={centerObject} title="Center Layout Alignment"><FaAlignCenter /></button>
+      <button className="toolbar-button" onClick={duplicate} title="Clone Object"><FaCopy /></button>
+      <button className="toolbar-button" onClick={bringForward} title="Move Layer Up"><FaArrowUp /></button>
+      <button className="toolbar-button" onClick={sendBackward} title="Move Layer Down"><FaArrowDown /></button>
 
-      {/* Advanced Layout Formatting Tweaks */}
-      <button style={styles.button} onClick={centerObject} title="Center Layout Alignment"><FaAlignCenter /></button>
-      <button style={styles.button} onClick={duplicate} title="Clone Object"><FaCopy /></button>
-      <button style={styles.button} onClick={bringForward} title="Move Layer Up"><FaArrowUp /></button>
-      <button style={styles.button} onClick={sendBackward} title="Move Layer Down"><FaArrowDown /></button>
+      <div className="toolbar-divider" />
 
-      <div style={styles.divider} />
+      {/* Navigation Viewport Scale Triggers */}
+      <button className="toolbar-button" onClick={() => canvas.setZoom(canvas.getZoom() + 0.1)} title="Zoom In"><FaSearchPlus /></button>
+      <button className="toolbar-button" onClick={() => canvas.setZoom(Math.max(0.2, canvas.getZoom() - 0.1))} title="Zoom Out"><FaSearchMinus /></button>
 
-      {/* Global Canvas Navigation Zoom Settings */}
-      <button style={styles.button} onClick={() => canvas.setZoom(canvas.getZoom() + 0.1)} title="Zoom In"><FaSearchPlus /></button>
-      <button style={styles.button} onClick={() => canvas.setZoom(Math.max(0.2, canvas.getZoom() - 0.1))} title="Zoom Out"><FaSearchMinus /></button>
+      <div className="spacer" />
 
-      <div style={{ marginRight: "auto" }} />
-
-      {/* Destructive Maintenance Operations */}
-      <button style={{ ...styles.button, color: "#d97706" }} onClick={clearCanvas} title="Reset Workspace Canvas">
+      {/* Destructive Maintenance Actions */}
+      <button className="toolbar-button btn-eraser" onClick={clearCanvas} title="Reset Workspace Canvas">
         <FaEraser />
       </button>
-      <button style={{ ...styles.button, color: "#ef4444" }} onClick={() => {
+      <button className="toolbar-button btn-trash" onClick={() => {
         const obj = canvas.getActiveObject();
         if (obj) { canvas.remove(obj); canvas.renderAll(); }
       }} title="Delete Object">
@@ -333,85 +409,7 @@ const CanvasToolbar = () => {
   );
 };
 
-// ---------------- Full Extracted CSS Stylesheet Styles ----------------
-const styles = {
-  toolbarContainer: {
-    display: "flex",
-    gap: "6px",
-    alignItems: "center",
-    backgroundColor: "#ffffff",
-    padding: "6px 12px",
-    borderRadius: "8px",
-    border: "1px solid #e5e7eb",
-    flexWrap: "nowrap", // Forces everything strictly onto a single row line
-    overflowX: "auto" // Ensures smooth scrolling if screen goes very small
-  },
-  button: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "36px",
-    height: "36px",
-    borderRadius: "6px",
-    border: "1px solid transparent",
-    backgroundColor: "transparent",
-    cursor: "pointer",
-    color: "#4b5563",
-    transition: "all 0.15s ease",
-    outline: "none"
-  },
-  divider: {
-    borderLeft: "1px solid #e5e7eb",
-    height: "20px",
-    margin: "0 4px",
-    flexShrink: 0
-  },
-  colorLabel: {
-    display: "flex", 
-    alignItems: "center", 
-    justifyContent: "center",
-    cursor: "pointer", 
-    position: "relative", 
-    width: "36px", 
-    height: "36px",
-    borderRadius: "6px", 
-    border: "1px solid #d1d5db", 
-    transition: "0.2s",
-    flexShrink: 0
-  },
-  hiddenColorInput: {
-    position: "absolute", 
-    opacity: 0, 
-    inset: 0, 
-    cursor: "pointer",
-    width: "100%",
-    height: "100%"
-  },
-  selectDropdown: {
-    padding: "6px 28px 6px 12px",
-    borderRadius: "6px",
-    border: "1px solid #d1d5db",
-    fontSize: "14px",
-    fontWeight: "500",
-    color: "#374151",
-    backgroundColor: "#ffffff",
-    outline: "none",
-    cursor: "pointer",
-    width: "140px",
-    minWidth: "130px",
-    flexShrink: 0, // Prevents dropdown container from squeezing down or expanding
-    appearance: "none",
-    WebkitAppearance: "none",
-    MozAppearance: "none",
-    backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236B7280' width='18' height='18'><path d='M7 10l5 5 5-5z'/></svg>")`,
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "right 8px center",
-    boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)"
-  }
-};
-
 export default CanvasToolbar;
-
 
 // import React, { useRef, useState, useEffect } from "react";
 // import {
