@@ -21,7 +21,9 @@ import { useCanvas } from "../../../context/CanvasContext";
 import "../../../css/CanvasToolbar.css"; 
 
 // Paste your actual active Google API key here
-const GOOGLE_FONTS_API_KEY = "AIzaSyDqNrCK8BuznkBj3trctRLNq3K3dhP9GQc";
+
+// create company secret key
+const GOOGLE_FONTS_API_KEY = "";
 
 const CanvasToolbar = () => {
   const {
