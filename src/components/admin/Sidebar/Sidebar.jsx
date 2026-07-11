@@ -19,6 +19,7 @@ import {
   FaAward,
   FaCommentDots,
   FaReceipt,
+  FaCalendarDay
 } from "react-icons/fa";
 
 import { NavLink, useLocation } from "react-router-dom";
@@ -170,6 +171,14 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
             className={isActive("/admin/payment") ? "active-item" : ""}
           >
             Payment
+          </MenuItem>
+
+            <MenuItem
+            icon={<FaCalendarDay />}
+            component={<NavLink to="/admin/dashboard" />}
+            className={isActive("/admin/dashboard") ? "active-item" : ""}
+          >
+            Add Event
           </MenuItem>
         </Menu>
       </Sidebar>
