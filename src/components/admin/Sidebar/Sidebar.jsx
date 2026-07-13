@@ -175,8 +175,8 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
 
             <MenuItem
             icon={<FaCalendarDay />}
-            component={<NavLink to="/admin/dashboard" />}
-            className={isActive("/admin/dashboard") ? "active-item" : ""}
+            component={<NavLink to="/admin/addevent" />}
+            className={isActive("/admin/addevent") ? "active-item" : ""}
           >
             Add Event
           </MenuItem>

@@ -15,6 +15,7 @@ import Subscriptionplan from "../components/admin/Subscription/Subscriptionplan"
 import FeedbackForm from "../components/admin/FeedbackForm/FeedbackForm";
 import CustomPlus from "../pages/Admin/CustomPlus";
 import Payment from "../components/admin/Payment/Payment";
+import AddEvent from "../components/admin/AddEvent/AddEvent";
 
 
 function AppRoutes() {
@@ -57,6 +58,9 @@ function AppRoutes() {
 
                 {/* /admin/payment */}
                 <Route path="payment" element={<Payment />} />
+
+                {/* /admin/addevent */}
+                <Route path="addevent" element={<AddEvent />} />
 
             </Route>
 
