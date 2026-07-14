@@ -103,51 +103,7 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
             Custom Plus
           </MenuItem>
 
-          <MenuItem
-            icon={<FaUser />}
-            component={<NavLink to="/admin/greeting" />}
-            className={isActive("/admin/greeting") ? "active-item" : ""}
-          >
-            Greeting
-          </MenuItem>
-
-          <MenuItem
-            icon={<FaFileAlt />}
-            component={<NavLink to="/admin/square_certificate" />}
-            className={isActive("/admin/square_certificate") ? "active-item" : ""}
-          >
-            Square Certificate
-          </MenuItem>
-
-          {/* Quick SubMenu */}
-          <SubMenu
-            icon={<FaAward />}
-            label="Quick"
-            className={isSubMenuActive(["/admin/quick/template1", "/admin/quick/template2", "/admin/quick/template3"]) ? "active-submenu" : ""}
-          >
-            <MenuItem component={<NavLink to="/admin/quick/template1" />} className={isActive("/admin/quick/template1") ? "active-item" : ""}>Template 1</MenuItem>
-            <MenuItem component={<NavLink to="/admin/quick/template2" />} className={isActive("/admin/quick/template2") ? "active-item" : ""}>Template 2</MenuItem>
-            <MenuItem component={<NavLink to="/admin/quick/template3" />} className={isActive("/admin/quick/template3") ? "active-item" : ""}>Template 3</MenuItem>
-          </SubMenu>
-
-          {/* Advance SubMenu */}
-          <SubMenu
-            icon={<FaAward />}
-            label="Advance"
-            className={isSubMenuActive(["/admin/advance/certificate", "/admin/advance/idcard", "/admin/advance/badge"]) ? "active-submenu" : ""}
-          >
-            <MenuItem component={<NavLink to="/admin/advance/certificate" />} className={isActive("/admin/advance/certificate") ? "active-item" : ""}>Certificate</MenuItem>
-            <MenuItem component={<NavLink to="/admin/advance/idcard" />} className={isActive("/admin/advance/idcard") ? "active-item" : ""}>ID Card</MenuItem>
-            <MenuItem component={<NavLink to="/admin/advance/badge" />} className={isActive("/admin/advance/badge") ? "active-item" : ""}>Badge</MenuItem>
-          </SubMenu>
-
-          <MenuItem
-            icon={<FaFileAlt />}
-            component={<NavLink to="/admin/backpage" />}
-            className={isActive("/admin/backpage") ? "active-item" : ""}
-          >
-            Backpage
-          </MenuItem>
+          
 
           <MenuItem
             icon={<FaFileAlt />}
@@ -157,7 +113,7 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
             Add Participants
           </MenuItem>
 
-          <MenuItem
+          {/* <MenuItem
             icon={<FaCommentDots />}
             component={<NavLink to="/admin/feedback" />}
             className={isActive("/admin/feedback") ? "active-item" : ""}
@@ -171,7 +127,7 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
             className={isActive("/admin/payment") ? "active-item" : ""}
           >
             Payment
-          </MenuItem>
+          </MenuItem> */}
 
             <MenuItem
             icon={<FaCalendarDay />}
