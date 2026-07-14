@@ -7,6 +7,7 @@ import { useRef } from "react";
 import hero1 from "../../../assets/img/hero-slider-1.jpg";
 import hero2 from "../../../assets/img/hero-slider-2.jpg";
 import hero3 from "../../../assets/img/hero-slider-3.jpg";
+import LoginCard from "../../common/Login/LoginCard"
 
 function Hero() {
   const otpRefs = useRef([]);
@@ -68,79 +69,10 @@ function Hero() {
 
 
 
-            {/* <div className="col-lg-5"> */}
+            
             <div className="col-lg-5 col-md-12">
 
-              <div className="login-card">
-                <h1>LOGIN</h1>
-                <p>Login to continue your journey</p>
-
-                <div className="otp-options">
-                  <label>
-                    <input type="radio" name="otp" defaultChecked />
-                    Email OTP
-                  </label>
-                  <label>
-                    <input type="radio" name="otp" />
-                    Mobile OTP
-                  </label>
-                </div>
-
-                {/* Input and Button locked cleanly in one responsive row layout */}
-                <div className="input-row-group">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Email Id / Mobile No."
-                  />
-                  <button type="button" className="otp-btn">
-                    Send OTP
-                  </button>
-                </div>
-
-                <h6>Enter OTP</h6>
-                <div className="otp-boxes">
-                  {[...Array(6)].map((_, index) => (
-                    <input
-                      key={index}
-                      type="text"
-                      maxLength={1}
-                      inputMode="numeric"
-                      pattern="\d*"
-                      ref={(el) => (otpRefs.current[index] = el)}
-                      onChange={(e) => handleOTPChange(e, index)}
-                      onKeyDown={(e) => handleKeyDown(e, index)}
-                    />
-                  ))}
-                </div>
-
-                <div className="submit-btn-wrapper">
-                  <button type="submit" className="submit-btn">
-                    Submit
-                  </button>
-                </div>
-
-                {/* OR Divider */}
-                <div className="divider">
-                  <span>OR</span>
-                </div>
-
-                {/* Google Sign In */}
-                <button type="button" className="google-btn">
-                  <img
-                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                    alt="Google"
-                  />
-                  Continue with Google
-                </button>
-
-                <p className="register">
-                  Don't have an account?
-                  <Link to="/register" className="text-blue">
-                    Register
-                  </Link>
-                </p>
-              </div>
+              <LoginCard />
 
             </div>
 
@@ -201,137 +133,6 @@ function Hero() {
 
 
           </div>
-
-
-
-
-          {/* Bottom Features */}
-
-
-          {/* <div className="row g-5">
-
-
-          <div className="col-md-6 col-lg-3">
-
-
-            <div className="d-flex align-items-center">
-
-
-              <div className="flex-shrink-0 btn-square border border-2 border-white me-3">
-
-                ⭐
-
-              </div>
-
-
-              <h5 className="lh-base mb-0">
-
-                Crafted Furniture
-
-              </h5>
-
-
-            </div>
-
-
-          </div>
-
-
-
-
-
-          <div className="col-md-6 col-lg-3">
-
-
-            <div className="d-flex align-items-center">
-
-
-              <div className="flex-shrink-0 btn-square border border-2 border-white me-3">
-
-                ⭐
-
-              </div>
-
-
-
-              <h5 className="lh-base mb-0">
-
-                Sustainable Material
-
-              </h5>
-
-
-
-            </div>
-
-
-
-          </div>
-
-
-
-
-
-
-          <div className="col-md-6 col-lg-3">
-
-
-            <div className="d-flex align-items-center">
-
-
-              <div className="flex-shrink-0 btn-square border border-2 border-white me-3">
-
-                ⭐
-
-              </div>
-
-
-
-              <h5 className="lh-base mb-0">
-
-                Innovative Architects
-
-              </h5>
-
-
-            </div>
-
-
-
-          </div>
-
-
-
-
-
-          <div className="col-md-6 col-lg-3">
-
-
-            <div className="d-flex align-items-center">
-
-
-              <div className="flex-shrink-0 btn-square border border-2 border-white me-3">
-
-                ⭐
-
-              </div>
-
-
-              <h5 className="lh-base mb-0">
-
-                Budget Friendly
-
-              </h5>
-
-
-            </div>
-
-
-          </div>
-
-
-
-        </div> */}
 
 
 
