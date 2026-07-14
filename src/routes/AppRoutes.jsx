@@ -17,6 +17,10 @@ import CustomPlus from "../pages/Admin/CustomPlus";
 import Payment from "../components/admin/Payment/Payment";
 import AddEvent from "../components/admin/AddEvent/AddEvent";
 
+import CPanel from "../pages/CPanel/CPanel";
+import CDashboard from "../components/cpanel/Dashboard/CDashboard";
+import CLogin from "../components/cpanel/Login/CLogin";
+
 
 function AppRoutes() {
     return (
@@ -61,8 +65,22 @@ function AppRoutes() {
 
                 {/* /admin/addevent */}
                 <Route path="addevent" element={<AddEvent />} />
-
             </Route>
+
+
+            {/* ================= CPANEL LAYOUT ================= */}
+
+            <Route path="/cpanel">
+                <Route index element={<CLogin />} />
+            </Route>
+
+            {/* CPanel Main Layout wrapper - Runs for all sub-routes like /cpanel/dashboard */}
+            <Route path="/cpanel" element={<CPanel />}>
+                <Route path="dashboard" element={<CDashboard />} />
+            </Route>
+
+
+
 
         </Routes>
     );

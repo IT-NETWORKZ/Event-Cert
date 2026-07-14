@@ -1,0 +1,225 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+.custom-sidebar {
+    height: 100vh;
+    background: linear-gradient(270deg, #009688, #60b0a9) !important;
+    border: none !important;
+    box-shadow: 0 15px 40px rgba(0, 150, 136, .25);
+    overflow: hidden;
+    z-index: 1000;
+}
+
+/* Background Accents */
+.custom-sidebar::before {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    background: rgba(255, 255, 255, .15);
+    border-radius: 50%;
+    right: -70px;
+    top: -70px;
+    pointer-events: none;
+}
+
+.custom-sidebar::after {
+    content: "";
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    background: rgba(255, 255, 255, .08);
+    border-radius: 50%;
+    left: -60px;
+    bottom: -60px;
+    pointer-events: none;
+}
+
+/* Custom Scroll Handling inside Menu Container */
+.custom-sidebar .ps-sidebar-container {
+    background: transparent !important;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.custom-sidebar .ps-sidebar-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* =====================================
+          HEADER & LOGO AREA
+===================================== */
+.sidebar-header {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, .25);
+    position: relative;
+}
+
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    max-width: 150px;
+}
+
+.sidebar-logo img {
+    width: 100%;
+    object-fit: contain;
+}
+
+/* Dynamic Close Icon for Mobile Overlay */
+.sidebar-close-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    outline: none;
+    color: #ffffff;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: none; /* Hidden on desktop screens */
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-close-btn:hover {
+    background: #ffffff;
+    color: #009688;
+}
+
+/* =====================================
+          NAVIGATION & MENU LINKS
+===================================== */
+.custom-sidebar .ps-menu-root {
+    padding: 20px 0;
+}
+
+.custom-sidebar .ps-menuitem-root {
+    margin: 5px 0;
+}
+
+.custom-sidebar .ps-menu-button {
+    height: 54px !important;
+    margin: 0 12px;
+    border-radius: 14px;
+    color: #fff !important;
+    transition: transform 0.2s ease, background-color 0.2s ease !important;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.custom-sidebar .ps-menu-button:hover {
+    background: rgba(255, 255, 255, .18) !important;
+    transform: translateX(4px);
+}
+
+/* Icon Containers */
+.custom-sidebar .ps-icon {
+    width: 42px !important;
+    min-width: 42px !important;
+    height: 42px !important;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 14px;
+    color: #fff;
+    transition: transform 0.2s ease, background-color 0.2s ease !important;
+}
+
+.custom-sidebar .ps-menuitem-root:hover .ps-icon {
+    background: #fff !important;
+    color: #009688 !important;
+    transform: scale(1.05);
+}
+
+/* =====================================
+          ACTIVE LINK STATES
+===================================== */
+/* .custom-sidebar .active-item .ps-menu-button {
+    background: #fff !important;
+    color: #009688 !important;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(0, 150, 136, .30);
+
+
+} */
+ .custom-sidebar .active-item > .ps-menu-button {
+    background: #fff !important;
+    color: #009688 !important;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(0,150,136,.30);
+}
+
+.custom-sidebar:not(.ps-collapsed) .active-item > .ps-menu-button .ps-icon {
+    background: linear-gradient(45deg, #009688, #26A69A) !important;
+    color: #fff !important;
+  
+}
+
+.custom-sidebar.ps-collapsed .active-item > .ps-menu-button {
+    background: transparent !important; /* Removes the broken, wide white box layout */
+    box-shadow: none !important;
+    background: white !important;
+    display: flex;
+    justify-content: center;
+}
+
+/* .custom-sidebar .active-item .ps-icon { */
+.custom-sidebar .active-item > .ps-menu-button .ps-icon {
+    background: linear-gradient(45deg, #009688, #26A69A) !important;
+    color: #fff !important;
+   
+}
+
+.custom-sidebar .ps-submenu-root.ps-active > .ps-menu-button {
+    background: rgba(255,255,255,.18) !important;
+    color: #fff !important;
+    box-shadow: none !important;
+}
+
+/* =====================================
+          SUBMENUS (DROPDOWNS)
+===================================== */
+.custom-sidebar .ps-submenu-content {
+    background: rgba(255, 255, 255, .12) !important;
+    backdrop-filter: blur(20px);
+    border-radius: 12px;
+    margin: 5px 15px;
+}
+
+.custom-sidebar .ps-submenu-content .ps-menu-button {
+    margin: 4px 8px;
+    height: 46px !important;
+    font-size: 14px;
+}
+
+.custom-sidebar .ps-submenu-expand-icon {
+    color: #fff;
+    
+}
+
+/* =====================================
+          RESPONSIVE BREAKPOINTS
+===================================== */
+@media (max-width: 768px) {
+    .sidebar-header {
+        padding: 0 20px;
+    }
+    
+    .sidebar-close-btn {
+        display: flex; /* Pull close cross into mobile layouts */
+        color: #ffffff;
+        
+    }
+}
