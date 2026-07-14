@@ -235,7 +235,7 @@ export default PagePanel;
 //                 <span>
 //                     {pages.length >= MAX_PAGES
 //                         ? "Limit Reached"
-//                         : "Add Page"}
+//                         : ""}
 //                 </span>
 //             </button>
 
