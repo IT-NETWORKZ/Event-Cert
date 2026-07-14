@@ -859,6 +859,59 @@ canvas { touch-action: none; }
 }
 .cp-text-box button:hover { transform: scale(1.03); opacity: .9; }
 
+
+.cp-fab-minimized {
+  position: fixed;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, bottom 0.3s ease;
+}
+
+.cp-fab-minimized:hover {
+  transform: scale(1.08);
+}
+
+/* Each variant gets its own vertical slot so they can all
+   be minimized at the same time without overlapping */
+.cp-fab-sticker {
+  bottom: 24px;
+  background: #ff7043;
+}
+
+.cp-fab-invitation {
+  bottom: 96px;
+  background: #009688;
+}
+
+.cp-fab-greeting {
+  bottom: 168px;
+  background: #7e57c2;
+}
+
+.cp-fab-pulse {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  opacity: 0.6;
+  animation: cp-fab-pulse-anim 1.8s infinite;
+  pointer-events: none;
+}
+
+@keyframes cp-fab-pulse-anim {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  70% { transform: scale(1.4); opacity: 0; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
 /* ===========================================================
    FIXED MOBILE REFLOW MEDIA QUERIES
    =========================================================== */

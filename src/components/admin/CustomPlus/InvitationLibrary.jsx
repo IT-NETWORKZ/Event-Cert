@@ -98,8 +98,6 @@ const InvitationLibrary = ({ isOpen, onClose }) => {
                     selectable: true,
                     hasControls: true,
                     hasBorders: true,
-                    
-                    // Added: Custom properties for tracking size reset
                     isInvitationImage: true,
                     originalWidth: img.width,
                     originalHeight: img.height,
@@ -115,9 +113,10 @@ const InvitationLibrary = ({ isOpen, onClose }) => {
             {
                 crossOrigin: "anonymous",
             }
-        );
+        );  
     };
 
+    // FULL close: X button / overlay click -> reset category AND tell parent to close
     const handleClose = () => {
         setSelectedCategory(null);
         onClose();
@@ -127,6 +126,7 @@ const InvitationLibrary = ({ isOpen, onClose }) => {
        <SidebarGallery
             isOpen={isOpen}
             onClose={handleClose}
+            onMinimizeRelease={onClose}
             title={selectedCategory ? selectedCategory.title : "Invitation Templates"}
             showCategories={!selectedCategory}
             categories={invitationCategories}
@@ -134,6 +134,8 @@ const InvitationLibrary = ({ isOpen, onClose }) => {
             onCategoryClick={(cat) => setSelectedCategory(cat)}
             onBack={() => setSelectedCategory(null)}
             onSelect={handleSelectInvitation}
+            icon={selectedCategory ? selectedCategory.icon : "💌"}
+            variant="invitation"
         />
     );
 };
