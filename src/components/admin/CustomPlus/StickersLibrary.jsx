@@ -1,57 +1,100 @@
-import React from "react";
+import React, { useState } from "react";
 import { fabric } from "fabric";
-import SidebarGallery from "./SidebarGallery";
 import { useCanvas } from "../../../context/CanvasContext";
+import SidebarGallery from "./SidebarGallery";
 
-const stickerImages = [
-  "https://picsum.photos/id/1015/400/400",
-  "https://picsum.photos/id/1016/400/400",
-  "https://picsum.photos/id/1018/400/400",
-  "https://picsum.photos/id/1020/400/400",
-  "https://picsum.photos/id/1024/400/400",
-  "https://picsum.photos/id/1025/400/400",
-  "https://picsum.photos/id/1031/400/400",
-  "https://picsum.photos/id/1035/400/400",
-  "https://picsum.photos/id/1037/400/400",
-  "https://picsum.photos/id/1040/400/400",
-  "https://picsum.photos/id/1042/400/400",
-  "https://picsum.photos/id/1043/400/400",
-  "https://picsum.photos/id/1050/400/400",
-  "https://picsum.photos/id/1057/400/400",
-  "https://picsum.photos/id/1062/400/400",
-  "https://picsum.photos/id/1069/400/400",
+const stickerCategories = [
+    {
+        id: "emoji",
+        title: "Emoji",
+        icon: "😀",
+        images: [
+            "https://picsum.photos/id/201/400/400",
+            "https://picsum.photos/id/202/400/400",
+            "https://picsum.photos/id/203/400/400",
+            "https://picsum.photos/id/204/400/400",
+            "https://picsum.photos/id/205/400/400",
+            "https://picsum.photos/id/206/400/400",
+        ],
+    },
+    {
+        id: "shapes",
+        title: "Shapes",
+        icon: "⭐",
+        images: [
+            "https://picsum.photos/id/211/400/400",
+            "https://picsum.photos/id/212/400/400",
+            "https://picsum.photos/id/213/400/400",
+            "https://picsum.photos/id/214/400/400",
+        ],
+    },
+    {
+        id: "nature",
+        title: "Nature",
+        icon: "🌿",
+        images: [
+            "https://picsum.photos/id/221/400/400",
+            "https://picsum.photos/id/222/400/400",
+            "https://picsum.photos/id/223/400/400",
+            "https://picsum.photos/id/224/400/400",
+        ],
+    },
 ];
 
 const StickerLibrary = ({ isOpen, onClose }) => {
-  // Grab standard canvas reference from your custom global canvas hook context
-  const { canvas } = useCanvas(); 
+    const { canvas } = useCanvas();
+    const [selectedCategory, setSelectedCategory] = useState(null);
 
-const handleSelectSticker = (imgUrl) => {
-  if (!canvas) return;
+    const handleSelectSticker = (imgUrl) => {
+        if (!canvas) return;
 
-  fabric.Image.fromURL(imgUrl, (fabricImg) => {
-    
-    // 👇 CHANGE THIS VALUE TO MAKE IT SMALLER (e.g., 80 or 100)
-    fabricImg.scaleToWidth(80); 
+        fabric.Image.fromURL(
+            imgUrl,
+            (img) => {
+                img.set({
+                    left: 50,
+                    top: 50,
+                    scaleX: 150 / img.width,
+                    scaleY: 150 / img.height,
+                    selectable: true,
+                    hasControls: true,
+                    hasBorders: true,
+                    isStickerImage: true,
+                    originalWidth: img.width,
+                    originalHeight: img.height,
+                });
 
-    canvas.centerObject(fabricImg);
-    canvas.add(fabricImg);
-    canvas.setActiveObject(fabricImg);
-    canvas.requestRenderAll();
-    
-    if (onClose) onClose();
-  }, { crossOrigin: "anonymous" });
-};
+                canvas.add(img);
+                canvas.setActiveObject(img);
+                canvas.requestRenderAll();
 
-  return (
-    <SidebarGallery
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Sticker Library"
-      images={stickerImages}
-      onSelect={handleSelectSticker}
-    />
-  );
+                handleClose();
+            },
+            { crossOrigin: "anonymous" }
+        );
+    };
+
+    const handleClose = () => {
+        setSelectedCategory(null);
+        onClose();
+    };
+
+    return (
+        <SidebarGallery
+            isOpen={isOpen}
+            onClose={handleClose}
+            onMinimizeRelease={onClose}
+            title={selectedCategory ? selectedCategory.title : "Sticker Library"}
+            showCategories={!selectedCategory}
+            categories={stickerCategories}
+            images={selectedCategory ? selectedCategory.images : []}
+            onCategoryClick={setSelectedCategory}
+            onBack={() => setSelectedCategory(null)}
+            onSelect={handleSelectSticker}
+            icon={selectedCategory ? selectedCategory.icon : "🖼️"}
+            variant="sticker"
+        />
+    );
 };
 
 export default StickerLibrary;

@@ -3,7 +3,6 @@ import { fabric } from "fabric";
 import { useCanvas } from "../../../context/CanvasContext";
 import SidebarGallery from "./SidebarGallery";
 
-// --- OPTIMIZATION: HELPER TO GENERATE UNIQUE public CDN ASSETS PROGRAMMATICALLY ---
 const generatePlaceholders = (startId, count) =>
     Array.from({ length: count }, (_, i) => `https://picsum.photos/id/${startId + i}/600/800`);
 
@@ -15,7 +14,7 @@ const greetingCategories = [
         images: [
             "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&auto=format&fit=crop&q=80",
             "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&auto=format&fit=crop&q=80",
-            ...generatePlaceholders(1020, 10) // Generates 10 high-quality unique image URLs dynamically
+            ...generatePlaceholders(1020, 10)
         ],
     },
     {
@@ -50,12 +49,11 @@ const greetingCategories = [
     },
 ];
 
-// --- OPTIMIZATION: IMMUTABLE PRE-DEFINED LAYOUT PROFILES ---
 const RANDOM_CANVAS_SIZES = [
-    { width: 450, height: 450 }, // Square Format
-    { width: 400, height: 600 }, // Classic Tall Panel
-    { width: 500, height: 350 }, // Landscape Fold
-    { width: 420, height: 580 }  // Standard Greeting Frame
+    { width: 450, height: 450 },
+    { width: 400, height: 600 },
+    { width: 500, height: 350 },
+    { width: 420, height: 580 }
 ];
 
 const GreetingLibrary = ({ isOpen, onClose }) => {
@@ -65,13 +63,9 @@ const GreetingLibrary = ({ isOpen, onClose }) => {
     const handleSelectGreeting = (imgUrl) => {
         if (!canvas) return;
 
-        // Pick a random dimensions profile
         const targetSize = RANDOM_CANVAS_SIZES[Math.floor(Math.random() * RANDOM_CANVAS_SIZES.length)];
-
-        // Sync context state layout dimensions 
         setCanvasSize({ width: targetSize.width, height: targetSize.height });
 
-        // Mount image to Fabric environment instance
         fabric.Image.fromURL(
             imgUrl,
             (img) => {
@@ -83,8 +77,6 @@ const GreetingLibrary = ({ isOpen, onClose }) => {
                     selectable: true,
                     hasControls: true,
                     hasBorders: true,
-
-                    // Shared tracking configurations across toolbar utilities
                     isInvitationImage: true,
                     originalWidth: img.width,
                     originalHeight: img.height,
@@ -100,6 +92,7 @@ const GreetingLibrary = ({ isOpen, onClose }) => {
         );
     };
 
+    // FULL close: X button / overlay click -> reset category AND tell parent to close
     const handleClose = () => {
         setSelectedCategory(null);
         onClose();
@@ -109,6 +102,7 @@ const GreetingLibrary = ({ isOpen, onClose }) => {
         <SidebarGallery
             isOpen={isOpen}
             onClose={handleClose}
+            onMinimizeRelease={onClose}
             title={selectedCategory ? selectedCategory.title : "Greeting Templates"}
             showCategories={!selectedCategory}
             categories={greetingCategories}
@@ -116,6 +110,8 @@ const GreetingLibrary = ({ isOpen, onClose }) => {
             onCategoryClick={setSelectedCategory}
             onBack={() => setSelectedCategory(null)}
             onSelect={handleSelectGreeting}
+            icon={selectedCategory ? selectedCategory.icon : "🎉"}
+            variant="greeting"
         />
     );
 };

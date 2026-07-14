@@ -61,43 +61,7 @@ setCanvas
 
             </div>
            
-            {/* <div className="cp-workspace-footer">
-
-                <div className="cp-footer-left">
-
-                    <span className="cp-page-info">
-                        Page 1 of 1
-                    </span>
-
-                </div>
-
-                <div className="cp-footer-center">
-
-                    <button onClick={zoomOut}>
-                        <FaSearchMinus />
-                    </button>
-
-                    <span>{zoom}%</span>
-
-                    <button onClick={zoomIn}>
-                        <FaSearchPlus />
-                    </button>
-
-                    <button onClick={resetZoom}>
-                        <FaCrosshairs />
-                    </button>
-
-                </div>
-
-                <div className="cp-footer-right">
-
-                    <FaExpand />
-
-                    <span>600 × 850 px</span>
-
-                </div>
-
-            </div> */}
+           
 
         </div>
     );
