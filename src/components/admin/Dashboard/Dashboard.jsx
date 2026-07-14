@@ -18,6 +18,7 @@ import {
   FaCommentAlt,
   FaFileContract,
 } from "react-icons/fa";
+import { NavLink } from "react-router-dom";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -42,7 +43,7 @@ const Dashboard = () => {
       theme: "card-theme-teal",
     },
     {
-      title: "Certificates/Cards Designs",
+      title: "Readymade Cards Designs",
       value: dashboardData.designs,
       icon: <FaDraftingCompass />,
       theme: "card-theme-teal",
@@ -54,7 +55,7 @@ const Dashboard = () => {
       theme: "card-theme-error",
     },
     {
-      title: "Certificates Generated",
+      title: "Cards Generated",
       value: dashboardData.certificates,
       icon: <FaGraduationCap />,
       theme: "card-theme-success",
@@ -77,9 +78,9 @@ const Dashboard = () => {
       icon: <FaDollyFlatbed />,
       theme: "card-theme-error",
     },
-    
+
     {
-      title: "Remaining Certificates Stock",
+      title: "Remaining Cards Stock",
       value: dashboardData.certificateStock,
       icon: <FaReceipt />,
       theme: "card-theme-success",
@@ -175,7 +176,7 @@ const Dashboard = () => {
 
       <section className="dashboard-wrapper">
         <div className="container-fluid dashboard-container">
-       
+
           <div className="row g-4">
             {cards.map((card, index) => (
               <div className="col-12 col-sm-6 col-lg-3 d-flex" key={index}>
@@ -193,22 +194,24 @@ const Dashboard = () => {
           <div className="quick-links">
             <ul className="top-menu">
               <li>
-                <a href="#">
+                <NavLink to="/admin/payment">
                   <FaCreditCard />
                   <span>Payment</span>
-                </a>
+                </NavLink>
               </li>
+
               <li>
-                <a href="#">
+                <NavLink to="/admin/feedback">
                   <FaCommentAlt />
                   <span>Feedback</span>
-                </a>
+                </NavLink>
               </li>
+
               <li>
-                <a href="#">
+                <NavLink to="/admin/terms">
                   <FaFileContract />
-                  <span>T&C</span>
-                </a>
+                  <span>T&amp;C</span>
+                </NavLink>
               </li>
             </ul>
           </div>
