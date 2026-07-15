@@ -166,4 +166,3 @@ const PagePanel = () => {
 };
 
 export default PagePanel;
-
