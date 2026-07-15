@@ -21,10 +21,19 @@ import StickerLibrary from "./StickersLibrary";
 import InvitationLibrary from "./InvitationLibrary";
 import GreetingLibrary from "./GreetingLibrary"; // Integrated: Greeting library module
 import PreviewModal from "./PreviewModal";
+import { downloadAllPagesAsPng  } from "../../../Services/downloadPng";
+import { downloadAllPagesAsPdf } from "../../../Services/downloadPdf";
+
 
 const Sidebar = ({ activeMenu, setActiveMenu }) => {
 
-    const { canvas } = useCanvas();
+    // const { canvas } = useCanvas();
+    const {
+    canvas,
+    pages,
+    activePage,
+    saveCurrentPageData,
+} = useCanvas();
 
     const [showResize, setShowResize] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
@@ -101,7 +110,7 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
     // ==========================
     // SIDEBAR CLICK ROUTER
     // ==========================
-    const handleClick = (id) => {
+    const handleClick = async (id) => {
         switch (id) {
             case "resize":
                 setShowResize(true);
@@ -135,6 +144,45 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
                 setShowPreview(true);
                 setActiveMenu(id);
                 break;
+
+            //         case "png":
+            // downloadCanvasAsPng(canvas, "certificate.png");
+            // setActiveMenu(id);
+            // break;
+
+            case "png": {
+    const currentPageData = saveCurrentPageData();
+
+    await downloadAllPagesAsPng({
+        pages,
+        activePage,
+        currentPageData,
+        fileName: "certificate",
+    });
+
+    setActiveMenu(id);
+    break;
+}
+
+        // case "pdf":
+        //     downloadCanvasAsPdf(canvas, "certificate.pdf");
+        //     setActiveMenu(id);
+        //     break;
+
+        case "pdf": {
+    const currentPageData = saveCurrentPageData();
+
+    await downloadAllPagesAsPdf({
+        pages,
+        activePage,
+        currentPageData,
+        fileName: "certificate.pdf",
+    });
+
+    setActiveMenu(id);
+    break;
+}
+                
 
             default:
                 setActiveMenu(id);
