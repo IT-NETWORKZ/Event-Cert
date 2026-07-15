@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaFont,
   FaSearchPlus,
@@ -27,8 +27,16 @@ import { fabric } from "fabric";
 import { useCanvas } from "../../../context/CanvasContext";
 import "../../../css/CanvasToolbar.css";
 
-// create company secret key
-const GOOGLE_FONTS_API_KEY = "";
+// Insert your Google Fonts Developer API Key here to pull hundreds of live fonts!
+const GOOGLE_FONTS_API_KEY = "YOUR_GOOGLE_FONTS_API_KEY_HERE";
+
+// Standard local system fonts (like Microsoft Word) to use as an instant fallback
+const WORD_FALLBACK_FONTS = [
+  "Arial", "Arial Black", "Calibri", "Cambria", "Candara", "Comic Sans MS", 
+  "Consolas", "Courier New", "Georgia", "Impact", "Lucida Console", 
+  "Lucida Sans Unicode", "Segoe UI", "Tahoma", "Times New Roman", 
+  "Trebuchet MS", "Verdana", "Garamond", "Bookman Old Style", "Century Gothic"
+];
 
 const CanvasToolbar = () => {
   const {
@@ -41,49 +49,34 @@ const CanvasToolbar = () => {
   } = useCanvas();
 
   const [currentColor, setCurrentColor] = useState("#4F46E5");
-  const [currentFont, setCurrentFont] = useState("Roboto");
+  const [currentFont, setCurrentFont] = useState("Arial");
   const [isDrawing, setIsDrawing] = useState(false);
-  const [availableFonts, setAvailableFonts] = useState([]);
+  const [availableFonts, setAvailableFonts] = useState(WORD_FALLBACK_FONTS);
 
   const pastHistory = past || [];
   const futureHistory = future || [];
 
-  // 1. Automatically fetch the live popular fonts list using your API key
+  // 1. Load system fonts instantly, then attempt to fetch the complete Google Fonts catalog
   useEffect(() => {
-    const fetchGoogleFonts = async () => {
-      try {
-        const response = await fetch(
-          `https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=${GOOGLE_FONTS_API_KEY}`
-        );
-        const data = await response.json();
-
-        if (data.items) {
-          // Takes the top 120 most popular fonts for a lightweight setup
-          setAvailableFonts(data.items.slice(0, 120));
-        }
-      } catch (err) {
-        console.error("Error fetching Google Fonts:", err);
-        // Robust UI layout fallback if your API key isn't verified yet
-        setAvailableFonts([
-          { family: "Roboto" },
-          { family: "Open Sans" },
-          { family: "Lato" },
-          { family: "Montserrat" },
-          { family: "Arial" }
-        ]);
-      }
-    };
-
-    if (GOOGLE_FONTS_API_KEY && GOOGLE_FONTS_API_KEY !== "YOUR_GOOGLE_FONTS_API_KEY_HERE") {
-      fetchGoogleFonts();
-    } else {
-      setAvailableFonts([
-        { family: "Roboto" }, { family: "Open Sans" }, { family: "Lato" }, { family: "Arial" }
-      ]);
+    if (!GOOGLE_FONTS_API_KEY || GOOGLE_FONTS_API_KEY.includes("YOUR_GOOGLE_FONTS_API_KEY")) {
+      console.warn("Using local Word fallback fonts. Add a Google Fonts API key to fetch 1,000+ choices.");
+      return;
     }
+
+    fetch(`https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=${GOOGLE_FONTS_API_KEY}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.items) {
+          const fetchedFonts = data.items.map((font) => font.family);
+          // Merge local system Word fonts with dynamic Google Fonts cleanly without duplicates
+          const combinedFonts = Array.from(new Set([...WORD_FALLBACK_FONTS, ...fetchedFonts]));
+          setAvailableFonts(combinedFonts);
+        }
+      })
+      .catch((err) => console.error("Failed to load web fonts catalog, staying on fallbacks:", err));
   }, []);
 
-  // 2. Read canvas selections to auto-update toolbar states
+  // 2. Sync toolbar states whenever items are selected on the canvas
   useEffect(() => {
     if (!canvas) return;
 
@@ -96,14 +89,14 @@ const CanvasToolbar = () => {
         setCurrentColor(objColor);
       }
 
-      if (activeObj.type === "i-text") {
-        setCurrentFont(activeObj.get("fontFamily"));
+      if (isTextObject(activeObj)) {
+        setCurrentFont(activeObj.get("fontFamily") || "Arial");
       }
     };
 
     canvas.on("selection:created", handleSelection);
     canvas.on("selection:updated", handleSelection);
-    canvas.on("selection:cleared", () => setCurrentFont("Roboto"));
+    canvas.on("selection:cleared", () => setCurrentFont("Arial"));
 
     return () => {
       canvas.off("selection:created", handleSelection);
@@ -113,51 +106,47 @@ const CanvasToolbar = () => {
 
   if (!canvas) return null;
 
-  // 3. Dynamic Font Head Injector & Canvas Re-renderer
+  // Helper check for flexible Fabric text node tracking
+  const isTextObject = (obj) => {
+    if (!obj) return false;
+    return ["i-text", "textbox", "text"].includes(obj.type);
+  };
+
+  // 3. Dynamic Font Engine: Updates standard system layout styles OR fetches missing Google fonts into document head
   const changeFontFamily = async (e) => {
     const selectedFont = e.target.value;
     setCurrentFont(selectedFont);
 
     const activeObj = canvas.getActiveObject();
-    if (!activeObj) {
-      console.log("Please select a text object first");
-      return;
+    if (!activeObj) return;
+
+    if (!isTextObject(activeObj)) return;
+
+    // Check if it's a web font vs basic local system layout font
+    if (!WORD_FALLBACK_FONTS.includes(selectedFont)) {
+      const fontId = `dynamic-font-${selectedFont.replace(/\s+/g, "-").toLowerCase()}`;
+      if (!document.getElementById(fontId)) {
+        const link = document.createElement("link");
+        link.id = fontId;
+        link.rel = "stylesheet";
+        link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(selectedFont)}&display=swap`;
+        document.head.appendChild(link);
+      }
+      
+      try {
+        await document.fonts.load(`28px "${selectedFont}"`);
+      } catch (error) {
+        console.error("Font payload download skipped/timed out:", error);
+      }
     }
 
-    const isTextObject =
-      activeObj.type === "i-text" ||
-      activeObj.type === "textbox" ||
-      activeObj.type === "text";
-
-    if (!isTextObject) {
-      console.log("Selected object is not text:", activeObj.type);
-      return;
-    }
-
-    const fontId = `dynamic-font-${selectedFont.replace(/\s+/g, "-").toLowerCase()}`;
-
-    if (!document.getElementById(fontId)) {
-      const link = document.createElement("link");
-      link.id = fontId;
-      link.rel = "stylesheet";
-      link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(
-        selectedFont
-      )}&display=swap`;
-      document.head.appendChild(link);
-    }
-
-    try {
-      await document.fonts.load(`28px "${selectedFont}"`);
-      activeObj.set({
-        fontFamily: selectedFont,
-        dirty: true,
-      });
-      activeObj.setCoords();
-      canvas.requestRenderAll();
-      saveState(canvas);
-    } catch (error) {
-      console.error("Font loading failed:", error);
-    }
+    activeObj.set({
+      fontFamily: selectedFont,
+      dirty: true,
+    });
+    activeObj.setCoords();
+    canvas.requestRenderAll();
+    saveState(canvas);
   };
 
   // ---------------- Undo/Redo Engine ----------------
@@ -208,7 +197,7 @@ const CanvasToolbar = () => {
 
     const activeObj = canvas.getActiveObject();
     if (!activeObj) {
-      if (canvas.isDrawingMode) {
+      if (canvas.isDrawingMode && canvas.freeDrawingBrush) {
         canvas.freeDrawingBrush.color = newColor;
       }
       return;
@@ -243,20 +232,20 @@ const CanvasToolbar = () => {
 
   const addCreativeText = () => {
     const text = new fabric.Textbox("Type Here...", {
-      left: 0,
+      left: 50,
       top: 150,
-      width: canvas.getWidth(), // 100% canvas width
+      width: canvas.getWidth() - 100,
       fontSize: 28,
       fontFamily: currentFont,
       fontWeight: "600",
-      textAlign: "center", // or "center"
+      textAlign: "center",
       splitByGrapheme: false,
     });
 
     canvas.add(text);
     canvas.setActiveObject(text);
     text.enterEditing();
-    text.hiddenTextarea?.focus();
+    if (text.hiddenTextarea) text.hiddenTextarea.focus();
 
     canvas.renderAll();
     saveState(canvas);
@@ -264,7 +253,7 @@ const CanvasToolbar = () => {
 
   const toggleBold = () => {
     const activeObj = canvas.getActiveObject();
-    if (!activeObj || activeObj.type !== "i-text") return;
+    if (!isTextObject(activeObj)) return;
 
     const isBold = activeObj.get("fontWeight") === "bold";
     activeObj.set("fontWeight", isBold ? "normal" : "bold");
@@ -274,7 +263,7 @@ const CanvasToolbar = () => {
 
   const toggleItalic = () => {
     const activeObj = canvas.getActiveObject();
-    if (!activeObj || activeObj.type !== "i-text") return;
+    if (!isTextObject(activeObj)) return;
 
     const isItalic = activeObj.get("fontStyle") === "italic";
     activeObj.set("fontStyle", isItalic ? "normal" : "italic");
@@ -321,26 +310,10 @@ const CanvasToolbar = () => {
     if (obj) { canvas.sendBackwards(obj); canvas.renderAll(); }
   };
 
-  const alignTextLeft = () => {
+  const alignHorizontalText = (alignment) => {
     const obj = canvas.getActiveObject();
-    if (!obj || obj.type !== "textbox") return;
-    obj.set("textAlign", "left");
-    canvas.requestRenderAll();
-    saveState(canvas);
-  };
-
-  const alignTextCenter = () => {
-    const obj = canvas.getActiveObject();
-    if (!obj || obj.type !== "textbox") return;
-    obj.set("textAlign", "center");
-    canvas.requestRenderAll();
-    saveState(canvas);
-  };
-
-  const alignTextRight = () => {
-    const obj = canvas.getActiveObject();
-    if (!obj || obj.type !== "textbox") return;
-    obj.set("textAlign", "right");
+    if (!isTextObject(obj)) return;
+    obj.set("textAlign", alignment);
     canvas.requestRenderAll();
     saveState(canvas);
   };
@@ -388,13 +361,13 @@ const CanvasToolbar = () => {
 
       {/* Group 2: Horizontal Text Alignment */}
       <div className="toolbar-group">
-        <button className="toolbar-button" onClick={alignTextLeft} title="Align Left">
+        <button className="toolbar-button" onClick={() => alignHorizontalText("left")} title="Align Left">
           <FaAlignLeft />
         </button>
-        <button className="toolbar-button" onClick={alignTextCenter} title="Align Center">
+        <button className="toolbar-button" onClick={() => alignHorizontalText("center")} title="Align Center">
           <FaAlignCenter />
         </button>
-        <button className="toolbar-button" onClick={alignTextRight} title="Align Right">
+        <button className="toolbar-button" onClick={() => alignHorizontalText("right")} title="Align Right">
           <FaAlignRight />
         </button>
       </div>
@@ -444,12 +417,16 @@ const CanvasToolbar = () => {
         <select
           value={currentFont}
           onChange={changeFontFamily}
-          title="Font Family"
-          className="select-dropdown"
+          className="font-select-dropdown"
+          style={{ maxWidth: "160px", padding: "4px" }}
         >
-          {availableFonts.map((font) => (
-            <option key={font.family} value={font.family}>
-              {font.family}
+          {availableFonts.map((fontName) => (
+            <option
+              key={fontName}
+              value={fontName}
+              style={{ fontFamily: fontName }}
+            >
+              {fontName}
             </option>
           ))}
         </select>

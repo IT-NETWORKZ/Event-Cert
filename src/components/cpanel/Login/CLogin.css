@@ -1,0 +1,33 @@
+/* ==========================================================
+   CPANEL LOGIN VIEW STYLES (CLogin.css)
+========================================================== */
+
+.clogin-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    
+    /* Background configuration */
+    background: url('../../../assets/img/hero-bg.jpg') center center/cover no-repeat;
+    background-color: #f4f6f9; /* Smooth light fallback */
+    
+    box-sizing: border-box;
+    position: fixed; /* Ensures it occupies the entire viewport without scrolling issues */
+    top: 0;
+    left: 0;
+    z-index: 9999;
+}
+
+/* Force override any inherited offset rules from Hero.css */
+.clogin-container .login-card {
+    margin: 0 auto !important;
+    transform: none; /* Removes any unwanted shifts on render */
+}
+
+.clogin-container .login-card:hover {
+    transform: translateY(-4px) !important; /* Retains only the micro-interaction bounce */
+}

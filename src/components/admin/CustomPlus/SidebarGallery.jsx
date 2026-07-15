@@ -27,11 +27,25 @@ if (typeof document !== "undefined") {
 // Greeting) resolves its own position + label independently — no shared
 // class, no collisions. Positions now stack DOWN from the top.
 const VARIANT_CONFIG = {
-  sticker: { top: 150, background: "#ff7043", label: "Stickers" },
-  invitation: { top: 222, background: "#009688", label: "Invitation" },
-  greeting: { top: 294, background: "#7e57c2", label: "Greeting" },
+  sticker: {
+    top: 110,
+    width: 180,
+    background: "#ff7043",
+    label: "Stickers",
+  },
+  invitation: {
+    top: 180,
+    width: 180,
+    background: "#009688",
+    label: "Invitation",
+  },
+  greeting: {
+    top: 250,
+    width: 180,
+    background: "#7e57c2",
+    label: "Greeting",
+  },
 };
-
 const LazyImage = ({ src, alt, onClick, style, onMouseOver, onMouseOut }) => {
   const [isIntersected, setIsIntersected] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -172,7 +186,7 @@ const SidebarGallery = ({
           border: "none",
           borderRadius: 30,
           cursor: "pointer",
-          zIndex: 1001,
+          zIndex: 2,
           background: cfg.background,
           boxShadow: "0 4px 14px rgba(0,0,0,0.25)",
           transition: "transform 0.2s ease",

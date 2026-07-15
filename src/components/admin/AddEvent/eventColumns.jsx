@@ -1,4 +1,6 @@
-// Keep it as eventColumns.js by returning strings instead of HTML markup components:
+import React from "react";
+import { Pencil } from "lucide-react";
+
 export const eventColumns = [
   {
     accessorKey: "srNo",
@@ -32,7 +34,6 @@ export const eventColumns = [
   {
     accessorKey: "aboutEvent",
     header: "About Event",
-    // No JSX tags here! Just pure JavaScript text manipulation
     cell: (info) => {
       const val = info.getValue() || "";
       return val.length > 30 ? val.substring(0, 30) + "..." : val;
@@ -49,7 +50,11 @@ export const eventColumns = [
   {
     accessorKey: "location",
     header: "Location",
-    cell: (info) => `${info.row.original.city}, ${info.row.original.state}`,
+    cell: (info) => {
+      const city = info.row.original.city || "";
+      const state = info.row.original.state || "";
+      return city && state ? `${city}, ${state}` : city || state || "-";
+    },
   },
   {
     accessorKey: "bannerImage",
@@ -76,7 +81,23 @@ export const eventColumns = [
   {
     id: "edit",
     header: "Edit",
-    cell: () => "✏️", // Just plain text emoji string
+    cell: (info) => (
+      <button
+        type="button"
+        style={{
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          padding: "4px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+        onClick={() => console.log("Edit item data:", info.row.original)}
+      >
+        <Pencil size={16} color="#007bff" />
+      </button>
+    ),
   },
   {
     accessorKey: "status",

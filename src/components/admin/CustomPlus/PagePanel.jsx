@@ -26,7 +26,7 @@ const PagePanel = () => {
         // 1. Extract live data from the current active canvas instance directly
         let currentCanvasJson = null;
         let currentThumbnail = "";
-        
+
         if (canvas) {
             currentCanvasJson = canvas.toJSON();
             currentThumbnail = canvas.toDataURL({ format: 'jpeg', quality: 0.1 });
@@ -54,7 +54,7 @@ const PagePanel = () => {
                 {
                     id: newPageId,
                     json: null, // Fresh blank canvas
-                    width: canvasSize.width,  
+                    width: canvasSize.width,
                     height: canvasSize.height,
                     thumbnail: ""
                 }
@@ -67,11 +67,11 @@ const PagePanel = () => {
 
     const handlePageSwitch = (targetPageId) => {
         if (targetPageId === activePage) return;
-        
+
         // 1. Extract raw canvas data directly to bypass React's async state batching
         let currentCanvasJson = null;
         let currentThumbnail = "";
-        
+
         if (canvas) {
             currentCanvasJson = canvas.toJSON();
             currentThumbnail = canvas.toDataURL({ format: 'jpeg', quality: 0.1 });
@@ -154,10 +154,10 @@ const PagePanel = () => {
                             )}
                         </div>
 
-                         <div className="cp-page-name">
+                        <div className="cp-page-name">
                             Page {index + 1}
                         </div>
- 
+
                     </div>
                 ))}
             </div>
@@ -166,3 +166,4 @@ const PagePanel = () => {
 };
 
 export default PagePanel;
+
