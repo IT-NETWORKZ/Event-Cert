@@ -68,21 +68,24 @@ const StickerLibrary = ({ isOpen, onClose }) => {
                 canvas.setActiveObject(img);
                 canvas.requestRenderAll();
 
-                handleClose();
             },
             { crossOrigin: "anonymous" }
         );
     };
 
-    const handleClose = () => {
-        setSelectedCategory(null);
-        onClose();
+    const handleManualClose = () => {
+        onClose(); // Triggers standard container window close visibility logic
+        
+        // Wait for sliding animations to settle before resetting the layout back to main categories
+        setTimeout(() => {
+            setSelectedCategory(null);
+        }, 350);
     };
 
     return (
         <SidebarGallery
             isOpen={isOpen}
-            onClose={handleClose}
+            onClose={handleManualClose}
             onMinimizeRelease={onClose}
             title={selectedCategory ? selectedCategory.title : "Sticker Library"}
             showCategories={!selectedCategory}

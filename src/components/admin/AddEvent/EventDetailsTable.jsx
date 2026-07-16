@@ -17,7 +17,7 @@ const EventDetailsTable = () => {
           WebkitOverflowScrolling: "touch" 
         }}
       >
-        <h3 className="event-table-heading" style={{ textAlign: "center", fontSize: "1.8rem", fontFamily: "cursive", marginTop: "20px" }}>
+        <h3 className="form-main-title" style={{ textAlign: "center", fontSize: "1.8rem", fontFamily: "cursive", marginTop: "20px" }}>
         Event Details
       </h3>
         <style>{`
