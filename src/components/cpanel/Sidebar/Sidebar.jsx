@@ -81,7 +81,7 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
             component={<NavLink to="/cpanel/dashboard" />}
             className={isActive("/cpanel/dashboard") || isActive("/cpanel") ? "active-item" : ""}
           >
-            Dashboard
+            Home
           </MenuItem>
 
           <MenuItem
@@ -168,7 +168,7 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
              <MenuItem
             icon={<FaStackExchange />}
             component={<NavLink to="/cpanel/taxes" />}
-            className={isActive("/cpanel/profile") ? "active-item" : ""}
+            className={isActive("/cpanel/taxes") ? "active-item" : ""}
           >
             Taxes
           </MenuItem>
