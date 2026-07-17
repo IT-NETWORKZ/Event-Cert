@@ -69,7 +69,7 @@ ul { list-style: none; }
    SIDEBAR (Main Left Options Panel)
 ========================== */
 .cp-sidebar {
-    width: 90px;
+    width: 110px;
     min-width: 90px;
     background: #ffffff;
     border-right: 1px solid #e8e8e8;
@@ -276,19 +276,41 @@ ul { list-style: none; }
 .cp-page-preview { width: 100%; height: 120px; border-radius: 10px; border: 1px solid #ddd; background: white; }
 .cp-page-name { text-align: center; margin-top: 2px; font-size: 13px; font-weight: 700; }
 
-.cp-delete-page {
+.cp-delete-page,
+.cp-duplicate-page {
     position: absolute;
-    top: -8px;
-    right: -8px;
+    top: 6px;              /* Moved inside the card boundary */
     width: 24px;
     height: 24px;
     border: none;
     border-radius: 50%;
-    background: #ef4444;
     color: white;
     cursor: pointer;
+    display: flex;         /* Symmetrically center the icon inside the circle */
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;       /* Ensure the icon size fits cleanly */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, background-color 0.2s;
+    z-index: 10;
 }
 
+.cp-delete-page:hover,
+.cp-duplicate-page:hover {
+    transform: scale(1.1);  /* Clean pop effect on hover */
+}
+
+/* Position Copy button on the Top-Left inside corner */
+.cp-duplicate-page {
+    left: 6px;
+    background: #2563eb;
+}
+
+/* Position Delete button on the Top-Right inside corner */
+.cp-delete-page {
+    right: 6px;
+    background: #ef4444;
+}
 /* ===========================================================
    CANVAS VIEW ENGINE ARCHITECTURE
    =========================================================== */

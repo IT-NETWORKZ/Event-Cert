@@ -1,5 +1,5 @@
 import React from "react";
-import { FaArrowLeft, FaPlus, FaTimes } from "react-icons/fa";
+import { FaArrowLeft, FaPlus, FaTimes, FaCopy } from "react-icons/fa";
 import { useCanvas } from "../../../context/CanvasContext";
 import { useNavigate } from "react-router-dom";
 
@@ -12,18 +12,12 @@ const PagePanel = () => {
         setPages,
         activePage,
         setActivePage,
-        saveCurrentPageData,
         canvas,
         canvasSize
     } = useCanvas();
 
-    const addPage = () => {
-        if (pages.length >= MAX_PAGES) {
-            alert(`Maximum ${MAX_PAGES} pages allowed.`);
-            return;
-        }
-
-        // 1. Extract live data from the current active canvas instance directly
+    // Helper to pull fresh state directly from the active Fabric canvas instance
+    const getLiveCanvasData = () => {
         let currentCanvasJson = null;
         let currentThumbnail = "";
 
@@ -32,9 +26,18 @@ const PagePanel = () => {
             currentThumbnail = canvas.toDataURL({ format: 'jpeg', quality: 0.1 });
         }
 
+        return { currentCanvasJson, currentThumbnail };
+    };
+
+    const addPage = () => {
+        if (pages.length >= MAX_PAGES) {
+            alert(`Maximum ${MAX_PAGES} pages allowed.`);
+            return;
+        }
+
+        const { currentCanvasJson, currentThumbnail } = getLiveCanvasData();
         const newPageId = Date.now();
 
-        // 2. Update the array manually so the data is saved before switching
         setPages((prevPages) => {
             const updatedPages = prevPages.map((p) => {
                 if (p.id === activePage) {
@@ -53,7 +56,7 @@ const PagePanel = () => {
                 ...updatedPages,
                 {
                     id: newPageId,
-                    json: null, // Fresh blank canvas
+                    json: null, 
                     width: canvasSize.width,
                     height: canvasSize.height,
                     thumbnail: ""
@@ -61,23 +64,59 @@ const PagePanel = () => {
             ];
         });
 
-        // 3. Set the new active page
+        setActivePage(newPageId);
+    };
+
+    const duplicatePage = (targetPage) => {
+        if (pages.length >= MAX_PAGES) {
+            alert(`Maximum ${MAX_PAGES} pages allowed.`);
+            return;
+        }
+
+        const { currentCanvasJson, currentThumbnail } = getLiveCanvasData();
+        const newPageId = Date.now();
+
+        setPages((prevPages) => {
+            const updatedPages = [];
+
+            for (let p of prevPages) {
+                if (p.id === activePage) {
+                    p = {
+                        ...p,
+                        json: currentCanvasJson,
+                        width: canvas ? canvas.getWidth() : p.width,
+                        height: canvas ? canvas.getHeight() : p.height,
+                        thumbnail: currentThumbnail
+                    };
+                }
+
+                updatedPages.push(p);
+
+                if (p.id === targetPage.id) {
+                    const duplicatedJson = p.id === activePage 
+                        ? currentCanvasJson 
+                        : p.json ? JSON.parse(JSON.stringify(p.json)) : null;
+
+                    updatedPages.push({
+                        ...p,
+                        id: newPageId,
+                        json: duplicatedJson,
+                        thumbnail: p.id === activePage ? currentThumbnail : p.thumbnail
+                    });
+                }
+            }
+
+            return updatedPages;
+        });
+
         setActivePage(newPageId);
     };
 
     const handlePageSwitch = (targetPageId) => {
         if (targetPageId === activePage) return;
 
-        // 1. Extract raw canvas data directly to bypass React's async state batching
-        let currentCanvasJson = null;
-        let currentThumbnail = "";
+        const { currentCanvasJson, currentThumbnail } = getLiveCanvasData();
 
-        if (canvas) {
-            currentCanvasJson = canvas.toJSON();
-            currentThumbnail = canvas.toDataURL({ format: 'jpeg', quality: 0.1 });
-        }
-
-        // 2. Commit the data to the old page first, then safely trigger the page switch
         setPages((prevPages) =>
             prevPages.map((p) => {
                 if (p.id === activePage) {
@@ -93,7 +132,6 @@ const PagePanel = () => {
             })
         );
 
-        // 3. Now switch the page frame safely
         setActivePage(targetPageId);
     };
 
@@ -136,16 +174,31 @@ const PagePanel = () => {
                         className={`cp-page-card ${activePage === page.id ? "active" : ""}`}
                         onClick={() => handlePageSwitch(page.id)}
                     >
+                        {/* Duplicate Button (Left Badge) */}
+                        <button
+                            className="cp-duplicate-page"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                duplicatePage(page);
+                            }}
+                            title="Duplicate Page"
+                        >
+                            <FaCopy />
+                        </button>
+
+                        {/* Delete Button (Right Badge) */}
                         <button
                             className="cp-delete-page"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 deletePage(page.id);
                             }}
+                            title="Delete Page"
                         >
                             <FaTimes />
                         </button>
 
+                        {/* Preview Thumbnail Container */}
                         <div className="cp-page-preview" style={{ background: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80px', overflow: 'hidden', border: '1px solid #ddd', borderRadius: '4px' }}>
                             {page.thumbnail ? (
                                 <img src={page.thumbnail} alt={`Page ${index + 1}`} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
@@ -154,10 +207,10 @@ const PagePanel = () => {
                             )}
                         </div>
 
+                        {/* Page Title */}
                         <div className="cp-page-name">
                             Page {index + 1}
                         </div>
-
                     </div>
                 ))}
             </div>
