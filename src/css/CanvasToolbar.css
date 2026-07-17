@@ -1,9 +1,7 @@
-/* Universal Base Reset inside Toolbar */
 .toolbar-container * {
   box-sizing: border-box;
 }
 
-/* Container */
 .toolbar-container {
   display: flex;
   gap: 10px;
@@ -16,11 +14,11 @@
   flex-wrap: nowrap;
   overflow-x: auto;
   position: relative;
-  scrollbar-width: thin; /* Clean layout scrollbars */
+  scrollbar-width: thin; 
   scrollbar-color: #cbd5e1 transparent;
 }
 
-/* Scrollbar clean-ups for Webkit */
+
 .toolbar-container::-webkit-scrollbar {
   height: 4px;
 }
@@ -29,14 +27,14 @@
   border-radius: 4px;
 }
 
-/* Logical UI button groups */
+
 .toolbar-group {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-/* Buttons */
+
 .toolbar-button {
   display: flex;
   align-items: center;
@@ -47,13 +45,13 @@
   border: none;
   background-color: transparent;
   cursor: pointer;
-  color: #4b5563; /* Elegant charcoal-slate */
+  color: #4b5563; 
   transition: background-color 0.15s ease, color 0.15s ease;
   outline: none;
 }
 
 .toolbar-button svg {
-  font-size: 15px; /* Clean uniform scale */
+  font-size: 15px; 
 }
 
 .toolbar-button:hover:not(:disabled) {
@@ -61,7 +59,7 @@
   color: #0f172a;
 }
 
-/* Active Highlight (Nice modern indigo tint) */
+
 .toolbar-button.active {
   background-color: #e0e7ff;
   color: #4f46e5;
@@ -71,7 +69,7 @@
   cursor: not-allowed;
 }
 
-/* Elegant visual separators */
+
 .toolbar-divider {
   border-left: 1px solid #e2e8f0;
   height: 22px;
@@ -79,7 +77,7 @@
   flex-shrink: 0;
 }
 
-/* Custom Color Picker */
+
 .color-label {
   display: flex; 
   align-items: center; 
@@ -88,7 +86,7 @@
   position: relative; 
   width: 34px; 
   height: 34px;
-  border-radius: 50%; /* Playful circular base style */
+  border-radius: 50%;
   border: 2px solid #ffffff;
   box-shadow: 0 0 0 1px #cbd5e1, 0 1px 3px rgba(0,0,0,0.1);
   transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
@@ -108,7 +106,7 @@
   height: 100%;
 }
 
-/* Typography Dropdown Menu */
+
 .select-dropdown {
   padding: 6px 32px 6px 12px;
   border-radius: 8px;
@@ -142,7 +140,7 @@
   background-color: #ffffff;
 }
 
-/* System Alerts Colors */
+
 .btn-eraser {
   color: #ea580c;
 }
@@ -163,7 +161,7 @@
   margin-right: auto;
 }
 
-/* Responsive Scaling */
+
 @media (max-width: 768px) {
   .toolbar-container {
     padding: 6px 12px;
