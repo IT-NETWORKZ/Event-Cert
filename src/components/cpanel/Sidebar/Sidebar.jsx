@@ -113,21 +113,7 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
             Add Participants
           </MenuItem>
 
-          {/* <MenuItem
-            icon={<FaCommentDots />}
-            component={<NavLink to="/admin/feedback" />}
-            className={isActive("/admin/feedback") ? "active-item" : ""}
-          >
-            Feedback
-          </MenuItem>
-
-          <MenuItem
-            icon={<FaReceipt />}
-            component={<NavLink to="/admin/payment" />}
-            className={isActive("/admin/payment") ? "active-item" : ""}
-          >
-            Payment
-          </MenuItem> */}
+    
 
             <MenuItem
             icon={<FaCalendarDay />}
