@@ -1,0 +1,198 @@
+/* ==========================================================================
+   EVENTCERT THEME FORM CARD
+   ========================================================================== */
+
+.plan-form-card-compact {
+    background: #ffffff;
+    border: 1px solid #dbe9e7;
+    border-radius: 18px;
+    padding: 28px 32px;
+    max-width: 660px;
+    margin: 24px auto;
+    box-shadow: 0 12px 35px rgba(15, 123, 116, 0.08);
+    transition: all .35s ease;
+}
+
+.plan-form-card-compact:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 45px rgba(15, 123, 116, .12);
+}
+
+/* ==========================================================================
+   TITLE
+   ========================================================================== */
+
+.form-main-title {
+    position: relative;
+    display: inline-block;
+    font-size: 24px;
+    font-weight: 700;
+    color: #173c39;
+    margin-bottom: 28px;
+    letter-spacing: -.4px;
+}
+
+.form-main-title::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -10px;
+    transform: translateX(-50%);
+    width: 55px;
+    height: 4px;
+    border-radius: 30px;
+    background: linear-gradient(90deg, #0F7B74, #18A999);
+}
+
+/* ==========================================================================
+   FORM
+   ========================================================================== */
+
+.event-form-compact {
+    display: flex;
+    flex-direction: column;
+}
+
+.compact-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #5d6b75;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.required {
+    color: #ef4444;
+}
+
+/* ==========================================================================
+   INPUTS
+   ========================================================================== */
+
+.custom-input-sm {
+    background: #f8fbfb !important;
+    border: 1.5px solid #d7e8e6 !important;
+    border-radius: 10px !important;
+    padding: 10px 14px !important;
+    font-size: 14px !important;
+    color: #2f4858 !important;
+    transition: .25s ease !important;
+}
+
+.custom-input-sm::placeholder {
+    color: #97a6ad;
+}
+
+.custom-input-sm:hover {
+    border-color: #8bc8c2 !important;
+    background: #ffffff !important;
+}
+
+.custom-input-sm:focus {
+    border-color: #0F7B74 !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 4px rgba(15,123,116,.12) !important;
+    outline: none !important;
+}
+
+.text-area-compact {
+    resize: none !important;
+    min-height: 75px;
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   SEGMENTED CONTROL
+   ========================================================================== */
+
+.segmented-pill-control {
+    display: flex;
+    background: #eef7f6;
+    padding: 5px;
+    border-radius: 12px;
+    gap: 4px;
+}
+
+.pill-item {
+    flex: 1;
+    padding: 9px 14px;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: #60727d;
+    transition: .25s ease;
+    user-select: none;
+}
+
+.pill-item input {
+    display: none;
+}
+
+.pill-item:hover {
+    background: rgba(15,123,116,.08);
+    color: #0F7B74;
+}
+
+.pill-item.active {
+    background: linear-gradient(135deg,#0F7B74,#18A999);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(15,123,116,.22);
+}
+
+/* ==========================================================================
+   BUTTON
+   ========================================================================== */
+
+.btn-creative-submit {
+    background: linear-gradient(135deg,#0F7B74,#18A999) !important;
+    color: #fff !important;
+    border: none;
+    border-radius: 30px;
+    padding: 11px 40px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: .3px;
+    transition: .3s ease;
+    box-shadow: 0 10px 25px rgba(15,123,116,.22);
+}
+
+.btn-creative-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 35px rgba(15,123,116,.30);
+    background: linear-gradient(135deg,#0d6d67,#0F7B74) !important;
+}
+
+.btn-creative-submit:active {
+    transform: scale(.98);
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width:768px){
+
+.plan-form-card-compact{
+    padding:22px;
+}
+
+.form-main-title{
+    font-size:20px;
+}
+
+.segmented-pill-control{
+    flex-direction:column;
+}
+
+.pill-item{
+    width:100%;
+}
+
+.btn-creative-submit{
+    width:100%;
+}
+}
