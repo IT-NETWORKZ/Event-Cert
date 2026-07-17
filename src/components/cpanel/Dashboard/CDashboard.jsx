@@ -194,21 +194,21 @@ const Dashboard = () => {
           <div className="quick-links">
             <ul className="top-menu">
               <li>
-                <NavLink to="/admin/payment">
+                <NavLink to="/cpanel/payment">
                   <FaCreditCard />
                   <span>Payment</span>
                 </NavLink>
               </li>
 
               <li>
-                <NavLink to="/admin/feedback">
+                <NavLink to="/cpanel/feedback">
                   <FaCommentAlt />
                   <span>Feedback</span>
                 </NavLink>
               </li>
 
               <li>
-                <NavLink to="/admin/terms">
+                <NavLink to="/cpanel/terms">
                   <FaFileContract />
                   <span>T&amp;C</span>
                 </NavLink>

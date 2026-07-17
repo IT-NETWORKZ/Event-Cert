@@ -1,17 +1,37 @@
-import { useEffect, useRef, useState } from "react";
-import $ from "jquery";
-import "datatables.net";
+import "./DataTable.css";
+import { useMemo, useState } from "react";
+import {
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { ArrowUp, ArrowDown } from "lucide-react";
 
-function DataTable({ columns = [], data = [] }) {
-  const tableRef = useRef(null);
-  const dataTableInstance = useRef(null);
+function DataTable({ columns, data, onExportExcel, onViewAllDetails }) {
+  const [sorting, setSorting] = useState([]);
+  const [globalFilter, setGlobalFilter] = useState("");
 
-  const [pageInfo, setPageInfo] = useState({
-    page: 0,
-    pages: 0,
-    start: 0,
-    end: 0,
-    recordsTotal: 0,
+  const table = useReactTable({
+    data: useMemo(() => data, [data]),
+    columns,
+    state: {
+      sorting,
+      globalFilter,
+    },
+    onSortingChange: setSorting,
+    onGlobalFilterChange: setGlobalFilter,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 5, // Updated default to 25 to match the screenshot layout
+      },
+    },
   });
 
   useEffect(() => {
@@ -96,73 +116,147 @@ function DataTable({ columns = [], data = [] }) {
   };
 
   return (
-    <div className="table-wrapper">
-      {/* TOOLBAR */}
-      <div className="table-toolbar">
-        <div className="table-length">
-          <span>Show</span>
-          <select defaultValue="10" onChange={handleLengthChange}>
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
-            <option value="20">20</option>
+    <div className="table-wrapper container-fluid">
+      {/* Action Buttons Bar matching screenshot layout */}
+      <div className="d-flex gap-2 mb-3 justify-content-start">
+        <button 
+          className="btn btn-success action-btn-green" 
+          onClick={onExportExcel}
+        >
+          Export to Excel
+        </button>
+        <button 
+          className="btn btn-success action-btn-green" 
+          onClick={onViewAllDetails}
+        >
+          All Event Reg. Details
+        </button>
+      </div>
+
+      <div className="table-toolbar d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div className="table-length d-flex align-items-center gap-2">
+          <select
+            className="form-select form-select-sm"
+            style={{ width: "auto" }}
+            value={table.getState().pagination.pageSize}
+            onChange={(e) => table.setPageSize(Number(e.target.value))}
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={15}>15</option>
+            <option value={25}>25</option>
           </select>
-          <span>Entries</span>
+          <span className="text-secondary small">Entries per page</span>
         </div>
 
         <div className="table-search">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.3-4.3" />
-          </svg>
           <input
             type="text"
-            placeholder="Search events..."
-            onChange={handleSearch}
+            className="form-control form-control-sm"
+            placeholder="Search..."
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
           />
         </div>
       </div>
 
-      {/* TABLE CONTAINER */}
       <div className="table-responsive">
-        <table
-          ref={tableRef}
-          className="data-table"
-          style={{ width: "100%" }}
-        />
+        <table className="table table-hover align-middle data-table m-0">
+          <thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th
+                    key={header.id}
+                    onClick={header.column.getToggleSortingHandler()}
+                    style={{ cursor: header.column.getCanSort() ? 'pointer' : 'default' }}
+                  >
+                    <div className="th-content-wrapper">
+                      {/* Top Arrow */}
+                      <span className="sort-arrow-top">
+                        {header.column.getCanSort() && (
+                          <ArrowUp 
+                            size={10} 
+                            className={header.column.getIsSorted() === "asc" ? "active-arrow" : "dimmed-arrow"} 
+                          />
+                        )}
+                      </span>
+                      
+                      {/* Header Text */}
+                      <div className="th-text">
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                      </div>
+
+                      {/* Bottom Arrow */}
+                      <span className="sort-arrow-bottom">
+                        {header.column.getCanSort() && (
+                          <ArrowDown 
+                            size={10} 
+                            className={header.column.getIsSorted() === "desc" ? "active-arrow" : "dimmed-arrow"} 
+                          />
+                        )}
+                      </span>
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.length ? (
+              table.getRowModel().rows.map((row) => (
+                <tr key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <td key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={columns.length} className="no-data text-end py-5 text-muted">
+                  No entries found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
-      {/* PAGINATION */}
-      <div className="table-pagination">
-        <span className="pagination-info">
-          Showing {pageInfo.recordsTotal === 0 ? 0 : pageInfo.start + 1} to{" "}
-          {pageInfo.end} of {pageInfo.recordsTotal} entries
+      <div className="table-pagination d-flex justify-content-between align-items-center mt-3">
+        <button
+          className="btn btn-outline-secondary btn-sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </button>
+
+        <span className="small text-muted">
+          Page{" "}
+          <strong className="text-dark">
+            {table.getState().pagination.pageIndex + 1}
+          </strong>{" "}
+          of{" "}
+          <strong className="text-dark">
+            {table.getPageCount()}
+          </strong>
         </span>
-        <div className="pagination-buttons">
-          <button
-            type="button"
-            onClick={handlePrevPage}
-            disabled={pageInfo.page === 0}
-          >
-            Previous
-          </button>
-          <button
-            type="button"
-            onClick={handleNextPage}
-            disabled={pageInfo.page >= pageInfo.pages - 1}
-          >
-            Next
-          </button>
-        </div>
+
+        <button
+          className="btn btn-outline-secondary btn-sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </button>
       </div>
     </div>
   );

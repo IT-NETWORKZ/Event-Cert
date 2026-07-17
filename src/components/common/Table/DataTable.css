@@ -1,286 +1,123 @@
-/* ===========================
-   Table Wrapper
-=========================== */
-
 .table-wrapper {
-    width: 100%;
     background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 20px;
-    overflow: hidden;
-    box-sizing: border-box;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    font-family: inherit;
 }
 
-/* ===========================
-   Toolbar
-=========================== */
-
-.table-toolbar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 18px;
-    gap: 20px;
+/* Custom design style matching green buttons in screenshot */
+.action-btn-green {
+    background-color: #1b853c !important;
+    border-color: #1b853c !important;
+    color: #ffffff !important;
+    border-radius: 20px !important;
+    padding: 8px 24px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    box-shadow: 0 4px 10px rgba(27, 133, 60, 0.2);
+    transition: background-color 0.2s ease;
 }
 
-.table-length {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    color: #374151;
-    font-weight: 500;
-    width:50% 
+.action-btn-green:hover {
+    background-color: #15692f !important;
+    border-color: #15692f !important;
 }
-
-.table-length select {
-    width: 72px;
-    height: 38px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    background: #fff;
-    padding: 0 10px;
-    font-size: 14px;
-    cursor: pointer;
-    outline: none;
-}
-
+/* Table Search Input Formatting Fix */
 .table-search {
+    width: 240px;
     position: relative;
-    width: 280px;
 }
 
-.table-search svg {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #9ca3af;
-}
-
-.table-search input {
-    width: 100%;
-    height: 38px;
-    padding: 0 12px 0 38px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    outline: none;
-    font-size: 14px;
-    transition: .25s;
-}
-
-.table-search input:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 3px rgba(13,110,253,.1);
-}
-
-/* ===========================
-   Table
-=========================== */
-
-.table-responsive {
-    width: 100%;
-    overflow-x: auto;
-}
-
-.data-table {
+.table-search input.form-control {
     width: 100% !important;
-    border-collapse: collapse;
-    table-layout: fixed;
+    height: 38px !important;
+    background-color: #ffffff !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 6px !important;
+    padding: 0 14px !important;
+    font-size: 14px !important;
+    color: #333333 !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
-.data-table thead {
-    border-bottom: 2px solid #e5e7eb;
+/* Ensure placeholder text matches the design readability */
+.table-search input.form-control::placeholder {
+    color: #6c757d !important;
+    opacity: 0.8;
 }
 
-.data-table thead th {
-    padding: 15px 18px;
-    background: #fff;
-    color: #111827;
+/* Clear visual highlighting on click/focus */
+.table-search input.form-control:focus {
+    border-color: #1b853c !important; /* Green matching your active styling accent color */
+    box-shadow: 0 0 0 0.2rem rgba(27, 133, 60, 0.15) !important;
+}
+
+/* Scrollbars Container UI */
+.table-responsive::-webkit-scrollbar {
+    height: 6px;
+}
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+/* Overriding external dark/color systems to protect raw clean background layout */
+.data-table thead, 
+.data-table th {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #333333 !important; 
+    border-bottom: 2px solid #dee2e6 !important;
+}
+
+.data-table th {
+    padding: 12px 10px;
+    text-align: center;
     font-size: 14px;
     font-weight: 600;
-    text-align: left;
-    cursor: pointer;
-    white-space: nowrap;
     user-select: none;
-}
-
-.data-table tbody td {
-    padding: 15px 18px;
-    font-size: 14px;
-    color: #4b5563;
-    border-bottom: 1px solid #f1f3f5;
     vertical-align: middle;
-    word-break: break-word;
 }
 
-.data-table tbody tr:hover {
-    background: #f9fafb;
+.data-table td {
+    padding: 16px 10px;
+    text-align: center;
+    font-size: 14px;
+    color: #333;
 }
 
-/* ===========================
-   Header
-=========================== */
-
-.th-content {
+/* Column Header Split-Arrow Alignment */
+.th-content-wrapper {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    gap: 10px;
-}
-
-.th-content span:first-child {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.sort-icon {
-    width: 12px;
-    min-width: 12px;
-    height: 16px;
+    justify-content: center;
     position: relative;
+    padding: 0 15px;
 }
 
-.sort-icon::before,
-.sort-icon::after {
-    content: "";
-    position: absolute;
-    left: 2px;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
+.th-text {
+    line-height: 1.3;
+    margin: 2px 0;
+    white-space: normal;
+    color: #333333 !important;
 }
 
-.sort-icon::before {
-    top: 0;
-    border-bottom: 5px solid #c4c4c4;
-}
-
-.sort-icon::after {
-    bottom: 0;
-    border-top: 5px solid #c4c4c4;
-}
-
-/* ===========================
-   No Data
-=========================== */
-
-.no-data {
-    padding: 35px;
-    text-align: center;
-    color: #6b7280;
-    font-size: 14px;
-}
-
-/* ===========================
-   Pagination
-=========================== */
-
-.table-pagination {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 18px;
-    padding-top: 15px;
-    border-top: 1px solid #ececec;
-    font-size: 14px;
-    color: #6b7280;
-}
-
-.pagination-buttons {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.table-pagination button {
-    min-width: 90px;
-    height: 36px;
-    border: 1px solid #d1d5db;
-    background: #fff;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: .2s;
-    font-size: 14px;
-}
-
-.table-pagination button:hover:not(:disabled) {
-    background: #0d6efd;
-    border-color: #0d6efd;
-    color: #fff;
-}
-
-.table-pagination button:disabled {
-    cursor: not-allowed;
-    opacity: .45;
-}
-
-.page-number {
-    width: 36px;
-    height: 36px;
-    border-radius: 6px;
-    background: #0d6efd;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-}
-
-/* ===========================
-   Edit Button
-=========================== */
-
-.dt-edit-btn {
-    width: 34px;
-    height: 34px;
+.sort-arrow-top,
+.sort-arrow-bottom {
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: .2s;
+    height: 10px;
 }
 
-.dt-edit-btn:hover {
-    background: #eef5ff;
+.dimmed-arrow {
+    color: #c1c1c1 !important; 
 }
 
-/* ===========================
-   Last Column
-=========================== */
-
-.data-table th:last-child,
-.data-table td:last-child {
-    width: 70px;
-    text-align: center;
-}
-
-/* ===========================
-   Responsive
-=========================== */
-
-@media (max-width:768px) {
-
-    .table-toolbar,
-    .table-pagination {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .table-search {
-        width: 100%;
-    }
-
-    .table-length {
-        justify-content: space-between;
-    }
-
-    .pagination-buttons {
-        justify-content: center;
-        margin-top: 10px;
-    }
+.active-arrow {
+    color: #333333 !important;
 }
