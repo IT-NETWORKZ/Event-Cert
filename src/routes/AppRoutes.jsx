@@ -28,33 +28,33 @@ function AppRoutes() {
 
             {/* Public Routes */}
 
-            <Route path="/" element={<Home />} />
+                    <Route path="/" element={<Home />} />
 
-            <Route path="/services" element={<Services />} />
+                    <Route path="/services" element={<Services />} />
 
-            <Route path="/facilities" element={<Facilities />} />
+                    <Route path="/facilities" element={<Facilities />} />
 
-            <Route path="/contact" element={<Contact />} />
+                    <Route path="/contact" element={<Contact />} />
 
-            <Route path="/register" element={<Register />} />
+                    <Route path="/register" element={<Register />} />
 
-            <Route path="/subscription" element={<Subscription />} />
+                    <Route path="/subscription" element={<Subscription />} />
 
-            {/* Admin Layout */}
-            <Route path="/admin/customplus" element={<CustomPlus />} />
-            <Route path="/admin" element={<Admin />}>
+                    {/* Admin Layout */}
+                    <Route path="/admin/customplus" element={<CustomPlus />} />
+                    <Route path="/admin" element={<Admin />}>
 
-                {/* Default page -> /admin */}
-                <Route index element={<Dashboard />} />
+                        {/* Default page -> /admin */}
+                        <Route index element={<Dashboard />} />
 
-                {/* /admin/dashboard */}
-                <Route path="dashboard" element={<Dashboard />} />
+                        {/* /admin/dashboard */}
+                        <Route path="dashboard" element={<Dashboard />} />
 
-                {/* /admin/profile */}
-                <Route path="profile" element={<Profile />} />
+                        {/* /admin/profile */}
+                        <Route path="profile" element={<Profile />} />
 
-                {/* /admin/subscriptionplan */}
-                <Route path="subscriptionplan" element={<Subscriptionplan />} />
+                        {/* /admin/subscriptionplan */}
+                        <Route path="subscriptionplan" element={<Subscriptionplan />} />
 
 
                 {/* /admin/feedback */}
