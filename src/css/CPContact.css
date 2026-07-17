@@ -1,0 +1,100 @@
+/* ==========================================================================
+   PAGE WRAPPER LAYOUT
+   ========================================================================== */
+
+.cp-page-wrapper,
+.c-addplans-wrapper {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* ==========================================================================
+   UNIFORM PAGE HEADER
+   ========================================================================== */
+
+.header-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 4px;
+}
+
+.header-subtitle {
+    font-size: 13px;
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+/* ==========================================================================
+   HORIZONTAL SCROLL SYSTEM
+   ========================================================================== */
+
+.table-responsive-scroll-wrapper {
+    width: 100%;
+    overflow-x: auto !important; /* Forces scroll container behavior */
+    -webkit-overflow-scrolling: touch; /* Momentum scrolling touch gesture for iOS */
+    border-radius: 12px;
+}
+
+/* Forces the inner data-table to expand beyond screen bounds to trigger scroll */
+.cp-page-wrapper .data-table,
+.c-addplans-wrapper .data-table {
+    table-layout: fixed !important;
+    width: max-content !important;
+    min-width: 100% !important;
+}
+
+/* Customized Scrollbars for the table container */
+.table-responsive-scroll-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+
+.table-responsive-scroll-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.table-responsive-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+.table-responsive-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* ==========================================================================
+   ACTION BUTTONS
+   ========================================================================== */
+
+.btn-outline-success {
+    border-radius: 18px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-success:hover {
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   UNIFORM TABLE CELL CENTERING (HEADINGS & DATA)
+   ========================================================================== */
+
+/* Centers cell contents globally inside this page wrapper */
+.cp-page-wrapper .data-table th,
+.c-addplans-wrapper .data-table th {
+    text-align: center !important;
+}
+
+.cp-page-wrapper .data-table td,
+.c-addplans-wrapper .data-table td {
+    text-align: center !important;
+}
+
+/* Ensures the header sort-arrow flex containers align perfectly in the middle */
+.cp-page-wrapper .th-content-wrapper,
+.c-addplans-wrapper .th-content-wrapper {
+    justify-content: center !important;
+}
