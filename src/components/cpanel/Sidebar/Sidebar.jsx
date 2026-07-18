@@ -19,12 +19,13 @@ import {
   FaCommentDots,
   FaReceipt,
   FaCalendarDay,
-  FaPhone,
+  FaPhoneAlt,
   FaList,
   FaGift,
   FaFileImage,
-  FaCashRegister,
-  FaStackExchange
+  FaCashRegister, 
+  FaStackExchange,
+  
 } from "react-icons/fa";
 
 import { NavLink, useLocation } from "react-router-dom";
@@ -85,7 +86,7 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
           </MenuItem>
 
           <MenuItem
-            icon={<FaPhone />}
+            icon={<FaPhoneAlt />}
             component={<NavLink to="/cpanel/contact" />}
             className={isActive("/cpanel/contact") ? "active-item" : ""}
           >
