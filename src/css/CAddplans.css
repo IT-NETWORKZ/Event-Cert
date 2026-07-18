@@ -1,0 +1,209 @@
+/* ==========================================================================
+   PAGE WRAPPER & CONTAINER
+   ========================================================================== */
+.c-addplans-wrapper {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* Red Accent Line Under Card Heading */
+.header-accent-line::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 45px;
+    height: 2px;
+    background-color: #dc3545;
+}
+
+/* ==========================================================================
+   CLEAN COMPACT SINGLE-CARD FORM DESIGN
+   ========================================================================== */
+.plan-form-card-compact {
+    background: #ffffff;
+    border: 1px solid #eaecf0;
+    border-radius: 12px;
+    padding: 24px 30px;
+    max-width: 680px;
+    /* Kept compact and narrow on wide screens */
+    margin: 0 auto 20px auto;
+}
+
+/* Form Spacing */
+.event-form-compact {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Compact Typography Labels */
+.compact-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #6c757d;
+    letter-spacing: 0.3px;
+    margin-bottom: 5px;
+}
+
+/* Custom Clean Input Elements */
+.custom-input-sm {
+    border: 1px solid #ced4da !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    padding: 6px 12px !important;
+    color: #495057 !important;
+    transition: all 0.15s ease-in-out !important;
+}
+
+.custom-input-sm:focus {
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.1) !important;
+}
+
+/* Textarea height adjustment to prevent bulky elements */
+.text-area-compact {
+    resize: none !important;
+    height: 55px !important;
+}
+
+.required {
+    color: #dc3545;
+    margin-left: 2px;
+}
+
+/* ==========================================================================
+   CREATIVE SEGMENTED PILL SELECTION CONTROL
+   ========================================================================== */
+.segmented-pill-control {
+    display: flex;
+    background: #f1f3f5;
+    border-radius: 8px;
+    padding: 3px;
+    gap: 2px;
+}
+
+.pill-item {
+    flex: 1;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 6px 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #495057;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pill-item input[type="radio"] {
+    display: none;
+}
+
+.pill-item.active {
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================================================
+   SUBMIT BUTTON
+   ========================================================================== */
+.btn-creative-submit {
+    background-color: #0d6efd !important;
+    color: #ffffff !important;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 36px;
+    transition: all 0.2s ease;
+}
+
+.btn-creative-submit:hover {
+    background-color: #0b5ed7 !important;
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   HORIZONTAL SCROLL SYSTEM (DATATABLE WRAPPER)
+   ========================================================================== */
+.table-responsive-scroll-wrapper {
+    width: 100%;
+    overflow-x: auto !important; /* Forces scroll container behavior */
+    -webkit-overflow-scrolling: touch; /* Momentum scrolling touch gesture for iOS */
+    border-radius: 12px;
+}
+
+/* Forces the inner data-table to expand beyond screen bounds to trigger scroll */
+.c-addplans-wrapper .data-table {
+    table-layout: fixed !important;
+    width: max-content !important;
+    min-width: 100% !important;
+}
+
+/* Customized Scrollbars for the table container */
+.table-responsive-scroll-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+
+.table-responsive-scroll-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.table-responsive-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+.table-responsive-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.table-card-wrapper {
+    background-color: #ffffff;
+    border: 1px solid #eaecf0;
+    border-radius: 12px !important;
+}
+
+/* ==========================================================================
+   STATUS BADGES (PLAIN TEXT FORMATTING, NO BACKGROUNDS)
+   ========================================================================== */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Backgrounds and extra colors completely removed */
+.status-active {
+    color: inherit;
+}
+
+.status-inactive {
+    color: inherit;
+}
+
+/* ==========================================================================
+   UNIFORM TABLE CELL CENTERING (HEADINGS & DATA)
+   ========================================================================== */
+
+/* Centers cell contents globally inside this page wrapper */
+.c-addplans-wrapper .data-table th {
+    text-align: center !important;
+}
+
+.c-addplans-wrapper .data-table td {
+    text-align: center !important;
+}
+
+/* Ensures the header sort-arrow flex containers align perfectly in the middle */
+.c-addplans-wrapper .th-content-wrapper {
+    justify-content: center !important;
+}

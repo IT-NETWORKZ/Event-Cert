@@ -35,69 +35,117 @@ const emptyFormData = {
   ifscCode: "",
 };
 
+// 20 Mock records to populate the table initially
+const initialDummyEvents = [
+  { id: 1, organizationName: "TechCorp India", eventTitle: "Tech Summit 2026", mode: "Online", city: "Bangalore", state: "Karnataka", eventStartDate: "2026-08-10", eventCompletionDate: "2026-08-12", entryFee: "1500", status: "Active" },
+  { id: 2, organizationName: "AI Research Lab", eventTitle: "AI & ML Workshop", mode: "Offline", city: "Hyderabad", state: "Telangana", eventStartDate: "2026-08-15", eventCompletionDate: "2026-08-16", entryFee: "500", status: "Active" },
+  { id: 3, organizationName: "Design Guild", eventTitle: "UI/UX Design Forum", mode: "Hybrid", city: "Mumbai", state: "Maharashtra", eventStartDate: "2026-08-20", eventCompletionDate: "2026-08-22", entryFee: "0", status: "Active" },
+  { id: 4, organizationName: "CyberSec India", eventTitle: "Cybersecurity Expo", mode: "Offline", city: "New Delhi", state: "Delhi", eventStartDate: "2026-09-01", eventCompletionDate: "2026-09-03", entryFee: "2000", status: "Active" },
+  { id: 5, organizationName: "Cloud Native Group", eventTitle: "Kubernetes Days", mode: "Online", city: "Pune", state: "Maharashtra", eventStartDate: "2026-09-05", eventCompletionDate: "2026-09-05", entryFee: "300", status: "Cancelled" },
+  { id: 6, organizationName: "DevOps Central", eventTitle: "CI/CD Bootcamp", mode: "Online", city: "Chennai", state: "Tamil Nadu", eventStartDate: "2026-09-10", eventCompletionDate: "2026-09-11", entryFee: "0", status: "Active" },
+  { id: 7, organizationName: "Data Science Hub", eventTitle: "Big Data Conference", mode: "Offline", city: "Bangalore", state: "Karnataka", eventStartDate: "2026-09-15", eventCompletionDate: "2026-09-17", entryFee: "2500", status: "Active" },
+  { id: 8, organizationName: "Web3 Society", eventTitle: "Blockchain Summit", mode: "Hybrid", city: "Gurgaon", state: "Haryana", eventStartDate: "2026-09-20", eventCompletionDate: "2026-09-21", entryFee: "1000", status: "Active" },
+  { id: 9, organizationName: "FinTech Alliance", eventTitle: "Future of Payments", mode: "Offline", city: "Mumbai", state: "Maharashtra", eventStartDate: "2026-09-25", eventCompletionDate: "2026-09-26", entryFee: "1200", status: "Active" },
+  { id: 10, organizationName: "Green Energy Council", eventTitle: "CleanTech Forum", mode: "Online", city: "Ahmedabad", state: "Gujarat", eventStartDate: "2026-10-01", eventCompletionDate: "2026-10-02", entryFee: "0", status: "Active" },
+  { id: 11, organizationName: "EdTech Creators", eventTitle: "Digital Learning Expo", mode: "Hybrid", city: "Kolkata", state: "West Bengal", eventStartDate: "2026-10-05", eventCompletionDate: "2026-10-07", entryFee: "400", status: "Active" },
+  { id: 12, organizationName: "Startup Network", eventTitle: "Founders Pitch Day", mode: "Offline", city: "Bangalore", state: "Karnataka", eventStartDate: "2026-10-10", eventCompletionDate: "2026-10-10", entryFee: "0", status: "Active" },
+  { id: 13, organizationName: "QA Professionals", eventTitle: "Automation Testing Con", mode: "Online", city: "Pune", state: "Maharashtra", eventStartDate: "2026-10-15", eventCompletionDate: "2026-10-16", entryFee: "600", status: "Active" },
+  { id: 14, organizationName: "Game Dev Studio", eventTitle: "Indie Game Jam", mode: "Offline", city: "Hyderabad", state: "Telangana", eventStartDate: "2026-10-20", eventCompletionDate: "2026-10-22", entryFee: "200", status: "Active" },
+  { id: 15, organizationName: "HealthTech India", eventTitle: "MedTech Innovation", mode: "Hybrid", city: "New Delhi", state: "Delhi", eventStartDate: "2026-10-25", eventCompletionDate: "2026-10-26", entryFee: "1800", status: "Cancelled" },
+  { id: 16, organizationName: "Robotics Society", eventTitle: "Autonomous Systems", mode: "Offline", city: "Chennai", state: "Tamil Nadu", eventStartDate: "2026-11-01", eventCompletionDate: "2026-11-03", entryFee: "1500", status: "Active" },
+  { id: 17, organizationName: "Mobile Dev Group", eventTitle: "Flutter & React Native Con", mode: "Online", city: "Bangalore", state: "Karnataka", eventStartDate: "2026-11-05", eventCompletionDate: "2026-11-06", entryFee: "500", status: "Active" },
+  { id: 18, organizationName: "AgriTech Forum", eventTitle: "Smart Farming Expo", mode: "Offline", city: "Indore", state: "Madhya Pradesh", eventStartDate: "2026-11-10", eventCompletionDate: "2026-11-12", entryFee: "0", status: "Active" },
+  { id: 19, organizationName: "IoT Makers", eventTitle: "Connected Devices Workshop", mode: "Hybrid", city: "Pune", state: "Maharashtra", eventStartDate: "2026-11-15", eventCompletionDate: "2026-11-16", entryFee: "800", status: "Active" },
+  { id: 20, organizationName: "Open Source Guild", eventTitle: "FOSS Meetup 2026", mode: "Offline", city: "Mumbai", state: "Maharashtra", eventStartDate: "2026-11-20", eventCompletionDate: "2026-11-21", entryFee: "0", status: "Active" },
+];
+
 const AddEvent = () => {
   const [formData, setFormData] = useState(emptyFormData);
   const [editingId, setEditingId] = useState(null); // null = creating, otherwise editing this row's id
-  const [eventsList, setEventsList] = useState([]); // rows shown in the DataTable below the form
+  const [eventsList, setEventsList] = useState(initialDummyEvents); // rows shown in the DataTable below the form
 
   const durationOptions = [
     "1 Weeks", "6 Weeks", "2 Month", "3 Months", "4 Months", "6 Months", "1 Year"
   ];
 
   /* ==========================================================================
-     DATATABLE COLUMN DEFINITIONS
-     DataTable renders raw HTML via jQuery, so cell() must return a
-     string/number, never JSX.
+     DATATABLE COLUMN DEFINITIONS W/ CLEAN ALIGNMENT MAPPINGS
      ========================================================================== */
   const eventColumns = [
     {
+      header: "Sr No",
+      id: "srNo",
+      meta: { className: "text-center" },
+      cell: (info) => info.row.index + 1,
+    },
+    {
       header: "Organization",
       accessorKey: "organizationName",
+      meta: { className: "text-start" },
     },
     {
       header: "Event Title",
       accessorKey: "eventTitle",
+      meta: { className: "text-start" },
     },
     {
       header: "Mode",
       accessorKey: "mode",
+      meta: { className: "text-center" },
       cell: (info) => info.getValue() || "-",
     },
     {
       header: "City",
       accessorKey: "city",
+      meta: { className: "text-start" },
     },
     {
       header: "State",
       accessorKey: "state",
+      meta: { className: "text-start" },
     },
     {
       header: "Event Start",
       accessorKey: "eventStartDate",
+      meta: { className: "text-center" },
     },
     {
       header: "Event End",
       accessorKey: "eventCompletionDate",
+      meta: { className: "text-center" },
     },
     {
       header: "Entry Fee",
       accessorKey: "entryFee",
+      meta: { className: "text-end" },
       cell: (info) => {
         const val = info.getValue();
-        return `<span class="cell-align-right">₹${val && val !== "0" ? val : "Free"}</span>`;
+        return val && val !== "0" ? `₹${val}` : "Free";
       },
     },
     {
       header: "Status",
       accessorKey: "status",
+      meta: { className: "text-center" },
       cell: (info) => {
         const val = info.getValue() || "Active";
-        return `<span class="status-badge status-${val.toLowerCase()}">${val}</span>`;
+        return <span className={`status-badge status-${val.toLowerCase()}`}>{val}</span>;
       },
     },
     {
       header: "Action",
-      id: "edit",
+      id: "actions",
+      meta: { className: "text-center" },
+      cell: (info) => (
+        <button
+          type="button"
+          className="btn btn-sm btn-outline-success px-3 py-1"
+          style={{ borderRadius: "15px", fontSize: "12px" }}
+          onClick={() => handleEditRow(info.row.original)}
+        >
+          Edit
+        </button>
+      ),
     },
   ];
 
@@ -157,21 +205,17 @@ const AddEvent = () => {
     };
 
     if (editingId !== null) {
-      // Update existing row
       setEventsList((prev) =>
         prev.map((row) => (row.id === editingId ? { ...row, ...eventRecord } : row))
       );
       setEditingId(null);
     } else {
-      // Create new row
       setEventsList((prev) => [{ id: Date.now(), ...eventRecord }, ...prev]);
     }
 
     setFormData(emptyFormData);
   };
 
-  // Called by DataTable when the pencil icon is clicked — loads that row
-  // back into the form for editing.
   const handleEditRow = (row) => {
     if (!row) return;
     setEditingId(row.id);
@@ -195,6 +239,19 @@ const AddEvent = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  /* ==========================================================================
+     DATATABLE BUTTON HANDLERS
+     ========================================================================== */
+  const handleExportExcel = () => {
+    console.log("Exporting events list to Excel...");
+    alert("Exporting data to Excel format!");
+  };
+
+  const handleViewAllDetails = () => {
+    console.log("Viewing all registration details...");
+    alert("Displaying all Event Registration details!");
+  };
+
   return (
     <div>
       <div className="add-event-container">
@@ -203,7 +260,6 @@ const AddEvent = () => {
         </h2>
 
         <form onSubmit={handleSubmit} className="event-form">
-
           {/* Instructions Block */}
           <div className="instructions-section">
             <h3>Instructions</h3>
@@ -231,7 +287,6 @@ const AddEvent = () => {
 
           {/* 2-Column Standard Responsive Fields Grid */}
           <div className="form-fields-grid">
-
             <div className="form-group full-width-mobile">
               <label>Mode <span className="required">*</span></label>
               <select name="mode" value={formData.mode} onChange={handleChange} required>
@@ -482,13 +537,17 @@ const AddEvent = () => {
               </button>
             )}
           </div>
-
         </form>
       </div>
 
-      {/* jQuery DataTable — edit button pre-fills the form above */}
+      {/* Renders BOTH "Export to Excel" and "All Event Reg. Details" buttons in the table */}
       <div style={{ marginTop: "30px" }}>
-        <DataTable columns={eventColumns} data={eventsList} onEdit={handleEditRow} />
+        <DataTable
+          columns={eventColumns}
+          data={eventsList}
+          onExportExcel={handleExportExcel}
+          onViewAllDetails={handleViewAllDetails}
+        />
       </div>
     </div>
   );

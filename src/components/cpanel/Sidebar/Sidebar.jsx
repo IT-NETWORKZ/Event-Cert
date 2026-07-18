@@ -93,45 +93,23 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
             Contact
           </MenuItem>
 
-
           <MenuItem
-            icon={<FaList />
-            }
-           
-            className={isActive("/cpanel/registrationlist") ? "active-item" : ""}
+            icon={<FaList />}
+            component={<NavLink to="/cpanel/registrationList" />}
+            className={isActive("/cpanel/registrationList") ? "active-item" : ""}
           >
             Registration List
           </MenuItem>
 
 
-          <MenuItem
-            icon={<TbFileCertificate />
-            }
-            
-            className={isActive("/cpanel/certificate") ? "active-item" : ""}
-          >
-            Certificate
-          </MenuItem>
-
-       
-
-
 
           <MenuItem
             icon={<FaFile />}
-            component={<NavLink to="/cpanel/add-plans" />}
-            className={isActive("/cpanel/add-plans") ? "active-item" : ""}
+            component={<NavLink to="/cpanel/addplans" />}
+            className={isActive("/cpanel/addplans") ? "active-item" : ""}
           >
             Add Plans
           </MenuItem>
-{/* 
-           <MenuItem
-            icon={<FaUser />}
-            component={<NavLink to="/cpanel/profile" />}
-            className={isActive("/cpanel/profile") ? "active-item" : ""}
-          >
-            Profile
-          </MenuItem> */}
 
           <MenuItem
             icon={<FaCalendarDay />}
@@ -141,7 +119,7 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
             Add Event
           </MenuItem>
 
-           <MenuItem
+          <MenuItem
             icon={<FaGift />}
             component={<NavLink to="/cpanel/addpromocode" />}
             className={isActive("/cpanel/addpromocode") ? "active-item" : ""}
@@ -149,8 +127,7 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
             Add promo Code
           </MenuItem>
 
-          
-           <MenuItem
+          <MenuItem
             icon={<FaFileImage />}
             component={<NavLink to="/cpanel/addtemplate" />}
             className={isActive("/cpanel/addtemplate") ? "active-item" : ""}
@@ -158,23 +135,21 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
             Add Template
           </MenuItem>
 
-           <MenuItem
+          <MenuItem
             icon={<FaCashRegister />}
             component={<NavLink to="/cpanel/transaction" />}
             className={isActive("/cpanel/transaction") ? "active-item" : ""}
           >
-            Admin Transaction 
+            Admin Transaction
           </MenuItem>
 
-             <MenuItem
+          <MenuItem
             icon={<FaStackExchange />}
             component={<NavLink to="/cpanel/taxes" />}
             className={isActive("/cpanel/taxes") ? "active-item" : ""}
           >
             Taxes
           </MenuItem>
-       
-
         </Menu>
       </Sidebar>
     </ProSidebarProvider>

@@ -1,0 +1,109 @@
+/* ==========================================================================
+   PAGE WRAPPER LAYOUT
+   ========================================================================== */
+
+.registration-page-wrapper {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* ==========================================================================
+   UNIFORM PAGE HEADER
+   ========================================================================== */
+
+.header-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 4px;
+}
+
+.header-subtitle {
+    font-size: 13px;
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+/* ==========================================================================
+   HORIZONTAL SCROLL SYSTEM
+   ========================================================================== */
+
+.table-responsive-scroll-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Momentum scrolling for mobile Safari */
+    border-radius: 12px;
+}
+
+/* Customized Scrollbar matches page formatting rules */
+.table-responsive-scroll-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+
+.table-responsive-scroll-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.table-responsive-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+.table-responsive-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* ==========================================================================
+   STATUS BADGES (PLAIN TEXT FORMATTING, NO BACKGROUNDS)
+   ========================================================================== */
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Background structures completely removed */
+.status-active {
+    color: inherit;
+}
+
+.status-cancelled {
+    color: inherit;
+}
+
+/* ==========================================================================
+   ACTION BUTTONS
+   ========================================================================== */
+
+.btn-outline-success {
+    border-radius: 18px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-success:hover {
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   UNIFORM TABLE CELL CENTERING (HEADINGS & DATA)
+   ========================================================================== */
+
+/* Centers cell contents globally inside this page wrapper */
+.registration-page-wrapper .data-table th {
+    text-align: center !important;
+}
+
+.registration-page-wrapper .data-table td {
+    text-align: center !important;
+}
+
+/* Ensures the header sort-arrow flex containers align perfectly in the middle */
+.registration-page-wrapper .th-content-wrapper {
+    justify-content: center !important;
+}

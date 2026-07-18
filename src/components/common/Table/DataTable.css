@@ -1,12 +1,15 @@
 .table-wrapper {
     background: #fff;
     border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    padding: 24px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
     font-family: inherit;
+    /* stop the browser's scroll-anchoring from jumping the page when
+       the table's height changes (pagination, filtering, etc.) */
+    overflow-anchor: none;
 }
 
-/* Custom design style matching green buttons in screenshot */
+/* Custom design style matching green buttons */
 .action-btn-green {
     background-color: #1b853c !important;
     border-color: #1b853c !important;
@@ -15,15 +18,17 @@
     padding: 8px 24px !important;
     font-size: 14px !important;
     font-weight: 500 !important;
-    box-shadow: 0 4px 10px rgba(27, 133, 60, 0.2);
-    transition: background-color 0.2s ease;
+    box-shadow: 0 4px 10px rgba(27, 133, 60, 0.15);
+    transition: all 0.2s ease;
 }
 
 .action-btn-green:hover {
     background-color: #15692f !important;
     border-color: #15692f !important;
+    transform: translateY(-0.5px);
 }
-/* Table Search Input Formatting Fix */
+
+/* Table Search Input Formatting */
 .table-search {
     width: 240px;
     position: relative;
@@ -42,16 +47,21 @@
     box-shadow: none !important;
 }
 
-/* Ensure placeholder text matches the design readability */
 .table-search input.form-control::placeholder {
     color: #6c757d !important;
     opacity: 0.8;
 }
 
-/* Clear visual highlighting on click/focus */
 .table-search input.form-control:focus {
-    border-color: #1b853c !important; /* Green matching your active styling accent color */
+    border-color: #1b853c !important;
     box-shadow: 0 0 0 0.2rem rgba(27, 133, 60, 0.15) !important;
+}
+
+/* Ensure horizontal scrolling actually engages once the table (driven by
+   column min-widths below) exceeds the wrapper's width. */
+.table-card-border.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Scrollbars Container UI */
@@ -66,58 +76,156 @@
     border-radius: 10px;
 }
 
-/* Overriding external dark/color systems to protect raw clean background layout */
-.data-table thead, 
+/* Fixed layout: column widths are governed by <colgroup>/header only,
+   never recalculated based on the current page's content. This keeps
+   header cells and body cells perfectly aligned across every page.
+   width is content-driven (not forced to 100%) so that once columns
+   need more room than the container, the table grows past it and
+   .table-responsive's horizontal scrollbar kicks in instead of the
+   columns getting squeezed. */
+.data-table {
+    table-layout: fixed;
+    width: max-content;
+    min-width: 100%;
+}
+
+/* Base Head/Data configuration fixes */
+.data-table thead,
 .data-table th {
-    background: #ffffff !important;
-    background-color: #ffffff !important;
-    color: #333333 !important; 
+    background: #f8f9fa !important; /* Slightly off-white header for contrast */
+    color: #495057 !important;
     border-bottom: 2px solid #dee2e6 !important;
 }
 
 .data-table th {
-    padding: 12px 10px;
-    text-align: center;
-    font-size: 14px;
+    padding: 12px 16px;
+    font-size: 13.5px;
     font-weight: 600;
     user-select: none;
     vertical-align: middle;
 }
 
 .data-table td {
-    padding: 16px 10px;
-    text-align: center;
+    padding: 14px 16px;
     font-size: 14px;
     color: #333;
+    border-bottom: 1px solid #efefef !important;
+    height: 48px; /* locks row height so filler rows match real rows exactly */
+    box-sizing: border-box;
 }
 
-/* Column Header Split-Arrow Alignment */
+.data-table tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* Clip overflowing cell text instead of letting it stretch the column
+   and shift alignment when content length changes between pages. */
+.td-content-clip {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Invisible rows used only to pad short pages up to a constant row
+   count, so the table's total height never changes between pages. */
+.filler-row td {
+    color: transparent !important;
+    border-bottom-color: transparent !important;
+    pointer-events: none;
+    user-select: none;
+}
+.filler-row:hover {
+    background: transparent !important;
+}
+
+/* Clean Adaptive Column Alignments */
+.text-start { text-align: left !important; }
+.text-center { text-align: center !important; }
+.text-end { text-align: right !important; }
+
+/* Center-align the actual row data regardless of each column's
+   configured alignment (headers keep their own left/center/right
+   alignment above, since that's tied to the sort-arrow layout). */
+.data-table td.text-start,
+.data-table td.text-center,
+.data-table td.text-end {
+    text-align: center !important;
+}
+
+/* Inline/Row Arrow Placement Alignments */
 .th-content-wrapper {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    position: relative;
-    padding: 0 15px;
+    gap: 6px; /* Space between title text and the arrow */
+    width: 100%;
 }
+
+/* Adjust wrapper flex direction based on standard layout alignments */
+.th-content-wrapper.justify-content-start { justify-content: flex-start; }
+.th-content-wrapper.justify-content-center { justify-content: center; }
+.th-content-wrapper.justify-content-end { justify-content: flex-end; }
 
 .th-text {
     line-height: 1.3;
-    margin: 2px 0;
     white-space: normal;
-    color: #333333 !important;
+    word-break: break-word;
 }
 
-.sort-arrow-top,
-.sort-arrow-bottom {
+.sort-arrow-side {
     display: inline-flex;
-    height: 10px;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
 }
 
 .dimmed-arrow {
-    color: #c1c1c1 !important; 
+    color: #b0b5b9 !important;
 }
 
 .active-arrow {
-    color: #333333 !important;
+    color: #1b853c !important; /* Active arrow matches green design accents */
+}
+
+/* Custom Number Pagination styling overrides.
+   NOTE: font-weight is fixed at 600 for both normal and active state so
+   the button never changes width/text-rendering size on click — this
+   was the main cause of the pagination row "shaking" side to side. */
+.custom-page-btn {
+    color: #495057 !important;
+    background-color: #fff !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 6px !important;
+    min-width: 34px;
+    width: 34px;
+    height: 34px;
+    padding: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px !important;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    box-sizing: border-box;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.custom-page-btn:hover:not(:disabled) {
+    background-color: #f8f9fa !important;
+    color: #1b853c !important;
+    border-color: #ced4da !important;
+}
+
+.page-item.active .custom-page-btn {
+    background-color: #1b853c !important;
+    border-color: #1b853c !important;
+    color: #ffffff !important;
+}
+
+.page-item.disabled .custom-page-btn {
+    color: #6c757d !important;
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #f8f9fa !important;
 }
