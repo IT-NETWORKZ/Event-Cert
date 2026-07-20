@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../../assets/img/logo_EventCert.png'; 
 import InnerNavbar from '../common/navbar/InnerNavbar';
 import Footer from '../common/footer/Footer';
+import Button from "../common/button/Button"
 
 // Global Animation Variants
 const fadeUpVariants = {
@@ -80,29 +81,29 @@ const Subscription = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <button 
+            <Button 
               className={`sub-tab-btn ${activeTab === 'certificate' ? 'selected' : ''}`}
               onClick={() => { setActiveTab('certificate'); setOpenCardIndex(null); }}
             >
               <span className="sub-circle-indicator"></span>
               Certificate
-            </button>
+            </Button>
             
-            <button 
+            <Button 
               className={`sub-tab-btn ${activeTab === 'event' ? 'selected' : ''}`}
               onClick={() => { setActiveTab('event'); setOpenCardIndex(null); }}
             >
               <span className="sub-circle-indicator"></span>
               Event
-            </button>
+            </Button>
             
-            <button 
+            <Button 
               className={`sub-tab-btn ${activeTab === 'combo' ? 'selected' : ''}`}
               onClick={() => { setActiveTab('combo'); setOpenCardIndex(null); }}
             >
               <span className="sub-circle-indicator"></span>
               Event + Certificate
-            </button>
+            </Button>
           </motion.div>
 
           {/* Pricing Rows Grid */}

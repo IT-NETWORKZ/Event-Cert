@@ -5,6 +5,7 @@ import promoImg from "../../../assets/img/EVENTPROMOTION.jpg";
 import invitationImg from "../../../assets/img/INVITATIONCARD.jpg";
 import greetingImg from "../../../assets/img/GREETINGCARD.jpg";
 import certImg from "../../../assets/img/CERTIFICATE.avif";
+import Button from "../../common/button/Button"
 
 function About() {
   return (
@@ -184,11 +185,11 @@ function About() {
               <div className="social-icons">
 
 
-              <button className="btn-about-read">
+              <Button className="btn-about-read">
 
                 Read More
 
-              </button>
+              </Button>
 
                 <a href="#">
                   <i className="bi bi-facebook"></i>
