@@ -1,6 +1,7 @@
 import Footer from "../common/footer/Footer";
 import "./Contact.css";
 import InnerNavbar from "../common/navbar/InnerNavbar";
+import Button from "../common/button/Button"
 
 import {
   Phone,
@@ -119,12 +120,12 @@ function Contact() {
                   0 / 200 characters
                 </div>
 
-                <button
+                <Button
                   type="submit"
                   className="contact-btn"
                 >
                   SEND MESSAGE
-                </button>
+                </Button>
 
               </form>
 

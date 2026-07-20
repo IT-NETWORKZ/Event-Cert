@@ -2,6 +2,7 @@ import "./Facilities.css";
 import { Check, Play } from "lucide-react";
 
 import facilityImg from "../../../assets/img/testimonial-3.jpg";
+import Button from "../../common/button/Button"
 
 function Facilities() {
   return (
@@ -119,11 +120,11 @@ function Facilities() {
 
 
 
-              <button className="facility-btn">
+              <Button className="facility-btn">
 
                 Read More
 
-              </button>
+              </Button>
 
 
 

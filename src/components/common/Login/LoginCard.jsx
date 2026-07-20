@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import "./LoginCard.css";
+import Button from "../../common/button/Button"
 
 function LoginCard({ hideRegister = false, onFormSubmit,  }) {
   const otpRefs = useRef([]);
@@ -75,9 +76,9 @@ function LoginCard({ hideRegister = false, onFormSubmit,  }) {
         </div>
 
         <div className="submit-btn-wrapper">
-          <button type="submit" className="submit-btn">
+          <Button type="submit" className="submit-btn">
             Submit
-          </button>
+          </Button>
         </div>
       </form>
 
@@ -85,13 +86,13 @@ function LoginCard({ hideRegister = false, onFormSubmit,  }) {
         <span>OR</span>
       </div>
 
-      <button type="button" className="google-btn">
+      <Button type="button" className="google-btn">
         <img
           src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
           alt="Google"
         />
         Continue with Google
-      </button>
+      </Button>
 
       {/* Conditionally hide register link */}
       {!hideRegister && (
