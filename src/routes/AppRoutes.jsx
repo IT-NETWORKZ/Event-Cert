@@ -23,6 +23,7 @@ import CLogin from "../components/cpanel/Login/CLogin";
 import CPContact from "../pages/CPanel/CPContact";
 import CRegistrationList from "../pages/CPanel/CRegistrationList";
 import CAddplans from "../pages/CPanel/CAddplans";
+import CPromoCode from "../components/cpanel/Promocode/CPromoCode";
 
 
 function AppRoutes() {
@@ -73,19 +74,20 @@ function AppRoutes() {
 
             {/* ================= CPANEL LAYOUT ================= */}
 
-      {/* Unified CPanel Route Group */}
-<Route path="/cpanel">
-  {/* Resolves exactly at: /cpanel */}
-  <Route index element={<CLogin />} />
+            {/* Unified CPanel Route Group */}
+            <Route path="/cpanel">
+                {/* Resolves exactly at: /cpanel */}
+                <Route index element={<CLogin />} />
 
-  {/* Resolves sub-routes wrapped in the <CPanel /> Layout layout */}
-  <Route element={<CPanel />}>
-    <Route path="dashboard" element={<CDashboard />} />
-    <Route path="contact" element={<CPContact />} />
-    <Route path="registrationlist" element={<CRegistrationList />} />
-    <Route path="addplans" element={<CAddplans />} />
-  </Route>
-</Route>
+                {/* Resolves sub-routes wrapped in the <CPanel /> Layout layout */}
+                <Route element={<CPanel />}>
+                    <Route path="dashboard" element={<CDashboard />} />
+                    <Route path="contact" element={<CPContact />} />
+                    <Route path="registrationlist" element={<CRegistrationList />} />
+                    <Route path="addplans" element={<CAddplans />} />
+                    <Route path="promocode" element={<CPromoCode />} />
+                </Route>
+            </Route>
 
 
 
