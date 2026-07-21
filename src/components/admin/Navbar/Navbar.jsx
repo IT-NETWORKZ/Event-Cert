@@ -86,7 +86,7 @@ function Navbar({
 
                     <span>
 
-                        Welcome Saumya
+                        Welcome User
 
                     </span>
 

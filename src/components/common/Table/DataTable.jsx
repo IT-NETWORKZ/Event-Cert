@@ -9,6 +9,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ArrowUp, ArrowDown, ChevronsUpDown } from "lucide-react";
+import Button from "../../common/button/Button"
 
 function DataTable({ columns = [], data = [], onExportExcel, onViewAllDetails }) {
   const [sorting, setSorting] = useState([]);
@@ -62,23 +63,23 @@ function DataTable({ columns = [], data = [], onExportExcel, onViewAllDetails })
       <div className="table-header-control-bar d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
     <div className="d-flex gap-2">
   {onExportExcel && (
-    <button
+    <Button
       type="button"
       className="btn btn-success action-btn-green"
       onClick={onExportExcel}
     >
       Export to Excel
-    </button>
+    </Button>
   )}
   
   {onViewAllDetails && (
-    <button
+    <Button
       type="button"
       className="btn btn-success action-btn-green"
       onClick={onViewAllDetails}
     >
       All Event Reg. Details
-    </button>
+    </Button>
   )}
 </div>
 

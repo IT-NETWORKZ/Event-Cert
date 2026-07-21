@@ -121,8 +121,8 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
 
           <MenuItem
             icon={<FaGift />}
-            component={<NavLink to="/cpanel/addpromocode" />}
-            className={isActive("/cpanel/addpromocode") ? "active-item" : ""}
+            component={<NavLink to="/cpanel/promocode" />}
+            className={isActive("/cpanel/promocode") ? "active-item" : ""}
           >
             Add promo Code
           </MenuItem>

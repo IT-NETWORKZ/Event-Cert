@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 
 import subscriptionPlans from "./subscriptionData";
+import Button from "../../common/button/Button"
 
 function Subscriptionplan() {
   const [activeTab, setActiveTab] = useState("Certificate");
@@ -33,37 +34,37 @@ function Subscriptionplan() {
 
       {/* Navigation Tabs */}
       <div className="subscription-tabs">
-        <button
+        <Button
           className={activeTab === "Certificate" ? "active" : ""}
           onClick={() => setActiveTab("Certificate")}
         >
           <FaCertificate />
           Certificate
-        </button>
+        </Button>
 
-        <button
+        <Button
           className={activeTab === "Event" ? "active" : ""}
           onClick={() => setActiveTab("Event")}
         >
           <FaCalendarAlt />
           Event
-        </button>
+        </Button>
 
-        <button
+        <Button
           className={activeTab === "Combo" ? "active" : ""}
           onClick={() => setActiveTab("Combo")}
         >
           <FaCrown />
           Combo
-        </button>
+        </Button>
 
-        <button
+        <Button
           className={activeTab === "Download" ? "active" : ""}
           onClick={() => setActiveTab("Download")}
         >
           <FaDownload />
           Download
-        </button>
+        </Button>
       </div>
 
       {/* Unified Cards Wrapper */}
@@ -100,7 +101,7 @@ function Subscriptionplan() {
 
             {/* Right Action Section */}
             <div className="buy-section">
-              <button className="buy-now-btn">Buy Now</button>
+              <Button className="buy-now-btn">Buy Now</Button>
             </div>
           </div>
         ))}

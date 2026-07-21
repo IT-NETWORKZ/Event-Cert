@@ -54,9 +54,9 @@ function LoginCard({ hideRegister = false, onFormSubmit,  }) {
             placeholder="Email Id / Mobile No."
             // defaultValue={initialValue}
           />
-          <button type="button" className="otp-btn">
+          <Button type="button" className="otp-btn">
             Send OTP
-          </button>
+          </Button>
         </div>
 
         <h6>Enter OTP</h6>

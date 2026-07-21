@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./AddEvent.css";
 import DataTable from "../../common/Table/DataTable";
+import Button from "../../common/button/Button"
 
 const emptyFormData = {
   duration: "1 Weeks",
@@ -498,11 +499,11 @@ const AddEvent = () => {
           )}
 
           <div className="form-actions">
-            <button type="submit" className="btn-submit-event">
+            <Button type="submit" className="btn-submit-event">
               {editingId !== null ? "Update Event" : "Create Event"}
-            </button>
+            </Button>
             {editingId !== null && (
-              <button
+              <Button
                 type="button"
                 className="btn-submit-event"
                 style={{ background: "#999", marginLeft: "10px" }}
@@ -512,7 +513,7 @@ const AddEvent = () => {
                 }}
               >
                 Cancel
-              </button>
+              </Button>
             )}
           </div>
         </form>

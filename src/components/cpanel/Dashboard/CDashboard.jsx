@@ -9,14 +9,16 @@ import {
   FaCalendarAlt,
   FaDraftingCompass,
   FaLayerGroup,
-  FaGraduationCap,
   FaCity,
   FaGlobeAmericas,
-  FaDollyFlatbed,
   FaReceipt,
   FaCreditCard,
   FaCommentAlt,
   FaFileContract,
+  FaUserAlt,
+  FaFacebookMessenger,
+  FaMailBulk,
+  FaCertificate,
 } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 
@@ -36,30 +38,44 @@ const Dashboard = () => {
   };
 
   const cards = [
+
     {
-      title: "Total Events Used",
+      title: "Admin Registrations",
       value: dashboardData.eventsUsed,
-      icon: <FaCalendarAlt />,
+      icon: <FaUserAlt />,
       theme: "card-theme-teal",
     },
     {
-      title: "Readymade Cards Designs",
+      title: "No. of Events",
+      value: dashboardData.eventsUsed,
+      icon: <FaCalendarAlt />,
+      theme: "card-theme-success",
+    },
+    {
+      title: "Certificates / Cards Design",
       value: dashboardData.designs,
       icon: <FaDraftingCompass />,
-      theme: "card-theme-teal",
+      theme: "card-theme-error",
     },
     {
       title: "Active Categories",
       value: dashboardData.categories,
       icon: <FaLayerGroup />,
-      theme: "card-theme-error",
+      theme: "card-theme-teal",
     },
-    {
-      title: "Cards Generated",
+      {
+      title: "Feedback",
       value: dashboardData.certificates,
-      icon: <FaGraduationCap />,
+      icon: <FaFacebookMessenger />,
       theme: "card-theme-success",
     },
+       {
+      title: "Total Certificates / Cards Generated",
+      value: dashboardData.certificates,
+      icon: <FaCertificate />,
+      theme: "card-theme-error",
+    },
+  
     {
       title: "Cities Serviced",
       value: dashboardData.cities,
@@ -70,21 +86,14 @@ const Dashboard = () => {
       title: "Countries Reached",
       value: dashboardData.countries,
       icon: <FaGlobeAmericas />,
-      theme: "card-theme-teal",
-    },
-    {
-      title: "Remaining Events Stock",
-      value: dashboardData.eventStock,
-      icon: <FaDollyFlatbed />,
-      theme: "card-theme-error",
-    },
-
-    {
-      title: "Remaining Cards Stock",
-      value: dashboardData.certificateStock,
-      icon: <FaReceipt />,
       theme: "card-theme-success",
     },
+    {
+      title: "Certificates / Cards Generated Mail",
+      value: dashboardData.eventStock,
+      icon: <FaMailBulk />,
+      theme: "card-theme-error",
+    }
   ];
 
   const promoCodes = [
