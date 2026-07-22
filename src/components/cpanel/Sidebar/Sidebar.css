@@ -4,7 +4,6 @@
     box-sizing: border-box;
 }
 
-
 .custom-sidebar {
     height: 100vh;
     background: linear-gradient(270deg, #009688, #60b0a9) !important;
@@ -39,22 +38,16 @@
     pointer-events: none;
 }
 
-/* Custom Scroll Handling inside Menu Container */
+/* CONTAINER FLEX & SCROLL */
 .custom-sidebar .ps-sidebar-container {
     background: transparent !important;
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100vh !important;
+    overflow: hidden !important;
 }
 
-.custom-sidebar .ps-sidebar-container::-webkit-scrollbar {
-    display: none;
-}
-
-/* =====================================
-          HEADER & LOGO AREA
-===================================== */
+/* HEADER AREA */
 .sidebar-header {
     height: 72px;
     display: flex;
@@ -63,6 +56,8 @@
     padding: 0 22px;
     border-bottom: 1px solid rgba(255, 255, 255, .25);
     position: relative;
+    flex-shrink: 0;
+    z-index: 10;
 }
 
 .sidebar-logo {
@@ -76,7 +71,6 @@
     object-fit: contain;
 }
 
-/* Dynamic Close Icon for Mobile Overlay */
 .sidebar-close-btn {
     background: rgba(255, 255, 255, 0.15);
     border: none;
@@ -85,22 +79,23 @@
     padding: 8px;
     border-radius: 8px;
     cursor: pointer;
-    display: none; /* Hidden on desktop screens */
+    display: none;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.sidebar-close-btn:hover {
-    background: #ffffff;
-    color: #009688;
-}
-
-/* =====================================
-          NAVIGATION & MENU LINKS
-===================================== */
+/* MENU & SCROLL */
 .custom-sidebar .ps-menu-root {
     padding: 20px 0;
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.custom-sidebar .ps-menu-root::-webkit-scrollbar {
+    display: none;
 }
 
 .custom-sidebar .ps-menuitem-root {
@@ -122,7 +117,7 @@
     transform: translateX(4px);
 }
 
-/* Icon Containers */
+/* Icons */
 .custom-sidebar .ps-icon {
     width: 42px !important;
     min-width: 42px !important;
@@ -143,18 +138,8 @@
     transform: scale(1.05);
 }
 
-/* =====================================
-          ACTIVE LINK STATES
-===================================== */
-/* .custom-sidebar .active-item .ps-menu-button {
-    background: #fff !important;
-    color: #009688 !important;
-    font-weight: 600;
-    box-shadow: 0 10px 25px rgba(0, 150, 136, .30);
-
-
-} */
- .custom-sidebar .active-item > .ps-menu-button {
+/* ACTIVE STATES (EXPANDED SIDEBAR) */
+.custom-sidebar .active-item > .ps-menu-button {
     background: #fff !important;
     color: #009688 !important;
     font-weight: 600;
@@ -164,36 +149,24 @@
 .custom-sidebar:not(.ps-collapsed) .active-item > .ps-menu-button .ps-icon {
     background: linear-gradient(45deg, #009688, #26A69A) !important;
     color: #fff !important;
-  
 }
 
 .custom-sidebar.ps-collapsed .active-item > .ps-menu-button {
-    background: transparent !important; /* Removes the broken, wide white box layout */
-    box-shadow: none !important;
-    background: white !important;
+    background: #fff !important;
     display: flex;
     justify-content: center;
 }
 
-/* .custom-sidebar .active-item .ps-icon { */
-.custom-sidebar .active-item > .ps-menu-button .ps-icon {
-    background: linear-gradient(45deg, #009688, #26A69A) !important;
-    color: #fff !important;
-   
+.custom-sidebar .active-submenu > .ps-menu-button {
+    background: rgba(255, 255, 255, 0.25) !important;
+    font-weight: 600;
 }
 
-.custom-sidebar .ps-submenu-root.ps-active > .ps-menu-button {
-    background: rgba(255,255,255,.18) !important;
-    color: #fff !important;
-    box-shadow: none !important;
-}
-
-/* =====================================
-          SUBMENUS (DROPDOWNS)
-===================================== */
+/* EXPANDED INLINE SUBMENU */
 .custom-sidebar .ps-submenu-content {
     background: rgba(255, 255, 255, .12) !important;
     backdrop-filter: blur(20px);
+
     border-radius: 12px;
     margin: 5px 15px;
 }
@@ -202,24 +175,73 @@
     margin: 4px 8px;
     height: 46px !important;
     font-size: 14px;
+   
 }
 
 .custom-sidebar .ps-submenu-expand-icon {
     color: #fff;
-    
 }
 
-/* =====================================
-          RESPONSIVE BREAKPOINTS
-===================================== */
+/* =========================================================
+   COLLAPSED POPOVER MENU FIX (FLOATING POPUP PORTAL)
+========================================================= */
+/* Target the floating portal container directly */
+.ps-popper {
+    z-index: 9999 !important;
+}
+
+.ps-popper .ps-submenu-content {
+    background: #60b0a9 !important; /* Solid terracotta brown background */
+    border-radius: 16px !important;
+    padding: 10px !important;
+    min-width: 240px !important;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.ps-popper .ps-menu-button {
+    color: #ffffff !important;
+    height: 44px !important;
+    margin: 3px 0 !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.ps-popper .ps-menu-button:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: none !important;
+}
+
+.ps-popper .ps-menu-button .ps-icon {
+    background: transparent !important;
+    width: 30px !important;
+    min-width: 30px !important;
+    height: 30px !important;
+    margin-right: 10px !important;
+    color: #ffffff !important;
+}
+
+/* Active state inside the collapsed popover */
+.ps-popper .active-item > .ps-menu-button {
+    background: #ffffff !important;
+    color:  #60b0a9 !important;
+    font-weight: bold !important;
+}
+
+.ps-popper .active-item > .ps-menu-button .ps-icon {
+    color:  #60b0a9 !important;
+}
+
+/* RESPONSIVE */
 @media (max-width: 768px) {
     .sidebar-header {
         padding: 0 20px;
     }
     
     .sidebar-close-btn {
-        display: flex; /* Pull close cross into mobile layouts */
+        display: flex;
         color: #ffffff;
-        
     }
 }
+
