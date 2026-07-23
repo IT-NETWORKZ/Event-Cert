@@ -24,6 +24,7 @@ import CPContact from "../pages/CPanel/CPContact";
 import CRegistrationList from "../pages/CPanel/CRegistrationList";
 import CAddplans from "../pages/CPanel/CAddplans";
 import CPromoCode from "../components/cpanel/Promocode/CPromoCode";
+import CAddTemplates from "../components/cpanel/AddTemplates/CAddTemplates";
 
 
 function AppRoutes() {
@@ -86,6 +87,7 @@ function AppRoutes() {
                     <Route path="registrationlist" element={<CRegistrationList />} />
                     <Route path="addplans" element={<CAddplans />} />
                     <Route path="promocode" element={<CPromoCode />} />
+                      <Route path="addtemplate" element={<CAddTemplates />} />
                 </Route>
             </Route>
 
