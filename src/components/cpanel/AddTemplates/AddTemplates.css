@@ -1,0 +1,218 @@
+
+
+.add-template-page-wrapper {
+  --at-teal-50: #e6f7f5;
+  --at-teal-100: #b2e8e0;
+  --at-teal-500: #00a896;
+  --at-teal-600: #028090;
+  --at-teal-700: #05668d;
+  --at-slate-100: #f1f5f9;
+  --at-slate-200: #e2e8f0;
+  --at-slate-600: #475569;
+  --at-slate-800: #1e293b;
+  --at-red-500: #ef4444;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center;
+  width: 100%;
+  padding: 1.5rem 1rem;
+  box-sizing: border-box;
+}
+
+/* Container */
+.add-template-page-wrapper .at-card-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.add-template-page-wrapper .at-card {
+  width: 100%;
+  max-width: 480px;
+  background: #ffffff !important;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--at-slate-200);
+  padding: 1.5rem 1.75rem;
+  box-sizing: border-box;
+}
+
+/* Header */
+.add-template-page-wrapper .at-header {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: var(--at-teal-50);
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--at-teal-100);
+}
+
+.add-template-page-wrapper .at-icon-badge {
+  background-color: #ffffff;
+  padding: 0.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.add-template-page-wrapper .header-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--at-teal-600);
+}
+
+.add-template-page-wrapper .at-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--at-teal-700);
+}
+
+.add-template-page-wrapper .at-subtitle {
+  margin: 0.15rem 0 0 0;
+  font-size: 0.8rem;
+  color: var(--at-slate-600);
+}
+
+/* Form Layout */
+.add-template-page-wrapper .at-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.add-template-page-wrapper .at-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.add-template-page-wrapper .at-form-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--at-slate-800);
+}
+
+.add-template-page-wrapper .at-required {
+  color: var(--at-red-500);
+}
+
+/* Inputs, Selects, and Textarea */
+.add-template-page-wrapper .at-form-input {
+  width: 100%;
+  height: 42px;
+  padding: 0 0.85rem !important;
+  font-size: 0.875rem;
+  border-radius: 8px;
+  border: 1px solid var(--at-slate-200) !important;
+  background-color: #ffffff !important;
+  color: var(--at-slate-800) !important;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.add-template-page-wrapper .at-form-textarea {
+  height: 50px;
+  padding: 0.65rem 0.85rem !important;
+  resize: vertical;
+  min-height: 90px;
+  font-family: inherit;
+}
+
+.add-template-page-wrapper .at-form-input:focus {
+  border-color: var(--at-teal-500) !important;
+  box-shadow: 0 0 0 3px rgba(0, 168, 150, 0.15) !important;
+}
+
+/* Checkbox */
+.add-template-page-wrapper .at-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  margin-top: 0.2rem;
+}
+
+.add-template-page-wrapper .at-custom-checkbox-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.add-template-page-wrapper .at-checkbox-custom-box {
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--at-slate-200);
+  background-color: #ffffff;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.add-template-page-wrapper .at-custom-checkbox-input:checked + .at-checkbox-custom-box {
+  background-color: var(--at-teal-600);
+  border-color: var(--at-teal-600);
+  color: #ffffff;
+}
+
+.add-template-page-wrapper .at-checkbox-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--at-slate-800);
+}
+
+/* Action Buttons */
+.add-template-page-wrapper .at-form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--at-slate-100);
+}
+
+.add-template-page-wrapper .at-btn-primary {
+  padding: 0.6rem 2.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  background-color: var(--at-teal-600) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(2, 128, 144, 0.2);
+  transition: all 0.2s ease;
+}
+
+.add-template-page-wrapper .at-btn-primary:hover {
+  background-color: var(--at-teal-700) !important;
+  transform: translateY(-1px);
+}
+
+.add-template-page-wrapper .at-btn-secondary {
+  padding: 0.6rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  background-color: #ffffff !important;
+  color: var(--at-slate-600) !important;
+  border: 1px solid var(--at-slate-200) !important;
+  transition: all 0.2s ease;
+}
+
+.add-template-page-wrapper .at-btn-secondary:hover {
+  background-color: var(--at-slate-100) !important;
+}
