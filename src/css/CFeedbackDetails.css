@@ -1,0 +1,113 @@
+/* 1. Force Root Page Container to Stretch Completely */
+.feedback-page-wrapper {
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: 1 1 100% !important;
+  padding: 1.5rem !important;
+  box-sizing: border-box !important;
+}
+
+/* 2. Card Styling spanning full width */
+.feedback-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+/* 3. Title Section */
+.feedback-title {
+  color: #1a1a1a;
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.feedback-title::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 3px;
+  background-color: #218377;
+  margin: 6px auto 0 auto;
+  border-radius: 2px;
+}
+
+/* 4. Ensure Table Component Wrapper Fills Parent Completely */
+.table-wrapper {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.data-table {
+  width: 100% !important;
+  table-layout: auto !important;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.85rem 1rem !important;
+  vertical-align: middle;
+}
+
+/* 5. UI Elements Styling */
+.action-btn-green {
+  background-color: #2e7d32 !important;
+  border-color: #2e7d32 !important;
+  color: #ffffff !important;
+  border-radius: 20px !important;
+  padding: 0.45rem 1.5rem !important;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.action-btn-green:hover {
+  background-color: #1b5e20 !important;
+}
+
+.star-rating {
+  color: #000000;
+  font-size: 1rem;
+  letter-spacing: 2px;
+}
+
+.feedback-thumb {
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.no-photo-text {
+  color: #6b7280;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.status-pill-btn {
+  border-radius: 50px !important;
+  padding: 0.35rem 1.25rem !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+  border: none !important;
+  min-width: 90px;
+}
+
+.btn-disabled {
+  background-color: #ff4d6d !important;
+}
+
+.btn-disabled:hover {
+  background-color: #e63956 !important;
+}
+
+.btn-enabled {
+  background-color: #2a9d8f !important;
+}
+
+.btn-enabled:hover {
+  background-color: #218377 !important;
+}

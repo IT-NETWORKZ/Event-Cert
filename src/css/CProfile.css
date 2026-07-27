@@ -1,0 +1,154 @@
+/* Page Layout Container */
+.profile-page-wrapper {
+  width: 100%;
+  max-width: 100%;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+.profile-main-card {
+  width: 100%;
+  border-radius: 12px;
+  background-color: #ffffff;
+}
+
+/* Page Header Title & Underline */
+.profile-title {
+  color: #1a1a1a;
+  font-size: 1.75rem;
+  margin: 0;
+}
+
+.profile-title::after {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 3px;
+  background-color: #2a9d8f;
+  margin: 6px auto 0 auto;
+  border-radius: 2px;
+}
+
+/* Edit Button */
+.edit-btn {
+  background-color: #0d6efd !important;
+  border: none !important;
+  border-radius: 20px !important;
+  padding: 0.4rem 1.5rem !important;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/* Company Name Heading */
+.company-name-heading {
+  color: #2c3e50;
+  font-size: 1.25rem;
+}
+
+/* Sub-section Title Underline */
+.section-subtitle {
+  color: #212529;
+  font-size: 1.05rem;
+  position: relative;
+  display: inline-block;
+}
+
+.section-subtitle::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 2px;
+  background-color: #2a9d8f;
+  margin-top: 4px;
+}
+
+/* Instructions Section */
+.instructions-section {
+  background-color: #c4e4e1;
+  border-left: 4px solid #2a9d8f;
+  padding: 1.25rem;
+  border-radius: 6px;
+}
+
+.instructions-list {
+  font-size: 0.88rem;
+  color: #374151;
+  line-height: 1.6;
+}
+
+.instructions-list li {
+  list-style-type: disc;
+}
+
+/* Sub-Cards for Logos and Signatories */
+.sub-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+
+/* -------------------------------------------------------------
+   INPUT FIELD BORDERS & STYLING
+------------------------------------------------------------- */
+.custom-input {
+  background-color: #fcfcfc !important;
+  border: 1.5px solid #cbd5e1 !important; /* Visible light grey/blue border */
+  border-radius: 6px !important;
+  padding: 0.55rem 0.85rem !important;
+  font-size: 0.9rem !important;
+  color: #1e293b !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.custom-input:focus {
+  background-color: #ffffff !important;
+  border-color: #2a9d8f !important; 
+  /* box-shadow: 0 0 0 3px rgba(212, 163, 89, 0.18) !important; */
+  box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.2) !important;
+}
+
+/* File Input Borders */
+.custom-file-input {
+  background-color: #f8fafc !important;
+  border: 1.5px solid #cbd5e1 !important; /* Distinct border */
+  border-radius: 6px !important;
+  font-size: 0.85rem !important;
+  color: #475569 !important;
+  padding: 0.45rem 0.65rem !important;
+}
+
+.custom-file-input:focus {
+  border-color: #2a9d8f !important;
+  box-shadow: 0 0 0 3px rgba(212, 163, 89, 0.18) !important;
+}
+
+/* -------------------------------------------------------------
+   IMAGE PREVIEW BOXES (SHOWS IMAGE ONLY)
+------------------------------------------------------------- */
+.logo-preview-box {
+  width: 75px;
+  height: 55px;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 6px;
+  background-color: #fafafa;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.signature-preview-box {
+  width: 90px;
+  height: 50px;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 6px;
+  background-color: #fafafa;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* Image scaling inside boxes */
+.logo-img,
+.signature-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
