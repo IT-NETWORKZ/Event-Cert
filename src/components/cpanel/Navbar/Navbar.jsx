@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import "./Navbar.css";
 import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import {
     FaBars,
@@ -16,7 +17,7 @@ function Navbar({
     toggled,
     setToggled
 }) {
-
+ const navigate = useNavigate();
     const [showMenu, setShowMenu] = useState(false);
 
     const menuRef = useRef(null);
@@ -102,17 +103,17 @@ function Navbar({
 
                     <div className="profile-dropdown">
 
-                        <button>
+                        <button onClick={() => navigate("/cpanel/profiledetails")} >
 
-                            <FaUser/>
+                            <FaUser />
 
                             My Profile
 
                         </button>
 
-                        <button>
+                        <button >
 
-                            <FaSignOutAlt/>
+                            <FaSignOutAlt />
 
                             Logout
 

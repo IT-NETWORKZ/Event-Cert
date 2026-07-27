@@ -210,7 +210,7 @@ const Dashboard = () => {
               </li>
 
               <li>
-                <NavLink to="/cpanel/feedback">
+                <NavLink to="/cpanel/feedbackdetails">
                   <FaCommentAlt />
                   <span>Feedback</span>
                 </NavLink>
