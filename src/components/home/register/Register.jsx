@@ -79,7 +79,15 @@ const Register = () => {
               <span className="register-custom-radio"></span>
               Email OTP
             </label>
+
+             <label className="register-radio-label">
+              <input type="radio" name="otpType"/>
+              <span className="register-custom-radio"></span>
+              Mobile OTP
+            </label>
           </div>
+
+          
 
           <div className="register-inline-group">
             <input 

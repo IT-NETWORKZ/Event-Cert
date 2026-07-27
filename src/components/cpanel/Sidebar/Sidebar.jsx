@@ -130,7 +130,7 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
               Add Category
             </MenuItem>
             <MenuItem
-              icon={<FaGraduationCap />}
+              icon={<FaGraduationCap  />}
               component={<NavLink to="/cpanel/certificate/add-draft" />}
               className={isActive("/cpanel/certificate/add-draft") ? "active-item" : ""}
             >
@@ -153,7 +153,7 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
             <MenuItem
               icon={<FaGraduationCap />}
               component={<NavLink to="/cpanel/certificate/history" />}
-              className={isActive("/cpanel/certificate/history") ? "active-item" : ""}
+              className={isActive("/cpanel/certificate/history") ? "active-item" : "" }
             >
               Admin Certificate History
             </MenuItem>

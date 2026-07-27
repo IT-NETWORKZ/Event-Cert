@@ -6,7 +6,7 @@
   align-items: center;
   position: relative;
   /* Replaces previous background with your full certificate template */
-  background-image: url('../../../assets/img/register-bg.jpg'); 
+  background-image: url('../../../assets/img/hero-bg.jpg'); 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -116,6 +116,7 @@
   width: 100%;
   display: flex;
   margin-bottom: 14px;
+  gap: 20px;
 }
 
 .register-radio-label {
@@ -130,6 +131,7 @@
 
 .register-radio-label input {
   display: none;
+  
 }
 
 .register-custom-radio {
