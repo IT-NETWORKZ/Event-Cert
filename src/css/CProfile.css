@@ -103,7 +103,6 @@
 .custom-input:focus {
   background-color: #ffffff !important;
   border-color: #2a9d8f !important; 
-  /* box-shadow: 0 0 0 3px rgba(212, 163, 89, 0.18) !important; */
   box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.2) !important;
 }
 
@@ -119,7 +118,7 @@
 
 .custom-file-input:focus {
   border-color: #2a9d8f !important;
-  box-shadow: 0 0 0 3px rgba(212, 163, 89, 0.18) !important;
+ box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.2) !important;
 }
 
 /* -------------------------------------------------------------

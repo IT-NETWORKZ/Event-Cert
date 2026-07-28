@@ -1,0 +1,127 @@
+/* ==========================================================================
+   Draft Details Table Container
+   ========================================================================== */
+.draft-details-table-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  margin-top: 2.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   Header & Accent Underline
+   ========================================================================== */
+.draft-details-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.draft-details-header h2 {
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.02em;
+  font-family: inherit;
+}
+
+.header-underline {
+  width: 65px;
+  height: 4px;
+  background-color: #2a9d8f; /* Gold accent line */
+  margin: 0.5rem auto 0 auto;
+  border-radius: 2px;
+}
+
+/* ==========================================================================
+   Cell Content & Read More Link
+   ========================================================================== */
+.details-cell-content {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  line-height: 1.4;
+  color: #334155;
+}
+
+.read-more-btn {
+  background: transparent;
+  border: none;
+  color: #16a34a; /* Green text */
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 0.25rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.15s ease;
+}
+
+.read-more-btn:hover {
+  color: #15803d;
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Edit Pill Action Button
+   ========================================================================== */
+.table-edit-btn {
+  background-color: #2563eb; /* Primary Royal Blue */
+  color: #ffffff;
+  border: none;
+  border-radius: 9999px; /* Smooth Pill Shape */
+  padding: 0.45rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.table-edit-btn:hover {
+  background-color: #1d4ed8;
+  box-shadow: 0 4px 10px rgba(29, 78, 216, 0.3);
+}
+
+.table-edit-btn:active {
+  transform: scale(0.96);
+}
+
+.table-edit-btn:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Data Table Overrides (Roomy & Clean Spacing)
+   ========================================================================== */
+.draft-details-table-card .data-table th {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  font-weight: 600 !important;
+  padding: 1rem 0.85rem !important;
+  font-size: 0.925rem !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+}
+
+.draft-details-table-card .data-table td {
+  padding: 1rem 0.85rem !important;
+  font-size: 0.925rem !important;
+  color: #334155;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.draft-details-table-card .data-table tbody tr:hover {
+  background-color: #f8fafc; /* Gentle row highlighting */
+}
+

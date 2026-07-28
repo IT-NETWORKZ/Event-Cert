@@ -189,7 +189,7 @@
   font-weight: 600;
   border-radius: 50px;
   cursor: pointer;
-  background-color: var(--at-teal-600) !important;
+  background-color: teal !important;
   color: #ffffff !important;
   border: none !important;
   box-shadow: 0 4px 12px rgba(2, 128, 144, 0.2);
@@ -197,7 +197,7 @@
 }
 
 .add-template-page-wrapper .at-btn-primary:hover {
-  background-color: var(--at-teal-700) !important;
+  background-color: teal !important;
   transform: translateY(-1px);
 }
 

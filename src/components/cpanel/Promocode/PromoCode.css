@@ -343,7 +343,7 @@
 }
 
 .btn-primary {
-  background-color: var(--teal-600) !important;
+ background: linear-gradient(135deg, #009688, #26a69a);
   color: #ffffff !important;
   border: none !important;
 }
@@ -396,7 +396,7 @@
 .title-underline {
   width: 50px;
   height: 3px;
-  background-color: #f59e0b; /* Golden line accent */
+  background-color: teal ;/* Golden line accent */
   margin: 6px auto 0 auto;
   border-radius: 2px;
 }

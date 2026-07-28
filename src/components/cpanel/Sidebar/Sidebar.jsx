@@ -117,12 +117,12 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
           >
             <MenuItem
               icon={<FaGraduationCap />}
-              component={<NavLink to="/cpanel/certificate/profile" />}
-              className={isActive("/cpanel/certificate/profile") ? "active-item" : ""}
+              component={<NavLink to="/cpanel/profiledetails" />}
+              className={isActive("/cpanel/profiledetails") ? "active-item" : ""}
             >
               Profile
             </MenuItem>
-            <MenuItem
+            {/* <MenuItem
               icon={<FaGraduationCap />}
               component={<NavLink to="/cpanel/certificate/add-category" />}
               className={isActive("/cpanel/certificate/add-category") ? "active-item" : ""}
@@ -135,7 +135,7 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
               className={isActive("/cpanel/certificate/add-draft") ? "active-item" : ""}
             >
               Add Draft
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem
               icon={<FaGraduationCap />}
               component={<NavLink to="/cpanel/certificate/select-letterhead" />}
@@ -197,6 +197,36 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
           >
             Add Template
           </MenuItem>
+
+          <SubMenu
+            icon={<FaGraduationCap />}
+            label="Category"
+            className={isSubMenuActive(certSubPaths) ? "active-submenu" : ""}
+            /* Force solid brown background on floating popup portal */
+            rootStyles={{
+              ['& .ps-submenu-content']: {
+                backgroundColor: collapsed ? ' #60b0a9 !important' : 'transparent',
+              },
+            }}
+          >  
+
+          <MenuItem
+              icon={<FaGraduationCap  />}
+              component={<NavLink to="/cpanel/category/addcategory" />}
+              className={isActive("/cpanel/category/addcategory") ? "active-item" : ""}
+            >
+              Add Category
+            </MenuItem>
+            <MenuItem
+              icon={<FaGraduationCap  />}
+              component={<NavLink to="/cpanel/category/adddraft" />}
+              className={isActive("/cpanel/category/adddraft") ? "active-item" : ""}
+            >
+              Add Draft
+            </MenuItem>
+
+
+          </SubMenu>
 
           <MenuItem
             icon={<FaCashRegister />}
