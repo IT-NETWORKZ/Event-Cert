@@ -27,6 +27,8 @@ import CPromoCode from "../components/cpanel/Promocode/CPromoCode";
 import CAddTemplates from "../components/cpanel/AddTemplates/CAddTemplates";
 import CFeedbackDetails from "../pages/CPanel/CFeedbackDetails";
 import CProfile from "../pages/CPanel/CProfile";
+import CAddDraft from "../components/cpanel/AddCategory/CAddDraft";
+import CAddCategory from "../components/cpanel/AddCategory/CAddCategory";
 
 
 
@@ -93,6 +95,12 @@ function AppRoutes() {
                     <Route path="addtemplate" element={<CAddTemplates />} />
                     <Route path="feedbackdetails" element={<CFeedbackDetails />} />
                     <Route path="profiledetails" element={<CProfile />} />
+
+                    {/*ADD CATEGORY Routes  */}
+                    <Route path="category/addcategory" element={<CAddCategory />} />
+                    <Route path="category/adddraft" element={<CAddDraft />} />
+                    
+                    
                 </Route>
             </Route>
 
