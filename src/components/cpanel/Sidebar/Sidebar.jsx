@@ -1,6 +1,7 @@
 import React from "react";
 import "./Sidebar.css";
 import logo from "../../../assets/img/logo_EventCert.png";
+import Button from "../../common/button/Button"
 
 import {
   ProSidebarProvider,
@@ -69,11 +70,11 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
           )}
 
           {toggled && (
-            <button
+            <Button
               className="sidebar-close-btn"
               onClick={() => setToggled(false)}
               aria-label="Close Menu"
-            ></button>
+            ></Button>
           )}
         </div>
 

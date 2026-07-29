@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../../cpanel/Addplans/Addplans.css";
+import Button from "../../common/button/Button"
 
 const emptyPlanData = {
   planType: "Certificate", // Certificate, Event, Event + Certificate
@@ -248,9 +249,9 @@ const Addplans = ({ onAddPlan }) => {
 
         {/* Centered Submit Button */}
         <div className="d-flex justify-content-center">
-          <button type="submit" className="btn btn-creative-submit px-5 py-2 fw-semibold">
+          <Button type="submit" className="btn btn-creative-submit px-5 py-2 fw-semibold">
             Submit Plan
-          </button>
+          </Button>
         </div>
       </form>
     </div>

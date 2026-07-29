@@ -183,7 +183,7 @@
   border-top: 1px solid var(--at-slate-100);
 }
 
-.add-template-page-wrapper .at-btn-primary {
+.add-template-page-wrapper .submit-btn {
   padding: 0.6rem 2.5rem;
   font-size: 0.875rem;
   font-weight: 600;
@@ -196,7 +196,7 @@
   transition: all 0.2s ease;
 }
 
-.add-template-page-wrapper .at-btn-primary:hover {
+.add-template-page-wrapper .submit-btn:hover {
   background-color: teal !important;
   transform: translateY(-1px);
 }

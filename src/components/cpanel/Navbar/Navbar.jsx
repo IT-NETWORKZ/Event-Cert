@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import "./Navbar.css";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import Button from "../../common/button/Button"
 
 import {
     FaBars,
@@ -50,7 +51,7 @@ function Navbar({
 
             <div className="navbar-left">
 
-                <button
+                <Button
                     className="menu-btn"
                     onClick={() => {
 
@@ -69,7 +70,7 @@ function Navbar({
 
                     <FaBars/>
 
-                </button>
+                </Button>
 
                
 
@@ -103,21 +104,21 @@ function Navbar({
 
                     <div className="profile-dropdown">
 
-                        <button onClick={() => navigate("/cpanel/profiledetails")} >
+                        <Button onClick={() => navigate("/cpanel/profiledetails")} >
 
                             <FaUser />
 
                             My Profile
 
-                        </button>
+                        </Button>
 
-                        <button >
+                        <Button >
 
                             <FaSignOutAlt />
 
                             Logout
 
-                        </button>
+                        </Button>
 
                     </div>
                     
