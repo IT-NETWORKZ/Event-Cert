@@ -121,7 +121,7 @@ const Register = () => {
         </form>
 
         <p className="register-bottom-redirect">
-          Already have an account? <a href="/login" className="register-login-link">Login</a>
+          Already have an account? <a href="/" className="register-login-link">Login</a>
         </p>
       </div>
     </div>

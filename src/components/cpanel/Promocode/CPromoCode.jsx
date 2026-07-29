@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Ticket, Percent, Calendar, Layers, CheckCircle2, RotateCcw, ChevronDown, Check } from 'lucide-react';
 import './PromoCode.css';
 import PromoCodeTable from './PromoCodeTable';
+import Button from "../../common/button/Button"
 
 const CPromoCode = () => {
   const [formData, setFormData] = useState({
@@ -114,23 +115,23 @@ const CPromoCode = () => {
                 Select Type <span className="required">*</span>
               </label>
               <div className="custom-radio-group">
-                <button
+                <Button
                   type="button"
                   className={`custom-radio-btn ${formData.promoType === 'Single' ? 'active' : ''}`}
                   onClick={() => setFormData({ ...formData, promoType: 'Single' })}
                 >
                   <span className="radio-dot"></span>
                   <span>Single Use</span>
-                </button>
+                </Button>
 
-                <button
+                <Button
                   type="button"
                   className={`custom-radio-btn ${formData.promoType === 'Multiple' ? 'active' : ''}`}
                   onClick={() => setFormData({ ...formData, promoType: 'Multiple' })}
                 >
                   <span className="radio-dot"></span>
                   <span>Multiple Use</span>
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -162,7 +163,7 @@ const CPromoCode = () => {
                 Select for Event/Certificate <span className="required">*</span>
               </label>
               <div className="custom-dropdown-container">
-                <button
+                <Button
                   type="button"
                   className="custom-dropdown-trigger"
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -174,7 +175,7 @@ const CPromoCode = () => {
                     </span>
                   </div>
                   <ChevronDown className={`chevron-icon ${isDropdownOpen ? 'open' : ''}`} />
-                </button>
+                </Button>
 
                 {isDropdownOpen && (
                   <div className="custom-dropdown-menu">
@@ -233,14 +234,14 @@ const CPromoCode = () => {
 
             {/* Form Actions */}
             <div className="form-actions full-width">
-              <button type="button" className="btn-secondary" onClick={handleReset}>
+              <Button type="button" className="btn-secondary" onClick={handleReset}>
                 <RotateCcw size={16} />
                 Reset
-              </button>
-              <button type="submit" className="btn-primary">
+              </Button>
+              <Button type="submit" className="submit-btn">
                 <CheckCircle2 size={16} />
                 Add Promo Code
-              </button>
+              </Button>
             </div>
           </form>
         </div>

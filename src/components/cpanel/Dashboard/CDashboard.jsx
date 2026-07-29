@@ -21,6 +21,7 @@ import {
   FaCertificate,
 } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
+import Button from "../../common/button/Button"
 
 const Dashboard = () => {
   const location = useLocation();
@@ -236,12 +237,12 @@ const Dashboard = () => {
             <p>
               Profile creation is mandatory to generate <strong>Certificates.</strong>
             </p>
-            <button className="frutiger-button" onClick={handlePopupOk}>
+            <Button className="frutiger-button" onClick={handlePopupOk}>
               <div className="inner">
                 <div className="top-white"></div>
                 <span className="text">OK</span>
               </div>
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -251,7 +252,7 @@ const Dashboard = () => {
         data-bs-toggle="modal"
         data-bs-target="#promoModal"
       >
-        <button className="vertical-btn">Promo Code</button>
+        <Button className="vertical-btn">Promo Code</Button>
       </div>
 
       <div className="modal fade" id="promoModal" tabIndex="-1">
@@ -259,7 +260,7 @@ const Dashboard = () => {
           <div className="modal-content promo-toggle-container">
             <div className="modal-header promo-header">
               <h3 className="modal-title w-100 text-center">Available Offers</h3>
-              <button className="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+              <Button className="btn-close btn-close-white" data-bs-dismiss="modal"></Button>
             </div>
 
             <div className="modal-body">
@@ -286,7 +287,7 @@ const Dashboard = () => {
                   </div>
 
                   <div className="coupon-footer">
-                    <button className="btn-fly">Unlock Benefits</button>
+                    <Button className="btn-fly">Unlock Benefits</Button>
                   </div>
                 </div>
               ))}
@@ -300,7 +301,7 @@ const Dashboard = () => {
           <div className="modal-content">
             <div className="modal-header guide-header">
               <h5 className="modal-title">Enable Pop-ups & Redirects</h5>
-              <button className="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+              <Button className="btn-close btn-close-white" data-bs-dismiss="modal"></Button>
             </div>
 
             <div className="modal-body guide-body">
@@ -324,23 +325,23 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                <button
+                <Button
                   className="carousel-control-prev"
                   type="button"
                   data-bs-target="#carouselExampleIndicators"
                   data-bs-slide="prev"
                 >
                   <span className="carousel-control-prev-icon"></span>
-                </button>
+                </Button>
 
-                <button
+                <Button
                   className="carousel-control-next"
                   type="button"
                   data-bs-target="#carouselExampleIndicators"
                   data-bs-slide="next"
                 >
                   <span className="carousel-control-next-icon"></span>
-                </button>
+                </Button>
               </div>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './AddTemplates.css';
 import AddTemplateTable from './AddTemplateTable';
+import Button from "../../common/button/Button"
 
 // Simple SVG Icons
 const FileTextIcon = () => (
@@ -203,12 +204,12 @@ const AddTemplates = () => {
 
             {/* Action Buttons */}
             <div className="at-form-actions">
-              <button type="button" onClick={handleReset} className="at-btn-secondary">
+              <Button type="button" onClick={handleReset} className="at-btn-secondary">
                 Reset
-              </button>
-              <button type="submit" className="at-btn-primary">
+              </Button>
+              <Button type="submit" className="submit-btn">
                 Submit
-              </button>
+              </Button>
             </div>
 
           </form>

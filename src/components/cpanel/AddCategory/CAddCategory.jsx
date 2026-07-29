@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import DataTable from '../../common/Table/DataTable'; // Adjust path to match your reusable DataTable component
 import './AddCategory.css';
+import Button from "../../common/button/Button"
 
 const INITIAL_CATEGORY_DATA = [
   { id: 1, date: '20/07/2026', category: 'Certificate', name: 'Academic & Training' },
@@ -94,13 +95,13 @@ export default function AddCategory() {
         id: 'editAction',
         meta: { width: '100px', className: 'text-center' },
         cell: (info) => (
-          <button
+          <Button
             type="button"
             className="category-edit-btn"
             onClick={() => handleEdit(info.row.original)}
           >
             Edit
-          </button>
+          </Button>
         ),
       },
     ],
@@ -160,13 +161,13 @@ export default function AddCategory() {
 
             {/* Submit Action */}
             <div className="category-form-actions">
-              <button
+              <Button
                 type="submit"
-                className="category-submit-btn"
+                className="submit-btn"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? 'Submitting...' : 'Submit'}
-              </button>
+              </Button>
             </div>
           </form>
         </div>

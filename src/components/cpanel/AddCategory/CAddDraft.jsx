@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './AddDraft.css';
 import DraftDetailsTable from './DraftDetailsTable';
+import Button from "../../common/button/Button"
 
 const CATEGORY_OPTIONS = {
   Certificate: [
@@ -199,24 +200,24 @@ export default function CAddDraft() {
               <div className="editor-shell">
                 <div className="editor-toolbar">
                   <div className="toolbar-btn-group">
-                    <button type="button" className="toolbar-btn" onClick={() => formatText('bold')}><b>B</b></button>
-                    <button type="button" className="toolbar-btn" onClick={() => formatText('italic')}><i>I</i></button>
-                    <button type="button" className="toolbar-btn" onClick={() => formatText('underline')}><u>U</u></button>
+                    <Button type="button" className="toolbar-btn" onClick={() => formatText('bold')}><b>B</b></Button>
+                    <Button type="button" className="toolbar-btn" onClick={() => formatText('italic')}><i>I</i></Button>
+                    <Button type="button" className="toolbar-btn" onClick={() => formatText('underline')}><u>U</u></Button>
                   </div>
 
                   <span className="toolbar-divider" />
 
                   <div className="toolbar-btn-group">
-                    <button type="button" className="toolbar-btn" onClick={() => formatText('justifyLeft')}>≡</button>
-                    <button type="button" className="toolbar-btn" onClick={() => formatText('justifyCenter')}>≡</button>
-                    <button type="button" className="toolbar-btn" onClick={() => formatText('justifyRight')}>≡</button>
+                    <Button type="button" className="toolbar-btn" onClick={() => formatText('justifyLeft')}>≡</Button>
+                    <Button type="button" className="toolbar-btn" onClick={() => formatText('justifyCenter')}>≡</Button>
+                    <Button type="button" className="toolbar-btn" onClick={() => formatText('justifyRight')}>≡</Button>
                   </div>
 
                   <span className="toolbar-divider" />
 
                   <div className="toolbar-btn-group">
-                    <button type="button" className="toolbar-btn" onClick={() => formatText('undo')}>↶</button>
-                    <button type="button" className="toolbar-btn" onClick={() => formatText('redo')}>↷</button>
+                    <Button type="button" className="toolbar-btn" onClick={() => formatText('undo')}>↶</Button>
+                    <Button type="button" className="toolbar-btn" onClick={() => formatText('redo')}>↷</Button>
                   </div>
 
                   <span className="toolbar-divider" />
@@ -269,9 +270,9 @@ export default function CAddDraft() {
             </div>
 
             <div className="form-actions">
-              <button type="submit" className="submit-btn" disabled={isSubmitting}>
+              <Button type="submit" className="submit-btn" disabled={isSubmitting}>
                 {isSubmitting ? 'Submitting...' : 'Submit'}
-              </button>
+              </Button>
             </div>
           </form>
         </div>
