@@ -4,14 +4,16 @@ import "./Hero.css";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useRef } from "react";
-import hero1 from "../../../assets/img/hero-slider-1.jpg";
-import hero2 from "../../../assets/img/hero-slider-2.jpg";
-import hero3 from "../../../assets/img/hero-slider-3.jpg";
+import hero1 from "../../../assets/img/Homeimg1.avif";
+import hero2 from "../../../assets/img/Homeimg2.jpg";
+import hero3 from "../../../assets/img/Homeimg3.jpg";
+import hero4 from "../../../assets/img/Homeimg4.jpg";
+import hero5 from "../../../assets/img/Homeimg5.avif";
 import LoginCard from "../../common/Login/LoginCard"
 
 function Hero() {
   const otpRefs = useRef([]);
-  const slides = [hero1, hero2, hero3];
+  const slides = [hero1, hero2, hero3, hero4, hero5];
 
   const [current, setCurrent] = useState(0);
 
