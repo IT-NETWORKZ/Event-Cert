@@ -1,6 +1,7 @@
 .hero-header {
     margin-top: -100px;
-    padding-top: 150px;
+    padding-top: 125px; /* Perfect balance between top header and bottom section */
+    padding-bottom: 25px;
     background: url('../../../assets/img/hero-bg.jpg') center top/cover no-repeat;
     overflow: hidden;
 }
@@ -13,96 +14,6 @@ textarea:focus {
     background: #fff;
     box-shadow: 0 0 0 4px rgba(37, 99, 235, .12);
     border: none;
-}
-
-/* ================= LOGIN CARD ================= */
-/* ==========================================================
-   LOGIN CARD
-========================================================== */
-/*  */
-
-/* ==========================================================
-   DIVIDER
-========================================================== */
-
-.divider {
-    display: flex;
-    align-items: center;
-    margin: 18px 0;
-}
-
-.divider::before,
-.divider::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: rgba(255, 255, 255, .25);
-}
-
-.divider span {
-    padding: 0 14px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    color: rgba(255, 255, 255, .85);
-}
-
-/* ==========================================================
-   GOOGLE BUTTON
-========================================================== */
-
-.google-btn {
-    height: 46px;
-    border: none;
-    border-radius: 10px;
-    background: #fff;
-    color: #444;
-    padding: 15px 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    margin: auto;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: .3s;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, .12);
-}
-
-.google-btn img {
-    width: 22px;
-    height: 22px;
-}
-
-.google-btn:hover {
-    background: #f7f7f7;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(0, 0, 0, .18);
-}
-
-/* ==========================================================
-   REGISTER
-========================================================== */
-
-.register {
-    text-align: center;
-    margin-top: 18px !important;
-    font-size: 14px;
-    color: rgba(255, 255, 255, .85);
-}
-
-.register .text-blue {
-    color: #66D9FF !important;
-    font-weight: 600;
-    margin-left: 5px;
-    text-decoration: none;
-    transition: .25s;
-}
-
-.register .text-blue:hover {
-    color: #fff !important;
-    text-decoration: underline;
 }
 
 /* ================= SLIDER ================= */
@@ -181,15 +92,9 @@ textarea:focus {
 /* ================= TABLET ================= */
 
 @media (max-width: 992px) {
-
     .hero-header {
         margin-top: 0;
         padding-top: 60px;
-    }
-
-    .login-card {
-        width: 340px;
-        margin: 0 auto 40px;
     }
 
     .header-carousel {
@@ -206,63 +111,9 @@ textarea:focus {
     }
 }
 
-
 /* ================= MOBILE ================= */
 
 @media (max-width: 576px) {
-
-    .login-card {
-        width: 100%;
-        max-width: 320px;
-        padding: 20px;
-    }
-
-    .login-card h1 {
-        font-size: 26px;
-    }
-
-    .login-card p {
-        font-size: 15px;
-    }
-
-    .otp-options {
-        gap: 16px;
-        flex-wrap: wrap;
-    }
-
-    .input-row-group {
-        flex-direction: column;
-        gap: 10px;
-        background: transparent;
-        box-shadow: none;
-    }
-
-    .form-control {
-        width: 100%;
-        border-radius: 10px;
-        background: #fff;
-    }
-
-    .otp-btn {
-        width: 100%;
-        border-radius: 10px;
-    }
-
-    .otp-boxes {
-        gap: 6px;
-    }
-
-    .otp-boxes input {
-        width: 40px;
-        height: 40px;
-        font-size: 16px;
-    }
-
-    .submit-btn {
-        width: 140px;
-        height: 44px;
-    }
-
     .header-carousel {
         margin-top: 35px;
         padding: 15px 25px 15px 0;
