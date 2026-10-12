@@ -19,7 +19,8 @@ import {
   FaAward,
   FaCommentDots,
   FaReceipt,
-  FaCalendarDay
+  FaCalendarDay,
+  FaCalendarCheck,
 } from "react-icons/fa";
 
 import { NavLink, useLocation } from "react-router-dom";
@@ -103,7 +104,14 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
             Custom Plus
           </MenuItem>
 
-          
+           <MenuItem
+            icon={<FaCalendarCheck />
+}
+            component={<NavLink to="schedular" />}
+            className={isActive("/schedular") ? "active-item" : ""}
+          >
+            Schedular
+          </MenuItem>
 
           <MenuItem
             icon={<FaFileAlt />}
