@@ -1,0 +1,253 @@
+/* ===========================================================
+   SCHEDULAR PAGE LAYOUT
+   Editor (.cp-layout comes from the shared CustomPlus.css) stays
+   full screen, and the table section sits below it.
+   Scoped to .sd-page, so Custom Plus is not affected.
+   =========================================================== */
+.sd-page {
+    width: 100%;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #edf1f7;
+    display: flex;
+    flex-direction: column;
+}
+
+.sd-page .cp-layout {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    width: 100%;
+    height: 100vh;
+    flex-shrink: 0;
+}
+
+.sd-page::-webkit-scrollbar { width: 8px; }
+.sd-page::-webkit-scrollbar-thumb { background: #c9c9c9; border-radius: 20px; }
+
+/* ===========================================================
+   SECTION CARD
+   =========================================================== */
+.sch-table-section {
+    width: calc(100% - 40px);
+    min-width: 0;
+    flex-shrink: 0;
+    margin: 24px 20px 40px;
+    padding: 20px 24px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .06);
+    overflow: hidden;
+}
+
+/* Table scrolls sideways inside the card instead of being cut off */
+.sch-table-section .table-responsive { overflow-x: auto; }
+
+/* ===========================================================
+   FORM (compact sizes)
+   =========================================================== */
+.sch-form { margin-bottom: 6px; }
+
+.sch-form-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.sch-row-actions { align-items: center; }
+.sch-row-select { align-items: flex-end; }
+
+.sch-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 180px;
+}
+.sch-field label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #222;
+    margin: 0;
+}
+.sch-row-select .sch-field label { font-weight: 500; color: #333; }
+.sch-field-grow { flex: 1; min-width: 200px; max-width: 360px; }
+.sch-row-top .sch-field { flex: 1; max-width: 300px; }
+
+.sch-input {
+    width: 100%;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 13px;
+    color: #333;
+    outline: none;
+    transition: .25s;
+}
+.sch-input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, .12); }
+
+/* Upload Excel */
+.sch-upload {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #333;
+}
+.sch-upload input[type="file"] {
+    max-width: 230px;
+    padding: 4px 6px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 12px;
+}
+
+/* Pill buttons */
+.sch-pill {
+    border: none;
+    padding: 7px 18px;
+    border-radius: 30px;
+    background: linear-gradient(180deg, #1d6fe8, #2447c9);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(36, 71, 201, .3);
+    transition: .25s;
+    white-space: nowrap;
+}
+.sch-pill:hover { transform: translateY(-1px); box-shadow: 0 6px 12px rgba(36, 71, 201, .35); }
+
+.sch-pill-green {
+    background: linear-gradient(180deg, #22a447, #15803d);
+    box-shadow: 0 3px 8px rgba(21, 128, 61, .3);
+}
+.sch-pill-green:hover { box-shadow: 0 6px 12px rgba(21, 128, 61, .35); }
+
+.sch-pill-round {
+    width: 80px;
+    height: 48px;
+    padding: 0 8px;
+    border-radius: 26px;
+    line-height: 1.2;
+    white-space: normal;
+}
+
+.sch-pill-x {
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    background: #dc3545;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: .25s;
+}
+.sch-pill-x:hover { background: #bb2d3b; }
+
+/* Notes */
+.sch-note {
+    color: #f0364f;
+    font-weight: 600;
+    font-size: 13px;
+    margin: 4px 0 16px 8px;
+}
+.sch-note ul { margin: 4px 0 0 18px; list-style: disc; }
+.sch-note li { margin-bottom: 2px; }
+
+/* ===========================================================
+   FILTERS ROW (compact)
+   =========================================================== */
+.sch-filters {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 8px 0 18px;
+}
+
+.sch-filters-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 8px;
+    background: #2563eb;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.sch-filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 7px 12px;
+    border: 1px solid #e3e3e3;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .05);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: #222;
+    transition: .25s;
+}
+.sch-filter-chip:hover { border-color: #2563eb; }
+.sch-filter-chip input { width: 15px; height: 15px; cursor: pointer; }
+
+.sch-filter-clear {
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    background: #dc3545;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .25s;
+}
+.sch-filter-clear:hover { background: #bb2d3b; }
+
+/* Select All header + row checkboxes (table is unchanged) */
+.sch-select-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    cursor: pointer;
+    font-weight: 600;
+}
+.sch-select-all input,
+.sch-table-section tbody input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* ===========================================================
+   RESPONSIVE
+   =========================================================== */
+@media (max-width: 768px) {
+    .sch-table-section {
+        width: calc(100% - 20px);
+        margin: 16px 10px 30px;
+        padding: 14px;
+    }
+    .sch-form-row { flex-direction: column; align-items: stretch; }
+    .sch-row-top .sch-field,
+    .sch-field-grow { max-width: 100%; }
+    .sch-pill, .sch-pill-x { width: 100%; }
+    .sch-pill-round { width: 100%; height: 38px; border-radius: 30px; }
+    .sch-upload { flex-wrap: wrap; }
+}

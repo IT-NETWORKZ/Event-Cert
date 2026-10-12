@@ -16,6 +16,7 @@ import FeedbackForm from "../components/admin/FeedbackForm/FeedbackForm";
 import CustomPlus from "../pages/Admin/CustomPlus";
 import Payment from "../components/admin/Payment/Payment";
 import AddEvent from "../components/admin/AddEvent/AddEvent";
+import SchedularDesigner from "../components/admin/Schedular/SchedularDesigner"
 
 import CPanel from "../pages/CPanel/CPanel";
 import CDashboard from "../components/cpanel/Dashboard/CDashboard";
@@ -29,6 +30,7 @@ import CFeedbackDetails from "../pages/CPanel/CFeedbackDetails";
 import CProfile from "../pages/CPanel/CProfile";
 import CAddDraft from "../components/cpanel/AddCategory/CAddDraft";
 import CAddCategory from "../components/cpanel/AddCategory/CAddCategory";
+
 
 
 
@@ -52,6 +54,7 @@ function AppRoutes() {
 
             {/* Admin Layout */}
             <Route path="/admin/customplus" element={<CustomPlus />} />
+            <Route path="/admin/schedular" element={<SchedularDesigner />} />
             <Route path="/admin" element={<Admin />}>
 
                 {/* Default page -> /admin */}
@@ -65,6 +68,8 @@ function AppRoutes() {
 
                 {/* /admin/subscriptionplan */}
                 <Route path="subscriptionplan" element={<Subscriptionplan />} />
+
+
 
 
                 {/* /admin/feedback */}
@@ -99,8 +104,8 @@ function AppRoutes() {
                     {/*ADD CATEGORY Routes  */}
                     <Route path="category/addcategory" element={<CAddCategory />} />
                     <Route path="category/adddraft" element={<CAddDraft />} />
-                    
-                    
+
+
                 </Route>
             </Route>
 
