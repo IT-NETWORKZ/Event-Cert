@@ -14,9 +14,11 @@ import Profile from "../pages/Admin/Profile";
 import Subscriptionplan from "../components/admin/Subscription/Subscriptionplan";
 import FeedbackForm from "../components/admin/FeedbackForm/FeedbackForm";
 import CustomPlus from "../pages/Admin/CustomPlus";
+import Schedular from "../pages/Admin/Schedular";
+import DeliveryReport from "../components/common/DeliveryReport/DeliveryReport";
 import Payment from "../components/admin/Payment/Payment";
 import AddEvent from "../components/admin/AddEvent/AddEvent";
-import SchedularDesigner from "../components/admin/Schedular/SchedularDesigner"
+
 
 import CPanel from "../pages/CPanel/CPanel";
 import CDashboard from "../components/cpanel/Dashboard/CDashboard";
@@ -54,7 +56,8 @@ function AppRoutes() {
 
             {/* Admin Layout */}
             <Route path="/admin/customplus" element={<CustomPlus />} />
-            <Route path="/admin/schedular" element={<SchedularDesigner />} />
+            <Route path="/admin/schedular" element={<Schedular />} />
+
             <Route path="/admin" element={<Admin />}>
 
                 {/* Default page -> /admin */}
@@ -80,6 +83,10 @@ function AppRoutes() {
 
                 {/* /admin/addevent */}
                 <Route path="addevent" element={<AddEvent />} />
+
+                {/* Delivery Report pages (inside the layout, so sidebar + navbar show) */}
+                <Route path="custom-status" element={<DeliveryReport type="custom" />} />
+                <Route path="schedule-status" element={<DeliveryReport type="schedule" />} />
             </Route>
 
 
