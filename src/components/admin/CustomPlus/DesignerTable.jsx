@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import DataTable from "../../common/Table/DataTable"; 
 import "../../../css/DesignerTable.css";
+import { useNavigate } from "react-router-dom";
 
 // Sample data: replace with your API / state
 const sampleData = [
@@ -42,6 +43,7 @@ const DesignerTable = ({ data = sampleData }) => {
   const [form, setForm] = useState(emptyForm);
   const [filters, setFilters] = useState(emptyFilters);
   const [selectedIds, setSelectedIds] = useState([]);
+  const navigate = useNavigate();
 
   const setField = (name, value) => setForm((prev) => ({ ...prev, [name]: value }));
   const toggleFilter = (name) => setFilters((prev) => ({ ...prev, [name]: !prev[name] }));
@@ -123,7 +125,7 @@ const DesignerTable = ({ data = sampleData }) => {
   const handleAdd = () => console.log("Add excel", form.excelFile);
   const handlePastRecords = () => console.log("Past records");
   const handleRetrieveRecords = () => console.log("Retrieve records");
-  const handleSentStatus = () => console.log("Sent status");
+  const handleSentStatus = () => navigate("/admin/custom-status");
   const handleViewAll = () => console.log("View all");
 
   return (

@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import DataTable from "../../common/Table/DataTable"; // adjust path if needed
 import "../../../css/SchedularDataTable.css";
+import { useNavigate } from "react-router-dom";
 
 // Sample data: replace with your API / state
 const sampleData = [
@@ -44,6 +45,7 @@ const SchedularDataTable = ({ data = sampleData }) => {
   const [form, setForm] = useState(emptyForm);
   const [filters, setFilters] = useState(emptyFilters);
   const [selectedIds, setSelectedIds] = useState([]);
+  const navigate = useNavigate();
 
   const setField = (name, value) => setForm((prev) => ({ ...prev, [name]: value }));
   const toggleFilter = (name) => setFilters((prev) => ({ ...prev, [name]: !prev[name] }));
@@ -125,7 +127,7 @@ const SchedularDataTable = ({ data = sampleData }) => {
   const handleAdd = () => console.log("Add excel", form.excelFile);
   const handleOnlyText = () => console.log("Only text");
   const handlePastRecords = () => console.log("Past records");
-  const handleSentStatus = () => console.log("Sent status");
+ const handleSentStatus = () => navigate("/admin/schedule-status");
   const handleExport = () => console.log("Export to Excel", filteredData);
   const handleViewAll = () => console.log("View all");
   const handleResetForm = () => setForm(emptyForm);
