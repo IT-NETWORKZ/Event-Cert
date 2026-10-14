@@ -4,6 +4,18 @@
     box-sizing: border-box;
 }
 
+/* =====================================
+          SIDEBAR WIDTH (change here)
+===================================== */
+.custom-sidebar {
+    width: 210px !important;
+    min-width: 210px !important;
+}
+
+.custom-sidebar.ps-collapsed {
+    width: 80px !important;
+    min-width: 80px !important;
+}
 
 .custom-sidebar {
     height: 100vh;
@@ -18,24 +30,24 @@
 .custom-sidebar::before {
     content: "";
     position: absolute;
-    width: 220px;
-    height: 220px;
+    width: 180px;
+    height: 180px;
     background: rgba(255, 255, 255, .15);
     border-radius: 50%;
-    right: -70px;
-    top: -70px;
+    right: -60px;
+    top: -60px;
     pointer-events: none;
 }
 
 .custom-sidebar::after {
     content: "";
     position: absolute;
-    width: 180px;
-    height: 180px;
+    width: 150px;
+    height: 150px;
     background: rgba(255, 255, 255, .08);
     border-radius: 50%;
-    left: -60px;
-    bottom: -60px;
+    left: -50px;
+    bottom: -50px;
     pointer-events: none;
 }
 
@@ -56,11 +68,11 @@
           HEADER & LOGO AREA
 ===================================== */
 .sidebar-header {
-    height: 72px;
+    height: 64px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 22px;
+    padding: 0 16px;
     border-bottom: 1px solid rgba(255, 255, 255, .25);
     position: relative;
 }
@@ -68,7 +80,7 @@
 .sidebar-logo {
     display: flex;
     align-items: center;
-    max-width: 150px;
+    max-width: 130px;
 }
 
 .sidebar-logo img {
@@ -100,39 +112,41 @@
           NAVIGATION & MENU LINKS
 ===================================== */
 .custom-sidebar .ps-menu-root {
-    padding: 20px 0;
+    padding: 14px 0;
 }
 
 .custom-sidebar .ps-menuitem-root {
-    margin: 5px 0;
+    margin: 4px 0;
 }
 
 .custom-sidebar .ps-menu-button {
-    height: 54px !important;
-    margin: 0 12px;
-    border-radius: 14px;
+    height: 48px !important;
+    margin: 0 10px;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    border-radius: 12px;
     color: #fff !important;
     transition: transform 0.2s ease, background-color 0.2s ease !important;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 500;
 }
 
 .custom-sidebar .ps-menu-button:hover {
     background: rgba(255, 255, 255, .18) !important;
-    transform: translateX(4px);
+    transform: translateX(3px);
 }
 
 /* Icon Containers */
 .custom-sidebar .ps-icon {
-    width: 42px !important;
-    min-width: 42px !important;
-    height: 42px !important;
-    border-radius: 12px;
+    width: 36px !important;
+    min-width: 36px !important;
+    height: 36px !important;
+    border-radius: 10px;
     background: rgba(255, 255, 255, .18);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 14px;
+    margin-right: 10px;
     color: #fff;
     transition: transform 0.2s ease, background-color 0.2s ease !important;
 }
@@ -146,44 +160,32 @@
 /* =====================================
           ACTIVE LINK STATES
 ===================================== */
-/* .custom-sidebar .active-item .ps-menu-button {
+.custom-sidebar .active-item > .ps-menu-button {
     background: #fff !important;
     color: #009688 !important;
     font-weight: 600;
     box-shadow: 0 10px 25px rgba(0, 150, 136, .30);
-
-
-} */
- .custom-sidebar .active-item > .ps-menu-button {
-    background: #fff !important;
-    color: #009688 !important;
-    font-weight: 600;
-    box-shadow: 0 10px 25px rgba(0,150,136,.30);
 }
 
 .custom-sidebar:not(.ps-collapsed) .active-item > .ps-menu-button .ps-icon {
     background: linear-gradient(45deg, #009688, #26A69A) !important;
     color: #fff !important;
-  
 }
 
 .custom-sidebar.ps-collapsed .active-item > .ps-menu-button {
-    background: transparent !important; /* Removes the broken, wide white box layout */
     box-shadow: none !important;
     background: white !important;
     display: flex;
     justify-content: center;
 }
 
-/* .custom-sidebar .active-item .ps-icon { */
 .custom-sidebar .active-item > .ps-menu-button .ps-icon {
     background: linear-gradient(45deg, #009688, #26A69A) !important;
     color: #fff !important;
-   
 }
 
 .custom-sidebar .ps-submenu-root.ps-active > .ps-menu-button {
-    background: rgba(255,255,255,.18) !important;
+    background: rgba(255, 255, 255, .18) !important;
     color: #fff !important;
     box-shadow: none !important;
 }
@@ -195,18 +197,17 @@
     background: rgba(255, 255, 255, .12) !important;
     backdrop-filter: blur(20px);
     border-radius: 12px;
-    margin: 5px 15px;
+    margin: 4px 10px;
 }
 
 .custom-sidebar .ps-submenu-content .ps-menu-button {
-    margin: 4px 8px;
-    height: 46px !important;
-    font-size: 14px;
+    margin: 3px 6px;
+    height: 42px !important;
+    font-size: 13px;
 }
 
 .custom-sidebar .ps-submenu-expand-icon {
     color: #fff;
-    
 }
 
 /* =====================================
@@ -214,12 +215,11 @@
 ===================================== */
 @media (max-width: 768px) {
     .sidebar-header {
-        padding: 0 20px;
+        padding: 0 16px;
     }
-    
+
     .sidebar-close-btn {
         display: flex; /* Pull close cross into mobile layouts */
         color: #ffffff;
-        
     }
 }
