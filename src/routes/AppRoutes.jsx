@@ -7,7 +7,6 @@ import Contact from "../components/Contact/Contact";
 import Register from "../components/home/register/Register";
 import Subscription from "../components/Subscription/Subscription";
 
-
 import Admin from "../pages/Admin/Admin";
 import Dashboard from "../components/admin/Dashboard/Dashboard";
 import Profile from "../pages/Admin/Profile";
@@ -18,7 +17,6 @@ import Schedular from "../pages/Admin/Schedular";
 import DeliveryReport from "../components/common/DeliveryReport/DeliveryReport";
 import Payment from "../components/admin/Payment/Payment";
 import AddEvent from "../components/admin/AddEvent/AddEvent";
-
 
 import CPanel from "../pages/CPanel/CPanel";
 import CDashboard from "../components/cpanel/Dashboard/CDashboard";
@@ -97,7 +95,7 @@ function AppRoutes() {
                 {/* Resolves exactly at: /cpanel */}
                 <Route index element={<CLogin />} />
 
-                {/* Resolves sub-routes wrapped in the <CPanel /> Layout layout */}
+                {/* Resolves sub-routes wrapped in the <CPanel/> Layout layout */}
                 <Route element={<CPanel />}>
                     <Route path="dashboard" element={<CDashboard />} />
                     <Route path="contact" element={<CPContact />} />
