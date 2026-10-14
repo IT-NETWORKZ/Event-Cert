@@ -14,7 +14,7 @@ import Subscriptionplan from "../components/admin/Subscription/Subscriptionplan"
 import FeedbackForm from "../components/admin/FeedbackForm/FeedbackForm";
 import CustomPlus from "../pages/Admin/CustomPlus";
 import Schedular from "../pages/Admin/Schedular";
-import DeliveryReport from "../components/common/DeliveryReport/DeliveryReport";
+import StatusReport from "../components/common/StatusReport/StatusReport";
 import Payment from "../components/admin/Payment/Payment";
 import AddEvent from "../components/admin/AddEvent/AddEvent";
 
@@ -83,8 +83,8 @@ function AppRoutes() {
                 <Route path="addevent" element={<AddEvent />} />
 
                 {/* Delivery Report pages (inside the layout, so sidebar + navbar show) */}
-                <Route path="custom-status" element={<DeliveryReport type="custom" />} />
-                <Route path="schedule-status" element={<DeliveryReport type="schedule" />} />
+                <Route path="custom-status" element={<StatusReport type="custom" />} />
+                <Route path="schedule-status" element={<StatusReport type="schedule" />} />
             </Route>
 
 
