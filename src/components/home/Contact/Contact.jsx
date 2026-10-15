@@ -1,7 +1,7 @@
-import Footer from "../common/footer/Footer";
+import Footer from "../../common/footer/Footer";
 import "./Contact.css";
-import InnerNavbar from "../common/navbar/InnerNavbar";
-import Button from "../common/button/Button"
+import InnerNavbar from "../../common/navbar/InnerNavbar";
+import Button from "../../common/button/Button"
 
 import {
   Phone,
@@ -9,11 +9,12 @@ import {
   Globe,
   MapPin,
 } from "lucide-react";
+import Navbar from "../../common/navbar/Navbar";
 
 function Contact() {
   return (
     <>
-      <InnerNavbar />
+      <Navbar />
       <section className="contact-section py-5">
         <div className="container">
 

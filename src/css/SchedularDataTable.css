@@ -7,6 +7,7 @@
 .sd-page {
     width: 100%;
     height: 100vh;
+    height: 100dvh;
     overflow-y: auto;
     overflow-x: hidden;
     background: #edf1f7;
@@ -20,6 +21,7 @@
     left: auto !important;
     width: 100%;
     height: 100vh;
+    height: 100dvh;
     flex-shrink: 0;
 }
 
@@ -130,6 +132,7 @@
 }
 .sch-pill-green:hover { box-shadow: 0 6px 12px rgba(21, 128, 61, .35); }
 
+/* View All: two-line round pill on desktop */
 .sch-pill-round {
     width: 80px;
     height: 48px;
@@ -236,18 +239,234 @@
 }
 
 /* ===========================================================
-   RESPONSIVE
+   TABLET  (up to 992px)
    =========================================================== */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
     .sch-table-section {
-        width: calc(100% - 20px);
-        margin: 16px 10px 30px;
-        padding: 14px;
+        width: calc(100% - 30px);
+        margin: 20px 15px 32px;
+        padding: 18px;
     }
-    .sch-form-row { flex-direction: column; align-items: stretch; }
+
     .sch-row-top .sch-field,
-    .sch-field-grow { max-width: 100%; }
-    .sch-pill, .sch-pill-x { width: 100%; }
-    .sch-pill-round { width: 100%; height: 38px; border-radius: 30px; }
-    .sch-upload { flex-wrap: wrap; }
+    .sch-field-grow { max-width: none; }
+
+    .sch-row-select {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        align-items: end;
+    }
+    .sch-row-select .sch-field { min-width: 0; max-width: none; }
+
+    /* View All: single line "View All", never clipped */
+    .sch-form .sch-pill-round {
+        grid-column: 1 / -1;
+        order: 3;
+        justify-self: center;
+        align-self: center;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        width: auto;
+        min-width: 130px;
+        max-width: none;
+        height: 36px;
+        padding: 0 26px;
+        border-radius: 30px;
+        font-size: 13px;
+        line-height: 1;
+        white-space: nowrap;
+        overflow: visible;
+    }
+
+    .sch-row-actions .sch-pill,
+    .sch-row-top .sch-pill { height: 36px; padding: 0 18px; }
+}
+
+/* ===========================================================
+   MOBILE  (up to 576px)
+   =========================================================== */
+@media (max-width: 576px) {
+    .sch-table-section {
+        width: calc(100% - 16px);
+        margin: 14px 8px 28px;
+        padding: 12px;
+        border-radius: 10px;
+    }
+
+    /* Top row (Draft, date, time, Sample Excel, Upload) stacks */
+    .sch-row-top {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .sch-row-top .sch-field,
+    .sch-field-grow { max-width: 100%; min-width: 0; }
+
+    /* Draft + Sample Excel: slim centered pills */
+    .sch-row-top .sch-pill {
+        align-self: center;
+        width: auto;
+        min-width: 160px;
+        height: 34px;
+        padding: 0 24px;
+        font-size: 12px;
+        line-height: 34px;
+    }
+
+    /* Action buttons: 2-column grid, slim buttons */
+    .sch-row-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+    .sch-row-actions .sch-pill {
+        width: 100%;
+        height: 34px;
+        padding: 0 6px;
+        font-size: 12px;
+        line-height: 34px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Export to Excel (second-to-last; red X is last) spans the row */
+    .sch-row-actions > .sch-pill:nth-last-child(2) {
+        grid-column: 1 / -1;
+        justify-self: center;
+        width: 60%;
+    }
+
+    /* Upload box takes the full row */
+    .sch-upload {
+        grid-column: 1 / -1;
+        flex-wrap: wrap;
+        font-size: 12px;
+    }
+    .sch-upload input[type="file"] { flex: 1; min-width: 0; max-width: 100%; }
+
+    /* Selects: one per row */
+    .sch-row-select { grid-template-columns: 1fr; gap: 10px; }
+    .sch-input { height: 38px; font-size: 14px; }
+
+    /* View All: single line, full text visible, centered */
+    .sch-form .sch-pill-round {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        width: auto;
+        min-width: 130px;
+        max-width: none;
+        height: 36px;
+        padding: 0 24px;
+        font-size: 13px;
+        line-height: 1;
+        white-space: nowrap;
+        overflow: visible;
+        margin: 0 auto;
+    }
+
+    /* Red X: small centered button */
+    .sch-pill-x {
+        grid-column: 1 / -1;
+        justify-self: center;
+        align-self: center;
+        width: auto;
+        min-width: 90px;
+        height: 32px;
+        padding: 0 16px;
+    }
+
+    .sch-note { font-size: 12px; margin-left: 2px; }
+
+    /* Filters: 2 chips per row */
+    .sch-filters {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+    .sch-filters-label { grid-column: 1 / -1; justify-self: start; }
+    .sch-filter-chip { padding: 7px 10px; font-size: 12px; }
+
+    .sch-filter-clear {
+        grid-column: 1 / -1;
+        justify-self: center;
+        width: auto;
+        min-width: 90px;
+        height: 32px;
+        padding: 0 16px;
+    }
+}
+
+/* Very small phones (iPhone SE, 320-380px) */
+@media (max-width: 380px) {
+    .sch-table-section { padding: 10px; }
+    .sch-row-actions { gap: 6px; }
+    .sch-row-actions .sch-pill,
+    .sch-row-top .sch-pill {
+        height: 32px;
+        line-height: 32px;
+        font-size: 11.5px;
+        padding: 0 4px;
+    }
+    .sch-row-top .sch-pill { min-width: 140px; }
+    .sch-form .sch-pill-round { height: 34px; line-height: 1; font-size: 12.5px; }
+}
+/* ===========================================================
+   CUSTOM SELECT (replaces native <select>)
+   =========================================================== */
+.sch-select { position: relative; width: 100%; }
+
+.sch-select-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+.sch-select-btn span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.sch-select-btn svg { flex-shrink: 0; transition: transform .2s; }
+.sch-select-btn.is-open { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, .12); }
+.sch-select-btn.is-open svg { transform: rotate(180deg); }
+.sch-select-placeholder { color: #666; }
+
+.sch-select-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 50;
+    max-height: 220px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, .15);
+}
+
+.sch-select-item {
+    padding: 9px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #333;
+    cursor: pointer;
+}
+.sch-select-item:hover { background: #eef3ff; }
+.sch-select-item.active { background: #2563eb; color: #fff; }
+
+@media (max-width: 576px) {
+    .sch-select-btn { height: 40px; font-size: 14px; }
+    .sch-select-item { padding: 11px 12px; font-size: 14px; }
 }

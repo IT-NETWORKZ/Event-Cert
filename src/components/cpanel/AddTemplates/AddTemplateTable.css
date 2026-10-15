@@ -1,106 +1,344 @@
-/* ==========================================================================
-   1. TABLE CONTAINER CARD
-   ========================================================================== */
-.promo-table-card {
+/* ==========================================
+   PAGE WRAPPER
+========================================== */
+
+.add-template-page-wrapper {
+  --at-teal-50: #e6f7f5;
+  --at-teal-100: #b2e8e0;
+  --at-teal-500: #00a896;
+  --at-teal-600: #028090;
+  --at-teal-700: #05668d;
+  --at-slate-100: #f1f5f9;
+  --at-slate-200: #e2e8f0;
+  --at-slate-600: #475569;
+  --at-slate-800: #1e293b;
+
   width: 100%;
-  max-width: 1100px;
-  background: #ffffff !important;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  border: 1px solid var(--slate-200, #e2e8f0);
-  padding: 1.75rem 2rem;
+  min-width: 0;
+  padding: 1.5rem;
   box-sizing: border-box;
-  margin-top: 2rem;
 }
 
-/* Title Header Section */
-.promo-table-header {
+/* ==========================================
+   TABLE CARD
+========================================== */
+
+.add-template-page-wrapper .promo-table-card {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 1.5rem;
+  background: #ffffff !important;
+  border: 1px solid var(--at-slate-200);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+  box-sizing: border-box;
+}
+
+/* ==========================================
+   TITLE HEADER
+========================================== */
+
+.add-template-page-wrapper .promo-table-header {
   text-align: center;
   margin-bottom: 1.5rem;
 }
 
-.promo-table-title {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: var(--slate-800, #1e293b);
+.add-template-page-wrapper .promo-table-title {
   margin: 0;
-  font-family: inherit;
-}
-
-.promo-table-title .highlight {
-  color: var(--teal-600, #028090);
-}
-
-.title-underline {
-  width: 50px;
-  height: 3px;
-  background-color: teal; /* Golden accent line */
-  margin: 6px auto 0 auto;
-  border-radius: 2px;
-}
-
-/* ==========================================================================
-   2. TABLE HEADER & CELL STYLING
-   ========================================================================== */
-/* Prevents headers from wrapping awkwardly */
-.data-table th {
-  white-space: nowrap !important;
-  vertical-align: middle !important;
-  padding: 0.85rem 0.75rem !important;
-  background-color: #f8fafc !important;
-  color: #334155 !important;
-  font-weight: 700 !important;
-  font-size: 0.85rem !important;
-  border-bottom: 2px solid #e2e8f0 !important;
-}
-
-.th-text {
-  white-space: nowrap !important;
-  word-break: keep-all !important;
-}
-
-/* Flex wrapper inside header for sort icons */
-.th-content-wrapper {
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.35rem !important;
-  white-space: nowrap !important;
-}
-
-/* Body row cells */
-.data-table td {
-  padding: 0.85rem 0.75rem !important;
-  vertical-align: middle !important;
-  font-size: 0.875rem !important;
-  color: #334155 !important;
-  border-bottom: 1px solid #f1f5f9 !important;
-}
-
-/* Multiline Scrollable Message Cell */
-.message-cell-content {
-  max-height: 80px;
-  max-width: 220px;
-  overflow-y: auto;
-  white-space: pre-wrap;
-  font-size: 0.825rem;
-  color: #475569;
+  color: var(--at-slate-800);
+  font-size: 1.5rem;
+  font-weight: 800;
   line-height: 1.4;
 }
 
-/* Action Buttons inside Table */
-.data-table .btn-sm {
-  padding: 0.35rem 1rem !important;
-  font-size: 0.775rem !important;
+.add-template-page-wrapper .promo-table-title .highlight {
+  color: var(--at-teal-600);
+}
+
+.add-template-page-wrapper .title-underline {
+  width: 50px;
+  height: 3px;
+  margin: 7px auto 0;
+  background: var(--at-teal-500);
+  border-radius: 3px;
+}
+
+/* ==========================================
+   RESPONSIVE TABLE WRAPPER
+========================================== */
+
+.add-template-page-wrapper .table-responsive-scroll-wrapper {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: visible;
+  border: 1px solid var(--at-slate-200);
+  border-radius: 8px;
+  background: #ffffff;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f8fafc;
+}
+
+.add-template-page-wrapper
+  .table-responsive-scroll-wrapper::-webkit-scrollbar {
+  height: 7px;
+}
+
+.add-template-page-wrapper
+  .table-responsive-scroll-wrapper::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+.add-template-page-wrapper
+  .table-responsive-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+/* ==========================================
+   DATATABLE STRUCTURE
+========================================== */
+
+.add-template-page-wrapper .data-table {
+  width: 100%;
+  min-width: 1350px;
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #ffffff;
+  font-size: 13px;
+}
+
+/* Table Header */
+
+.add-template-page-wrapper .data-table thead th {
+  padding: 13px 12px !important;
+  background: var(--at-teal-50) !important;
+  color: var(--at-teal-700) !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  line-height: 1.5;
+  white-space: nowrap !important;
+  vertical-align: middle !important;
+  border-bottom: 1px solid var(--at-teal-100) !important;
+  border-right: 1px solid #e8f4f2 !important;
+}
+
+.add-template-page-wrapper .data-table thead th:last-child {
+  border-right: none !important;
+}
+
+/* Header text and sorting icons */
+
+.add-template-page-wrapper .data-table .th-text {
+  white-space: nowrap !important;
+  word-break: keep-all;
+}
+
+.add-template-page-wrapper .data-table .th-content-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+/* Table Body */
+
+.add-template-page-wrapper .data-table tbody td {
+  padding: 12px !important;
+  color: #334155 !important;
+  font-size: 13px !important;
+  line-height: 1.6;
+  vertical-align: middle !important;
+  background: #ffffff;
+  border-bottom: 1px solid #edf2f7 !important;
+  border-right: 1px solid #f1f5f9;
+}
+
+.add-template-page-wrapper .data-table tbody td:last-child {
+  border-right: none;
+}
+
+.add-template-page-wrapper .data-table tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* Row hover */
+
+.add-template-page-wrapper .data-table tbody tr:hover td {
+  background: #f5fbfa;
+}
+
+/* Alignment */
+
+.add-template-page-wrapper .data-table .text-center {
+  text-align: center !important;
+}
+
+.add-template-page-wrapper .data-table .text-start {
+  text-align: left !important;
+}
+
+.add-template-page-wrapper .data-table .text-end {
+  text-align: right !important;
+}
+
+/* ==========================================
+   MESSAGE CELL
+========================================== */
+
+.add-template-page-wrapper .message-cell-content {
+  width: 100%;
+  min-width: 180px;
+  max-width: 260px;
+  max-height: 85px;
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  color: var(--at-slate-600);
+  font-size: 12px;
+  line-height: 1.6;
+  padding-right: 4px;
+}
+
+.add-template-page-wrapper .message-cell-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.add-template-page-wrapper .message-cell-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 5px;
+}
+
+/* ==========================================
+   EDIT BUTTON
+========================================== */
+
+.add-template-page-wrapper .data-table .btn-primary {
+  padding: 5px 15px !important;
+  min-width: 65px;
+  color: #ffffff !important;
+  background: var(--at-teal-600) !important;
+  border: 1px solid var(--at-teal-600) !important;
+  border-radius: 20px !important;
+  font-size: 12px !important;
   font-weight: 600 !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  box-shadow: none !important;
+  transition: background-color 0.2s ease;
 }
 
-.data-table .btn-primary {
-  background-color: #0d6efd !important;
-  border-color: #0d6efd !important;
+.add-template-page-wrapper .data-table .btn-primary:hover {
+  background: var(--at-teal-700) !important;
+  border-color: var(--at-teal-700) !important;
 }
 
-.data-table .btn-success {
-  background-color: #198754 !important;
-  border-color: #198754 !important;
+/* ==========================================
+   ENABLE BUTTON
+========================================== */
+
+.add-template-page-wrapper .data-table .btn-success {
+  min-width: 75px;
+  padding: 5px 12px !important;
+  color: #ffffff !important;
+  background: #198754 !important;
+  border: 1px solid #198754 !important;
+  border-radius: 20px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+
+.add-template-page-wrapper .data-table .btn-success:hover {
+  background: #157347 !important;
+  border-color: #157347 !important;
+}
+
+/* ==========================================
+   DISABLE BUTTON
+========================================== */
+
+.add-template-page-wrapper .data-table .btn-secondary {
+  min-width: 75px;
+  padding: 5px 12px !important;
+  color: #475569 !important;
+  background: #e2e8f0 !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 20px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+
+.add-template-page-wrapper .data-table .btn-secondary:hover {
+  background: #cbd5e1 !important;
+  border-color: #94a3b8 !important;
+}
+
+/* ==========================================
+   RESPONSIVE DESIGN
+========================================== */
+
+@media (max-width: 992px) {
+  .add-template-page-wrapper {
+    padding: 1rem;
+  }
+
+  .add-template-page-wrapper .promo-table-card {
+    padding: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .add-template-page-wrapper {
+    padding: 0.75rem;
+  }
+
+  .add-template-page-wrapper .promo-table-card {
+    padding: 0.85rem;
+    border-radius: 9px;
+  }
+
+  .add-template-page-wrapper .promo-table-title {
+    font-size: 1.25rem;
+  }
+
+  .add-template-page-wrapper .promo-table-header {
+    margin-bottom: 1rem;
+  }
+
+  .add-template-page-wrapper .data-table {
+    min-width: 1250px;
+  }
+
+  .add-template-page-wrapper .data-table thead th {
+    padding: 10px !important;
+    font-size: 11px !important;
+  }
+
+  .add-template-page-wrapper .data-table tbody td {
+    padding: 10px !important;
+    font-size: 12px !important;
+  }
+
+  .add-template-page-wrapper .message-cell-content {
+    min-width: 170px;
+    max-width: 220px;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-template-page-wrapper {
+    padding: 0.5rem;
+  }
+
+  .add-template-page-wrapper .promo-table-card {
+    padding: 0.65rem;
+  }
+
+  .add-template-page-wrapper .data-table {
+    min-width: 1150px;
+  }
 }
