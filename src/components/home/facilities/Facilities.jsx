@@ -3,13 +3,10 @@ import { Check, Play } from "lucide-react";
 
 import facilityImg from "../../../assets/img/testimonial-3.jpg";
 import Button from "../../common/button/Button"
-import Navbar from "../../common/navbar/Navbar";
-import Footer from "../../common/footer/Footer";
 
 function Facilities() {
   return (
     <div>
-      <Navbar />
       <section className="facilities-section">
 
         <div className="container">
@@ -178,7 +175,6 @@ function Facilities() {
         </div>
 
       </section>
-      <Footer />
     </div>
   );
 }

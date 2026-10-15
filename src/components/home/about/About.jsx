@@ -1,49 +1,29 @@
 import "./About.css";
 import { Check } from "lucide-react";
-
 import promoImg from "../../../assets/img/EVENTPROMOTION.jpg";
 import invitationImg from "../../../assets/img/INVITATIONCARD.jpg";
 import greetingImg from "../../../assets/img/GREETINGCARD.jpg";
 import certImg from "../../../assets/img/CERTIFICATE.avif";
 import Button from "../../common/button/Button"
 import { div } from "framer-motion/client";
-import InnerNavbar from "../../common/navbar/InnerNavbar";
-import Navbar from "../../common/navbar/Navbar";
-import Footer from "../../common/footer/Footer";
 
 function About() {
   return (
     <div>
-      <Navbar />
       <section className="about-section">
-
         <div className="container">
-
           <div className="row align-items-center gy-5">
-
-
             {/* LEFT */}
-
-
             <div className="col-lg-5">
-
               <div className="about-features-grid">
-
-
                 <div className="about-feature-item">
-
                   <div className="about-icon-box">
                     <img src={promoImg} alt="" />
                   </div>
-
                   <h6>EVENT PROMOTION</h6>
-
                 </div>
 
-
-
                 <div className="about-feature-item">
-
                   <div className="about-icon-box">
                     <img src={invitationImg} alt="" />
                   </div>
@@ -51,8 +31,6 @@ function About() {
                   <h6>INVITATION CARD</h6>
 
                 </div>
-
-
 
                 <div className="about-feature-item">
 
@@ -64,8 +42,6 @@ function About() {
 
                 </div>
 
-
-
                 <div className="about-feature-item">
 
                   <div className="about-icon-box">
@@ -76,21 +52,12 @@ function About() {
 
                 </div>
 
-
-
               </div>
 
             </div>
 
-
-
-
             {/* RIGHT */}
-
-
             <div className="col-lg-7">
-
-
               <h2 className="about-main-header">
 
                 <span className="about-badge">
@@ -143,13 +110,7 @@ function About() {
                   Our goal is to simplify this journey allowing organizers to focus on participants and achievements.
 
                 </p>
-
-
-
               </div>
-
-
-
 
               <h4 className="about-sub-header">
 
@@ -158,8 +119,6 @@ function About() {
                 EventCert
 
               </h4>
-
-
 
               <ul className="about-points-list">
 
@@ -179,22 +138,11 @@ function About() {
 
               </ul>
 
-
-
-
               <div className="about-footer">
 
-
-
-
-
                 <div className="social-icons">
-
-
                   <Button className="btn-about-read">
-
                     Read More
-
                   </Button>
 
                   <a href="#">
@@ -216,24 +164,12 @@ function About() {
                     <i className="bi bi-linkedin"></i>
                   </a>
 
-
                 </div>
-
-
-
               </div>
-
-
-
             </div>
-
-
           </div>
-
         </div>
-
       </section>
-    <Footer />
     </div>
   );
 }

@@ -6,6 +6,9 @@ import Facilities from "../components/Facilities/Facilities";
 import Contact from "../components/home/Contact/Contact";
 import Register from "../components/home/register/Register";
 import Subscription from "../components/Subscription/Subscription";
+import About from "../components/home/about/About";
+
+
 
 import Admin from "../pages/Admin/Admin";
 import Dashboard from "../components/admin/Dashboard/Dashboard";
@@ -17,6 +20,14 @@ import Schedular from "../pages/Admin/Schedular";
 import StatusReport from "../components/common/StatusReport/StatusReport";
 import Payment from "../components/admin/Payment/Payment";
 import AddEvent from "../components/admin/AddEvent/AddEvent";
+import ResetPassword from "../components/admin/ResetPassword/ResetPassword";
+import Preview from "../components/home/footerpages/PopularLinks/Preview/Preview";
+import Terms from "../components/home/footerpages/PopularLinks/T&C/Terms";
+import Shipping from "../components/home/footerpages/PopularLinks/Shipping&Delivery/Shipping";
+import PrivacyPolicy from "../components/home/footerpages/PopularLinks/PrivacyPolicy/PrivacyPolicy";
+import CancellationRefund from "../components/home/footerpages/PopularLinks/Cancellation&Refund/CancellationRefund";
+
+
 
 import CPanel from "../pages/CPanel/CPanel";
 import CDashboard from "../components/cpanel/Dashboard/CDashboard";
@@ -30,22 +41,14 @@ import CFeedbackDetails from "../pages/CPanel/CFeedbackDetails";
 import CProfile from "../pages/CPanel/CProfile";
 import CAddDraft from "../components/cpanel/AddCategory/CAddDraft";
 import CAddCategory from "../components/cpanel/AddCategory/CAddCategory";
-import About from "../components/home/about/About";
-import ResetPassword from "../components/admin/ResetPassword/ResetPassword";
-
-
-
 
 function AppRoutes() {
     return (
-
-
         <Routes>
 
             {/* Public Routes */}
 
             <Route path="/" element={<Home />} />
-
             <Route path="/services" element={<Services />} />
             <Route path="/About" element={<About />} />
 
@@ -57,51 +60,40 @@ function AppRoutes() {
 
             <Route path="/subscription" element={<Subscription />} />
 
-
-
+            {/* NEW: Preview page (footer > Popular Links > Preview) */}
+            <Route path="/preview" element={<Preview />} />
+            <Route path="/termsandconditions" element={<Terms />} />
+            <Route path="/shippinganddelivery" element={<Shipping />} />
+            <Route path="/privacyandpolicy" element={<PrivacyPolicy />} />
+            <Route path="/refundprocess" element={<CancellationRefund />} />
 
             {/* Admin Layout */}
             <Route path="/admin/customplus" element={<CustomPlus />} />
             <Route path="/admin/schedular" element={<Schedular />} />
 
             <Route path="/admin" element={<Admin />}>
-
                 {/* Default page -> /admin */}
                 <Route index element={<Dashboard />} />
-
                 {/* /admin/dashboard */}
                 <Route path="dashboard" element={<Dashboard />} />
-
                 {/* /admin/profile */}
                 <Route path="profile" element={<Profile />} />
-
                 {/* /admin/subscriptionplan */}
                 <Route path="subscriptionplan" element={<Subscriptionplan />} />
                 {/* /admin/resetPassword */}
-                <Route
-                    path="resetPassword"
-                    element={<ResetPassword />}
-                />
-
-
-
+                <Route path="resetPassword" element={<ResetPassword />} />
                 {/* /admin/feedback */}
                 <Route path="feedback" element={<FeedbackForm />} />
-
                 {/* /admin/payment */}
                 <Route path="payment" element={<Payment />} />
-
                 {/* /admin/addevent */}
                 <Route path="addevent" element={<AddEvent />} />
-
                 {/* Delivery Report pages (inside the layout, so sidebar + navbar show) */}
                 <Route path="custom-status" element={<StatusReport type="custom" />} />
                 <Route path="schedule-status" element={<StatusReport type="schedule" />} />
             </Route>
 
-
             {/* ================= CPANEL LAYOUT ================= */}
-
             {/* Unified CPanel Route Group */}
             <Route path="/cpanel">
                 {/* Resolves exactly at: /cpanel */}
@@ -122,14 +114,8 @@ function AppRoutes() {
                     {/*ADD CATEGORY Routes  */}
                     <Route path="category/addcategory" element={<CAddCategory />} />
                     <Route path="category/adddraft" element={<CAddDraft />} />
-
-
                 </Route>
             </Route>
-
-
-
-
         </Routes>
     );
 }
