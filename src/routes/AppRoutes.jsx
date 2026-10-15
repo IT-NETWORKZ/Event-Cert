@@ -32,6 +32,11 @@ import CFeedbackDetails from "../pages/CPanel/CFeedbackDetails";
 import CProfile from "../pages/CPanel/CProfile";
 import CAddDraft from "../components/cpanel/AddCategory/CAddDraft";
 import CAddCategory from "../components/cpanel/AddCategory/CAddCategory";
+import Preview from "../components/home/footerpages/PopularLinks/Preview/Preview";
+import Terms from "../components/home/footerpages/PopularLinks/T&C/Terms";
+import Shipping from "../components/home/footerpages/PopularLinks/Shipping&Delivery/Shipping";
+import PrivacyPolicy from "../components/home/footerpages/PopularLinks/PrivacyPolicy/PrivacyPolicy";
+import CancellationRefund from "../components/home/footerpages/PopularLinks/Cancellation&Refund/CancellationRefund";
 
 
 
@@ -53,6 +58,13 @@ function AppRoutes() {
             <Route path="/register" element={<Register />} />
 
             <Route path="/subscription" element={<Subscription />} />
+
+             {/* NEW: Preview page (footer > Popular Links > Preview) */}
+            <Route path="/preview" element={<Preview />} />
+            <Route path="/termsandconditions" element={<Terms />} />
+            <Route path="/shippinganddelivery" element={<Shipping />} />
+             <Route path="/privacyandpolicy" element={<PrivacyPolicy />} />
+             <Route path="/refundprocess" element={<CancellationRefund />} />
 
             {/* Admin Layout */}
             <Route path="/admin/customplus" element={<CustomPlus />} />
