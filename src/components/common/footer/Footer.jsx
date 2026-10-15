@@ -1,4 +1,5 @@
 import "./Footer.css";
+import { Link } from "react-router-dom";
 
 import {
   MapPin,
@@ -204,7 +205,7 @@ Popular Links
 
 <ChevronRight size={14}/>
 
-Preview
+<Link to="/preview">Preview</Link>
 
 </li>
 
@@ -214,7 +215,7 @@ Preview
 
 <ChevronRight size={14}/>
 
-Terms & Conditions
+<Link to="/termsandconditions">Terms & Conditions</Link>
 
 </li>
 
@@ -224,7 +225,7 @@ Terms & Conditions
 
 <ChevronRight size={14}/>
 
-Shipping & Delivery
+<Link to="/shippinganddelivery">Shipping & Delivery</Link>
 
 </li>
 
@@ -234,7 +235,7 @@ Shipping & Delivery
 
 <ChevronRight size={14}/>
 
-Privacy Policy
+<Link to="/privacyandpolicy">Privacy Policy</Link>
 
 </li>
 
@@ -244,7 +245,7 @@ Privacy Policy
 
 <ChevronRight size={14}/>
 
-Cancellation & Refund
+<Link to="/refundprocess">Cancellation & Refund</Link>
 
 </li>
 

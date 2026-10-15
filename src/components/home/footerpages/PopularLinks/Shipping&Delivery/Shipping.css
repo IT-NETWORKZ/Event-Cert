@@ -1,0 +1,380 @@
+.ship-page {
+  background: #ffffff;
+  color: #2b2b2b;
+  overflow-x: clip;
+}
+
+/* =========================================
+   HERO
+========================================= */
+.ship-hero {
+  position: relative;
+  padding: 56px 0 60px;
+  text-align: center;
+  background: linear-gradient(135deg, #009688, #b2dfdb);
+  overflow: hidden;
+}
+.ship-blob {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  pointer-events: none;
+  animation: ship-float 8s ease-in-out infinite;
+}
+.ship-blob.b1 { width: 260px; height: 260px; right: -80px; top: -100px; }
+.ship-blob.b2 { width: 190px; height: 190px; left: -60px; bottom: -80px; animation-delay: 2s; }
+@keyframes ship-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(16px); }
+}
+
+.ship-hero .container { position: relative; z-index: 1; animation: ship-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes ship-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ship-hero-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  border-radius: 20px;
+  background: #ffffff;
+  color: #0d4e43;
+  box-shadow: 0 10px 24px rgba(13, 78, 67, 0.2);
+}
+.ship-hero h1 {
+  margin: 0;
+  font-size: 2.6rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #ffffff;
+}
+.ship-hero h1 span { color: #0d4e43; }
+.ship-hero-sub {
+  max-width: 640px;
+  margin: 12px auto 0;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  font-weight: 500;
+  color: #0d4e43;
+}
+.ship-hero-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+}
+.ship-hero-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #0d4e43;
+  font-size: 0.88rem;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(13, 78, 67, 0.12);
+}
+
+/* =========================================
+   LAYOUT
+========================================= */
+.ship-body { padding: 48px 0 72px; }
+.ship-layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+}
+
+/* =========================================
+   TABLE OF CONTENTS
+========================================= */
+.ship-toc {
+  position: sticky;
+  top: calc(var(--nav-h, 82px) + 20px);
+  max-height: calc(100vh - var(--nav-h, 82px) - 40px);
+  overflow-y: auto;
+  padding: 20px 16px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid rgba(13, 78, 67, 0.12);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  scrollbar-width: thin;
+  scrollbar-color: #0d4e43 rgba(13, 78, 67, 0.1);
+}
+.ship-toc-title {
+  margin: 0 8px 12px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #0d4e43;
+}
+.ship-toc nav { display: flex; flex-direction: column; gap: 4px; }
+.ship-toc button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  text-align: left;
+  font-size: 0.9rem;
+  color: #5c726f;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ship-toc button b {
+  flex-shrink: 0;
+  min-width: 26px;
+  font-size: 0.76rem;
+  color: #0d4e43;
+  opacity: 0.7;
+}
+.ship-toc button:hover { background: rgba(13, 78, 67, 0.06); color: #0d4e43; padding-left: 16px; }
+.ship-toc button.active {
+  background: #0d4e43;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 6px 16px rgba(13, 78, 67, 0.25);
+}
+.ship-toc button.active b { color: #b2dfdb; opacity: 1; }
+
+/* =========================================
+   CONTENT
+========================================= */
+.ship-content { min-width: 0; }
+
+.ship-intro {
+  margin-bottom: 28px;
+  padding: 20px 24px;
+  border-radius: 16px;
+  background: rgba(13, 78, 67, 0.06);
+  border-left: 4px solid #0d4e43;
+}
+.ship-intro p { margin: 0; font-size: 1rem; line-height: 1.75; color: #1a2e2b; }
+
+.ship-section {
+  scroll-margin-top: calc(var(--nav-h, 82px) + 24px);
+  margin-bottom: 16px;
+  padding: 30px 32px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid rgba(13, 78, 67, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  transition: box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ship-section:hover { box-shadow: 0 12px 28px rgba(13, 78, 67, 0.1); transform: translateY(-2px); }
+
+.ship-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 16px;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #1a2e2b;
+}
+.ship-num {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  min-width: 42px;
+  height: 42px;
+  padding: 0 6px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #009688, #26a69a);
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.ship-section p {
+  margin: 0 0 14px;
+  font-size: 0.98rem;
+  line-height: 1.8;
+  color: #5c726f;
+  text-align: justify;
+}
+.ship-section p:last-child { margin-bottom: 0; }
+
+.ship-section ul { margin: 0 0 14px; padding: 0; list-style: none; }
+.ship-section ul:last-child { margin-bottom: 0; }
+.ship-section li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 0.96rem;
+  line-height: 1.7;
+  color: #2b2b2b;
+}
+.ship-section li svg { flex-shrink: 0; margin-top: 5px; color: #0d4e43; }
+.ship-section li span { min-width: 0; overflow-wrap: anywhere; }
+
+/* ---- Contact block ---- */
+.ship-contact {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0 20px;
+}
+.ship-contact div {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: rgba(13, 78, 67, 0.05);
+  font-size: 0.96rem;
+  line-height: 1.6;
+  color: #1a2e2b;
+}
+.ship-contact svg { flex-shrink: 0; margin-top: 3px; color: #0d4e43; }
+.ship-contact span { min-width: 0; overflow-wrap: anywhere; }
+
+.ship-note {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 24px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #009688, #b2dfdb);
+}
+.ship-section .ship-note p {
+  margin: 0;
+  font-size: 0.96rem;
+  line-height: 1.6;
+  font-weight: 500;
+  text-align: left;
+  color: #0d4e43;
+}
+.ship-btn {
+  flex-shrink: 0;
+  padding: 11px 28px;
+  border-radius: 999px;
+  background: #0d4e43;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.92rem;
+  text-decoration: none;
+  box-shadow: 0 6px 16px rgba(13, 78, 67, 0.3);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ship-btn:hover { color: #ffffff; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(13, 78, 67, 0.4); }
+
+/* =========================================
+   BACK TO TOP
+========================================= */
+.ship-top {
+  position: fixed;
+  right: 24px;
+  bottom: 96px;
+  z-index: 900;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: none;
+  border-radius: 50%;
+  background: #0d4e43;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(13, 78, 67, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(14px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ship-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
+.ship-top:hover { background: #009688; }
+
+/* =========================================
+   TABLET (up to 991px): menu becomes a chip bar
+========================================= */
+@media (max-width: 991px) {
+  .ship-hero { padding: 44px 0 48px; }
+  .ship-hero h1 { font-size: 2.1rem; }
+  .ship-body { padding: 32px 0 52px; }
+
+  .ship-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+
+  .ship-toc {
+    top: var(--nav-h, 62px);
+    z-index: 50;
+    max-height: none;
+    overflow: visible;
+    padding: 12px 14px;
+    border-radius: 16px;
+  }
+  .ship-toc-title { display: none; }
+  .ship-toc nav {
+    flex-direction: row;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .ship-toc nav::-webkit-scrollbar { display: none; }
+  .ship-toc button {
+    flex: 0 0 auto;
+    width: auto;
+    padding: 8px 16px;
+    border: 1px solid rgba(13, 78, 67, 0.15);
+    border-radius: 999px;
+    white-space: nowrap;
+    font-size: 0.84rem;
+  }
+  .ship-toc button b { display: none; }
+  .ship-toc button:hover { padding-left: 16px; }
+
+  .ship-section { padding: 24px; scroll-margin-top: calc(var(--nav-h, 62px) + 76px); }
+}
+
+/* =========================================
+   MOBILE (up to 767px)
+========================================= */
+@media (max-width: 767px) {
+  .ship-hero { padding: 36px 0 40px; }
+  .ship-hero-icon { width: 54px; height: 54px; margin-bottom: 12px; }
+  .ship-hero h1 { font-size: 1.7rem; }
+  .ship-hero-sub { font-size: 0.95rem; }
+  .ship-hero-meta { margin-top: 18px; }
+  .ship-hero-meta span { padding: 7px 14px; font-size: 0.8rem; }
+
+  .ship-intro { padding: 16px 18px; }
+  .ship-intro p { font-size: 0.94rem; }
+
+  .ship-section { padding: 20px 18px; border-radius: 16px; }
+  .ship-section h2 { gap: 12px; font-size: 1.15rem; }
+  .ship-num { min-width: 36px; height: 36px; border-radius: 12px; font-size: 0.82rem; }
+  .ship-section p { font-size: 0.94rem; text-align: left; }
+  .ship-section li { font-size: 0.94rem; }
+  .ship-section:hover { transform: none; }
+
+  .ship-note { flex-direction: column; align-items: flex-start; padding: 18px; }
+  .ship-btn { align-self: stretch; text-align: center; }
+
+  .ship-top { right: 16px; bottom: 88px; width: 42px; height: 42px; }
+}
+
+/* =========================================
+   SMALL PHONES (up to 420px)
+========================================= */
+@media (max-width: 420px) {
+  .ship-hero h1 { font-size: 1.5rem; }
+  .ship-section h2 { font-size: 1.05rem; }
+  .ship-contact div { padding: 12px 14px; font-size: 0.9rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ship-hero .container, .ship-blob { animation: none; }
+}
