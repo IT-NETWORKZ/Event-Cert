@@ -3,16 +3,17 @@ import './Subscription.css';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Replace with your actual logo file path if necessary
-import logo from '../../assets/img/logo_EventCert.png'; 
+import logo from '../../assets/img/logo_EventCert.png';
 import InnerNavbar from '../common/navbar/InnerNavbar';
 import Footer from '../common/footer/Footer';
 import Button from "../common/button/Button"
+import Navbar from '../common/navbar/Navbar';
 
 // Global Animation Variants
 const fadeUpVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
     transition: { duration: 0.5, ease: "easeOut" }
   }
@@ -54,11 +55,11 @@ const Subscription = () => {
 
   return (
     <>
-      <InnerNavbar />
+      <Navbar />
       <div className="sub-page-container">
-        
+
         <main className="sub-main-content">
-          <motion.h1 
+          <motion.h1
             className="sub-heading"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -66,7 +67,7 @@ const Subscription = () => {
           >
             Smart Pricing & All-in-One Features
           </motion.h1>
-          <motion.div 
+          <motion.div
             className="sub-underline"
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
@@ -75,29 +76,29 @@ const Subscription = () => {
           ></motion.div>
 
           {/* Categories Control */}
-          <motion.div 
+          <motion.div
             className="sub-tabs-wrapper"
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <Button 
+            <Button
               className={`sub-tab-btn ${activeTab === 'certificate' ? 'selected' : ''}`}
               onClick={() => { setActiveTab('certificate'); setOpenCardIndex(null); }}
             >
               <span className="sub-circle-indicator"></span>
               Certificate
             </Button>
-            
-            <Button 
+
+            <Button
               className={`sub-tab-btn ${activeTab === 'event' ? 'selected' : ''}`}
               onClick={() => { setActiveTab('event'); setOpenCardIndex(null); }}
             >
               <span className="sub-circle-indicator"></span>
               Event
             </Button>
-            
-            <Button 
+
+            <Button
               className={`sub-tab-btn ${activeTab === 'combo' ? 'selected' : ''}`}
               onClick={() => { setActiveTab('combo'); setOpenCardIndex(null); }}
             >
@@ -107,7 +108,7 @@ const Subscription = () => {
           </motion.div>
 
           {/* Pricing Rows Grid */}
-          <motion.div 
+          <motion.div
             className="sub-pricing-stack"
             variants={containerVariants}
             initial="hidden"
@@ -117,8 +118,8 @@ const Subscription = () => {
             {plansData[activeTab].map((plan, index) => {
               const isOpen = openCardIndex === index;
               return (
-                <motion.div 
-                  key={index} 
+                <motion.div
+                  key={index}
                   layout
                   variants={fadeUpVariants}
                   className={`sub-price-row-card ${isOpen ? 'expanded' : ''}`}
@@ -129,10 +130,10 @@ const Subscription = () => {
                       <span className="sub-duration-lbl">{plan.duration}</span>
                       <h2 className="sub-price-lbl">{plan.price}</h2>
                     </div>
-                    
+
                     <button className={`sub-arrow-toggle-btn ${isOpen ? 'rotated' : ''}`}>
                       <svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1 1.5L7 7.5L13 1.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M1 1.5L7 7.5L13 1.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </button>
                   </div>
@@ -140,7 +141,7 @@ const Subscription = () => {
                   {/* Dropdown collapsible view info with dynamic slide-open behavior */}
                   <AnimatePresence initial={false}>
                     {isOpen && (
-                      <motion.div 
+                      <motion.div
                         className="sub-card-dropdown-drawer"
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
@@ -160,7 +161,7 @@ const Subscription = () => {
           </motion.div>
 
           {/* Info Section Triggered on Scroll Viewport */}
-          <motion.section 
+          <motion.section
             className="sub-info-section"
             initial="hidden"
             whileInView="visible"
@@ -168,7 +169,7 @@ const Subscription = () => {
             variants={fadeUpVariants}
           >
             <hr className="sub-divider" />
-            
+
             <div className="sub-features-grid">
               <div className="sub-feature-box">
                 <h3>What's included in every plan?</h3>

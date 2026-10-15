@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "../pages/HomeDefault/Home";
 import Services from "../components/services/Services";
 import Facilities from "../components/Facilities/Facilities";
-import Contact from "../components/Contact/Contact";
+import Contact from "../components/home/Contact/Contact";
 import Register from "../components/home/register/Register";
 import Subscription from "../components/Subscription/Subscription";
 
@@ -30,12 +30,16 @@ import CFeedbackDetails from "../pages/CPanel/CFeedbackDetails";
 import CProfile from "../pages/CPanel/CProfile";
 import CAddDraft from "../components/cpanel/AddCategory/CAddDraft";
 import CAddCategory from "../components/cpanel/AddCategory/CAddCategory";
+import About from "../components/home/about/About";
+import ResetPassword from "../components/admin/ResetPassword/ResetPassword";
 
 
 
 
 function AppRoutes() {
     return (
+
+
         <Routes>
 
             {/* Public Routes */}
@@ -43,6 +47,7 @@ function AppRoutes() {
             <Route path="/" element={<Home />} />
 
             <Route path="/services" element={<Services />} />
+            <Route path="/About" element={<About />} />
 
             <Route path="/facilities" element={<Facilities />} />
 
@@ -51,6 +56,9 @@ function AppRoutes() {
             <Route path="/register" element={<Register />} />
 
             <Route path="/subscription" element={<Subscription />} />
+
+
+
 
             {/* Admin Layout */}
             <Route path="/admin/customplus" element={<CustomPlus />} />
@@ -69,7 +77,11 @@ function AppRoutes() {
 
                 {/* /admin/subscriptionplan */}
                 <Route path="subscriptionplan" element={<Subscriptionplan />} />
-
+                {/* /admin/resetPassword */}
+                <Route
+                    path="resetPassword"
+                    element={<ResetPassword />}
+                />
 
 
 
@@ -105,6 +117,7 @@ function AppRoutes() {
                     <Route path="addtemplate" element={<CAddTemplates />} />
                     <Route path="feedbackdetails" element={<CFeedbackDetails />} />
                     <Route path="profiledetails" element={<CProfile />} />
+                    <Route path="resetPassword" element={<ResetPassword />} />
 
                     {/*ADD CATEGORY Routes  */}
                     <Route path="category/addcategory" element={<CAddCategory />} />

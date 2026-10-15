@@ -1,15 +1,14 @@
+
 import { useState, useRef, useEffect } from "react";
 import "./Navbar.css";
-import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import Button from "../../common/button/Button"
 
 import {
     FaBars,
     FaUserCircle,
     FaUser,
-    FaSignOutAlt,
-    FaChevronDown
+    FaLock,
+    FaSignOutAlt
 } from "react-icons/fa";
 
 function Navbar({
@@ -18,119 +17,104 @@ function Navbar({
     toggled,
     setToggled
 }) {
- const navigate = useNavigate();
     const [showMenu, setShowMenu] = useState(false);
 
     const menuRef = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
-
-        function handleClickOutside(e){
-
-            if(menuRef.current && !menuRef.current.contains(e.target)){
-
+        function handleClickOutside(e) {
+            if (
+                menuRef.current &&
+                !menuRef.current.contains(e.target)
+            ) {
                 setShowMenu(false);
-
             }
-
         }
 
         document.addEventListener("mousedown", handleClickOutside);
 
         return () => {
-
-            document.removeEventListener("mousedown", handleClickOutside);
-
+            document.removeEventListener(
+                "mousedown",
+                handleClickOutside
+            );
         };
-
     }, []);
 
+    const handleResetPassword = () => {
+        setShowMenu(false);
+        navigate("/cpanel/resetPassword");
+    };
+
+
+    const handleLogout = () => {
+        setShowMenu(false);
+
+        // Add your logout logic here.
+        // Example: clear authentication and redirect to login.
+    };
+
     return (
-
         <div className="admin-navbar">
-
+            {/* Left Section */}
             <div className="navbar-left">
-
-                <Button
+                <button
+                    type="button"
                     className="menu-btn"
                     onClick={() => {
-
-                        if(window.innerWidth <= 768){
-
+                        if (window.innerWidth <= 768) {
                             setToggled(!toggled);
-
-                        }else{
-
+                        } else {
                             setCollapsed(!collapsed);
-
                         }
-
                     }}
+                    aria-label="Toggle sidebar"
                 >
-
-                    <FaBars/>
-
-                </Button>
-
-               
-
+                    <FaBars />
+                </button>
             </div>
 
+            {/* Profile Section */}
             <div
                 className="navbar-profile"
                 ref={menuRef}
             >
-
-                <div
+                <button
+                    type="button"
                     className="profile-trigger"
-                    onClick={() => setShowMenu(!showMenu)}
+                    onClick={() => setShowMenu((prev) => !prev)}
+                    aria-expanded={showMenu}
+                    aria-haspopup="true"
                 >
-
-                    <span>
-
-                        Welcome User
-
-                    </span>
-
-                    <FaUserCircle className="user-icon"/>
-
-                    {/* <FaChevronDown
-                        className={`arrow ${showMenu ? "rotate" : ""}`}
-                    /> */}
-
-                </div>
+                    <span>Welcome User</span>
+                    <FaUserCircle className="user-icon" />
+                </button>
 
                 {showMenu && (
-
                     <div className="profile-dropdown">
+                      
 
-                        <Button onClick={() => navigate("/cpanel/profiledetails")} >
+                        <button
+                            type="button"
+                            onClick={handleResetPassword}
+                        >
+                            <FaLock />
+                            <span>Reset Password</span>
+                        </button>
 
-                            <FaUser />
-
-                            My Profile
-
-                        </Button>
-
-                        <Button >
-
+                        <button
+                            type="button"
+                            onClick={handleLogout}
+                        >
                             <FaSignOutAlt />
-
-                            Logout
-
-                        </Button>
-
+                            <span>Logout</span>
+                        </button>
                     </div>
-                    
-
                 )}
-
             </div>
-
         </div>
-
     );
-
 }
 
 export default Navbar;

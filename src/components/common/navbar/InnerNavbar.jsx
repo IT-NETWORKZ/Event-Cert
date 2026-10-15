@@ -56,21 +56,29 @@ function InnerNavbar() {
             <div className="navbar-nav ms-auto">
 
               {/* Home */}
-             
-              <NavLink
-  to="/"
-  className={() =>
-    `nav-item nav-link ${
-      location.pathname === "/" && location.hash !== "#eventhub" ? "active" : ""
-    }`
-  }
-  onClick={closeNavbar}
->
-  Home
-</NavLink>
 
-              {/* Services */}
               <NavLink
+                to="/"
+                className={() =>
+                  `nav-item nav-link ${location.pathname === "/" && location.hash !== "#eventhub" ? "active" : ""
+                  }`
+                }
+                onClick={closeNavbar}
+              >
+                Home
+              </NavLink>
+
+              {/* About */}
+              <NavLink
+                to="/About"
+                className={({ isActive }) => `nav-item nav-link ${isActive ? "active" : ""}`}
+                onClick={closeNavbar}
+              >
+                About
+              </NavLink>
+              
+              {/* Services */}
+              {/* <NavLink
                 to="/services"
                 className={({ isActive }) =>
                   `nav-item nav-link ${isActive ? "active" : ""}`
@@ -78,15 +86,14 @@ function InnerNavbar() {
                 onClick={closeNavbar}
               >
                 Services
-              </NavLink>
+              </NavLink> */}
 
               {/* EventHub */}
               <HashLink
                 smooth
                 to="/#eventhub"
-                className={`nav-item nav-link ${
-                  location.pathname === "/" && location.hash === "#eventhub" ? "active" : ""
-                }`}
+                className={`nav-item nav-link ${location.pathname === "/" && location.hash === "#eventhub" ? "active" : ""
+                  }`}
                 onClick={closeNavbar}
               >
                 EventHub
