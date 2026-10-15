@@ -3,130 +3,35 @@ import { Check, Play } from "lucide-react";
 
 import facilityImg from "../../../assets/img/testimonial-3.jpg";
 import Button from "../../common/button/Button"
+import Navbar from "../../common/navbar/Navbar";
+import Footer from "../../common/footer/Footer";
 
 function Facilities() {
   return (
+    <div>
+      <Navbar />
+      <section className="facilities-section">
 
-    <section className="facilities-section">
+        <div className="container">
 
-      <div className="container">
 
+          <div className="row mb-5">
 
-        <div className="row mb-5">
+            <div className="col-12 text-center">
 
-          <div className="col-12 text-center">
+              <h2 className="facility-heading">
 
-            <h2 className="facility-heading">
+                <span className="facility-badge">
 
-              <span className="facility-badge">
+                  FACILITIES
 
-                FACILITIES
+                </span>
 
-              </span>
+                at EventCert
 
-              at EventCert
+              </h2>
 
-            </h2>
-
-            <div className="facility-line"></div>
-
-          </div>
-
-        </div>
-
-
-
-
-        <div className="row align-items-center gy-5">
-
-
-          {/* left */}
-
-
-          <div className="col-lg-6">
-
-
-            <div className="facility-content">
-
-
-              <div className="facility-item">
-
-                <h3>
-
-                  <Check size={24} />
-
-                  Event Promotion
-
-                </h3>
-
-                <h4>
-
-                  Promote Smart. Engage Faster.
-                  Celebrate Bigger.
-
-                </h4>
-
-                <p>
-
-                  Bring your participants, students,
-                  employees or guests together under one
-                  digital roof.
-
-                </p>
-
-              </div>
-
-
-
-              <div className="facility-item">
-
-                <h3>
-
-                  Advertise Any Event Seamlessly
-
-                </h3>
-
-                <p>
-
-                  From seminars, workshops,
-                  conferences, sports meets,
-                  annual functions, cultural fests,
-                  training sessions and webinars.
-
-                </p>
-
-              </div>
-
-
-
-              <div className="facility-item">
-
-                <h3>
-
-                  New: One-Click Auto Certificate
-                  Generation
-
-                </h3>
-
-                <p>
-
-                  Instantly issue Participation,
-                  Achievement and Appreciation
-                  certificates to registered users.
-
-                </p>
-
-              </div>
-
-
-
-              <Button className="facility-btn">
-
-                Read More
-
-              </Button>
-
-
+              <div className="facility-line"></div>
 
             </div>
 
@@ -135,47 +40,146 @@ function Facilities() {
 
 
 
-
-          {/* right */}
-
-
-          <div className="col-lg-6">
+          <div className="row align-items-center gy-5">
 
 
-            <div className="facility-video">
+            {/* left */}
 
 
-              <img
-
-                src={facilityImg}
-
-                alt=""
-
-                className="img-fluid"
-
-              />
+            <div className="col-lg-6">
 
 
+              <div className="facility-content">
 
-              <div className="play-btn">
 
-                <Play size={35} fill="white" />
+                <div className="facility-item">
+
+                  <h3>
+
+                    <Check size={24} />
+
+                    Event Promotion
+
+                  </h3>
+
+                  <h4>
+
+                    Promote Smart. Engage Faster.
+                    Celebrate Bigger.
+
+                  </h4>
+
+                  <p>
+
+                    Bring your participants, students,
+                    employees or guests together under one
+                    digital roof.
+
+                  </p>
+
+                </div>
+
+
+
+                <div className="facility-item">
+
+                  <h3>
+
+                    Advertise Any Event Seamlessly
+
+                  </h3>
+
+                  <p>
+
+                    From seminars, workshops,
+                    conferences, sports meets,
+                    annual functions, cultural fests,
+                    training sessions and webinars.
+
+                  </p>
+
+                </div>
+
+
+
+                <div className="facility-item">
+
+                  <h3>
+
+                    New: One-Click Auto Certificate
+                    Generation
+
+                  </h3>
+
+                  <p>
+
+                    Instantly issue Participation,
+                    Achievement and Appreciation
+                    certificates to registered users.
+
+                  </p>
+
+                </div>
+
+
+
+                <Button className="facility-btn">
+
+                  Read More
+
+                </Button>
+
+
 
               </div>
 
+            </div>
+
+
+
+
+
+            {/* right */}
+
+
+            <div className="col-lg-6">
+
+
+              <div className="facility-video">
+
+
+                <img
+
+                  src={facilityImg}
+
+                  alt=""
+
+                  className="img-fluid"
+
+                />
+
+
+
+                <div className="play-btn">
+
+                  <Play size={35} fill="white" />
+
+                </div>
+
+
+              </div>
 
             </div>
 
+
+
           </div>
-
-
 
         </div>
 
-      </div>
-
-    </section>
-
+      </section>
+      <Footer />
+    </div>
   );
 }
 

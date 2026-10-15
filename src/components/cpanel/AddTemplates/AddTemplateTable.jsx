@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from 'react';
-import DataTable from '../../common/Table/DataTable'; // Adjust import path according to your folder structure
-import Button from '../../common/button/Button'; // Adjust import path according to your folder structure
+import DataTable from '../../common/Table/DataTable';
+import Button from '../../common/button/Button';
 import './AddTemplateTable.css';
 
 const AddTemplateTable = ({ onEdit, onToggleStatus }) => {
-  // Initial state containing template data matching your screenshots
+  // Original data preserved
   const [tableData] = useState([
     {
       srNo: 1,
@@ -45,65 +45,96 @@ const AddTemplateTable = ({ onEdit, onToggleStatus }) => {
     },
   ]);
 
-  // Column definitions matching your exact required fields
+  // DataTable columns
   const columns = useMemo(
     () => [
       {
         accessorKey: 'srNo',
         header: 'Sr. No.',
-        meta: { width: '80px', className: 'text-center' },
+        enableSorting: true,
+        meta: {
+          width: '80px',
+          className: 'text-center',
+        },
       },
       {
         accessorKey: 'userName',
         header: 'User Name',
-        meta: { width: '120px', className: 'text-start' },
+        meta: {
+          width: '120px',
+          className: 'text-start',
+        },
       },
       {
         accessorKey: 'name',
         header: 'Name',
-        meta: { width: '140px', className: 'text-start' },
+        meta: {
+          width: '150px',
+          className: 'text-start',
+        },
       },
       {
         accessorKey: 'utilityType',
         header: 'Utility Type',
-        meta: { width: '110px', className: 'text-center' },
+        meta: {
+          width: '110px',
+          className: 'text-center',
+        },
         cell: ({ getValue }) => getValue() || '-',
       },
       {
         accessorKey: 'marketingType',
         header: 'Marketing Type',
-        meta: { width: '130px', className: 'text-center' },
+        meta: {
+          width: '130px',
+          className: 'text-center',
+        },
         cell: ({ getValue }) => getValue() || '-',
       },
       {
         accessorKey: 'details',
         header: 'Details',
-        meta: { width: '110px', className: 'text-start' },
+        meta: {
+          width: '120px',
+          className: 'text-start',
+        },
       },
       {
         accessorKey: 'message',
         header: 'Message',
-        meta: { width: '220px', className: 'text-start' },
+        meta: {
+          width: '260px',
+          className: 'text-start',
+        },
         cell: ({ getValue }) => (
           <div className="message-cell-content">
-            {getValue()}
+            {getValue() || '-'}
           </div>
         ),
       },
       {
         accessorKey: 'withUserName',
         header: 'With User Name',
-        meta: { width: '130px', className: 'text-center' },
+        meta: {
+          width: '140px',
+          className: 'text-center',
+        },
       },
       {
         accessorKey: 'withParameters',
         header: 'With Parameters',
-        meta: { width: '130px', className: 'text-center' },
+        meta: {
+          width: '140px',
+          className: 'text-center',
+        },
       },
       {
         id: 'edit',
         header: 'Edit',
-        meta: { width: '90px', className: 'text-center' },
+        meta: {
+          width: '100px',
+          className: 'text-center',
+        },
         cell: ({ row }) => (
           <Button
             type="button"
@@ -117,16 +148,23 @@ const AddTemplateTable = ({ onEdit, onToggleStatus }) => {
       {
         id: 'status',
         header: 'Status',
-        meta: { width: '100px', className: 'text-center' },
+        meta: {
+          width: '110px',
+          className: 'text-center',
+        },
         cell: ({ row }) => {
-          const isActive = row.original.status === 'Enable' || row.original.status === true;
+          const isActive =
+            row.original.status === 'Enable' ||
+            row.original.status === true;
+
           return (
             <Button
               type="button"
-              className={`btn btn-sm rounded-pill px-3 ${
-                isActive ? 'btn-success' : 'btn-secondary'
-              }`}
-              onClick={() => onToggleStatus && onToggleStatus(row.original)}
+              className={`btn btn-sm rounded-pill px-3 ${isActive ? 'btn-success' : 'btn-secondary'
+                }`}
+              onClick={() =>
+                onToggleStatus && onToggleStatus(row.original)
+              }
             >
               {isActive ? 'Enable' : 'Disable'}
             </Button>
@@ -138,17 +176,24 @@ const AddTemplateTable = ({ onEdit, onToggleStatus }) => {
   );
 
   return (
-    <div className="promo-table-card">
-      {/* Title Header Section matching PromoCodeTable style */}
-      <div className="promo-table-header">
-        <h2 className="promo-table-title">
-          Template <span className="highlight">Details</span>
-        </h2>
-        <div className="title-underline"></div>
-      </div>
+    <div className="add-template-page-wrapper">
+      <div className="promo-table-card">
+        {/* Table title */}
+        <div className="promo-table-header">
+          <h2 className="promo-table-title">
+            Template <span className="highlight">Details</span>
+          </h2>
+          <div className="title-underline" />
+        </div>
 
-      {/* Calling Reusable DataTable */}
-      <DataTable columns={columns} data={tableData} />
+        {/* Reusable DataTable */}
+        <div className="table-responsive-scroll-wrapper">
+          <DataTable
+            columns={columns}
+            data={tableData}
+          />
+        </div>
+      </div>
     </div>
   );
 };

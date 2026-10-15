@@ -3,10 +3,9 @@ import { Routes, Route } from "react-router-dom";
 import Home from "../pages/HomeDefault/Home";
 import Services from "../components/services/Services";
 import Facilities from "../components/Facilities/Facilities";
-import Contact from "../components/Contact/Contact";
+import Contact from "../components/home/Contact/Contact";
 import Register from "../components/home/register/Register";
 import Subscription from "../components/Subscription/Subscription";
-
 
 import Admin from "../pages/Admin/Admin";
 import Dashboard from "../components/admin/Dashboard/Dashboard";
@@ -18,7 +17,6 @@ import Schedular from "../pages/Admin/Schedular";
 import StatusReport from "../components/common/StatusReport/StatusReport";
 import Payment from "../components/admin/Payment/Payment";
 import AddEvent from "../components/admin/AddEvent/AddEvent";
-
 
 import CPanel from "../pages/CPanel/CPanel";
 import CDashboard from "../components/cpanel/Dashboard/CDashboard";
@@ -32,6 +30,8 @@ import CFeedbackDetails from "../pages/CPanel/CFeedbackDetails";
 import CProfile from "../pages/CPanel/CProfile";
 import CAddDraft from "../components/cpanel/AddCategory/CAddDraft";
 import CAddCategory from "../components/cpanel/AddCategory/CAddCategory";
+import About from "../components/home/about/About";
+import ResetPassword from "../components/admin/ResetPassword/ResetPassword";
 import Preview from "../components/home/footerpages/PopularLinks/Preview/Preview";
 import Terms from "../components/home/footerpages/PopularLinks/T&C/Terms";
 import Shipping from "../components/home/footerpages/PopularLinks/Shipping&Delivery/Shipping";
@@ -43,6 +43,8 @@ import CancellationRefund from "../components/home/footerpages/PopularLinks/Canc
 
 function AppRoutes() {
     return (
+
+
         <Routes>
 
             {/* Public Routes */}
@@ -50,6 +52,7 @@ function AppRoutes() {
             <Route path="/" element={<Home />} />
 
             <Route path="/services" element={<Services />} />
+            <Route path="/About" element={<About />} />
 
             <Route path="/facilities" element={<Facilities />} />
 
@@ -58,6 +61,8 @@ function AppRoutes() {
             <Route path="/register" element={<Register />} />
 
             <Route path="/subscription" element={<Subscription />} />
+
+
 
              {/* NEW: Preview page (footer > Popular Links > Preview) */}
             <Route path="/preview" element={<Preview />} />
@@ -83,7 +88,11 @@ function AppRoutes() {
 
                 {/* /admin/subscriptionplan */}
                 <Route path="subscriptionplan" element={<Subscriptionplan />} />
-
+                {/* /admin/resetPassword */}
+                <Route
+                    path="resetPassword"
+                    element={<ResetPassword />}
+                />
 
 
 
@@ -109,7 +118,7 @@ function AppRoutes() {
                 {/* Resolves exactly at: /cpanel */}
                 <Route index element={<CLogin />} />
 
-                {/* Resolves sub-routes wrapped in the <CPanel /> Layout layout */}
+                {/* Resolves sub-routes wrapped in the <CPanel/> Layout layout */}
                 <Route element={<CPanel />}>
                     <Route path="dashboard" element={<CDashboard />} />
                     <Route path="contact" element={<CPContact />} />
@@ -119,6 +128,7 @@ function AppRoutes() {
                     <Route path="addtemplate" element={<CAddTemplates />} />
                     <Route path="feedbackdetails" element={<CFeedbackDetails />} />
                     <Route path="profiledetails" element={<CProfile />} />
+                    <Route path="resetPassword" element={<ResetPassword />} />
 
                     {/*ADD CATEGORY Routes  */}
                     <Route path="category/addcategory" element={<CAddCategory />} />
