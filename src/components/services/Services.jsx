@@ -1,7 +1,7 @@
 import React from "react";
 import "./Services.css";
 import { motion } from "framer-motion";
-import InnerNavbar from "../common/navbar/InnerNavbar";
+import Navbar from "../common/navbar/Navbar";
 import Footer from "../common/footer/Footer";
 
 // Global animation variants for reusable fade-up effect
@@ -29,7 +29,7 @@ const ScrollAnimatedSection = ({ children }) => {
 
 const Services = () => (
   <>
-    <InnerNavbar />
+    <Navbar />
     <section className="services-section">
       <h2 className="text-center mt-5">Our Services</h2>
       <div className="line1"></div>

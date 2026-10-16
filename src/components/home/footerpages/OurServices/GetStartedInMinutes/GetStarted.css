@@ -1,0 +1,311 @@
+.started-page {
+  background: #ffffff;
+  color: #2b2b2b;
+  padding: 48px 0 80px;
+  min-height: 80vh;
+}
+
+/* =========================================
+   HEADER (No Hero Section)
+========================================= */
+.started-header {
+  max-width: 720px;
+  margin: 0 auto 48px;
+  text-align: center;
+}
+.started-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  margin-bottom: 16px;
+  border-radius: 999px;
+  background: rgba(0, 150, 136, 0.1);
+  color: #0d4e43;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.started-header h1 {
+  margin: 0 0 12px;
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #1a2e2b;
+}
+.started-header h1 span {
+  color: #009688;
+}
+.started-header p {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: #5c726f;
+}
+
+/* =========================================
+   INTRO BANNER
+========================================= */
+.started-intro-banner {
+  max-width: 960px;
+  margin: 0 auto 60px;
+  padding: 36px 40px;
+  border-radius: 20px;
+  background: rgba(13, 78, 67, 0.04);
+  border: 1px solid rgba(13, 78, 67, 0.1);
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 32px;
+  align-items: center;
+}
+.started-intro-text h2 {
+  margin: 0 0 10px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1a2e2b;
+}
+.started-intro-text p {
+  margin: 0;
+  font-size: 0.96rem;
+  line-height: 1.7;
+  color: #5c726f;
+}
+.started-intro-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-left: 28px;
+  border-left: 2px solid rgba(13, 78, 67, 0.12);
+}
+.started-intro-chips span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #0d4e43;
+}
+.started-intro-chips svg {
+  color: #009688;
+  flex-shrink: 0;
+}
+
+/* =========================================
+   SECTION TITLES
+========================================= */
+.started-section-title {
+  text-align: center;
+  max-width: 650px;
+  margin: 0 auto 36px;
+}
+.started-sub-badge {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #009688;
+  margin-bottom: 8px;
+}
+.started-section-title h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #1a2e2b;
+}
+
+/* =========================================
+   STEPS GRID SECTION
+========================================= */
+.started-steps-section {
+  max-width: 1000px;
+  margin: 0 auto 60px;
+}
+.started-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  position: relative;
+}
+.started-step-card {
+  position: relative;
+  background: #ffffff;
+  padding: 28px 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(13, 78, 67, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s ease;
+}
+.started-step-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 150, 136, 0.4);
+  box-shadow: 0 10px 24px rgba(13, 78, 67, 0.08);
+}
+.started-step-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.started-step-num {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #009688;
+}
+.started-step-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(0, 150, 136, 0.1);
+  color: #0d4e43;
+}
+.started-step-card h3 {
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a2e2b;
+}
+.started-step-card p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #5c726f;
+}
+.started-step-arrow {
+  position: absolute;
+  top: 50%;
+  right: -14px;
+  transform: translateY(-50%);
+  z-index: 2;
+  color: #009688;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(13,78,67,0.1);
+}
+
+/* =========================================
+   CTA BOX
+========================================= */
+.started-cta-box {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 36px 40px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #009688, #b2dfdb);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  box-shadow: 0 8px 24px rgba(0, 150, 136, 0.2);
+}
+.started-cta-text h3 {
+  margin: 0 0 6px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #0d4e43;
+}
+.started-cta-text p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #1a2e2b;
+  font-weight: 500;
+}
+.started-cta-actions {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.started-btn-primary {
+  padding: 12px 24px;
+  border-radius: 999px;
+  background: #0d4e43;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  box-shadow: 0 6px 16px rgba(13, 78, 67, 0.3);
+  transition: all 0.2s ease;
+}
+.started-btn-primary:hover {
+  background: #116859;
+  transform: translateY(-2px);
+  color: #ffffff;
+}
+.started-btn-secondary {
+  padding: 12px 24px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #0d4e43;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+}
+.started-btn-secondary:hover {
+  background: #f0f7f6;
+  transform: translateY(-2px);
+}
+
+/* =========================================
+   BACK TO TOP BUTTON
+========================================= */
+.started-top {
+  position: fixed;
+  right: 24px;
+  bottom: 96px;
+  z-index: 900;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: none;
+  border-radius: 50%;
+  background: #0d4e43;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(13, 78, 67, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(14px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.started-top.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.started-top:hover {
+  background: #009688;
+}
+
+/* =========================================
+   RESPONSIVE DESIGN (TABLET & MOBILE)
+========================================= */
+@media (max-width: 991px) {
+  .started-page { padding: 36px 0 60px; }
+  .started-header h1 { font-size: 2rem; }
+  .started-intro-banner { grid-template-columns: 1fr; padding: 28px; gap: 20px; }
+  .started-intro-chips { padding-left: 0; border-left: none; border-top: 2px solid rgba(13, 78, 67, 0.12); padding-top: 14px; flex-direction: row; flex-wrap: wrap; justify-content: space-between; }
+  .started-steps-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .started-step-arrow { display: none; }
+  .started-cta-box { flex-direction: column; align-items: flex-start; padding: 24px; }
+  .started-cta-actions { width: 100%; flex-direction: column; }
+  .started-btn-primary, .started-btn-secondary { text-align: center; }
+}
+
+@media (max-width: 767px) {
+  .started-header h1 { font-size: 1.65rem; }
+  .started-section-title h2 { font-size: 1.5rem; }
+  .started-steps-grid { grid-template-columns: 1fr; }
+  .started-top { right: 16px; bottom: 88px; width: 42px; height: 42px; }
+}

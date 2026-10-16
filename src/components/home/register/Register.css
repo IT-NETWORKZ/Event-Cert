@@ -1,255 +1,294 @@
-.register-screen-bg {
-  width: 100vw;
+.rg-screen {
+  width: 100%;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
-  justify-content: center;
   align-items: center;
-  position: relative;
-  /* Replaces previous background with your full certificate template */
-  background-image: url('../../../assets/img/hero-bg.jpg'); 
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  padding: 20px;
-  box-sizing: border-box;
+  justify-content: center;
+  padding: 16px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #e6f4f2, #b2dfdb);
   overflow-x: hidden;
 }
+.rg-screen *,
+.rg-screen *::before,
+.rg-screen *::after { box-sizing: border-box; }
 
-/* Semi-transparent overlay over background image so input texts remain highly readable */
-.bg-dark-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
+/* =========================================
+   CARD (compact, height follows the form)
+========================================= */
+.rg-card {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
   width: 100%;
-  height: 100%;
-  /* background-color: rgba(10, 10, 10, 0.75);  */
-  z-index: 1;
+  max-width: 900px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 16px 40px rgba(13, 78, 67, 0.22);
+  animation: rg-pop 0.45s ease both;
+}
+@keyframes rg-pop {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
 }
 
-/* ==========================================================================
-   Centered Compact Sign-Up Card
-   ========================================================================== */
-.register-form-card {
-  background: #ffffff !important;
-  width: 100%;
-  max-width: 380px; /* Made slightly smaller and compact for a premium look */
-  border-radius: 20px;
-  padding: 35px 25px 25px 25px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+/* =========================================
+   LEFT PANEL (light teal theme)
+========================================= */
+.rg-side {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-sizing: border-box;
-  z-index: 2; /* Sits cleanly above the backdrop dim layer */
-}
-
-/* Pink Accent Notch */
-.magenta-top-bar {
-  position: absolute;
-  top: 0;
-  width: 100px;
-  height: 16px;
-  background:linear-gradient(45deg,#009688, #B2DFDB);
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
-
-.register-logo-wrap {
-  margin-top: 5px;
-  margin-bottom: 12px;
-  display: flex;
   justify-content: center;
-  width: 100%;
+  gap: 18px;
+  padding: 24px 20px;
+  background: linear-gradient(160deg, #009688, #4db6ac 60%, #b2dfdb);
+  overflow: hidden;
 }
+.rg-circle { position: absolute; border-radius: 50%; pointer-events: none; background: rgba(255, 255, 255, 0.16); }
+.rg-circle.c1 { width: 150px; height: 150px; right: -50px; top: -50px; }
+.rg-circle.c2 { width: 120px; height: 120px; left: -40px; bottom: -40px; background: rgba(255, 255, 255, 0.12); }
 
-.register-main-logo {
-  max-height: 50px; /* Scales down logo slightly to match compact card size */
-  width: auto;
-  object-fit: contain;
-}
-
-.register-card-title {
-  font-size: 22px;
-  color: #1a1a1a;
-  font-weight: 700;
-  margin: 0 0 4px 0;
-}
-
-.register-card-subtitle {
-  font-size: 13px;
-  color: #718096;
-  margin: 0 0 20px 0;
-}
-
-.register-actual-form {
-  width: 100%;
-}
-
-/* Form Layout Elements */
-.register-field-group {
-  width: 100%;
-  margin-bottom: 14px;
-}
-
-.register-field-group input, 
-.register-inline-group input {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  font-size: 13.5px;
-  background-color: #fcfdfe;
-  color: #2d3748;
-  outline: none;
-  box-sizing: border-box;
-}
-
-.register-field-group input:focus, 
-.register-inline-group input:focus {
-  border-color: #5c62ec;
-}
-
-/* Custom OTP Switch */
-.register-radio-wrap {
-  width: 100%;
-  display: flex;
-  margin-bottom: 14px;
-  gap: 20px;
-}
-
-.register-radio-label {
-  display: flex;
-  align-items: center;
-  font-size: 13.5px;
-  color: #2d3748;
-  font-weight: 600;
-  cursor: pointer;
-  gap: 8px;
-}
-
-.register-radio-label input {
-  display: none;
-  
-}
-
-.register-custom-radio {
-  width: 14px;
-  height: 14px;
-  border: 1px solid #cbd5e1;
-  border-radius: 50%;
-  display: inline-block;
+.rg-logo {
   position: relative;
-}
-
-.register-radio-label input:checked + .register-custom-radio {
-  border-color: #5c62ec;
-}
-
-.register-radio-label input:checked + .register-custom-radio::after {
-  content: '';
-  width: 8px;
-  height: 8px;
-  background-color: #5c62ec;
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* Email + Button Lineup */
-.register-inline-group {
-  display: flex;
-  gap: 8px;
-  width: 100%;
-  margin-bottom: 18px;
-}
-
-.register-inline-group input {
-  flex: 1;
-}
-
-.register-btn-send-otp {
-  background:linear-gradient(45deg,#009688, #B2DFDB);
-  color: white;
-  border: none;
+  z-index: 1;
+  width: 150px;
+  max-width: 100%;
+  padding: 6px 10px;
   border-radius: 10px;
-  padding: 0 16px;
-  font-weight: 600;
-  font-size: 13px;
-  cursor: pointer;
-  white-space: nowrap;
+  background: #ffffff;
+  object-fit: contain;
+  box-shadow: 0 6px 14px rgba(13, 78, 67, 0.18);
 }
 
-/* Individual Block Box Grid (OTP) */
-.register-otp-block {
-  width: 100%;
-  margin-bottom: 22px;
+.rg-tiles { position: relative; z-index: 1; display: grid; gap: 9px; width: 100%; }
+.rg-tile {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  column-gap: 10px;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  transition: transform 0.25s, box-shadow 0.25s;
 }
-
-.register-otp-label {
-  display: block;
-  font-size: 12.5px;
-  font-weight: 700;
-  color: #4a5568;
-  margin-bottom: 6px;
-  text-align: left;
+.rg-tile:hover { transform: translateX(4px); box-shadow: 0 6px 14px rgba(13, 78, 67, 0.18); }
+.rg-tile svg {
+  grid-row: 1 / 3;
+  width: 38px;
+  height: 38px;
+  padding: 8px;
+  border-radius: 10px;
+  background: linear-gradient(45deg, #009688, #26a69a);
+  color: #ffffff;
 }
+.rg-tile strong { font-size: 0.85rem; line-height: 1.2; color: #1a2e2b; }
+.rg-tile span { font-size: 0.74rem; color: #5c726f; }
 
-.register-otp-grid {
-  display: flex;
-  justify-content: space-between;
-  gap: 5px;
-}
-
-.register-otp-grid input {
-  width: 40px;
-  height: 40px;
-  text-align: center;
-  font-size: 16px;
-  font-weight: 600;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  outline: none;
-  background-color: #fcfdfe;
-  box-sizing: border-box;
-}
-
-.register-otp-grid input:focus {
-  border-color: #5c62ec;
-}
-
-/* CTAs & Redirects */
-.register-btn-submit {
-  width: 110px;
-  padding: 11px 0;
- background:linear-gradient(45deg,#009688, #B2DFDB);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 14.5px;
-  font-weight: 600;
-  cursor: pointer;
-  display: block;
-  margin: 0 auto 16px auto;
-  box-shadow: 0 4px 12px rgba(92, 98, 236, 0.3);
-}
-
-.register-bottom-redirect {
-  font-size: 13px;
-  color: #718096;
+.rg-side-title {
+  position: relative;
+  z-index: 1;
   margin: 0;
-  font-weight: 500;
-}
-
-.register-login-link {
-  color: #0066ff;
-  text-decoration: none;
+  font-size: 1.2rem;
   font-weight: 700;
+  text-align: center;
+  color: #ffffff;
 }
 
-.register-login-link:hover {
-  text-decoration: underline;
+/* =========================================
+   FORM (grid, every field the same height)
+========================================= */
+.rg-main { display: flex; align-items: center; padding: 22px 28px; min-width: 0; }
+
+.rg-form {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 14px;
+  row-gap: 10px;
+  width: 100%;
+  align-items: end;
+}
+.rg-s3 { grid-column: span 3; }
+.rg-s4 { grid-column: span 4; }
+.rg-s5 { grid-column: span 5; }
+.rg-s6 { grid-column: span 6; }
+.rg-s12 { grid-column: 1 / -1; }
+
+.rg-field { position: relative; min-width: 0; height: 40px; }
+
+.rg-field input,
+.rg-field select {
+  display: block;
+  width: 100%;
+  height: 40px;
+  margin: 0;
+  padding: 0 4px;
+  border: none;
+  border-bottom: 2px solid #e0e0e0;
+  border-radius: 0;
+  background-color: transparent;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: #1a2e2b;
+  outline: none;
+  transition: border-color 0.25s, background-color 0.25s;
+}
+.rg-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  padding-right: 20px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235c726f' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 4px center;
+  color: #5c726f;
+}
+.rg-field select:valid { color: #1a2e2b; }
+.rg-field input::placeholder { color: #5c726f; }
+.rg-field input:focus,
+.rg-field select:focus { border-bottom-color: #009688; background-color: rgba(0, 150, 136, 0.05); }
+
+.rg-field input[type="date"] { color: #5c726f; }
+.rg-field input[type="date"].has-value { color: #1a2e2b; }
+
+/* password eye */
+.rg-pass input { padding-right: 32px; }
+.rg-pass button {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: #5c726f;
+  cursor: pointer;
+}
+.rg-pass button:hover { color: #009688; }
+
+/* send otp: same height and baseline as the inputs */
+.rg-otp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 34px;
+  margin-bottom: 3px;
+  padding: 0 8px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(45deg, #009688, #26a69a);
+  color: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 150, 136, 0.28);
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+.rg-otp-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 7px 14px rgba(0, 150, 136, 0.38); }
+.rg-otp-btn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+/* password note (bullets restored) */
+.rg-note { height: auto !important; font-size: 0.78rem; color: #5c726f; line-height: 1.4; }
+.rg-note b { color: #1a2e2b; }
+.rg-note ul { margin: 2px 0 0; padding-left: 18px; list-style: disc; }
+.rg-note li { display: list-item; margin: 0; }
+.rg-note li::marker { color: #009688; }
+
+.rg-error {
+  height: auto !important;
+  margin: 0;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: #fde2e4;
+  color: #b02a37;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* submit */
+.rg-actions { height: auto !important; display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 2px; }
+.rg-submit {
+  min-width: 170px;
+  height: 40px;
+  padding: 0 32px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(45deg, #009688, #26a69a);
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(0, 150, 136, 0.32);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.rg-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 18px rgba(0, 150, 136, 0.42); }
+
+.rg-login { margin: 0; font-size: 0.86rem; color: #1a2e2b; }
+.rg-login a { color: #0d4e43; font-weight: 700; text-decoration: underline; }
+.rg-login a:hover { color: #009688; }
+
+/* =========================================
+   TABLET (up to 991px)
+========================================= */
+@media (max-width: 991px) {
+  .rg-card { grid-template-columns: 220px minmax(0, 1fr); max-width: 760px; }
+  .rg-side { padding: 20px 14px; gap: 14px; }
+  .rg-logo { width: 130px; }
+  .rg-tile { grid-template-columns: 1fr; justify-items: center; text-align: center; row-gap: 2px; padding: 8px; }
+  .rg-tile svg { grid-row: auto; }
+  .rg-tile:hover { transform: none; }
+  .rg-main { padding: 20px 20px; }
+  .rg-form { column-gap: 12px; }
+}
+
+/* =========================================
+   MOBILE (up to 767px): banner on top, form below.
+   The page scrolls up and down only (never sideways).
+========================================= */
+@media (max-width: 767px) {
+  .rg-screen { align-items: flex-start; padding: 12px; }
+  .rg-card { grid-template-columns: minmax(0, 1fr); max-width: 480px; border-radius: 16px; }
+
+  .rg-side { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 8px 16px; padding: 14px; }
+  .rg-logo { width: 110px; }
+  .rg-tiles { display: none; }
+  .rg-side-title { font-size: 1.1rem; }
+
+  .rg-main { padding: 16px 16px 20px; }
+  .rg-form { column-gap: 10px; row-gap: 8px; }
+
+  .rg-form > .rg-m4 { grid-column: span 4; }
+  .rg-form > .rg-m5 { grid-column: span 5; }
+  .rg-form > .rg-m6 { grid-column: span 6; }
+  .rg-form > .rg-m7 { grid-column: span 7; }
+  .rg-form > .rg-m12 { grid-column: 1 / -1; }
+
+  .rg-field input,
+  .rg-field select { font-size: 1rem; } /* 16px: no zoom on iPhone */
+  .rg-otp-btn { height: 36px; }
+}
+
+/* Small phones: prefix on its own row, first and last name side by side */
+@media (max-width: 480px) {
+  .rg-screen { padding: 8px; }
+  .rg-form > .rg-field:nth-child(1) { grid-column: 1 / -1; }
+  .rg-form > .rg-field:nth-child(2),
+  .rg-form > .rg-field:nth-child(3) { grid-column: span 6; }
+  .rg-submit { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rg-card { animation: none; }
 }

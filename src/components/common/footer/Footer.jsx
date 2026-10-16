@@ -283,7 +283,7 @@ Our Services
 
 <ChevronRight size={14}/>
 
-FAQ
+<Link to="/faq">FAQ</Link>
 
 </li>
 
@@ -293,7 +293,7 @@ FAQ
 
 <ChevronRight size={14}/>
 
-Organization Benefits
+<Link to="/benefits">Organization Benefits</Link>
 
 </li>
 
@@ -303,7 +303,7 @@ Organization Benefits
 
 <ChevronRight size={14}/>
 
-Individual Benefits
+<Link to="/individual_benefits">Individual Benefits</Link>
 
 </li>
 
@@ -313,7 +313,7 @@ Individual Benefits
 
 <ChevronRight size={14}/>
 
-Key Features
+<Link to="/keyfeatures">Key Features</Link>
 
 </li>
 
@@ -323,7 +323,7 @@ Key Features
 
 <ChevronRight size={14}/>
 
-Why Choose EventCert
+<Link to="/whychooseus">Why Choose EventCert</Link>
 
 </li>
 
@@ -333,7 +333,7 @@ Why Choose EventCert
 
 <ChevronRight size={14}/>
 
-Get Started In Minutes
+<Link to="/getstarted">Get Started In Minutes</Link>
 
 </li>
 

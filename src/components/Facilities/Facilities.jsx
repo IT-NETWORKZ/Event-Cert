@@ -1,412 +1,440 @@
-import React, { useEffect } from 'react';
+import React from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import "./Facilities.css";
-import { motion } from 'framer-motion';
-import InnerNavbar from '../common/navbar/InnerNavbar';
-import Footer from '../common/footer/Footer';
 
-// Global Animation Variants
-const fadeUpVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.6, ease: "easeOut" }
-  }
+import Navbar from "../common/navbar/Navbar";
+import Footer from "../common/footer/Footer";
+
+import {
+  Megaphone,
+  UserPlus,
+  Database,
+  BarChart3,
+  Layers,
+  Mail,
+  Award,
+  PartyPopper,
+  GraduationCap,
+  Trophy,
+  HeartPulse,
+  Building2,
+  Briefcase,
+  CheckCircle2,
+  ChevronRight,
+  Quote,
+  Sparkles,
+} from "lucide-react";
+
+/* ---------- Animation variants ---------- */
+const fadeUp = {
+  hidden: { opacity: 0, y: 36 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
-
-const fadeDownVariants = {
-  hidden: { opacity: 0, y: -40 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.8, ease: "easeOut" }
-  }
-};
-
-const slideLeftVariants = {
+const slideLeft = {
   hidden: { opacity: 0, x: -50 },
-  visible: { 
-    opacity: 1, 
-    x: 0,
-    transition: { duration: 0.9, ease: "easeOut" }
-  }
+  visible: { opacity: 1, x: 0, transition: { duration: 0.7, ease: "easeOut" } },
+};
+const slideRight = {
+  hidden: { opacity: 0, x: 50 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.7, ease: "easeOut" } },
+};
+const stagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } },
 };
 
-// Reusable Scroll Animation Wrapper
-const ScrollAnimatedSection = ({ children, variants = fadeUpVariants }) => {
-  return (
-    <motion.div
-      variants={variants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
-    >
-      {children}
-    </motion.div>
-  );
-};
+/* Scroll reveal wrapper */
+const Reveal = ({ children, variants = fadeUp, className = "" }) => (
+  <motion.div
+    className={className}
+    variants={variants}
+    initial="hidden"
+    whileInView="visible"
+    viewport={{ once: true, margin: "-80px" }}
+  >
+    {children}
+  </motion.div>
+);
+
+/* Staggered grid: children use <motion.div variants={fadeUp}> */
+const StaggerGrid = ({ children, className = "" }) => (
+  <motion.div
+    className={className}
+    variants={stagger}
+    initial="hidden"
+    whileInView="visible"
+    viewport={{ once: true, margin: "-60px" }}
+  >
+    {children}
+  </motion.div>
+);
+
+const SectionHead = ({ title, highlight, sub }) => (
+  <Reveal className="fc-head">
+    <h2>
+      {title} <span>{highlight}</span>
+    </h2>
+    <div className="fc-line"></div>
+    {sub && <p>{sub}</p>}
+  </Reveal>
+);
+
+/* ---------- Content ---------- */
+const PROMO_POINTS = [
+  {
+    title: "Advertise Any Event Seamlessly",
+    text: "From seminars, workshops, conferences, sports meets, annual functions and cultural fests to training sessions, webinars and contests, showcase everything effortlessly.",
+  },
+  {
+    title: "One-Click Auto Certificate Generation",
+    text: "Instantly issue Participation, Appreciation or Achievement certificates to all registered participants after the event. Participants feel proud and recognized, with no manual work required.",
+  },
+];
+
+const MANAGE = [
+  { icon: UserPlus, title: "Easy Participant Registration", text: "Attendees register directly with their details. No complicated forms, no delays, no confusion." },
+  { icon: Database, title: "Centralized Event Database", text: "Keep a digital record of all participants and events for future communication, invitations and recognition." },
+  { icon: BarChart3, title: "Smart Tracking & Reports", text: "Track participant engagement, attendance and achievements with ease." },
+  { icon: Layers, title: "Multi-Event Management", text: "Institutions and organizations can run multiple events at once with complete participant visibility." },
+];
+
+const OFFERS = [
+  {
+    icon: Mail,
+    title: "Invitation Cards",
+    tagline: "Invite with elegance. Impress with ease.",
+    text: "Create stylish, customized digital invitations that leave a mark, whether professional, personal or festive.",
+    groupTitle: "Exclusive templates for",
+    list: [
+      "Corporate events and business launches",
+      "Product inaugurations and press meets",
+      "Educational events and alumni meets",
+      "Sports tournaments and award ceremonies",
+      "Marriages, engagements, birthdays, anniversaries, housewarmings and religious ceremonies",
+    ],
+    extras: [
+      { t: "Add a Personal Touch", d: "Include the recipient's name, photo and a personalized message." },
+      { t: "Brand-Enhanced Invites", d: "Add your logo, tagline and contact details for a professional look." },
+      { t: "Send Instantly", d: "Share by email or WhatsApp with a single click." },
+    ],
+    quote: "An invitation is not just a message. It's your first impression.",
+  },
+  {
+    icon: Award,
+    title: "Certificate Generation",
+    tagline: "Instant certificates. Infinite possibilities.",
+    text: "Design, personalize and deliver e-certificates within seconds, beautifully and professionally.",
+    stats: [
+      { n: "10", l: "Logos on front" },
+      { n: "12", l: "Logos on back" },
+      { n: "5", l: "Signatories" },
+    ],
+    groupTitle: "Front and back certificate design",
+    list: [
+      "Front: up to 10 logos/images and 5 signatories",
+      "Back: up to 12 logos/images, message, address and contact details",
+      "Total: 22 logos/images and 5 signatories, exclusive to EventCert",
+    ],
+    extras: [
+      { t: "Ready-to-Use Templates", d: "Elegant, theme-based templates for any occasion or discipline." },
+      { t: "One-Click Bulk Sending", d: "Send to one or thousands by email or WhatsApp." },
+      { t: "Categories", d: "Participation, Appreciation, Achievement, Excellence, Completion, Contribution." },
+    ],
+    quote: "Save days of manual work. From draft to delivery, now in minutes.",
+  },
+  {
+    icon: PartyPopper,
+    title: "Greeting Cards",
+    tagline: "Greet. Connect. Celebrate, digitally.",
+    text: "Celebrate every special day, milestone or occasion with beautifully designed digital greetings.",
+    groupTitle: "Occasions covered",
+    list: [
+      "Festivals: Diwali, Holi, Christmas, New Year, Independence Day, Republic Day, Eid, Pongal and more",
+      "Professional days: Doctor's Day, Teacher's Day, Engineer's Day, Women's Day, Yoga Day and more",
+      "Personal: birthdays, anniversaries, achievements, promotions, retirement and success stories",
+    ],
+    extras: [
+      { t: "Customizable Elements", d: "Add the recipient's name, photo and your personalized message." },
+      { t: "Add Brand Identity", d: "Attach your logo, contact info and design theme." },
+      { t: "Instant Delivery", d: "Send to one or many by email or WhatsApp." },
+    ],
+    quote: "Every greeting is an opportunity to connect.",
+  },
+];
+
+const AUDIENCE = [
+  {
+    icon: GraduationCap,
+    title: "Educational Institutions & Training Centers",
+    perfect: "Schools, colleges and universities; coaching institutes (NEET, JEE, UPSC, MPSC, CA, CS, Banking); skill academies for coding, designing and digital marketing; vocational and skill development centers.",
+    benefits: [
+      "Simplified student registration and attendance tracking",
+      "Easy event promotion and certificate distribution",
+      "Participant history kept for future reference",
+      "A stronger academic brand through professional communication",
+    ],
+  },
+  {
+    icon: Trophy,
+    title: "Sports Academies & Clubs",
+    perfect: "Cricket, football, chess, badminton, kabaddi and athletics clubs; yoga, fitness and dance academies.",
+    benefits: [
+      "Instant certificates for participation and excellence",
+      "Tournament registration management",
+      "Personalized greetings and invites for athletes and teams",
+    ],
+  },
+  {
+    icon: HeartPulse,
+    title: "Hospitals & Healthcare Organizations",
+    perfect: "Hospitals, clinics, wellness centers and health camps.",
+    benefits: [
+      "E-certificates for awareness events, workshops and health camps",
+      "Digital greetings for Doctor's Day, Nurse's Day or patient milestones",
+      "Wellness programs promoted digitally, with participation records",
+    ],
+  },
+  {
+    icon: Building2,
+    title: "Corporate & Insurance Organizations",
+    perfect: "Corporate companies, startups, NGOs and insurance agencies.",
+    benefits: [
+      "Digital certificates and greetings for employees and partners",
+      "Event promotions, trainings and recognition programs",
+      "Personalized invites for product launches and business events",
+    ],
+  },
+  {
+    icon: Briefcase,
+    title: "Individuals & Freelancers",
+    perfect: "Event planners, trainers, motivational speakers and artists.",
+    benefits: [
+      "Personalized invitations and certificates for your clients",
+      "Greetings and invites for professional networking",
+      "Logos and design elements to promote your personal brand",
+    ],
+  },
+];
+
+const WHY = [
+  "Smart & Scalable",
+  "Ready-to-Use Templates",
+  "Bulk Email & WhatsApp Delivery",
+  "Secure Cloud-Based Records",
+  "Suitable for Institutions, Organizations & Individuals",
+  "Saves Days of Effort, Delivers in Minutes",
+];
 
 function Facilities() {
-
-  // React Hook to replicate your icon animation logic safely
-  useEffect(() => {
-    const icons = document.querySelectorAll('.zigzag-icon');
-    let current = 0;
-
-    if (icons.length === 0) return;  
-
-    const blinkIcon = () => {
-      icons.forEach((icon) => {
-        icon.style.animation = 'none';
-      });
-
-      if (icons[current]) {
-        icons[current].style.animation = 'zigzag-blink 1s ease-in-out';
-        current = (current + 1) % icons.length;
-      }
-    };
-
-    const intervalId = setInterval(blinkIcon, 2000);
-    return () => clearInterval(intervalId); // Clean up on component unmount
-  }, []);
-
   return (
     <>
-      <InnerNavbar />
-      
-      <ScrollAnimatedSection variants={fadeDownVariants}>
-        <h2 className="text-center mt-5">Facilities</h2>
-      </ScrollAnimatedSection>
-      
-      <ScrollAnimatedSection>
-        <div className="line1"></div>
-      </ScrollAnimatedSection>
+      <Navbar />
 
-      <div className="container">
-        <div className="row align-items-center">
-          <div className="about-us-area section-padding mt-3 clearfix">
-            <div className="container">
-              <div className="row align-items-center ">
-                <div className="col-lg-6 col-12 mt-5">
-                  <div className="about-us-content mb-30">
-                    <ScrollAnimatedSection>
-                      <h5 className="mb-3" style={{ textAlign: 'left' }}>
-                        <i className="fa fa-check text-primary"></i>Event Promotion
-                        <br />
-                        Promote Smart. Engage Faster. Celebrate Bigger.
-                      </h5>
-                      <div className="line mt-2"></div>
-                      <p style={{ textAlign: 'justify' }}>
-                        Bring your participants, students, employees or guests together under one digital roof!
-                      </p>
-                    </ScrollAnimatedSection>
+      <main className="fc-page">
 
-                    <ScrollAnimatedSection>
-                      <h5 className="mb-3" style={{ textAlign: 'left' }}>Advertise Any Event Seamlessly</h5>
-                      <p style={{ textAlign: 'justify' }}>
-                        From seminars, workshops, conferences, sports meets, annual functions, cultural fests, to
-                        training sessions, webinars and contests — showcase everything effortlessly.
-                      </p>
-                    </ScrollAnimatedSection>
+        {/* ================= PAGE HEADING ================= */}
+        <section className="fc-top">
+          <div className="container">
+            <Reveal className="fc-head">
+              <h2>
+                Our <span>Facilities</span>
+              </h2>
+              <div className="fc-line"></div>
+              <p>Everything you need to promote, manage and celebrate your events in one place.</p>
+            </Reveal>
+          </div>
+        </section>
 
-                    <ScrollAnimatedSection>
-                      <h5 className="mb-3" style={{ textAlign: 'left' }}>New: One-Click Auto Certificate Generation</h5>
-                      <p style={{ textAlign: 'justify' }}>
-                        to all registered participants with a single click. Instantly issue Participation, Appreciation or
-                        Achievement certificates after the event; make participants feel glad, proud and recognized
-                        — no manual work required.
-                      </p>
-                    </ScrollAnimatedSection>
+        {/* ================= EVENT PROMOTION ================= */}
+        <section className="fc-promo">
+          <div className="container">
+            <div className="fc-promo-grid">
+
+              <Reveal variants={slideLeft} className="fc-promo-text">
+                <span className="fc-tag">
+                  <Megaphone size={15} /> Event Promotion
+                </span>
+                <h3>Promote Smart. Engage Faster. Celebrate Bigger.</h3>
+                <p className="fc-lead">
+                  Bring your participants, students, employees or guests together under one digital roof.
+                </p>
+
+                {PROMO_POINTS.map((p) => (
+                  <div className="fc-point" key={p.title}>
+                    <span className="fc-point-icon"><CheckCircle2 size={20} /></span>
+                    <div>
+                      <h5>{p.title}</h5>
+                      <p>{p.text}</p>
+                    </div>
                   </div>
-                </div>
+                ))}
+              </Reveal>
 
-                <div className="col-12 col-lg-6">
-                  <div className="about-video-area mb-30" style={{ width: "100%" }}>
-                    <ScrollAnimatedSection variants={slideLeftVariants}>
-                      <div className="ratio ratio-16x9">
-                        <iframe
-                          src="https://www.youtube.com/embed/sSakBz_eYzQ"
-                          title="Event Video"
-                          frameBorder="0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          allowFullScreen
-                        ></iframe>
+              <Reveal variants={slideRight} className="fc-video-wrap">
+                <div className="fc-video">
+                  <iframe
+                    src="https://www.youtube.com/embed/sSakBz_eYzQ"
+                    title="EventCert overview video"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              </Reveal>
+
+            </div>
+          </div>
+        </section>
+
+        {/* ================= EVENT MANAGEMENT ================= */}
+        <section className="fc-manage">
+          <div className="container">
+            <SectionHead
+              title="Smart Event"
+              highlight="Management"
+              sub="Handle registrations, records and reports without the paperwork."
+            />
+
+            <StaggerGrid className="fc-grid-4">
+              {MANAGE.map(({ icon: Icon, title, text }) => (
+                <motion.div className="fc-card" variants={fadeUp} key={title}>
+                  <span className="fc-icon"><Icon size={26} /></span>
+                  <h5>{title}</h5>
+                  <p>{text}</p>
+                </motion.div>
+              ))}
+            </StaggerGrid>
+
+            <Reveal className="fc-quote">
+              <Quote size={22} />
+              <p>Your event deserves more than attendance. It deserves recognition.</p>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ================= WHAT WE OFFER ================= */}
+        <section className="fc-offer">
+          <div className="container">
+            <SectionHead
+              title="Cards &"
+              highlight="Certificates"
+              sub="Beautiful, ready-to-use designs for every occasion, delivered in minutes."
+            />
+
+            <StaggerGrid className="fc-grid-3">
+              {OFFERS.map((o) => {
+                const Icon = o.icon;
+                return (
+                  <motion.article className="fc-offer-card" variants={fadeUp} key={o.title}>
+                    <div className="fc-offer-top">
+                      <span className="fc-icon fc-icon-lg"><Icon size={28} /></span>
+                      <h4>{o.title}</h4>
+                      <em>{o.tagline}</em>
+                    </div>
+
+                    <p className="fc-offer-text">{o.text}</p>
+
+                    {o.stats && (
+                      <div className="fc-stats">
+                        {o.stats.map((s) => (
+                          <div key={s.l}>
+                            <strong>{s.n}</strong>
+                            <span>{s.l}</span>
+                          </div>
+                        ))}
                       </div>
-                    </ScrollAnimatedSection>
+                    )}
+
+                    <h6>{o.groupTitle}</h6>
+                    <ul className="fc-list">
+                      {o.list.map((item) => (
+                        <li key={item}>
+                          <ChevronRight size={15} />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="fc-extras">
+                      {o.extras.map((x) => (
+                        <div key={x.t}>
+                          <b>{x.t}</b>
+                          <span>{x.d}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <p className="fc-offer-quote">{o.quote}</p>
+                  </motion.article>
+                );
+              })}
+            </StaggerGrid>
+          </div>
+        </section>
+
+        {/* ================= WHO CAN BENEFIT ================= */}
+        <section className="fc-who">
+          <div className="container">
+            <SectionHead
+              title="Who Can Benefit from"
+              highlight="EventCert?"
+              sub="Built for institutions, organizations and individuals alike."
+            />
+
+            <StaggerGrid className="fc-grid-who">
+              {AUDIENCE.map(({ icon: Icon, title, perfect, benefits }) => (
+                <motion.article className="fc-who-card" variants={fadeUp} key={title}>
+                  <div className="fc-who-head">
+                    <span className="fc-icon"><Icon size={24} /></span>
+                    <h5>{title}</h5>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-12 mt-5">
-            <div className="three-topics-grid">
-
-              <div className="topic topic-1">
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">
-                    <i className="fa fa-check text-primary"></i>Easy Participant Registration
-                  </h5>
-                  <p>Attendees can register directly with their details — no forms, no delays, no confusion.</p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Centralized Event Database</h5>
-                  <p>Keep a digital record of all participants and events for future communication, invitations and recognition.</p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Smart Tracking & Reports</h5>
-                  <p>Track participant engagement, attendance and achievements with ease.</p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Multi-Event Management</h5>
-                  <p>
-                    Institutions and organizations can manage multiple events simultaneously with complete participant visibility.<br />
-                    “Your event deserves more than attendance — it deserves recognition.”
+                  <p className="fc-perfect">
+                    <b>Perfect for: </b>
+                    {perfect}
                   </p>
-                </ScrollAnimatedSection>
-
-                <br />
-                <br />
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">
-                    <i className="fa fa-check text-primary"></i>Invitation Cards
-                  </h5>
-                  <h5 className="mb-3">Invite with Elegance. Impress with Ease.</h5>
-                  <p>Create stylish, customized digital invitations that leave a mark — professional, personal or festive!</p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Choose from Exclusive Templates For</h5>
-                  <p>
-                    Corporate Events & Business Launches
-                    Product Inaugurations & Press Meets
-                    Educational Events & Alumni Meets
-                    Sports Tournaments & Award Ceremonies
-                    Personal Events — Marriages, Engagements, Birthdays, Anniversaries, Housewarmings, Religious Ceremonies
-                  </p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Add a Personal Touch</h5>
-                  <p>Include recipient’s name, photo and personalized message.</p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Brand-Enhanced Invites</h5>
-                  <p>Add your company logo, tagline and contact details for professional appeal.</p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Send Instantly</h5>
-                  <p>
-                    Share instantly via Email Id or WhatsApp with a single click.
-                    An invitation is not just a message — it’s your first impression.
-                  </p>
-                </ScrollAnimatedSection>
-
-                <br />
-                <br />
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">
-                    <i className="fa fa-check text-primary"></i>Customizable Elements
-                  </h5>
-                  <p>Add recipient’s name, photo and your personalized message.</p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Add Brand Identity</h5>
-                  <p>Attach your logo, contact info and design theme to make every greeting look professional.</p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Instant Delivery</h5>
-                  <p>
-                    Send greetings to one or many instantly via Email Id or WhatsApp.
-                    Because every greeting is an opportunity to connect.
-                  </p>
-                </ScrollAnimatedSection>
-
-                <br />
-                <br />
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">
-                    <i className="fa fa-check text-primary"></i>Hospitals & Healthcare Organizations
-                  </h5>
-                  <p>Perfect for: Hospitals, Clinics, Wellness Centers and Health Camps</p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Benefits:</h5>
-                  <p>
-                    Distribute e-certificates for awareness events, workshops and health camps<br />
-                    Send digital greetings for Doctor’s Day, Nurse’s Day or patient milestones<br />
-                    Promote wellness programs digitally and maintain participation records
-                  </p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Corporate & Insurance Organizations</h5>
-                  <p>Perfect for: Corporate Companies, Startups, NGOs and Insurance Agencies</p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Benefits:</h5>
-                  <p>
-                    Appreciate employees and partners with digital certificates and greetings<br />
-                    Manage event promotions, trainings and recognition programs<br />
-                    Send personalized invites for product launches and business events
-                  </p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">For Individuals & Freelancers</h5>
-                  <p>Perfect for: Event Planners, Trainers, Motivational Speakers and Artists</p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Benefits:</h5>
-                  <p>
-                    Create personalized invitations and certificates for your clients<br />
-                    Send greetings and invites for professional networking<br />
-                    Add logos and design elements to promote your personal brand
-                  </p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <p>➤ Why Choose EventCert?</p>
-                  <ul>
-                    <li>Smart & Scalable</li>
-                    <li>Ready-to-Use Templates</li>
-                    <li>Bulk Email Id & WhatsApp Delivery</li>
-                    <li>Secure Cloud-Based Records</li>
-                    <li>Suitable for Institutions organizations & Individuals</li>
-                    <li>Saves Days of Effort — Delivers in Minutes!</li>
+                  <h6>Benefits</h6>
+                  <ul className="fc-list">
+                    {benefits.map((b) => (
+                      <li key={b}>
+                        <ChevronRight size={15} />
+                        <span>{b}</span>
+                      </li>
+                    ))}
                   </ul>
-                  <p>
-                    EventCert — Where Every Event Meets Innovation!<br />
-                    Promote • Participate • Appreciate • Celebrate — the Smart Way.
-                  </p>
-                </ScrollAnimatedSection>
-              </div>
-
-              <div className="topic topic-2">
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">
-                    <i className="fa fa-check text-primary"></i>Certificate Generation
-                  </h5>
-                  <h5 className="mb-3">Instant Certificates. Infinite Possibilities.</h5>
-                  <p>Design, personalize and deliver e-certificates within seconds — beautifully and professionally.</p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Ready-to-Use & Customizable Templates</h5>
-                  <p>Choose from elegant, theme-based templates for any occasion or discipline.</p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Front & Back Certificate Design</h5>
-                  <p>
-                    Front Side: Up to 10 Logos/Images + 5 Signatories<br />
-                    Back Side: Up to 12 Logos/Images + Message, Address & Contact Details<br />
-                    Total: 22 Logos/Images + 5 Signatories — exclusive to EventCert!
-                  </p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">One-Click Bulk Sending</h5>
-                  <p>Send certificates instantly to one or thousands via Email Id or WhatsApp.</p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Ideal Certificate Categories</h5>
-                  <p>Participation, Appreciation, Achievement, Excellence, Completion, Contribution</p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Time Saver</h5>
-                  <p>
-                    Save days of manual work — now complete in minutes!<br />
-                    From draft to delivery — your certificates, faster than ever.
-                  </p>
-                </ScrollAnimatedSection>
-
-                <br />
-                <br />
-
-                <ScrollAnimatedSection>
-                  <h5><i className="fa fa-check text-primary"></i>Greeting Cards</h5>
-                  <h5 className="mb-3">Greet. Connect. Celebrate — Digitally!</h5>
-                  <p>Celebrate every special day, milestone or occasion with beautifully designed digital greetings.</p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Occasions Covered</h5>
-                  <p>Festivals: Diwali, Holi, Christmas, New Year, Independence Day, Republic Day, Eid, Pongal, etc.</p>
-                  <p>Professional Events: Doctor’s Day, Teacher’s Day, Engineer’s Day, Women’s Day, Yoga Day, etc.</p>
-                  <p>Personal Celebrations: Birthdays, Anniversaries, Achievements, Promotions, Retirement, Success Stories</p>
-                </ScrollAnimatedSection>
-
-                <br />
-                <br />
-
-                <ScrollAnimatedSection>
-                  <h5><i className="fa fa-check text-primary"></i>Who Can Benefit from EventCert?</h5>
-                  <h5 className="mb-3">Educational Institutions & Training Centers</h5>
-                  <p>
-                    Perfect for:<br />
-                    Schools, Colleges and Universities<br />
-                    Coaching Institutes (NEET, JEE, UPSC, MPSC, CA, CS, Banking, etc.)<br />
-                    Professional Skill Academies (Coding, Designing, Digital Marketing, etc.)<br />
-                    Vocational & Skill Development Centers
-                  </p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Benefits</h5>
-                  <p>
-                    Simplified student registration and attendance tracking<br />
-                    Easy event promotion and certificate distribution<br />
-                    Maintain participant history for future reference<br />
-                    Strengthen your academic brand with professional communication
-                  </p>
-                </ScrollAnimatedSection>
-
-                <br />
-                <br />
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">
-                    <i className="fa fa-check text-primary"></i>Sports Academies & Clubs
-                  </h5>
-                  <p>
-                    Perfect for:<br />
-                    Cricket, Football, Chess, Badminton, Kabaddi and Athletics Clubs<br />
-                    Yoga, Fitness and Dance Academies
-                  </p>
-                </ScrollAnimatedSection>
-
-                <ScrollAnimatedSection>
-                  <h5 className="mb-3">Benefits:</h5>
-                  <p>
-                    Create and distribute instant certificates for participation and excellence<br />
-                    Manage tournament registrations<br />
-                    Send personalized greetings and event invites to athletes and teams
-                  </p>
-                </ScrollAnimatedSection>
-              </div>
-
-            </div>
+                </motion.article>
+              ))}
+            </StaggerGrid>
           </div>
-        </div>
-      </div>
-      <br />
-      <br />
+        </section>
+
+        {/* ================= WHY CHOOSE ================= */}
+        <section className="fc-why">
+          <div className="container">
+            <Reveal className="fc-why-box">
+              <div className="fc-why-left">
+                <span className="fc-tag fc-tag-light">
+                  <Sparkles size={15} /> Why Choose EventCert?
+                </span>
+                <h3>Where every event meets innovation.</h3>
+                <p>Promote, Participate, Appreciate and Celebrate, the smart way.</p>
+                <Link to="/subscription" className="fc-btn">Get Started</Link>
+              </div>
+
+              <StaggerGrid className="fc-why-list">
+                {WHY.map((w) => (
+                  <motion.div className="fc-why-item" variants={fadeUp} key={w}>
+                    <CheckCircle2 size={20} />
+                    <span>{w}</span>
+                  </motion.div>
+                ))}
+              </StaggerGrid>
+            </Reveal>
+          </div>
+        </section>
+
+      </main>
+
       <Footer />
     </>
   );
