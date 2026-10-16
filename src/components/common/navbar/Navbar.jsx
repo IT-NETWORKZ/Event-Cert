@@ -61,11 +61,11 @@ function Navbar() {
                 </NavLink>
 
                 <NavLink
-                  to="/services"
+                  to="/About"
                   className={({ isActive }) => `nav-item nav-link ${isActive ? "active" : ""}`}
                   onClick={closeNavbar}
                 >
-                  Services
+                  About
                 </NavLink>
 
                 <HashLink
