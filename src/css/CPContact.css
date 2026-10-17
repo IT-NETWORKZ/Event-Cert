@@ -4,39 +4,85 @@
 
 .cp-page-wrapper,
 .c-addplans-wrapper {
-    background-color: #f8f9fa;
+    background-color: #f4f8f7;
     min-height: 100vh;
+    overflow-x: hidden;          /* the page never scrolls sideways */
 }
 
 /* ==========================================================================
-   UNIFORM PAGE HEADER
+   PAGE HEADER
    ========================================================================== */
 
+.cpc-head {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
 .header-title {
-    font-size: 22px;
-    font-weight: 700;
-    color: #212529;
-    margin-bottom: 4px;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1a2e2b;
+    margin: 0;
+}
+
+.cpc-line {
+    width: 60px;
+    height: 3px;
+    margin: 10px auto 0;
+    background: #0d4e43;
 }
 
 .header-subtitle {
-    font-size: 13px;
-    color: #6c757d;
-    margin-bottom: 0;
+    font-size: 14px;
+    color: #5c726f;
+    margin: 10px 0 0;
 }
 
 /* ==========================================================================
-   HORIZONTAL SCROLL SYSTEM
+   TABLE CARD
+   Only the container that holds the <table> scrolls sideways.
+   Every other wrapper is overflow: visible, so there is just one scrollbar.
    ========================================================================== */
 
-.table-responsive-scroll-wrapper {
+.cpc-card {
+    padding: 18px;
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid rgba(13, 78, 67, 0.12);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    overflow: visible;
+    min-width: 0;
+}
+
+.cp-page-wrapper .table-responsive-scroll-wrapper,
+.c-addplans-wrapper .table-responsive-scroll-wrapper {
     width: 100%;
-    overflow-x: auto !important; /* Forces scroll container behavior */
-    -webkit-overflow-scrolling: touch; /* Momentum scrolling touch gesture for iOS */
+    overflow: visible !important;
+}
+
+.cp-page-wrapper .table-wrapper,
+.cp-page-wrapper .data-table-container,
+.cp-page-wrapper .data-table-wrapper,
+.c-addplans-wrapper .table-wrapper,
+.c-addplans-wrapper .data-table-container,
+.c-addplans-wrapper .data-table-wrapper {
+    overflow: visible !important;
+    max-width: 100%;
+    min-width: 0;
+    padding: 0 !important;
+}
+
+/* THE ONE scroll area */
+.cp-page-wrapper .table-responsive,
+.c-addplans-wrapper .table-responsive {
+    width: 100%;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch;
     border-radius: 12px;
 }
 
-/* Forces the inner data-table to expand beyond screen bounds to trigger scroll */
+/* Table is wider than small screens, so it scrolls inside its container */
 .cp-page-wrapper .data-table,
 .c-addplans-wrapper .data-table {
     table-layout: fixed !important;
@@ -44,27 +90,114 @@
     min-width: 100% !important;
 }
 
-/* Customized Scrollbars for the table container */
-.table-responsive-scroll-wrapper::-webkit-scrollbar {
-    height: 6px;
+.cp-page-wrapper .table-responsive::-webkit-scrollbar,
+.c-addplans-wrapper .table-responsive::-webkit-scrollbar {
+    height: 7px;
 }
 
-.table-responsive-scroll-wrapper::-webkit-scrollbar-track {
-    background: #f1f1f1;
+.cp-page-wrapper .table-responsive::-webkit-scrollbar-track,
+.c-addplans-wrapper .table-responsive::-webkit-scrollbar-track {
+    background: rgba(13, 78, 67, 0.1);
     border-radius: 10px;
 }
 
-.table-responsive-scroll-wrapper::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
+.cp-page-wrapper .table-responsive::-webkit-scrollbar-thumb,
+.c-addplans-wrapper .table-responsive::-webkit-scrollbar-thumb {
+    background: #0d4e43;
     border-radius: 10px;
 }
 
-.table-responsive-scroll-wrapper::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
+.cp-page-wrapper .table-responsive::-webkit-scrollbar-thumb:hover,
+.c-addplans-wrapper .table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #009688;
 }
 
 /* ==========================================================================
-   ACTION BUTTONS
+   TOOLBAR (Export / entries per page / search)
+   Any row that holds the select or the search input may wrap.
+   ========================================================================== */
+
+.cp-page-wrapper div:has(> select),
+.cp-page-wrapper div:has(> input[type="search"]),
+.cp-page-wrapper div:has(> input[type="text"]),
+.c-addplans-wrapper div:has(> select),
+.c-addplans-wrapper div:has(> input[type="search"]),
+.c-addplans-wrapper div:has(> input[type="text"]) {
+    flex-wrap: wrap;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.cp-page-wrapper input[type="search"],
+.cp-page-wrapper input[type="text"],
+.c-addplans-wrapper input[type="search"],
+.c-addplans-wrapper input[type="text"] {
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* ==========================================================================
+   CELL ALIGNMENT
+   ========================================================================== */
+
+.cp-page-wrapper .data-table th,
+.c-addplans-wrapper .data-table th {
+    text-align: center !important;
+}
+
+.cp-page-wrapper .data-table td,
+.c-addplans-wrapper .data-table td {
+    text-align: center !important;
+    vertical-align: middle;
+}
+
+/* Message column reads better left aligned */
+.cp-page-wrapper .data-table td:last-child {
+    text-align: left !important;
+}
+
+.cp-page-wrapper .th-content-wrapper,
+.c-addplans-wrapper .th-content-wrapper {
+    justify-content: center !important;
+}
+
+/* ==========================================================================
+   MESSAGE CELL (inline Read More / Read Less)
+   ========================================================================== */
+
+.cpc-msg {
+    width: 100%;
+}
+
+.cpc-msg-text {
+    display: block;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #2b2b2b;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.cpc-readmore {
+    display: inline;
+    margin-left: 6px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 700;
+    color: #009688;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.cpc-readmore:hover {
+    color: #0d4e43;
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   ACTION BUTTONS (shared with other CPanel pages)
    ========================================================================== */
 
 .btn-outline-success {
@@ -79,22 +212,72 @@
 }
 
 /* ==========================================================================
-   UNIFORM TABLE CELL CENTERING (HEADINGS & DATA)
+   TABLET (up to 991px)
    ========================================================================== */
 
-/* Centers cell contents globally inside this page wrapper */
-.cp-page-wrapper .data-table th,
-.c-addplans-wrapper .data-table th {
-    text-align: center !important;
+@media (max-width: 991px) {
+    .header-title {
+        font-size: 1.55rem;
+    }
+
+    .cpc-card {
+        padding: 14px;
+    }
 }
 
-.cp-page-wrapper .data-table td,
-.c-addplans-wrapper .data-table td {
-    text-align: center !important;
-}
+/* ==========================================================================
+   MOBILE (up to 767px)
+   ========================================================================== */
 
-/* Ensures the header sort-arrow flex containers align perfectly in the middle */
-.cp-page-wrapper .th-content-wrapper,
-.c-addplans-wrapper .th-content-wrapper {
-    justify-content: center !important;
+@media (max-width: 767px) {
+    .cp-page-wrapper,
+    .c-addplans-wrapper {
+        padding-top: 12px !important;
+    }
+
+    .cp-page-wrapper .container-fluid,
+    .c-addplans-wrapper .container-fluid {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .header-title {
+        font-size: 1.35rem;
+    }
+
+    .header-subtitle {
+        font-size: 13px;
+    }
+
+    .cpc-card {
+        padding: 10px;
+        border-radius: 12px;
+    }
+
+    /* toolbar rows wrap with a small gap */
+    .cp-page-wrapper div:has(> select),
+    .cp-page-wrapper div:has(> input[type="search"]),
+    .cp-page-wrapper div:has(> input[type="text"]),
+    .c-addplans-wrapper div:has(> select),
+    .c-addplans-wrapper div:has(> input[type="search"]),
+    .c-addplans-wrapper div:has(> input[type="text"]) {
+        gap: 10px;
+    }
+
+    /* search box: its own full-width row, never wider than the card */
+    .cp-page-wrapper div:has(> input[type="search"]),
+    .cp-page-wrapper div:has(> input[type="text"]),
+    .c-addplans-wrapper div:has(> input[type="search"]),
+    .c-addplans-wrapper div:has(> input[type="text"]) {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+    }
+
+    .cp-page-wrapper input[type="search"],
+    .cp-page-wrapper input[type="text"],
+    .c-addplans-wrapper input[type="search"],
+    .c-addplans-wrapper input[type="text"] {
+        width: 100% !important;
+        flex: 1 1 100%;
+    }
 }

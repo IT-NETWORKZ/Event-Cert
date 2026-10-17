@@ -1,14 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import {
-  Ticket,
-  Percent,
-  Calendar,
-  Layers,
-  CheckCircle2,
-  RotateCcw,
-  ChevronDown,
-  Check,
-} from 'lucide-react';
+import { ChevronDown, Check } from 'lucide-react';
 
 import './PromoCode.css';
 import Button from '../../common/button/Button';
@@ -255,77 +246,61 @@ const CPromoCode = () => {
 
   return (
     <div className="promo-page-wrapper">
-      {/* 1. Promo Code Form */}
+      {/* Simple Centered Form Card */}
       <div className="promo-card-container">
         <div className="promo-card">
-          <div className="promo-header">
-            <div className="icon-badge">
-              <Ticket className="header-icon" />
-            </div>
-
-            <div>
-              <h2 className="promo-title">Create Promo Code</h2>
-              <p className="promo-subtitle">
-                Configure discount settings and validity for your plans
-              </p>
-            </div>
+          <div className="promo-header-simple">
+            <h2 className="promo-title">Promo code</h2>
+            <div className="promo-title-underline"></div>
           </div>
 
-          <form onSubmit={handleSubmit} className="promo-form">
+          <form onSubmit={handleSubmit} className="promo-form-simple">
             {/* Promo Code */}
-            <div className="form-group full-width">
+            <div className="form-group">
               <label htmlFor="promoCode" className="form-label">
-                Promo Code <span className="required">*</span>
+                Promo-code <span className="required">*</span>
               </label>
 
-              <div className="input-wrapper">
-                <Ticket className="input-icon" />
-
-                <input
-                  type="text"
-                  id="promoCode"
-                  name="promoCode"
-                  value={formData.promoCode}
-                  onChange={handleChange}
-                  placeholder="E.G. SUMMER2026"
-                  className="form-input text-uppercase"
-                  required
-                />
-              </div>
+              <input
+                type="text"
+                id="promoCode"
+                name="promoCode"
+                value={formData.promoCode}
+                onChange={handleChange}
+                placeholder=""
+                className="form-input-simple text-uppercase"
+                required
+              />
             </div>
 
             {/* Promo Type */}
-            <div className="form-group full-width">
+            <div className="form-group">
               <label className="form-label">
                 Select Type <span className="required">*</span>
               </label>
 
-              <div className="custom-radio-group">
-                <Button
-                  type="button"
-                  className={`custom-radio-btn ${
-                    formData.promoType === 'Single' ? 'active' : ''
-                  }`}
-                  onClick={() =>
-                    setFormData({ ...formData, promoType: 'Single' })
-                  }
-                >
-                  <span className="radio-dot" />
-                  <span>Single Use</span>
-                </Button>
+              <div className="radio-group-simple">
+                <label className="radio-label">
+                  <input
+                    type="radio"
+                    name="promoType"
+                    value="Single"
+                    checked={formData.promoType === 'Single'}
+                    onChange={handleChange}
+                  />
+                  <span>Single</span>
+                </label>
 
-                <Button
-                  type="button"
-                  className={`custom-radio-btn ${
-                    formData.promoType === 'Multiple' ? 'active' : ''
-                  }`}
-                  onClick={() =>
-                    setFormData({ ...formData, promoType: 'Multiple' })
-                  }
-                >
-                  <span className="radio-dot" />
-                  <span>Multiple Use</span>
-                </Button>
+                <label className="radio-label">
+                  <input
+                    type="radio"
+                    name="promoType"
+                    value="Multiple"
+                    checked={formData.promoType === 'Multiple'}
+                    onChange={handleChange}
+                  />
+                  <span>Multiple</span>
+                </label>
               </div>
             </div>
 
@@ -335,55 +310,47 @@ const CPromoCode = () => {
                 Discount (%) <span className="required">*</span>
               </label>
 
-              <div className="input-wrapper">
-                <Percent className="input-icon" />
-
-                <input
-                  type="number"
-                  id="discount"
-                  name="discount"
-                  min="1"
-                  max="100"
-                  value={formData.discount}
-                  onChange={handleChange}
-                  placeholder="20"
-                  className="form-input"
-                  required
-                />
-              </div>
+              <input
+                type="number"
+                id="discount"
+                name="discount"
+                min="1"
+                max="100"
+                value={formData.discount}
+                onChange={handleChange}
+                placeholder=""
+                className="form-input-simple"
+                required
+              />
             </div>
 
             {/* Plan Dropdown */}
             <div className="form-group">
               <label className="form-label">
-                Select for Event/Certificate{' '}
-                <span className="required">*</span>
+                Select for Event/Certificate <span className="required">*</span>
               </label>
 
               <div className="custom-dropdown-container">
-                <Button
+                <button
                   type="button"
-                  className="custom-dropdown-trigger"
+                  className="custom-dropdown-trigger-simple"
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 >
-                  <div className="trigger-text">
-                    <Layers className="input-icon-static" />
-
-                    <span
-                      className={
-                        formData.plan ? 'selected-text' : 'placeholder-text'
-                      }
-                    >
-                      {formData.plan || '-- Select Plan --'}
-                    </span>
-                  </div>
+                  <span
+                    className={
+                      formData.plan ? 'selected-text' : 'placeholder-text'
+                    }
+                  >
+                    {formData.plan || '-- Select Plan --'}
+                  </span>
 
                   <ChevronDown
+                    size={16}
                     className={`chevron-icon ${
                       isDropdownOpen ? 'open' : ''
                     }`}
                   />
-                </Button>
+                </button>
 
                 {isDropdownOpen && (
                   <div className="custom-dropdown-menu">
@@ -413,19 +380,15 @@ const CPromoCode = () => {
                 Validity start from <span className="required">*</span>
               </label>
 
-              <div className="input-wrapper">
-                <Calendar className="input-icon" />
-
-                <input
-                  type="date"
-                  id="validityStart"
-                  name="validityStart"
-                  value={formData.validityStart}
-                  onChange={handleChange}
-                  className="form-input date-input"
-                  required
-                />
-              </div>
+              <input
+                type="date"
+                id="validityStart"
+                name="validityStart"
+                value={formData.validityStart}
+                onChange={handleChange}
+                className="form-input-simple date-input"
+                required
+              />
             </div>
 
             {/* Expiry Date */}
@@ -434,34 +397,28 @@ const CPromoCode = () => {
                 Expire date <span className="required">*</span>
               </label>
 
-              <div className="input-wrapper">
-                <Calendar className="input-icon" />
-
-                <input
-                  type="date"
-                  id="expireDate"
-                  name="expireDate"
-                  value={formData.expireDate}
-                  onChange={handleChange}
-                  className="form-input date-input"
-                  required
-                />
-              </div>
+              <input
+                type="date"
+                id="expireDate"
+                name="expireDate"
+                value={formData.expireDate}
+                onChange={handleChange}
+                className="form-input-simple date-input"
+                required
+              />
             </div>
 
             {/* Form Actions */}
-            <div className="form-actions full-width">
+            <div className="form-actions-simple">
               <Button
                 type="button"
                 className="btn-secondary"
                 onClick={handleReset}
               >
-                <RotateCcw size={16} />
                 Reset
               </Button>
 
               <Button type="submit" className="submit-btn">
-                <CheckCircle2 size={16} />
                 Add Promo Code
               </Button>
             </div>
@@ -469,7 +426,7 @@ const CPromoCode = () => {
         </div>
       </div>
 
-      {/* 2. Promo Code DataTable */}
+      {/* DataTable */}
       <div className="table-responsive-scroll-wrapper">
         <DataTable
           columns={columns}
