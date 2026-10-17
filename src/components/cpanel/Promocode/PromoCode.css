@@ -1,274 +1,150 @@
-/* ==========================================================================
-   1. GLOBAL PAGE LAYOUT & VARIABLES
-   ========================================================================== */
-:root {
-  --teal-50: #e6f7f5;
-  --teal-100: #b2e8e0;
-  --teal-500: #00a896;
-  --teal-600: #028090;
-  --teal-700: #05668d;
-  --slate-50: #f8fafc;
-  --slate-100: #f1f5f9;
-  --slate-200: #e2e8f0;
-  --slate-400: #94a3b8;
-  --slate-600: #475569;
-  --slate-800: #1e293b;
-  --red-500: #ef4444;
-}
-
-/* Forces vertical stacking so table stays below the form */
 .promo-page-wrapper {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center;
-  width: 100%;
-  gap: 2rem;
-  padding: 1.5rem 1rem;
-  box-sizing: border-box;
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: inherit;
 }
 
-/* ==========================================================================
-   2. FORM CONTAINER & HEADER
-   ========================================================================== */
 .promo-card-container {
-  width: 100%;
   display: flex;
   justify-content: center;
+  margin-bottom: 32px;
 }
 
 .promo-card {
-  width: 100%;
-  max-width: 750px;
-  background: #ffffff !important;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  border: 1px solid var(--slate-200);
-  padding: 2rem;
-  box-sizing: border-box;
-}
-
-.promo-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  background: var(--teal-50);
-  padding: 1rem 1.25rem;
-  border-radius: 10px;
-  margin-bottom: 1.5rem;
-  border: 1px solid var(--teal-100);
-}
-
-.icon-badge {
-  background-color: #ffffff;
-  padding: 0.6rem;
+  background: #ffffff;
   border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  width: 100%;
+  max-width: 550px;
+  padding: 32px;
 }
 
-.header-icon {
-  width: 24px;
-  height: 24px;
-  color: var(--teal-600);
+.promo-header-simple {
+  text-align: center;
+  margin-bottom: 24px;
 }
 
 .promo-title {
-  margin: 0;
-  font-size: 1.2rem;
+  font-size: 24px;
   font-weight: 700;
-  color: var(--teal-700);
+  color: #1f2937;
+  margin: 0 0 8px 0;
 }
 
-.promo-subtitle {
-  margin: 0.2rem 0 0 0;
-  font-size: 0.85rem;
-  color: var(--slate-600);
+.promo-title-underline {
+  width: 40px;
+  height: 3px;
+  background-color: #0d9488; /* Updated to use theme teal instead of golden */
+  margin: 0 auto;
+  border-radius: 2px;
 }
 
-/* ==========================================================================
-   3. FORM ELEMENTS & GRID
-   ========================================================================== */
-.promo-form {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
-}
-
-.full-width {
-  grid-column: span 2;
+.promo-form-simple {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 6px;
 }
 
 .form-label {
-  font-size: 0.875rem;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--slate-800);
+  color: #374151;
 }
 
 .required {
-  color: var(--red-500);
+  color: #ef4444;
 }
 
-.input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.input-icon {
-  position: absolute;
-  left: 1rem;
-  width: 1.1rem;
-  height: 1.1rem;
-  color: var(--teal-600);
-  pointer-events: none;
-  z-index: 2;
-}
-
-.form-input {
+.form-input-simple {
   width: 100%;
-  height: 44px;
-  padding: 0 1rem 0 2.8rem !important; /* Prevents text overlapping icon */
-  font-size: 0.9rem;
-  border-radius: 8px;
-  border: 1px solid var(--slate-200) !important;
-  background-color: #ffffff !important;
-  color: var(--slate-800) !important;
-  outline: none;
-  box-sizing: border-box;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db; /* Standard clean border matching theme */
+  border-radius: 6px;
+  font-size: 14px;
+  color: #1f2937;
+  background-color: #fff;
   transition: all 0.2s ease;
 }
 
-.form-input:focus {
-  border-color: var(--teal-500) !important;
-  box-shadow: 0 0 0 3px rgba(0, 168, 150, 0.15) !important;
+.form-input-simple:focus {
+  outline: none;
+  border-color: #0d9488;
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.15);
 }
 
 .text-uppercase {
   text-transform: uppercase;
-  font-weight: 600;
 }
 
-/* Date input picker indicator reset */
-.date-input::-webkit-calendar-picker-indicator {
-  cursor: pointer;
-  opacity: 0.6;
-}
-
-/* ==========================================================================
-   4. CUSTOM RADIO BUTTONS
-   ========================================================================== */
-.custom-radio-group {
+/* Simple Radio Style */
+.radio-group-simple {
   display: flex;
-  gap: 1rem;
+  gap: 24px;
+  align-items: center;
+  padding-top: 4px;
 }
 
-.custom-radio-btn {
-  flex: 1;
-  height: 44px;
+.radio-label {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  border: 1px solid var(--slate-200);
-  background-color: #ffffff;
-  border-radius: 8px;
+  gap: 8px;
+  font-size: 14px;
+  color: #374151;
   cursor: pointer;
-  font-size: 0.9rem;
-  color: var(--slate-600);
-  transition: all 0.2s ease;
 }
 
-.radio-dot {
+.radio-label input[type="radio"] {
+  accent-color: #0d9488;
   width: 16px;
   height: 16px;
-  border-radius: 50%;
-  border: 2px solid var(--slate-400);
-  display: inline-block;
-  position: relative;
-  box-sizing: border-box;
+  cursor: pointer;
 }
 
-.custom-radio-btn.active {
-  border-color: var(--teal-500);
-  background-color: var(--teal-50);
-  color: var(--teal-700);
-  font-weight: 600;
-}
-
-.custom-radio-btn.active .radio-dot {
-  border-color: var(--teal-600);
-  background-color: var(--teal-600);
-  box-shadow: inset 0 0 0 3px #ffffff;
-}
-
-/* ==========================================================================
-   5. CUSTOM DROPDOWN
-   ========================================================================== */
+/* Simple Dropdown Trigger */
 .custom-dropdown-container {
   position: relative;
-  width: 100%;
 }
 
-.custom-dropdown-trigger {
+.custom-dropdown-trigger-simple {
   width: 100%;
-  height: 44px;
-  padding: 0 1rem;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  background: #ffffff;
-  border: 1px solid var(--slate-200);
-  border-radius: 8px;
-  cursor: pointer;
-  box-sizing: border-box;
-  transition: all 0.2s ease;
-}
-
-.custom-dropdown-trigger:focus {
-  border-color: var(--teal-500);
-}
-
-.trigger-text {
-  display: flex;
   align-items: center;
-  gap: 0.6rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
 }
 
-.input-icon-static {
-  width: 1.1rem;
-  height: 1.1rem;
-  color: var(--teal-600);
-  flex-shrink: 0;
+.custom-dropdown-trigger-simple:focus {
+  outline: none;
+  border-color: #0d9488;
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.15);
 }
 
 .placeholder-text {
-  color: var(--slate-400);
-  font-size: 0.9rem;
+  color: #9ca3af;
+  font-size: 14px;
 }
 
 .selected-text {
-  color: var(--slate-800);
-  font-size: 0.9rem;
-  font-weight: 500;
+  color: #1f2937;
+  font-size: 14px;
 }
 
 .chevron-icon {
-  width: 1rem;
-  height: 1rem;
-  color: var(--teal-600);
+  color: #6b7280;
   transition: transform 0.2s ease;
-  flex-shrink: 0;
 }
 
 .chevron-icon.open {
@@ -279,146 +155,92 @@
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
-  width: 100%;
+  right: 0;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   max-height: 220px;
   overflow-y: auto;
-  background: #ffffff !important;
-  border: 1px solid var(--slate-200);
-  border-radius: 8px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-  padding: 0.3rem;
-  box-sizing: border-box;
+  z-index: 50;
 }
 
 .dropdown-item {
-  padding: 0.6rem 0.8rem;
-  font-size: 0.875rem;
-  color: var(--slate-800);
-  border-radius: 6px;
-  cursor: pointer;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  transition: background 0.15s ease;
+  align-items: center;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.15s;
 }
 
 .dropdown-item:hover {
-  background-color: var(--teal-50);
-  color: var(--teal-700);
+  background-color: #f3f4f6;
 }
 
 .dropdown-item.selected {
-  background-color: var(--teal-50);
-  font-weight: 600;
-  color: var(--teal-700);
+  background-color: #f0fdfa;
+  color: #0f766e;
+  font-weight: 500;
 }
 
 .text-teal {
-  color: var(--teal-600);
+  color: #0d9488;
 }
 
-/* ==========================================================================
-   6. ACTION BUTTONS
-   ========================================================================== */
-.form-actions {
+/* Form Actions */
+.form-actions-simple {
   display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--slate-100);
-}
-
-.btn-primary, .btn-secondary {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.65rem 1.25rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.submit-btn {
- background-color: #0d9488 ;
-  color: #ffffff;
-  border: none !important;
-}
-
-.btn-primary:hover {
-  background-color: #0f766e;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
 }
 
 .btn-secondary {
-  background-color: #ffffff !important;
-  color: var(--slate-600) !important;
-  border: 1px solid var(--slate-200) !important;
+  padding: 10px 24px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #374151;
+  font-weight: 500;
+  cursor: pointer;
 }
 
-.btn-secondary:hover {
-  background-color: var(--slate-100) !important;
+.submit-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 6px;
+  background: #0d9488;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
 }
 
-/* ==========================================================================
-   7. PROMO CODE DETAILS TABLE SECTION
-   ========================================================================== */
-.promo-table-card {
-  width: 100%;
-  max-width: 1100px;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  border: 1px solid var(--slate-200);
-  padding: 1.5rem 2rem;
-  box-sizing: border-box;
+.submit-btn:hover {
+  background-color: #0f766e;
 }
 
-.promo-table-header {
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-.promo-table-title {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: var(--slate-800);
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
-.promo-table-title .highlight {
-  color:  #0d9488 !important;
-}
-
-.title-underline {
-  width: 50px;
-  height: 3px;
-  background-color: teal ;/* Golden line accent */
-  margin: 6px auto 0 auto;
-  border-radius: 2px;
-}
-
-/* Rounded Pill "Enable" Status Badge */
-.badge-status-green {
-  background-color: #16a34a;
-  color: #ffffff;
-  padding: 0.35rem 1.2rem;
-  border-radius: 50px;
-  font-size: 0.8rem;
-  font-weight: 600;
+/* Status Badges */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
   display: inline-block;
-  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
 }
 
-/* Responsive breakpoint */
-@media (max-width: 640px) {
-  .promo-form {
-    grid-template-columns: 1fr;
-  }
-  .full-width {
-    grid-column: span 1;
-  }
+.status-active {
+  background-color: #ecfdf5;
+  color: #059669;
+}
+
+.status-expired {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.table-responsive-scroll-wrapper {
+  margin-top: 24px;
 }

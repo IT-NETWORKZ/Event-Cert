@@ -7,6 +7,7 @@ import Contact from "../components/home/Contact/Contact";
 import Register from "../components/home/register/Register";
 import Subscription from "../components/Subscription/Subscription";
 import About from "../components/home/about/About";
+import AboutUs from "../components/AboutUs/AboutUs";
 
 
 
@@ -46,7 +47,7 @@ import CFeedbackDetails from "../pages/CPanel/CFeedbackDetails";
 import CProfile from "../pages/CPanel/CProfile";
 import CAddDraft from "../components/cpanel/AddCategory/CAddDraft";
 import CAddCategory from "../components/cpanel/AddCategory/CAddCategory";
-import AboutUs from "../components/AboutUs/AboutUs";
+
 
 
 function AppRoutes() {

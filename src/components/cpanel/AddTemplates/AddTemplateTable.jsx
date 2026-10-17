@@ -1,198 +1,177 @@
 import React, { useMemo, useState } from 'react';
 import DataTable from '../../common/Table/DataTable';
-import Button from '../../common/button/Button';
 import './AddTemplateTable.css';
 
+const LIMIT = 50; // Text longer than this gets Read more / Read less
+
+// Expandable text cell for long messages
+const ExpandText = ({ text }) => {
+  const [open, setOpen] = useState(false);
+  const value = text || '';
+  const long = value.length > LIMIT;
+  const shown = long && !open ? `${value.slice(0, LIMIT)}…` : value;
+
+  return (
+    <div className="cap-text">
+      <span>{shown}</span>
+      {long && (
+        <button type="button" className="cap-more" onClick={() => setOpen((o) => !o)}>
+          {open ? "Read less" : "Read more"}
+        </button>
+      )}
+    </div>
+  );
+};
+
 const AddTemplateTable = ({ onEdit, onToggleStatus }) => {
-  // Original data preserved
-  const [tableData] = useState([
+  const [tableData, setTableData] = useState([
     {
+      id: 1,
       srNo: 1,
-      userName: 'Arun',
-      name: 'dbgr',
+      userName: 'CertWala',
+      name: 'temp_cert12',
       utilityType: 'Yes',
       marketingType: '-',
-      details: 'textimage',
-      message: 'DSFS',
+      details: 'textdocument',
+      message: 'Hello, we are pleased to share {{1}} {{2}} in {{3}}. Please find it attached. Regards, Regards, {{4}}. Thanks.',
       withUserName: 'Yes',
-      withParameters: 1,
-      status: 'Enable',
+      withParameters: 4,
+      enabled: true,
     },
     {
+      id: 2,
       srNo: 2,
-      userName: 'Arun',
-      name: 'dbgr',
+      userName: 'CertWala',
+      name: 'temp_cert11',
       utilityType: 'Yes',
       marketingType: '-',
-      details: 'textimage',
-      message: 'DSFS',
+      details: 'textvideo',
+      message: 'Hello, we are pleased to share {{1}} {{2}} in {{3}}. Please find it attached.',
       withUserName: 'Yes',
-      withParameters: 1,
-      status: 'Enable',
-    },
-    {
-      srNo: 3,
-      userName: 'Vala',
-      name: 'pay_cofrm_msg_5',
-      utilityType: 'Yes',
-      marketingType: '-',
-      details: 'text',
-      message:
-        'Hello, We have received your payment successfully. Your transaction has been processed and the service is now active. Thank you for completing the payment.',
-      withUserName: '-',
-      withParameters: 0,
-      status: 'Enable',
+      withParameters: 4,
+      enabled: true,
     },
   ]);
 
-  // DataTable columns
+  const toggleStatus = (id) => {
+    setTableData((prev) =>
+      prev.map((r) => (r.id === id ? { ...r, enabled: !r.enabled } : r))
+    );
+    if (onToggleStatus) onToggleStatus(id);
+  };
+
   const columns = useMemo(
     () => [
       {
         accessorKey: 'srNo',
         header: 'Sr. No.',
-        enableSorting: true,
-        meta: {
-          width: '80px',
-          className: 'text-center',
-        },
+        enableSorting: false,
+        cell: ({ row }) => row.index + 1,
+        meta: { width: '80px', className: 'text-center' },
       },
       {
         accessorKey: 'userName',
         header: 'User Name',
-        meta: {
-          width: '120px',
-          className: 'text-start',
-        },
+        meta: { width: '130px', className: 'text-center' },
       },
       {
         accessorKey: 'name',
         header: 'Name',
-        meta: {
-          width: '150px',
-          className: 'text-start',
-        },
+        meta: { width: '150px', className: 'text-center' },
       },
       {
         accessorKey: 'utilityType',
         header: 'Utility Type',
-        meta: {
-          width: '110px',
-          className: 'text-center',
-        },
         cell: ({ getValue }) => getValue() || '-',
+        meta: { width: '110px', className: 'text-center' },
       },
       {
         accessorKey: 'marketingType',
         header: 'Marketing Type',
-        meta: {
-          width: '130px',
-          className: 'text-center',
-        },
         cell: ({ getValue }) => getValue() || '-',
+        meta: { width: '130px', className: 'text-center' },
       },
       {
         accessorKey: 'details',
         header: 'Details',
-        meta: {
-          width: '120px',
-          className: 'text-start',
-        },
+        meta: { width: '130px', className: 'text-center' },
       },
       {
         accessorKey: 'message',
         header: 'Message',
-        meta: {
-          width: '260px',
-          className: 'text-start',
-        },
-        cell: ({ getValue }) => (
-          <div className="message-cell-content">
-            {getValue() || '-'}
-          </div>
-        ),
+        cell: ({ getValue }) => <ExpandText text={getValue()} />,
+        meta: { width: '280px', className: 'text-start' },
       },
       {
         accessorKey: 'withUserName',
         header: 'With User Name',
-        meta: {
-          width: '140px',
-          className: 'text-center',
-        },
+        meta: { width: '130px', className: 'text-center' },
       },
       {
         accessorKey: 'withParameters',
         header: 'With Parameters',
-        meta: {
-          width: '140px',
-          className: 'text-center',
-        },
+        meta: { width: '130px', className: 'text-center' },
       },
       {
         id: 'edit',
         header: 'Edit',
-        meta: {
-          width: '100px',
-          className: 'text-center',
-        },
+        enableSorting: false,
         cell: ({ row }) => (
-          <Button
+          <button
             type="button"
-            className="btn btn-primary btn-sm rounded-pill px-3"
-            onClick={() => onEdit && onEdit(row.original)}
+            className="cap-edit"
+            onClick={() => onEdit ? onEdit(row.original) : console.log("Edit", row.original)}
           >
             Edit
-          </Button>
+          </button>
         ),
+        meta: { width: '100px', className: 'text-center' },
       },
       {
         id: 'status',
         header: 'Status',
-        meta: {
-          width: '110px',
-          className: 'text-center',
-        },
-        cell: ({ row }) => {
-          const isActive =
-            row.original.status === 'Enable' ||
-            row.original.status === true;
-
-          return (
-            <Button
-              type="button"
-              className={`btn btn-sm rounded-pill px-3 ${isActive ? 'btn-success' : 'btn-secondary'
-                }`}
-              onClick={() =>
-                onToggleStatus && onToggleStatus(row.original)
-              }
-            >
-              {isActive ? 'Enable' : 'Disable'}
-            </Button>
-          );
-        },
+        enableSorting: false,
+        cell: ({ row }) => (
+          <button
+            type="button"
+            className={`cap-status ${row.original.enabled ? "on" : "off"}`}
+            onClick={() => toggleStatus(row.original.id)}
+            title="Click to change status"
+          >
+            {row.original.enabled ? "Enabled" : "Disabled"}
+          </button>
+        ),
+        meta: { width: '130px', className: 'text-center' },
       },
     ],
-    [onEdit, onToggleStatus]
+    [onEdit]
   );
 
+  const handleExportExcel = () => {
+    console.log("Export template details", tableData);
+  };
+
   return (
-    <div className="add-template-page-wrapper">
-      <div className="promo-table-card">
-        {/* Table title */}
-        <div className="promo-table-header">
-          <h2 className="promo-table-title">
-            Template <span className="highlight">Details</span>
-          </h2>
-          <div className="title-underline" />
+    <div className="c-addplans-wrapper">
+      <div className="container-fluid px-md-4">
+        
+        {/* Header Heading */}
+        <div className="cap-head">
+          <h4 className="header-title">Template Details</h4>
+          <div className="cap-line"></div>
         </div>
 
-        {/* Reusable DataTable */}
-        <div className="table-responsive-scroll-wrapper">
-          <DataTable
-            columns={columns}
-            data={tableData}
-          />
+        {/* Table Card */}
+        <div className="cap-card">
+          <div className="table-responsive-scroll-wrapper">
+            <DataTable
+              columns={columns}
+              data={tableData}
+              onExportExcel={handleExportExcel}
+            />
+          </div>
         </div>
+
       </div>
     </div>
   );
