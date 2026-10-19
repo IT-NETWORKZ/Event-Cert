@@ -1,0 +1,268 @@
+/* ==========================================================================
+   PAGE LAYOUT
+   ========================================================================== */
+
+.admin-transaction-page-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 16px 40px;
+  background-color: #f4f8f7;
+  color: #2b2b2b;
+  overflow-x: hidden;
+}
+
+.admin-transaction-page-container *,
+.admin-transaction-page-container *::before,
+.admin-transaction-page-container *::after {
+  box-sizing: border-box;
+}
+
+.admin-transaction-page-container .at-table-wrap {
+  width: 100%;
+  max-width: 1320px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   CARD + TITLE
+   ========================================================================== */
+
+.admin-transaction-page-container .at-card {
+  width: 100%;
+  padding: 26px 30px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(13, 78, 67, 0.12);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  min-width: 0;
+  overflow: hidden; /* Prevents inner elements from triggering extra card-level scroll */
+}
+
+.admin-transaction-page-container .at-head {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.admin-transaction-page-container .at-title,
+.admin-transaction-page-container .at-head h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #1a2e2b;
+}
+
+.admin-transaction-page-container .at-title span {
+  color: #0d4e43;
+}
+
+.admin-transaction-page-container .at-underline {
+  width: 60px;
+  height: 3px;
+  margin: 10px auto 0;
+  background: #0d4e43;
+}
+
+/* ==========================================================================
+   EXPORT BUTTON BAR & TOOLBAR CONTROLS
+   ========================================================================== */
+
+.admin-transaction-page-container .at-action-bar {
+  margin-bottom: 20px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.admin-transaction-page-container .at-export-btn {
+  width: auto !important;
+  min-width: 140px !important;
+  height: 42px !important;
+  padding: 0 24px !important;
+  border-radius: 999px !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  border: none !important;
+  background: linear-gradient(45deg, #009688, #26a69a) !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 16px rgba(0, 150, 136, 0.3);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.admin-transaction-page-container .at-export-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 150, 136, 0.4);
+}
+
+/* Ensure dataTables controls (entries dropdown & search box) wrap cleanly and don't overflow */
+.admin-transaction-page-container div:has(> select),
+.admin-transaction-page-container div:has(> input[type="search"]),
+.admin-transaction-page-container div:has(> input[type="text"]) {
+  flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.admin-transaction-page-container input[type="search"],
+.admin-transaction-page-container input[type="text"] {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* ==========================================================================
+   TABLE SCROLL WRAPPER (Single X-Scroll)
+   ========================================================================== */
+
+.admin-transaction-page-container .at-scroll {
+  width: 100%;
+  overflow: visible !important;
+  min-width: 0;
+}
+
+.admin-transaction-page-container .table-wrapper,
+.admin-transaction-page-container .data-table-container,
+.admin-transaction-page-container .data-table-wrapper {
+  overflow: visible !important;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0 !important;
+}
+
+/* THE ONE scroll area for the table */
+.admin-transaction-page-container .table-responsive {
+  width: 100%;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+  min-width: 0;
+}
+
+/* Each column keeps its own width, headers never break */
+.admin-transaction-page-container .data-table {
+  table-layout: fixed !important;
+  width: max-content !important;
+  min-width: 100% !important;
+}
+
+.admin-transaction-page-container .table-responsive::-webkit-scrollbar {
+  height: 8px;
+}
+
+.admin-transaction-page-container .table-responsive::-webkit-scrollbar-track {
+  background: rgba(13, 78, 67, 0.1);
+  border-radius: 10px;
+}
+
+.admin-transaction-page-container .table-responsive::-webkit-scrollbar-thumb {
+  background: #0d4e43;
+  border-radius: 10px;
+}
+
+.admin-transaction-page-container .table-responsive::-webkit-scrollbar-thumb:hover {
+  background: #009688;
+}
+
+/* ==========================================================================
+   CELLS & LINKS
+   ========================================================================== */
+
+.admin-transaction-page-container .data-table th {
+  text-align: center !important;
+  white-space: nowrap;
+}
+
+.admin-transaction-page-container .data-table td {
+  text-align: center !important;
+  vertical-align: middle;
+  overflow-wrap: anywhere;
+}
+
+/* Left-align specific text columns */
+.admin-transaction-page-container .data-table td:nth-child(3),  /* Plans */
+.admin-transaction-page-container .data-table td:nth-child(5),  /* Org Name */
+.admin-transaction-page-container .data-table td:nth-child(6),  /* Department */
+.admin-transaction-page-container .data-table td:nth-child(7),  /* User Name */
+.admin-transaction-page-container .data-table td:nth-child(10), /* Business Name */
+.admin-transaction-page-container .data-table td:nth-child(11)  /* Order ID */ {
+  text-align: left !important;
+}
+
+/* Dates and IDs stay on single line */
+.admin-transaction-page-container .data-table td:nth-child(2),
+.admin-transaction-page-container .data-table td:nth-child(11) {
+  white-space: nowrap;
+}
+
+/* Invoice & Receipt Link Buttons */
+.admin-transaction-page-container .data-table button.at-link-btn {
+  background: transparent;
+  border: none;
+  color: #009688;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s;
+}
+
+.admin-transaction-page-container .data-table button.at-link-btn:hover {
+  color: #0d4e43;
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+
+@media (max-width: 991px) {
+  .admin-transaction-page-container .at-head h2,
+  .admin-transaction-page-container .at-title {
+    font-size: 1.55rem;
+  }
+
+  .admin-transaction-page-container .at-card {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  .admin-transaction-page-container {
+    padding: 12px 8px 30px;
+    gap: 16px;
+  }
+
+  .admin-transaction-page-container .at-head h2,
+  .admin-transaction-page-container .at-title {
+    font-size: 1.35rem;
+  }
+
+  .admin-transaction-page-container .at-card {
+    padding: 20px 16px;
+    border-radius: 12px;
+  }
+
+  .admin-transaction-page-container .at-export-btn {
+    min-width: 120px !important;
+    height: 38px !important;
+    font-size: 0.84rem !important;
+  }
+
+  /* Force DataTables wrapper and pagination elements to stay within screen bounds */
+  .admin-transaction-page-container div:has(> input[type="search"]),
+  .admin-transaction-page-container div:has(> input[type="text"]) {
+    width: 100% !important;
+    flex: 1 1 100%;
+  }
+
+  .admin-transaction-page-container input[type="search"],
+  .admin-transaction-page-container input[type="text"] {
+    width: 100% !important;
+    flex: 1 1 100%;
+  }
+}

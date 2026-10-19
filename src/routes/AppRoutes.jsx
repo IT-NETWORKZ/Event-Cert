@@ -47,6 +47,8 @@ import CFeedbackDetails from "../pages/CPanel/CFeedbackDetails";
 import CProfile from "../pages/CPanel/CProfile";
 import CAddDraft from "../components/cpanel/AddCategory/CAddDraft";
 import CAddCategory from "../components/cpanel/AddCategory/CAddCategory";
+import AdminTransaction from "../components/cpanel/AdminTransaction/AdminTransaction";
+import Taxes from "../components/cpanel/Taxes/Taxes";
 
 
 
@@ -130,6 +132,8 @@ function AppRoutes() {
                     {/*ADD CATEGORY Routes  */}
                     <Route path="category/addcategory" element={<CAddCategory />} />
                     <Route path="category/adddraft" element={<CAddDraft />} />
+                     <Route path="transaction" element={<AdminTransaction />} />
+                     <Route path="taxes" element={<Taxes />} />
                 </Route>
             </Route>
         </Routes>

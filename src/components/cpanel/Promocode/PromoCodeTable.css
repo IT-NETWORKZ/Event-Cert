@@ -1,95 +1,267 @@
-/* Container Layout */
-.promo-table-card {
+/* ==========================================================================
+   CARD
+   ========================================================================== */
+
+.pct-card {
   width: 100%;
   max-width: 1250px;
   margin: 1.5rem auto 0 auto;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e2e8f0;
   padding: 1.5rem 2rem;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(13, 78, 67, 0.12);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
+  overflow: visible;
+  min-width: 0;
+}
+
+.pct-card *,
+.pct-card *::before,
+.pct-card *::after {
   box-sizing: border-box;
 }
 
-/* Section Title Header */
-.promo-table-header {
+/* ==========================================================================
+   TITLE
+   ========================================================================== */
+
+.pct-head {
   text-align: center;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.5rem;
 }
 
-.promo-table-title {
-  font-size: 1.65rem;
-  font-weight: 800;
-  color: #1e293b;
+.pct-title {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #1a2e2b;
 }
 
-.promo-table-title .highlight {
-  color: #0f172a;
+.pct-title span {
+  color: #0d4e43;
 }
 
-.title-underline {
-  width: 55px;
+.pct-underline {
+  width: 60px;
   height: 3px;
-  background-color: #0d9488; /* Teal underline */
-  margin: 6px auto 0 auto;
-  border-radius: 2px;
+  margin: 10px auto 0;
+  background: #0d4e43;
 }
 
 /* ==========================================================================
-   Interactive Status Buttons
+   SCROLL
+   Only the container that holds the <table> scrolls sideways.
    ========================================================================== */
-.status-action-btn {
-  border: none;
-  padding: 0.35rem 1.25rem;
-  border-radius: 50px; /* Pill shape */
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
+
+.pct-card .pct-scroll {
+  width: 100%;
+  overflow: visible !important;
+  min-width: 0;
+}
+
+.pct-card .table-wrapper,
+.pct-card .data-table-container,
+.pct-card .data-table-wrapper {
+  overflow: visible !important;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0 !important;
+}
+
+/* THE ONE scroll area */
+.pct-card .table-responsive {
+  width: 100%;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+}
+
+/* each column keeps its own width, so headers never break letter by letter */
+.pct-card .data-table {
+  table-layout: fixed !important;
+  width: max-content !important;
+  min-width: 100% !important;
+}
+
+.pct-card .table-responsive::-webkit-scrollbar { height: 8px; }
+.pct-card .table-responsive::-webkit-scrollbar-track { background: rgba(13, 78, 67, 0.1); border-radius: 10px; }
+.pct-card .table-responsive::-webkit-scrollbar-thumb { background: #0d4e43; border-radius: 10px; }
+.pct-card .table-responsive::-webkit-scrollbar-thumb:hover { background: #009688; }
+
+/* ==========================================================================
+   TOOLBAR (entries per page / search): wraps, never wider than the card
+   ========================================================================== */
+
+.pct-card div:has(> select),
+.pct-card div:has(> input[type="search"]),
+.pct-card div:has(> input[type="text"]) {
+  flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.pct-card input[type="search"],
+.pct-card input[type="text"] {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* ==========================================================================
+   CELLS
+   ========================================================================== */
+
+.pct-card .data-table th {
+  text-align: center !important;
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+.pct-card .data-table td {
+  text-align: center !important;
+  vertical-align: middle;
+  overflow-wrap: anywhere;
+}
+
+/* Plan Type (column 6) reads left aligned */
+.pct-card .data-table td:nth-child(6) {
+  text-align: left !important;
+}
+
+/* date and validity stay on one line */
+.pct-card .data-table td:nth-child(2),
+.pct-card .data-table td:nth-child(7) {
+  white-space: nowrap;
+}
+
+.pct-card .th-content-wrapper {
+  justify-content: center !important;
+  flex-wrap: nowrap;
+}
+
+.pct-card .pct-code {
+  font-weight: 700;
+  color: #0d4e43;
+}
+
+/* ==========================================================================
+   TABLE BUTTONS
+   !important and the full selector beat any global button style
+   ========================================================================== */
+
+.pct-card .data-table button.pct-pill {
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-flex !important;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
-  user-select: none;
+  gap: 7px;
+  min-width: 108px !important;
+  padding: 7px 18px !important;
+  border: none !important;
+  border-radius: 999px !important;
+  color: #ffffff !important;
+  font-family: inherit;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1.2;
+  cursor: pointer;
   outline: none;
+  user-select: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
-/* Enable (Green) State */
-.btn-status-enable {
-  background-color: #16a34a !important;
-  color: #ffffff !important;
-  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+.pct-card .data-table button.pct-pill i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
 }
 
-.btn-status-enable:hover {
-  background-color: #15803d !important;
-  box-shadow: 0 4px 10px rgba(22, 163, 74, 0.35);
+/* Enabled / Show */
+.pct-card .data-table button.pct-pill.on {
+  background: linear-gradient(45deg, #009688, #26a69a) !important;
+  box-shadow: 0 4px 10px rgba(0, 150, 136, 0.3);
+}
+
+/* Disabled */
+.pct-card .data-table button.pct-pill.off {
+  background: #8a9a98 !important;
+  box-shadow: 0 4px 10px rgba(92, 114, 111, 0.25);
+}
+
+/* Hide */
+.pct-card .data-table button.pct-pill.hide {
+  background: #e5484d !important;
+  box-shadow: 0 4px 10px rgba(229, 72, 77, 0.28);
+}
+
+.pct-card .data-table button.pct-pill:hover {
   transform: translateY(-1px);
+  filter: brightness(1.06);
 }
 
-.btn-status-enable:active {
+.pct-card .data-table button.pct-pill:active {
   transform: translateY(0);
 }
 
-/* Disable (Red) State */
-.btn-status-disable {
-  background-color: #dc2626 !important;
-  color: #ffffff !important;
-  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);
+.pct-card .data-table button.pct-pill:focus-visible {
+  box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.35);
 }
 
-.btn-status-disable:hover {
-  background-color: #b91c1c !important;
-  box-shadow: 0 4px 10px rgba(220, 38, 38, 0.35);
-  transform: translateY(-1px);
+/* ==========================================================================
+   TABLET (up to 991px)
+   ========================================================================== */
+
+@media (max-width: 991px) {
+  .pct-card {
+    padding: 1.25rem 1.25rem;
+  }
+
+  .pct-title {
+    font-size: 1.55rem;
+  }
 }
 
-.btn-status-disable:active {
-  transform: translateY(0);
-}
+/* ==========================================================================
+   MOBILE (up to 767px)
+   ========================================================================== */
 
-/* Font weight utility helper */
-.font-weight-bold {
-  font-weight: 700;
+@media (max-width: 767px) {
+  .pct-card {
+    margin-top: 0.75rem;
+    padding: 0.9rem 0.75rem;
+    border-radius: 12px;
+  }
+
+  .pct-title {
+    font-size: 1.35rem;
+  }
+
+  .pct-card .data-table button.pct-pill {
+    min-width: 92px !important;
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+  }
+
+  /* search box gets its own full-width row, never wider than the card */
+  .pct-card div:has(> select),
+  .pct-card div:has(> input[type="search"]),
+  .pct-card div:has(> input[type="text"]) {
+    gap: 10px;
+  }
+
+  .pct-card div:has(> input[type="search"]),
+  .pct-card div:has(> input[type="text"]) {
+    width: 100% !important;
+    flex: 1 1 100%;
+  }
+
+  .pct-card input[type="search"],
+  .pct-card input[type="text"] {
+    width: 100% !important;
+    flex: 1 1 100%;
+  }
 }
