@@ -1,315 +1,259 @@
-import React, { useState, useMemo } from 'react';
-import { ChevronDown, Check } from 'lucide-react';
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { ChevronDown, Check } from "lucide-react";
 
-import './PromoCode.css';
-import Button from '../../common/button/Button';
-import DataTable from '../../common/Table/DataTable';
+import "./PromoCode.css"; // if your file is still named PromoCode.css, change this line
+import Button from "../../common/button/Button";
+import DataTable from "../../common/Table/DataTable";
+
+const PLANS = [
+  "All Plans",
+  "Event Plan - 6 Week/s",
+  "Event Plan - 2 Month/s",
+  "Event Plan - 3 Month/s",
+  "Event Plan - 4 Month/s",
+  "Event Plan - 6 Month/s",
+  "Event Plan - 1 Year/s",
+  "Certificate / Card Plan - 1 Month/s",
+  "Certificate / Card Plan - 2 Month/s",
+  "Certificate / Card Plan - 3 Month/s",
+  "Certificate / Card Plan - 1 Year/s",
+  "Event + Certificate / Card Plan - 1 Week/s",
+  "Event + Certificate / Card Plan - 6 Week/s",
+  "Event + Certificate / Card Plan - 2 Month/s",
+  "Event + Certificate / Card Plan - 3 Month/s",
+  "Event + Certificate / Card Plan - 4 Month/s",
+  "Event + Certificate / Card Plan - 6 Month/s",
+  "Event + Certificate / Card Plan - 1 Year/s",
+  "Download Certificate / Card Plan - 1 Week/s",
+  "Download Certificate / Card Plan - 1 Month/s",
+  "Download Certificate / Card Plan - 1 Year/s",
+];
+
+const emptyForm = {
+  promoCode: "",
+  promoType: "Single",
+  discount: "",
+  plan: "",
+  validityStart: "",
+  expireDate: "",
+};
+
+// 2026-10-16 -> 16/10/2026
+const fmt = (iso) => {
+  if (!iso) return "";
+  const [y, m, d] = iso.split("-");
+  return `${d}/${m}/${y}`;
+};
+
+const todayIso = () => new Date().toISOString().slice(0, 10);
+
+// Sample data: replace with your API response
+const initialRows = [
+  { id: 1, date: "2026-10-16", promoCode: "shri100", promoType: "Single", discount: 100, plan: "Creatives Plan - 3 Month/s", validityStart: "2026-10-16", expireDate: "2026-10-17", enabled: true, visible: false },
+  { id: 2, date: "2026-10-09", promoCode: "100Aish", promoType: "Single", discount: 100, plan: "Download Plan - 1 Month/s", validityStart: "2026-10-09", expireDate: "2026-11-23", enabled: true, visible: false },
+  { id: 3, date: "2026-10-09", promoCode: "Aish100", promoType: "Single", discount: 100, plan: "Event + Creatives Plan - 6 Week/s", validityStart: "2026-10-09", expireDate: "2026-11-23", enabled: true, visible: false },
+  { id: 4, date: "2026-10-09", promoCode: "invitation", promoType: "Single", discount: 100, plan: "Event + Creatives Plan - 3 Month/s", validityStart: "2026-10-09", expireDate: "2026-10-10", enabled: true, visible: true },
+  { id: 5, date: "2026-07-12", promoCode: "EVENT10", promoType: "Multiple", discount: 10, plan: "Event + Certificate / Card Plan - 6 Week/s", validityStart: "2026-07-12", expireDate: "2026-08-12", enabled: false, visible: false },
+];
 
 const CPromoCode = () => {
-  // 1. DataTable Columns
+  const [rows, setRows] = useState(initialRows);
+  const [formData, setFormData] = useState(emptyForm);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [error, setError] = useState("");
+  const dropRef = useRef(null);
+
+  // close the plan list when clicking outside it
+  useEffect(() => {
+    const close = (e) => {
+      if (dropRef.current && !dropRef.current.contains(e.target)) setIsDropdownOpen(false);
+    };
+    document.addEventListener("mousedown", close);
+    document.addEventListener("touchstart", close);
+    return () => {
+      document.removeEventListener("mousedown", close);
+      document.removeEventListener("touchstart", close);
+    };
+  }, []);
+
+  const toggle = (id, key) => {
+    // TODO: call your enable / show API here
+    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, [key]: !r[key] } : r)));
+  };
+
   const columns = useMemo(
     () => [
       {
-        id: 'srNo',
-        header: 'Sr No',
-        accessorFn: (_, index) => index + 1,
-        enableSorting: true,
-        meta: {
-          className: 'text-center',
-          width: '80px',
-        },
+        id: "srNo",
+        header: "Sr.No",
+        enableSorting: false,
         cell: ({ row }) => row.index + 1,
+        meta: { className: "text-center", width: "90px" },
       },
       {
-        accessorKey: 'promoCode',
-        header: 'Promo Code',
-        enableSorting: true,
-        meta: {
-          className: 'text-start',
-          width: '160px',
-        },
+        accessorKey: "date",
+        header: "Date",
+        cell: ({ getValue }) => fmt(getValue()),
+        meta: { className: "text-center", width: "130px" },
       },
       {
-        accessorKey: 'promoType',
-        header: 'Promo Type',
-        meta: {
-          className: 'text-center',
-          width: '140px',
-        },
+        accessorKey: "promoCode",
+        header: "Promo Code",
+        cell: ({ getValue }) => <b className="pc-code">{getValue()}</b>,
+        meta: { className: "text-center", width: "150px" },
       },
       {
-        accessorKey: 'discount',
-        header: 'Discount',
-        meta: {
-          className: 'text-center',
-          width: '120px',
-        },
-        cell: (info) => `${info.getValue()}%`,
+        accessorKey: "discount",
+        header: "Discount (%)",
+        cell: ({ getValue }) => `${Number(getValue()).toFixed(4)}%`,
+        meta: { className: "text-center", width: "140px" },
       },
       {
-        accessorKey: 'plan',
-        header: 'Event / Certificate Plan',
-        meta: {
-          className: 'text-start',
-          width: '260px',
-        },
+        accessorKey: "promoType",
+        header: "Assign Type",
+        meta: { className: "text-center", width: "130px" },
       },
       {
-        accessorKey: 'validityStart',
-        header: 'Valid From',
-        meta: {
-          className: 'text-center',
-          width: '140px',
-        },
+        accessorKey: "plan",
+        header: "Plan Type",
+        meta: { className: "text-start", width: "300px" },
       },
       {
-        accessorKey: 'expireDate',
-        header: 'Expire Date',
-        meta: {
-          className: 'text-center',
-          width: '140px',
-        },
+        id: "validity",
+        header: "Validity Period",
+        accessorFn: (r) => `${fmt(r.validityStart)} to ${fmt(r.expireDate)}`,
+        meta: { className: "text-center", width: "230px" },
       },
       {
-        accessorKey: 'status',
-        header: 'Status',
-        meta: {
-          className: 'text-center',
-          width: '120px',
-        },
-        cell: ({ row }) => {
-          const status = row.original.status || 'Active';
-
-          return (
-            <span className={`status-badge status-${status.toLowerCase()}`}>
-              {status}
-            </span>
-          );
-        },
-      },
-      {
-        id: 'actions',
-        header: 'Actions',
-        meta: {
-          className: 'text-center',
-          width: '110px',
-        },
+        id: "status",
+        header: "Status",
+        accessorFn: (r) => (r.enabled ? "Enabled" : "Disabled"),
         cell: ({ row }) => (
           <button
             type="button"
-            className="btn btn-sm btn-outline-success px-3 py-1"
-            style={{ borderRadius: '15px', fontSize: '12px' }}
-            onClick={() =>
-              alert(`Viewing promo code: ${row.original.promoCode}`)
-            }
+            className={`pc-pill ${row.original.enabled ? "on" : "off"}`}
+            onClick={() => toggle(row.original.id, "enabled")}
+            title="Click to change status"
           >
-            View
+            <i></i>
+            {row.original.enabled ? "Enabled" : "Disabled"}
           </button>
         ),
+        meta: { className: "text-center", width: "150px" },
+      },
+      {
+        id: "visible",
+        header: "Visibile Status",
+        accessorFn: (r) => (r.visible ? "Show" : "Hide"),
+        cell: ({ row }) => (
+          <button
+            type="button"
+            className={`pc-pill ${row.original.visible ? "on" : "hide"}`}
+            onClick={() => toggle(row.original.id, "visible")}
+            title="Click to show or hide this promo code"
+          >
+            <i></i>
+            {row.original.visible ? "Show" : "Hide"}
+          </button>
+        ),
+        meta: { className: "text-center", width: "160px" },
       },
     ],
     []
   );
-
-  // 2. Existing Mock Data Structure Preserved
-  const data = useMemo(
-    () => [
-      {
-        id: 1,
-        promoCode: 'SUMMER2026',
-        promoType: 'Single',
-        discount: 20,
-        plan: 'Event Plan - 6 Week/s',
-        validityStart: '2026-07-01',
-        expireDate: '2026-12-31',
-        status: 'Active',
-      },
-      {
-        id: 2,
-        promoCode: 'WELCOME15',
-        promoType: 'Multiple',
-        discount: 15,
-        plan: 'Event Plan - 2 Month/s',
-        validityStart: '2026-07-05',
-        expireDate: '2026-12-31',
-        status: 'Active',
-      },
-      {
-        id: 3,
-        promoCode: 'CERT25',
-        promoType: 'Multiple',
-        discount: 25,
-        plan: 'Certificate / Card Plan - 3 Month/s',
-        validityStart: '2026-07-10',
-        expireDate: '2026-11-30',
-        status: 'Active',
-      },
-      {
-        id: 4,
-        promoCode: 'EVENT10',
-        promoType: 'Single',
-        discount: 10,
-        plan: 'Event + Certificate / Card Plan - 6 Week/s',
-        validityStart: '2026-07-12',
-        expireDate: '2026-08-12',
-        status: 'Expired',
-      },
-      {
-        id: 5,
-        promoCode: 'FESTIVE30',
-        promoType: 'Multiple',
-        discount: 30,
-        plan: 'Event + Certificate / Card Plan - 1 Year/s',
-        validityStart: '2026-07-15',
-        expireDate: '2026-12-31',
-        status: 'Active',
-      },
-    ],
-    []
-  );
-
-  const [formData, setFormData] = useState({
-    promoCode: '',
-    promoType: 'Single',
-    discount: '',
-    plan: '',
-    validityStart: '',
-    expireDate: '',
-  });
-
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  const plans = [
-    ' All Plans ',
-    'Event Plan - 6 Week/s',
-    'Event Plan - 2 Month/s',
-    'Event Plan - 3 Month/s',
-    'Event Plan - 4 Month/s',
-    'Certificate / Card Plan - 1 Month/s',
-    'Certificate / Card Plan - 3 Month/s',
-    'Certificate / Card Plan - 1 Year/s',
-    'Event + Certificate / Card Plan - 6 Week/s',
-    'Event + Certificate / Card Plan - 2 Month/s',
-    'Event + Certificate / Card Plan - 3 Month/s',
-    'Event + Certificate / Card Plan - 4 Month/s',
-    'Event + Certificate / Card Plan - 6 Month/s',
-    'Certificate / Card Plan - 2 Month/s',
-    'Event + Certificate / Card Plan - 1 Year/s',
-    'Download Certificate / Card Plan - 1 Month/s',
-    'Download Certificate / Card Plan - 1 Year/s',
-    'Event Plan - 6 Month/s',
-    'Event Plan - 1 Year/s',
-    'Download Certificate / Card Plan - 1 Week/s',
-    'Event + Certificate / Card Plan - 1 Week/s',
-  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setError("");
   };
 
   const handleSelectPlan = (plan) => {
     setFormData((prev) => ({ ...prev, plan }));
     setIsDropdownOpen(false);
-  };
-
-  // 3. Export Handler
-  const handleExportExcel = () => {
-    console.log('Exporting promo code list to Excel...');
-    alert('Exporting promo code data to Excel format!');
+    setError("");
   };
 
   const handleReset = () => {
-    setFormData({
-      promoCode: '',
-      promoType: 'Single',
-      discount: '',
-      plan: '',
-      validityStart: '',
-      expireDate: '',
-    });
-
+    setFormData(emptyForm);
     setIsDropdownOpen(false);
+    setError("");
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!formData.plan) return setError("Please select a plan.");
+    if (formData.expireDate < formData.validityStart)
+      return setError("Expire date cannot be before the start date.");
 
-    if (!formData.plan) {
-      alert('Please select a plan');
-      return;
-    }
+    // TODO: call your add-promo-code API here
+    setRows((prev) => [
+      {
+        id: Date.now(),
+        date: todayIso(),
+        ...formData,
+        promoCode: formData.promoCode.trim(),
+        discount: Number(formData.discount),
+        enabled: true,
+        visible: false,
+      },
+      ...prev,
+    ]);
+    handleReset();
+  };
 
-    console.log('Submitted Data:', formData);
-    alert('Promo code created successfully!');
+  const handleExportExcel = () => {
+    // TODO: connect your export-to-Excel logic
+    console.log("Export promo codes", rows);
   };
 
   return (
     <div className="promo-page-wrapper">
-      {/* Simple Centered Form Card */}
-      <div className="promo-card-container">
-        <div className="promo-card">
-          <div className="promo-header-simple">
-            <h2 className="promo-title">Promo code</h2>
-            <div className="promo-title-underline"></div>
+
+      {/* ================= FORM ================= */}
+      <div className="pc-form-wrap">
+        <div className="pc-card">
+          <div className="pc-head">
+            <h2 className="pc-title">Promo code</h2>
+            <div className="pc-underline"></div>
           </div>
 
-          <form onSubmit={handleSubmit} className="promo-form-simple">
-            {/* Promo Code */}
-            <div className="form-group">
-              <label htmlFor="promoCode" className="form-label">
-                Promo-code <span className="required">*</span>
+          <form onSubmit={handleSubmit} className="pc-form">
+            <div className="pc-group">
+              <label htmlFor="promoCode" className="pc-label">
+                Promo-code <span className="pc-req">*</span>
               </label>
-
               <input
                 type="text"
                 id="promoCode"
                 name="promoCode"
                 value={formData.promoCode}
                 onChange={handleChange}
-                placeholder=""
-                className="form-input-simple text-uppercase"
+                className="pc-input"
                 required
               />
             </div>
 
-            {/* Promo Type */}
-            <div className="form-group">
-              <label className="form-label">
-                Select Type <span className="required">*</span>
+            <div className="pc-group">
+              <label className="pc-label">
+                Select Type <span className="pc-req">*</span>
               </label>
-
-              <div className="radio-group-simple">
-                <label className="radio-label">
-                  <input
-                    type="radio"
-                    name="promoType"
-                    value="Single"
-                    checked={formData.promoType === 'Single'}
-                    onChange={handleChange}
-                  />
+              <div className="pc-radios">
+                <label className="pc-radio">
+                  <input type="radio" name="promoType" value="Single" checked={formData.promoType === "Single"} onChange={handleChange} />
                   <span>Single</span>
                 </label>
-
-                <label className="radio-label">
-                  <input
-                    type="radio"
-                    name="promoType"
-                    value="Multiple"
-                    checked={formData.promoType === 'Multiple'}
-                    onChange={handleChange}
-                  />
+                <label className="pc-radio">
+                  <input type="radio" name="promoType" value="Multiple" checked={formData.promoType === "Multiple"} onChange={handleChange} />
                   <span>Multiple</span>
                 </label>
               </div>
             </div>
 
-            {/* Discount */}
-            <div className="form-group">
-              <label htmlFor="discount" className="form-label">
-                Discount (%) <span className="required">*</span>
+            <div className="pc-group">
+              <label htmlFor="discount" className="pc-label">
+                Discount (%) <span className="pc-req">*</span>
               </label>
-
               <input
                 type="number"
                 id="discount"
@@ -318,55 +262,41 @@ const CPromoCode = () => {
                 max="100"
                 value={formData.discount}
                 onChange={handleChange}
-                placeholder=""
-                className="form-input-simple"
+                className="pc-input"
                 required
               />
             </div>
 
-            {/* Plan Dropdown */}
-            <div className="form-group">
-              <label className="form-label">
-                Select for Event/Certificate <span className="required">*</span>
+            <div className="pc-group" ref={dropRef}>
+              <label className="pc-label">
+                Select for Event/Certificate <span className="pc-req">*</span>
               </label>
-
-              <div className="custom-dropdown-container">
+              <div className="pc-drop">
                 <button
                   type="button"
-                  className="custom-dropdown-trigger-simple"
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="pc-drop-btn"
+                  onClick={() => setIsDropdownOpen((o) => !o)}
+                  aria-haspopup="listbox"
+                  aria-expanded={isDropdownOpen}
                 >
-                  <span
-                    className={
-                      formData.plan ? 'selected-text' : 'placeholder-text'
-                    }
-                  >
-                    {formData.plan || '-- Select Plan --'}
+                  <span className={formData.plan ? "pc-selected" : "pc-placeholder"}>
+                    {formData.plan || "-- Select Plan --"}
                   </span>
-
-                  <ChevronDown
-                    size={16}
-                    className={`chevron-icon ${
-                      isDropdownOpen ? 'open' : ''
-                    }`}
-                  />
+                  <ChevronDown size={16} className={`pc-chevron ${isDropdownOpen ? "open" : ""}`} />
                 </button>
 
                 {isDropdownOpen && (
-                  <div className="custom-dropdown-menu">
-                    {plans.map((item, idx) => (
+                  <div className="pc-drop-menu" role="listbox">
+                    {PLANS.map((item) => (
                       <div
-                        key={idx}
-                        className={`dropdown-item ${
-                          formData.plan === item ? 'selected' : ''
-                        }`}
+                        key={item}
+                        role="option"
+                        aria-selected={formData.plan === item}
+                        className={`pc-drop-item ${formData.plan === item ? "selected" : ""}`}
                         onClick={() => handleSelectPlan(item)}
                       >
                         <span>{item}</span>
-
-                        {formData.plan === item && (
-                          <Check size={16} className="text-teal" />
-                        )}
+                        {formData.plan === item && <Check size={16} />}
                       </div>
                     ))}
                   </div>
@@ -374,51 +304,46 @@ const CPromoCode = () => {
               </div>
             </div>
 
-            {/* Validity Start */}
-            <div className="form-group">
-              <label htmlFor="validityStart" className="form-label">
-                Validity start from <span className="required">*</span>
-              </label>
+            <div className="pc-row-2">
+              <div className="pc-group">
+                <label htmlFor="validityStart" className="pc-label">
+                  Validity start from <span className="pc-req">*</span>
+                </label>
+                <input
+                  type="date"
+                  id="validityStart"
+                  name="validityStart"
+                  value={formData.validityStart}
+                  onChange={handleChange}
+                  className="pc-input"
+                  required
+                />
+              </div>
 
-              <input
-                type="date"
-                id="validityStart"
-                name="validityStart"
-                value={formData.validityStart}
-                onChange={handleChange}
-                className="form-input-simple date-input"
-                required
-              />
+              <div className="pc-group">
+                <label htmlFor="expireDate" className="pc-label">
+                  Expire date <span className="pc-req">*</span>
+                </label>
+                <input
+                  type="date"
+                  id="expireDate"
+                  name="expireDate"
+                  min={formData.validityStart || undefined}
+                  value={formData.expireDate}
+                  onChange={handleChange}
+                  className="pc-input"
+                  required
+                />
+              </div>
             </div>
 
-            {/* Expiry Date */}
-            <div className="form-group">
-              <label htmlFor="expireDate" className="form-label">
-                Expire date <span className="required">*</span>
-              </label>
+            {error && <p className="pc-error" role="alert">{error}</p>}
 
-              <input
-                type="date"
-                id="expireDate"
-                name="expireDate"
-                value={formData.expireDate}
-                onChange={handleChange}
-                className="form-input-simple date-input"
-                required
-              />
-            </div>
-
-            {/* Form Actions */}
-            <div className="form-actions-simple">
-              <Button
-                type="button"
-                className="btn-secondary"
-                onClick={handleReset}
-              >
+            <div className="pc-actions">
+              <Button type="button" className="pc-btn-reset" onClick={handleReset}>
                 Reset
               </Button>
-
-              <Button type="submit" className="submit-btn">
+              <Button type="submit" className="pc-btn-add">
                 Add Promo Code
               </Button>
             </div>
@@ -426,14 +351,18 @@ const CPromoCode = () => {
         </div>
       </div>
 
-      {/* DataTable */}
-      <div className="table-responsive-scroll-wrapper">
-        <DataTable
-          columns={columns}
-          data={data}
-          onExportExcel={handleExportExcel}
-        />
+      {/* ================= TABLE ================= */}
+      <div className="pc-table-card">
+        <div className="pc-head">
+          <h2 className="pc-title">Promo Code Details</h2>
+          <div className="pc-underline"></div>
+        </div>
+
+        <div className="pc-scroll">
+          <DataTable columns={columns} data={rows} onExportExcel={handleExportExcel} />
+        </div>
       </div>
+
     </div>
   );
 };

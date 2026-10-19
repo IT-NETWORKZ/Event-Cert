@@ -1,163 +1,134 @@
-import React, { useMemo, useState } from 'react';
-import DataTable from '../../common/Table/DataTable'; // Adjust import path if needed
-import './PromoCodeTable.css';
+import React, { useMemo, useState } from "react";
+import DataTable from "../../common/Table/DataTable"; // adjust the path if needed
+import "./PromoCodeTable.css";
 
-const PromoCodeTable = () => {
-  // 1. Initial State Data
-  const [tableData, setTableData] = useState([
-    {
-      id: 1,
-      srNo: 1,
-      date: '21/07/2026',
-      promoCode: 'Kapil100',
-      discount: '100.0000%',
-      assignType: 'Single',
-      planType: 'Event + Certificate / Card Plan - 2 Month/s',
-      validityPeriod: '21/07/2026 to 06/08/2026',
-      status: 'Enable',
-    },
-    {
-      id: 2,
-      srNo: 2,
-      date: '21/07/2026',
-      promoCode: 'Kapil',
-      discount: '100.0000%',
-      assignType: 'Single',
-      planType: 'Download Plan - 1 Month/s',
-      validityPeriod: '21/07/2026 to 06/08/2026',
-      status: 'Enable',
-    },
-    {
-      id: 3,
-      srNo: 3,
-      date: '21/07/2026',
-      promoCode: 'Manoj100',
-      discount: '100.0000%',
-      assignType: 'Single',
-      planType: 'Event + Certificate / Card Plan - 2 Month/s',
-      validityPeriod: '21/07/2026 to 06/08/2026',
-      status: 'Enable',
-    },
-    {
-      id: 4,
-      srNo: 4,
-      date: '21/07/2026',
-      promoCode: 'Manoj',
-      discount: '100.0000%',
-      assignType: 'Single',
-      planType: 'Download Plan - 1 Month/s',
-      validityPeriod: '21/07/2026 to 06/08/2026',
-      status: 'Enable',
-    },
-    {
-      id: 5,
-      srNo: 5,
-      date: '21/07/2026',
-      promoCode: 'Kavita100',
-      discount: '100.0000%',
-      assignType: 'Single',
-      planType: 'Event + Certificate / Card Plan - 2 Month/s',
-      validityPeriod: '21/07/2026 to 06/08/2026',
-      status: 'Enable',
-    },
-    {
-      id: 6,
-      srNo: 6,
-      date: '21/07/2026',
-      promoCode: 'Kavita',
-      discount: '100.0000%',
-      assignType: 'Single',
-      planType: 'Download Plan - 1 Month/s',
-      validityPeriod: '21/07/2026 to 06/08/2026',
-      status: 'Enable',
-    },
-  ]);
+// 2026-07-21 -> 21/07/2026
+const fmt = (iso) => {
+  if (!iso) return "";
+  const [y, m, d] = iso.split("-");
+  return `${d}/${m}/${y}`;
+};
 
-  // 2. Status Toggle Handler (Updates State)
-  const handleStatusToggle = (targetId) => {
-    setTableData((prevData) =>
-      prevData.map((row) =>
-        row.id === targetId
-          ? { ...row, status: row.status === 'Enable' ? 'Disable' : 'Enable' }
-          : row
-      )
-    );
+// Sample data: replace with your API response
+const sampleData = [
+  { id: 1, date: "2026-07-21", promoCode: "Kapil100", discount: 100, assignType: "Single", planType: "Event + Certificate / Card Plan - 2 Month/s", validFrom: "2026-07-21", validTo: "2026-08-06", enabled: true, visible: true },
+  { id: 2, date: "2026-07-21", promoCode: "Kapil", discount: 100, assignType: "Single", planType: "Download Plan - 1 Month/s", validFrom: "2026-07-21", validTo: "2026-08-06", enabled: true, visible: false },
+  { id: 3, date: "2026-07-21", promoCode: "Manoj100", discount: 100, assignType: "Single", planType: "Event + Certificate / Card Plan - 2 Month/s", validFrom: "2026-07-21", validTo: "2026-08-06", enabled: true, visible: true },
+  { id: 4, date: "2026-07-21", promoCode: "Manoj", discount: 100, assignType: "Single", planType: "Download Plan - 1 Month/s", validFrom: "2026-07-21", validTo: "2026-08-06", enabled: false, visible: false },
+  { id: 5, date: "2026-07-21", promoCode: "Kavita100", discount: 100, assignType: "Single", planType: "Event + Certificate / Card Plan - 2 Month/s", validFrom: "2026-07-21", validTo: "2026-08-06", enabled: true, visible: true },
+  { id: 6, date: "2026-07-21", promoCode: "Kavita", discount: 100, assignType: "Single", planType: "Download Plan - 1 Month/s", validFrom: "2026-07-21", validTo: "2026-08-06", enabled: true, visible: false },
+];
+
+const PromoCodeTable = ({ data = sampleData, onExportExcel }) => {
+  const [rows, setRows] = useState(data);
+
+  // flips "enabled" (Status) or "visible" (Visibile Status) for one row
+  const toggle = (id, key) => {
+    // TODO: call your enable / show API here
+    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, [key]: !r[key] } : r)));
   };
 
-  // 3. TanStack Column Definitions
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'srNo',
-        header: 'Sr.No',
-        meta: { width: '70px', className: 'text-center' },
+        id: "srNo",
+        header: "Sr.No",
+        enableSorting: false,
         cell: (info) => info.row.index + 1,
+        meta: { width: "90px", className: "text-center" },
       },
       {
-        accessorKey: 'date',
-        header: 'Date',
-        meta: { width: '120px', className: 'text-center' },
+        accessorKey: "date",
+        header: "Date",
+        cell: ({ getValue }) => fmt(getValue()),
+        meta: { width: "130px", className: "text-center" },
       },
       {
-        accessorKey: 'promoCode',
-        header: 'Promo Code',
-        meta: { width: '140px', className: 'text-center font-weight-bold' },
+        accessorKey: "promoCode",
+        header: "Promo Code",
+        cell: ({ getValue }) => <b className="pct-code">{getValue()}</b>,
+        meta: { width: "150px", className: "text-center" },
       },
       {
-        accessorKey: 'discount',
-        header: 'Discount (%)',
-        meta: { width: '130px', className: 'text-center' },
+        accessorKey: "discount",
+        header: "Discount (%)",
+        cell: ({ getValue }) => `${Number(getValue()).toFixed(4)}%`,
+        meta: { width: "140px", className: "text-center" },
       },
       {
-        accessorKey: 'assignType',
-        header: 'Assign Type',
-        meta: { width: '120px', className: 'text-center' },
+        accessorKey: "assignType",
+        header: "Assign Type",
+        meta: { width: "130px", className: "text-center" },
       },
       {
-        accessorKey: 'planType',
-        header: 'Plan Type',
-        meta: { width: '280px', className: 'text-start' },
+        accessorKey: "planType",
+        header: "Plan Type",
+        meta: { width: "300px", className: "text-start" },
       },
       {
-        accessorKey: 'validityPeriod',
-        header: 'Validity Period',
-        meta: { width: '200px', className: 'text-center' },
+        id: "validity",
+        header: "Validity Period",
+        accessorFn: (r) => `${fmt(r.validFrom)} to ${fmt(r.validTo)}`,
+        meta: { width: "230px", className: "text-center" },
       },
       {
-        accessorKey: 'status',
-        header: 'Status',
-        meta: { width: '120px', className: 'text-center' },
-        cell: (info) => {
-          const rowData = info.row.original;
-          const isEnabled = rowData.status === 'Enable';
-
-          return (
-            <button
-              type="button"
-              className={`status-action-btn ${isEnabled ? 'btn-status-enable' : 'btn-status-disable'}`}
-              onClick={() => handleStatusToggle(rowData.id)}
-            >
-              {rowData.status}
-            </button>
-          );
-        },
+        id: "status",
+        header: "Status",
+        accessorFn: (r) => (r.enabled ? "Enabled" : "Disabled"),
+        cell: ({ row }) => (
+          <button
+            type="button"
+            className={`pct-pill ${row.original.enabled ? "on" : "off"}`}
+            onClick={() => toggle(row.original.id, "enabled")}
+            title="Click to change status"
+          >
+            <i></i>
+            {row.original.enabled ? "Enabled" : "Disabled"}
+          </button>
+        ),
+        meta: { width: "150px", className: "text-center" },
+      },
+      {
+        id: "visible",
+        header: "Visibile Status",
+        accessorFn: (r) => (r.visible ? "Show" : "Hide"),
+        cell: ({ row }) => (
+          <button
+            type="button"
+            className={`pct-pill ${row.original.visible ? "on" : "hide"}`}
+            onClick={() => toggle(row.original.id, "visible")}
+            title="Click to show or hide this promo code"
+          >
+            <i></i>
+            {row.original.visible ? "Show" : "Hide"}
+          </button>
+        ),
+        meta: { width: "160px", className: "text-center" },
       },
     ],
     []
   );
 
+  const handleExport = () => {
+    if (onExportExcel) return onExportExcel(rows);
+    // TODO: connect your export-to-Excel logic
+    console.log("Export promo codes", rows);
+  };
+
   return (
-    <div className="promo-table-card">
-      {/* Title Header */}
-      <div className="promo-table-header">
-        <h2 className="promo-table-title">
-          Promo <span className="highlight">Code</span> Details
+    <div className="pct-card">
+      {/* Title */}
+      <div className="pct-head">
+        <h2 className="pct-title">
+          Promo <span>Code</span> Details
         </h2>
-        <div className="title-underline"></div>
+        <div className="pct-underline"></div>
       </div>
 
-      {/* Reusable DataTable Component */}
-      <DataTable columns={columns} data={tableData} />
+      {/* Reusable DataTable */}
+      <div className="pct-scroll">
+        <DataTable columns={columns} data={rows} onExportExcel={handleExport} />
+      </div>
     </div>
   );
 };

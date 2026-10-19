@@ -1,239 +1,443 @@
 /* ==========================================================================
-   Page Containers & General Layout
+   PAGE
    ========================================================================== */
+
 .add-category-page-container {
   width: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2.5rem;
-  padding: clamp(1rem, 3vw, 2.5rem) 1rem;
+  gap: 24px;
+  padding: 20px 16px 40px;
+  background-color: #f4f8f7;
+  color: #2b2b2b;
+  overflow-x: hidden;           /* the page never scrolls sideways */
+}
+
+.add-category-page-container *,
+.add-category-page-container *::before,
+.add-category-page-container *::after {
   box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: #1e293b;
 }
 
-/* Compact Form Wrapper */
-.add-category-form-wrapper {
+.add-category-page-container .ac-form-wrap {
   width: 100%;
-  max-width: 520px; /* Kept compact to match screenshot card proportions */
+  max-width: 540px;
 }
 
-/* Wide Table Wrapper */
-.category-table-wrapper {
+.add-category-page-container .ac-table-wrap {
   width: 100%;
   max-width: 1200px;
-}
-
-/* Cards Base */
-.add-category-card,
-.category-details-card {
-  background-color: #ffffff;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-  box-sizing: border-box;
-  width: 100%;
-}
-
-.add-category-card {
-  padding: clamp(1.5rem, 3vw, 2.25rem);
-}
-
-.category-details-card {
-  padding: clamp(1.5rem, 3vw, 2.5rem);
+  min-width: 0;
 }
 
 /* ==========================================================================
-   Header & Yellow Accent Underline
+   CARD + TITLE
    ========================================================================== */
-.category-header {
+
+.add-category-page-container .ac-card {
+  width: 100%;
+  padding: 26px 30px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(13, 78, 67, 0.12);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  min-width: 0;
+}
+
+.add-category-page-container .ac-head {
   text-align: center;
-  margin-bottom: 1.75rem;
+  margin-bottom: 20px;
 }
 
-.category-header h2 {
-  font-size: clamp(1.5rem, 2.5vw, 1.85rem);
-  font-weight: 700;
-  color: #0f172a;
+.add-category-page-container .ac-head h2 {
   margin: 0;
-  letter-spacing: -0.02em;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #1a2e2b;
 }
 
-.yellow-underline {
-  width: 55px;
+.add-category-page-container .ac-underline {
+  width: 60px;
   height: 3px;
-  background-color: #2a9d8f;
-  margin: 0.4rem auto 0 auto;
-  border-radius: 2px;
+  margin: 10px auto 0;
+  background: #0d4e43;
 }
 
 /* ==========================================================================
-   Form Base & Fields
+   FORM
    ========================================================================== */
-.category-form {
+
+.add-category-page-container .ac-form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 16px;
 }
 
-.category-form-group {
+.add-category-page-container .ac-group {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
-  width: 100%;
+  gap: 6px;
+  min-width: 0;
 }
 
-.category-label {
-  font-size: 0.9rem;
+.add-category-page-container .ac-label {
+  margin: 0;
+  font-size: 0.85rem;
   font-weight: 600;
-  color: #1e293b;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
+  color: #1a2e2b;
 }
 
-.required-star {
-  color: #ef4444;
+.add-category-page-container .ac-req {
+  color: #dc3545;
+  margin-left: 2px;
 }
 
-/* Radio Option Row */
-.category-radio-group {
+.add-category-page-container .ac-radios {
   display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  padding: 0.2rem 0;
   flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 22px;
+  min-height: 42px;
 }
 
-.category-radio-option {
+.add-category-page-container .ac-radio {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.92rem;
+  color: #1a2e2b;
   cursor: pointer;
-  font-size: 0.9rem;
-  color: #334155;
   user-select: none;
 }
 
-.category-radio-option input[type="radio"] {
-  width: 16px;
-  height: 16px;
+.add-category-page-container .ac-radio input {
+  width: 17px;
+  height: 17px;
   margin: 0;
-  accent-color: #2563eb;
+  accent-color: #009688;
   cursor: pointer;
 }
 
-/* Rounded Input Field */
-.category-input {
+.add-category-page-container .ac-input {
   width: 100%;
-  height: 44px;
-  padding: 0 0.85rem;
-  border: 1px solid #2a9d8f; /* Yellow border matching screenshot design */
-  border-radius: 8px;
-  font-size: 0.925rem;
-  color: #0f172a;
-  background-color: #ffffff;
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 0.92rem;
+  color: #1a2e2b;
   outline: none;
-  box-sizing: border-box;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.25s, box-shadow 0.25s;
 }
 
-.category-input:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+.add-category-page-container .ac-input:hover,
+.add-category-page-container .ac-input:focus {
+  border-color: #009688;
 }
 
-.category-input.has-error {
-  border-color: #ef4444 !important;
+.add-category-page-container .ac-input:focus {
+  box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.14);
 }
 
-.error-text {
+.add-category-page-container .ac-input.has-error {
+  border-color: #dc3545;
+}
+
+.add-category-page-container .ac-error-text {
   font-size: 0.8rem;
-  color: #ef4444;
+  font-weight: 600;
+  color: #dc3545;
+}
+
+.add-category-page-container .ac-success {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #d1f2e0;
+  color: #146c43;
+  font-size: 0.84rem;
+  font-weight: 600;
 }
 
 /* ==========================================================================
-   Submit Pill Button
+   FORM BUTTONS (compact, centered, never full width)
    ========================================================================== */
-.category-form-actions {
+
+.add-category-page-container .ac-actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  margin-top: 0.75rem;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
 }
 
-.submit-btn {
- background-color: #0d9488;
-  color: #ffffff;
-  font-size: 0.95rem;
-  font-weight: 600;
-  padding: 0.75rem 3.5rem;
-  min-height: 46px;
-  border: none;
-  border-radius: 8px;
+.add-category-page-container .ac-btn-submit,
+.add-category-page-container .ac-btn-cancel {
+  width: auto !important;
+  min-width: 140px !important;
+  height: 44px !important;
+  padding: 0 28px !important;
+  border-radius: 999px !important;
+  font-size: 0.92rem !important;
+  font-weight: 700 !important;
+  line-height: 1;
+  white-space: nowrap;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
 }
 
-.submit-btn:hover {
- background-color: #0f766e;
+.add-category-page-container .ac-btn-submit {
+  border: none !important;
+  background: linear-gradient(45deg, #009688, #26a69a) !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 18px rgba(0, 150, 136, 0.32);
 }
 
-.submit-btn:active {
-  transform: scale(0.97);
+.add-category-page-container .ac-btn-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px rgba(0, 150, 136, 0.42);
 }
 
-.submit-btn:disabled {
+.add-category-page-container .ac-btn-submit:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
 
+.add-category-page-container .ac-btn-cancel {
+  border: 1px solid #0d4e43 !important;
+  background: #ffffff !important;
+  color: #0d4e43 !important;
+}
+
+.add-category-page-container .ac-btn-cancel:hover {
+  background: rgba(13, 78, 67, 0.08) !important;
+}
+
 /* ==========================================================================
-   Table Specific Overrides
+   TABLE CARD
+   Only the container that holds the <table> scrolls sideways.
    ========================================================================== */
-.category-edit-btn {
-  background-color: #2563eb;
-  color: #ffffff;
-  border: none;
-  border-radius: 9999px;
-  padding: 0.4rem 1.4rem;
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
+
+.add-category-page-container .ac-table-card {
+  padding: 22px 22px 18px;
 }
 
-.category-edit-btn:hover {
-  background-color: #1d4ed8;
+.add-category-page-container .ac-scroll {
+  width: 100%;
+  overflow: visible !important;
+  min-width: 0;
 }
 
-.category-details-card .data-table th {
-  background-color: #f8fafc !important;
-  color: #0f172a !important;
+.add-category-page-container .table-wrapper,
+.add-category-page-container .data-table-container,
+.add-category-page-container .data-table-wrapper {
+  overflow: visible !important;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0 !important;
+}
+
+/* THE ONE scroll area */
+.add-category-page-container .table-responsive {
+  width: 100%;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+}
+
+.add-category-page-container .data-table {
+  table-layout: fixed !important;
+  width: max-content !important;
+  min-width: 100% !important;
+}
+
+.add-category-page-container .table-responsive::-webkit-scrollbar { height: 8px; }
+.add-category-page-container .table-responsive::-webkit-scrollbar-track { background: rgba(13, 78, 67, 0.1); border-radius: 10px; }
+.add-category-page-container .table-responsive::-webkit-scrollbar-thumb { background: #0d4e43; border-radius: 10px; }
+.add-category-page-container .table-responsive::-webkit-scrollbar-thumb:hover { background: #009688; }
+
+/* toolbar rows wrap and never exceed the card */
+.add-category-page-container .ac-table-card div:has(> select),
+.add-category-page-container .ac-table-card div:has(> input[type="search"]),
+.add-category-page-container .ac-table-card div:has(> input[type="text"]) {
+  flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.add-category-page-container .ac-table-card input[type="search"],
+.add-category-page-container .ac-table-card input[type="text"] {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* ==========================================================================
+   CELLS
+   ========================================================================== */
+
+.add-category-page-container .data-table th {
+  text-align: center !important;
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+.add-category-page-container .data-table td {
+  text-align: center !important;
+  vertical-align: middle;
+  overflow-wrap: anywhere;
+}
+
+/* Name (column 4) reads left aligned */
+.add-category-page-container .data-table td:nth-child(4) {
+  text-align: left !important;
+}
+
+/* date stays on one line */
+.add-category-page-container .data-table td:nth-child(2) {
+  white-space: nowrap;
+}
+
+.add-category-page-container .th-content-wrapper {
+  justify-content: center !important;
+  flex-wrap: nowrap;
+}
+
+/* ==========================================================================
+   EDIT BUTTON (pill)
+   ========================================================================== */
+
+.add-category-page-container .data-table button.ac-edit {
+  -webkit-appearance: none;
+  appearance: none;
+  min-width: 84px;
+  padding: 6px 22px !important;
+  border: 1px solid #0d4e43 !important;
+  border-radius: 999px !important;
+  background: #ffffff !important;
+  color: #0d4e43 !important;
+  font-family: inherit;
+  font-size: 13px !important;
   font-weight: 700 !important;
-  padding: 0.9rem 1rem !important;
-  font-size: 0.925rem !important;
-  border-bottom: 2px solid #e2e8f0 !important;
+  line-height: 1.2;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
 }
 
-.category-details-card .data-table td {
-  padding: 0.9rem 1rem !important;
-  font-size: 0.925rem !important;
-  color: #334155;
-  border-bottom: 1px solid #f1f5f9;
+.add-category-page-container .data-table button.ac-edit:hover {
+  background: #0d4e43 !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+.add-category-page-container .data-table button.ac-edit:focus-visible {
+  box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.35);
 }
 
 /* ==========================================================================
-   Mobile Responsive Adjustments
+   TABLET (up to 991px)
    ========================================================================== */
-@media (max-width: 640px) {
-  .category-radio-group {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
+
+@media (max-width: 991px) {
+  .add-category-page-container .ac-head h2 {
+    font-size: 1.55rem;
   }
 
-  .category-submit-btn {
-    width: 100%;
+  .add-category-page-container .ac-table-card {
+    padding: 16px;
+  }
+
+  .add-category-page-container .ac-btn-submit,
+  .add-category-page-container .ac-btn-cancel {
+    min-width: 130px !important;
+    height: 40px !important;
+    padding: 0 22px !important;
+    font-size: 0.88rem !important;
+  }
+}
+
+/* ==========================================================================
+   MOBILE (up to 767px)
+   ========================================================================== */
+
+@media (max-width: 767px) {
+  .add-category-page-container {
+    padding: 12px 8px 30px;
+    gap: 16px;
+  }
+
+  .add-category-page-container .ac-head h2 {
+    font-size: 1.35rem;
+  }
+
+  .add-category-page-container .ac-card {
+    padding: 20px 16px;
+    border-radius: 12px;
+  }
+
+  .add-category-page-container .ac-table-card {
+    padding: 12px 10px;
+  }
+
+  .add-category-page-container .ac-input {
+    font-size: 1rem;            /* 16px: no zoom on iPhone */
+  }
+
+  .add-category-page-container .ac-btn-submit,
+  .add-category-page-container .ac-btn-cancel {
+    min-width: 110px !important;
+    height: 38px !important;
+    padding: 0 20px !important;
+    font-size: 0.84rem !important;
+  }
+
+  .add-category-page-container .data-table button.ac-edit {
+    min-width: 72px;
+    padding: 5px 16px !important;
+    font-size: 12px !important;
+  }
+
+  /* search box gets its own full-width row, never wider than the card */
+  .add-category-page-container .ac-table-card div:has(> select),
+  .add-category-page-container .ac-table-card div:has(> input[type="search"]),
+  .add-category-page-container .ac-table-card div:has(> input[type="text"]) {
+    gap: 10px;
+  }
+
+  .add-category-page-container .ac-table-card div:has(> input[type="search"]),
+  .add-category-page-container .ac-table-card div:has(> input[type="text"]) {
+    width: 100% !important;
+    flex: 1 1 100%;
+  }
+
+  .add-category-page-container .ac-table-card input[type="search"],
+  .add-category-page-container .ac-table-card input[type="text"] {
+    width: 100% !important;
+    flex: 1 1 100%;
+  }
+}
+
+/* ==========================================================================
+   VERY SMALL PHONES (up to 400px)
+   ========================================================================== */
+
+@media (max-width: 400px) {
+  .add-category-page-container .ac-radios {
+    gap: 8px 16px;
+  }
+
+  .add-category-page-container .ac-btn-submit,
+  .add-category-page-container .ac-btn-cancel {
+    flex: 1 1 0;
+    min-width: 0 !important;
+    padding: 0 12px !important;
   }
 }

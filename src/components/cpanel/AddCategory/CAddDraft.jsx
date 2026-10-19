@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './AddDraft.css';
 import DraftDetailsTable from './DraftDetailsTable';
-import Button from "../../common/button/Button"
+import Button from "../../common/button/Button";
 
 const CATEGORY_OPTIONS = {
   Certificate: [
@@ -20,15 +20,15 @@ const CATEGORY_OPTIONS = {
   ]
 };
 
-export default function CAddDraft() {
-  const [formData, setFormData] = useState({
-    type: 'Certificate',
-    categoryName: '',
-    draftContent: ''
-  });
+const emptyForm = { type: 'Certificate', categoryName: '', draftContent: '' };
 
+export default function CAddDraft() {
+  const [formData, setFormData] = useState(emptyForm);
+  const [editingId, setEditingId] = useState(null);
   const [errors, setErrors] = useState({});
+  const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const editorRef = useRef(null);
   const MAX_CHARS = 1000;
   
@@ -41,12 +41,23 @@ export default function CAddDraft() {
       categoryName: draftRow.category,
       draftContent: draftRow.details,
     });
+    setEditingId(draftRow.id || true);
+    setErrors({});
+    setMessage('');
 
     if (editorRef.current) {
       editorRef.current.innerHTML = draftRow.details || '';
     }
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCancel = () => {
+    setFormData(emptyForm);
+    setEditingId(null);
+    setErrors({});
+    setMessage('');
+    if (editorRef.current) editorRef.current.innerHTML = '';
   };
 
   useEffect(() => {
@@ -60,19 +71,19 @@ export default function CAddDraft() {
   }, []);
 
   const handleTypeChange = (e) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       type: e.target.value,
       categoryName: ''
-    });
+    }));
     setIsOpen(false);
-    if (errors.type) setErrors({ ...errors, type: null });
+    if (errors.type) setErrors((prev) => ({ ...prev, type: null }));
   };
 
   const handleSelectCategory = (value) => {
-    setFormData({ ...formData, categoryName: value });
+    setFormData((prev) => ({ ...prev, categoryName: value }));
     setIsOpen(false);
-    if (errors.categoryName) setErrors({ ...errors, categoryName: null });
+    if (errors.categoryName) setErrors((prev) => ({ ...prev, categoryName: null }));
   };
 
   const formatText = (command, value = null) => {
@@ -99,6 +110,9 @@ export default function CAddDraft() {
 
     if (!formData.type) newErrors.type = 'Please select a type.';
     if (!formData.categoryName.trim()) newErrors.categoryName = 'Please select a Category / Sub Category.';
+    if (!formData.draftContent.trim() || formData.draftContent === '<br>') {
+      newErrors.draftContent = 'Please enter draft content.';
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -107,11 +121,12 @@ export default function CAddDraft() {
 
     setIsSubmitting(true);
     setTimeout(() => {
-      alert(`Draft submitted successfully!`);
+      setMessage(editingId ? 'Draft updated successfully.' : 'Draft added successfully.');
       setIsSubmitting(false);
-      setFormData({ type: 'Certificate', categoryName: '', draftContent: '' });
+      setFormData(emptyForm);
+      setEditingId(null);
       if (editorRef.current) editorRef.current.innerHTML = '';
-    }, 500);
+    }, 400);
   };
 
   const getCharCount = () => {
@@ -120,26 +135,27 @@ export default function CAddDraft() {
   };
 
   return (
-    <div className="page-layout-container">
-      {/* 1. COMPACT FORM CONTAINER */}
-      <div className="add-draft-form-wrapper">
-        <div className="add-draft-card">
-          <div className="add-draft-header">
-            <h2>Add Draft</h2>
+    <div className="add-draft-page-container">
+      {/* ================= FORM ================= */}
+      <div className="ad-form-wrap">
+        <div className="ad-card">
+          <div className="ad-head">
+            <h2>{editingId ? "Edit Draft" : "Add Draft"}</h2>
+            <div className="ad-underline" />
           </div>
 
-          <form onSubmit={handleSubmit} className="draft-form">
+          <form onSubmit={handleSubmit} className="ad-form" noValidate>
             {/* 1. Select Type */}
-            <div className="form-section">
-              <label className="section-label">
-                1. Select Type <span className="required-star">*</span>
+            <div className="ad-group">
+              <label className="ad-label">
+                1. Select Type <span className="ad-req">*</span>
               </label>
-              <div className="radio-options-grid">
+              <div className="ad-radios">
                 {['Certificate', 'Greeting', 'Invitation'].map((item) => (
-                  <label key={item} className="radio-option">
+                  <label key={item} className="ad-radio">
                     <input
                       type="radio"
-                      name="type"
+                      name="draftType"
                       value={item}
                       checked={formData.type === item}
                       onChange={handleTypeChange}
@@ -148,33 +164,33 @@ export default function CAddDraft() {
                   </label>
                 ))}
               </div>
-              {errors.type && <span className="error-text">{errors.type}</span>}
+              {errors.type && <span className="ad-error-text">{errors.type}</span>}
             </div>
 
             {/* 2. Custom Category Dropdown */}
-            <div className="form-section">
-              <label className="section-label">
-                2. Select Category <span className="required-star">*</span>
+            <div className="ad-group">
+              <label className="ad-label">
+                2. Select Category <span className="ad-req">*</span>
               </label>
 
-              <div className="custom-select-container" ref={dropdownRef}>
+              <div className="ad-custom-select-container" ref={dropdownRef}>
                 <div 
-                  className={`custom-select-header ${errors.categoryName ? 'has-error' : ''}`}
+                  className={`ad-custom-select-header ${errors.categoryName ? 'has-error' : ''}`}
                   onClick={() => setIsOpen(!isOpen)}
                 >
                   <span>{formData.categoryName || '-- Select Category --'}</span>
-                  <span className={`chevron ${isOpen ? 'open' : ''}`}>▼</span>
+                  <span className={`ad-chevron ${isOpen ? 'open' : ''}`}>▼</span>
                 </div>
 
                 {isOpen && (
-                  <div className="custom-select-menu">
+                  <div className="ad-custom-select-menu">
                     {CATEGORY_OPTIONS[formData.type]?.map((group, groupIdx) => (
-                      <div key={groupIdx} className="select-group">
-                        <div className="select-group-header">{group.label}</div>
+                      <div key={groupIdx} className="ad-select-group">
+                        <div className="ad-select-group-header">{group.label}</div>
                         {group.options.map((option, optIdx) => (
                           <div
                             key={optIdx}
-                            className={`select-option ${formData.categoryName === option ? 'selected' : ''}`}
+                            className={`ad-select-option ${formData.categoryName === option ? 'selected' : ''}`}
                             onClick={() => handleSelectCategory(option)}
                           >
                             {option}
@@ -185,45 +201,42 @@ export default function CAddDraft() {
                   </div>
                 )}
               </div>
-
-              {errors.categoryName && (
-                <span className="error-text">{errors.categoryName}</span>
-              )}
+              {errors.categoryName && <span className="ad-error-text">{errors.categoryName}</span>}
             </div>
 
             {/* 3. Category Draft Content */}
-            <div className="form-section">
-              <label htmlFor="draftContent" className="section-label">
-                3. Category Draft Content <span className="required-star">*</span>
+            <div className="ad-group">
+              <label htmlFor="draftContent" className="ad-label">
+                3. Category Draft Content <span className="ad-req">*</span>
               </label>
 
-              <div className="editor-shell">
-                <div className="editor-toolbar">
-                  <div className="toolbar-btn-group">
-                    <Button type="button" className="toolbar-btn" onClick={() => formatText('bold')}><b>B</b></Button>
-                    <Button type="button" className="toolbar-btn" onClick={() => formatText('italic')}><i>I</i></Button>
-                    <Button type="button" className="toolbar-btn" onClick={() => formatText('underline')}><u>U</u></Button>
+              <div className="ad-editor-shell">
+                <div className="ad-editor-toolbar">
+                  <div className="ad-toolbar-btn-group">
+                    <button type="button" className="ad-toolbar-btn" onClick={() => formatText('bold')}><b>B</b></button>
+                    <button type="button" className="ad-toolbar-btn" onClick={() => formatText('italic')}><i>I</i></button>
+                    <button type="button" className="ad-toolbar-btn" onClick={() => formatText('underline')}><u>U</u></button>
                   </div>
 
-                  <span className="toolbar-divider" />
+                  <span className="ad-toolbar-divider" />
 
-                  <div className="toolbar-btn-group">
-                    <Button type="button" className="toolbar-btn" onClick={() => formatText('justifyLeft')}>≡</Button>
-                    <Button type="button" className="toolbar-btn" onClick={() => formatText('justifyCenter')}>≡</Button>
-                    <Button type="button" className="toolbar-btn" onClick={() => formatText('justifyRight')}>≡</Button>
+                  <div className="ad-toolbar-btn-group">
+                    <button type="button" className="ad-toolbar-btn" onClick={() => formatText('justifyLeft')}>≡</button>
+                    <button type="button" className="ad-toolbar-btn" onClick={() => formatText('justifyCenter')}>≡</button>
+                    <button type="button" className="ad-toolbar-btn" onClick={() => formatText('justifyRight')}>≡</button>
                   </div>
 
-                  <span className="toolbar-divider" />
+                  <span className="ad-toolbar-divider" />
 
-                  <div className="toolbar-btn-group">
-                    <Button type="button" className="toolbar-btn" onClick={() => formatText('undo')}>↶</Button>
-                    <Button type="button" className="toolbar-btn" onClick={() => formatText('redo')}>↷</Button>
+                  <div className="ad-toolbar-btn-group">
+                    <button type="button" className="ad-toolbar-btn" onClick={() => formatText('undo')}>↶</button>
+                    <button type="button" className="ad-toolbar-btn" onClick={() => formatText('redo')}>↷</button>
                   </div>
 
-                  <span className="toolbar-divider" />
+                  <span className="ad-toolbar-divider" />
 
                   <select 
-                    className="toolbar-select" 
+                    className="ad-toolbar-select" 
                     aria-label="Font family"
                     onChange={(e) => formatText('fontName', e.target.value)}
                   >
@@ -233,7 +246,7 @@ export default function CAddDraft() {
                   </select>
 
                   <select 
-                    className="toolbar-select" 
+                    className="ad-toolbar-select" 
                     aria-label="Font size"
                     onChange={(e) => formatText('fontSize', e.target.value)}
                   >
@@ -243,44 +256,61 @@ export default function CAddDraft() {
                   </select>
                 </div>
 
-                <div className="editor-subtoolbar">
-                  <label className="color-btn-wrapper">
-                    <span className="underline-color">A</span>
+                <div className="ad-editor-subtoolbar">
+                  <label className="ad-color-btn-wrapper">
+                    <span className="ad-underline-color">A</span>
                     <input 
                       type="color" 
-                      className="color-input" 
+                      className="ad-color-input" 
                       onChange={(e) => formatText('foreColor', e.target.value)} 
                     />
-                    <span className="small-arrow">▼</span>
+                    <span className="ad-small-arrow">▼</span>
                   </label>
                 </div>
 
                 <div
                   ref={editorRef}
-                  className="editor-editable-area"
+                  className="ad-editor-editable-area"
                   contentEditable
                   onInput={handleContentInput}
                   data-placeholder="Type rich text content for this category..."
                 />
               </div>
 
-              <div className="char-counter">
+              <div className="ad-char-counter">
                 {getCharCount()} / {MAX_CHARS} characters
               </div>
+              {errors.draftContent && <span className="ad-error-text">{errors.draftContent}</span>}
             </div>
 
-            <div className="form-actions">
-              <Button type="submit" className="submit-btn" disabled={isSubmitting}>
-                {isSubmitting ? 'Submitting...' : 'Submit'}
+            {message && <p className="ad-success" role="status">{message}</p>}
+
+            <div className="ad-actions">
+              {editingId && (
+                <Button type="button" className="ad-btn-cancel" onClick={handleCancel}>
+                  Cancel
+                </Button>
+              )}
+              <Button type="submit" className="ad-btn-submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Saving...' : editingId ? 'Update' : 'Submit'}
               </Button>
             </div>
           </form>
         </div>
       </div>
 
-      {/* 2. EXPANDED TABLE CONTAINER */}
-      <div className="draft-table-wrapper">
-        <DraftDetailsTable onEditDraft={handleEditDraft} />
+      {/* ================= TABLE ================= */}
+      <div className="ad-table-wrap">
+        <div className="ad-card ad-table-card">
+          <div className="ad-head">
+            <h2>Draft Details</h2>
+            <div className="ad-underline" />
+          </div>
+
+          <div className="ad-scroll">
+            <DraftDetailsTable onEditDraft={handleEditDraft} />
+          </div>
+        </div>
       </div>
     </div>
   );

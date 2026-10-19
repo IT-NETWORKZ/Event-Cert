@@ -1,0 +1,219 @@
+/* ==========================================================================
+   PAGE LAYOUT
+   ========================================================================== */
+
+.admin-tax-page-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 16px 40px;
+  background-color: #f4f8f7;
+  color: #2b2b2b;
+  overflow-x: hidden;
+}
+
+.admin-tax-page-container *,
+.admin-tax-page-container *::before,
+.admin-tax-page-container *::after {
+  box-sizing: border-box;
+}
+
+.admin-tax-page-container .tax-table-wrap {
+  width: 100%;
+  max-width: 1000px;
+  min-width: 0;
+  overflow: visible;
+}
+
+/* ==========================================================================
+   CARD + TITLE
+   ========================================================================== */
+
+.admin-tax-page-container .tax-card {
+  width: 100%;
+  padding: 26px 30px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(13, 78, 67, 0.12);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  min-width: 0;
+  overflow: visible;
+}
+
+.admin-tax-page-container .tax-head {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.admin-tax-page-container .tax-title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #1a2e2b;
+}
+
+.admin-tax-page-container .tax-title span {
+  color: #0d4e43;
+}
+
+.admin-tax-page-container .tax-underline {
+  width: 60px;
+  height: 3px;
+  margin: 10px auto 0;
+  background: #0d4e43;
+}
+
+/* ==========================================================================
+   TOOLBAR CONTROLS
+   ========================================================================== */
+
+.admin-tax-page-container div:has(> select),
+.admin-tax-page-container div:has(> input[type="search"]),
+.admin-tax-page-container div:has(> input[type="text"]) {
+  flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
+  overflow: visible;
+}
+
+/* ==========================================================================
+   TABLE SCROLL WRAPPER
+   ========================================================================== */
+
+.admin-tax-page-container .tax-scroll {
+  width: 100%;
+  overflow: visible !important;
+  min-width: 0;
+}
+
+.admin-tax-page-container .table-wrapper,
+.admin-tax-page-container .data-table-container,
+.admin-tax-page-container .data-table-wrapper {
+  overflow: visible !important;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0 !important;
+}
+
+.admin-tax-page-container .table-responsive {
+  width: 100%;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+}
+
+.admin-tax-page-container .data-table {
+  table-layout: fixed !important;
+  width: max-content !important;
+  min-width: 100% !important;
+}
+
+.admin-tax-page-container .table-responsive::-webkit-scrollbar {
+  height: 8px;
+}
+
+.admin-tax-page-container .table-responsive::-webkit-scrollbar-track {
+  background: rgba(13, 78, 67, 0.1);
+  border-radius: 10px;
+}
+
+.admin-tax-page-container .table-responsive::-webkit-scrollbar-thumb {
+  background: #0d4e43;
+  border-radius: 10px;
+}
+
+.admin-tax-page-container .table-responsive::-webkit-scrollbar-thumb:hover {
+  background: #009688;
+}
+
+/* ==========================================================================
+   CELLS & ALIGNMENT FIXES
+   ========================================================================== */
+
+.admin-tax-page-container .data-table th {
+  text-align: center !important;
+  white-space: nowrap;
+}
+
+.admin-tax-page-container .data-table td {
+  text-align: center !important;
+  vertical-align: middle;
+  overflow-wrap: anywhere;
+}
+
+/* Custom styling for the Edit Pill Button */
+.admin-tax-page-container .data-table button.tax-edit-btn {
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px !important;
+  padding: 6px 16px !important;
+  border: none !important;
+  border-radius: 999px !important;
+  background: linear-gradient(45deg, #009688, #26a69a) !important;
+  color: #ffffff !important;
+  font-family: inherit;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 10px rgba(0, 150, 136, 0.3);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.admin-tax-page-container .data-table button.tax-edit-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow: 0 6px 14px rgba(0, 150, 136, 0.4);
+}
+
+.admin-tax-page-container .data-table button.tax-edit-btn:active {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+
+@media (max-width: 991px) {
+  .admin-tax-page-container .tax-title {
+    font-size: 1.55rem;
+  }
+
+  .admin-tax-page-container .tax-card {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  .admin-tax-page-container {
+    padding: 12px 8px 30px;
+    gap: 16px;
+  }
+
+  .admin-tax-page-container .tax-title {
+    font-size: 1.35rem;
+  }
+
+  .admin-tax-page-container .tax-card {
+    padding: 20px 16px;
+    border-radius: 12px;
+  }
+
+  .admin-tax-page-container div:has(> input[type="search"]),
+  .admin-tax-page-container div:has(> input[type="text"]) {
+    width: 100% !important;
+    flex: 1 1 100%;
+  }
+
+  .admin-tax-page-container input[type="search"],
+  .admin-tax-page-container input[type="text"] {
+    width: 100% !important;
+    flex: 1 1 100%;
+  }
+}
