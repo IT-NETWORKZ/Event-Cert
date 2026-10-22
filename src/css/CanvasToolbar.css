@@ -2,6 +2,440 @@
   box-sizing: border-box;
 }
 
+/* The toolbar never makes its parent wider: it keeps to the available width
+   and scrolls sideways inside itself instead. */
+.toolbar-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  background-color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+
+.toolbar-container::-webkit-scrollbar {
+  height: 4px;
+}
+.toolbar-container::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 4px;
+}
+
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+
+/* ===========================================================
+   TOOLBAR BUTTONS
+   =========================================================== */
+.toolbar-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background-color: transparent;
+  cursor: pointer;
+  color: #4b5563;
+  transition: background-color 0.15s ease, color 0.15s ease,
+              border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.toolbar-button svg {
+  font-size: 15px;
+}
+
+.toolbar-button:hover:not(:disabled) {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.toolbar-button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
+}
+
+.toolbar-button:active:not(:disabled) {
+  background-color: #e2e8f0;
+}
+
+/* ON state (Bold / Italic / Alignment / Draw): clearly highlighted like Word */
+.toolbar-button.active,
+.toolbar-button[aria-pressed="true"] {
+  background-color: #e0e7ff;
+  color: #4f46e5;
+  border-color: #a5b4fc;
+  box-shadow: inset 0 1px 2px rgba(79, 70, 229, 0.18);
+}
+
+/* small indicator bar under an active button */
+.toolbar-button.active::after,
+.toolbar-button[aria-pressed="true"]::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 3px;
+  width: 12px;
+  height: 2px;
+  border-radius: 2px;
+  background-color: #4f46e5;
+  transform: translateX(-50%);
+}
+
+.toolbar-button.active:hover:not(:disabled),
+.toolbar-button[aria-pressed="true"]:hover:not(:disabled) {
+  background-color: #c7d2fe;
+  color: #4338ca;
+}
+
+.toolbar-button:disabled {
+  cursor: not-allowed;
+}
+
+
+.toolbar-divider {
+  border-left: 1px solid #e2e8f0;
+  height: 22px;
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+
+.color-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px #cbd5e1, 0 1px 3px rgba(0,0,0,0.1);
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+}
+
+.color-label:hover {
+  transform: scale(1.08);
+}
+
+.hidden-color-input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+
+/* ===========================================================
+   DROPDOWNS (generic + font family)
+   =========================================================== */
+.select-dropdown,
+.font-select-dropdown {
+  padding: 6px 32px 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
+  background-color: #f8fafc;
+  outline: none;
+  cursor: pointer;
+  width: 140px;
+  height: 34px;
+  flex-shrink: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748B' width='16' height='16'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+  text-overflow: ellipsis;
+}
+
+.font-select-dropdown {
+  width: 150px;
+}
+
+.select-dropdown:hover,
+.font-select-dropdown:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.select-dropdown:focus,
+.font-select-dropdown:focus {
+  border-color: #4f46e5;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+
+/* ===========================================================
+   FONT SIZE STEPPER  ( - [ 28 ] + )
+   Same slate / indigo theme as the rest of the toolbar
+   =========================================================== */
+.font-size-control {
+  display: flex;
+  align-items: center;
+  height: 34px;
+  flex-shrink: 0;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+  transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+}
+
+.font-size-control:hover {
+  border-color: #94a3b8;
+  background-color: #f1f5f9;
+}
+
+.font-size-control:focus-within {
+  border-color: #4f46e5;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.font-size-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: #4b5563;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.font-size-btn svg {
+  font-size: 10px;
+}
+
+.font-size-btn:hover:not(:disabled) {
+  background-color: #e0e7ff;
+  color: #4f46e5;
+}
+
+.font-size-btn:active:not(:disabled) {
+  background-color: #c7d2fe;
+}
+
+.font-size-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.font-size-input {
+  width: 38px;
+  height: 100%;
+  padding: 0;
+  border: none;
+  border-left: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+  background-color: transparent;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  outline: none;
+}
+
+.font-size-input:focus {
+  background-color: #ffffff;
+  color: #4f46e5;
+}
+
+
+/* ===========================================================
+   DESTRUCTIVE ACTIONS
+   =========================================================== */
+.btn-eraser {
+  color: #ea580c;
+}
+.btn-eraser:hover:not(:disabled) {
+  background-color: #fff7ed;
+  color: #c2410c;
+}
+
+.btn-trash {
+  color: #dc2626;
+}
+.btn-trash:hover:not(:disabled) {
+  background-color: #fef2f2;
+  color: #b91c1c;
+}
+
+.spacer {
+  margin-right: auto;
+}
+
+
+/* ===========================================================
+   TABLET  (up to 992px)
+   =========================================================== */
+@media (max-width: 992px) {
+  .toolbar-container {
+    padding: 7px 12px;
+    gap: 8px;
+  }
+
+  .font-select-dropdown {
+    width: 135px;
+  }
+}
+
+
+/* ===========================================================
+   MOBILE  (up to 768px)
+   Toolbar scrolls sideways; buttons keep a comfortable
+   touch size and the ON state stays clearly visible.
+   =========================================================== */
+@media (max-width: 768px) {
+  .toolbar-container {
+    padding: 6px 10px;
+    gap: 6px;
+    border-radius: 10px;
+  }
+
+  .toolbar-divider {
+    height: 16px;
+    margin: 0 2px;
+  }
+
+  .toolbar-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .toolbar-button svg {
+    font-size: 16px;
+  }
+
+  .toolbar-button.active::after,
+  .toolbar-button[aria-pressed="true"]::after {
+    bottom: 2px;
+    width: 10px;
+  }
+
+  .color-label {
+    width: 36px;
+    height: 36px;
+  }
+
+  .select-dropdown,
+  .font-select-dropdown {
+    height: 36px;
+    width: 120px;
+    font-size: 12px;
+    padding-left: 8px;
+    padding-right: 26px;
+    background-position: right 4px center;
+  }
+
+  .font-size-control {
+    height: 36px;
+  }
+
+  .font-size-btn {
+    width: 30px;
+  }
+
+  .font-size-input {
+    width: 36px;
+    font-size: 13px;
+  }
+}
+
+
+/* ===========================================================
+   SMALL PHONES  (up to 480px)
+   =========================================================== */
+@media (max-width: 480px) {
+  .toolbar-container {
+    padding: 5px 8px;
+    gap: 4px;
+  }
+
+  .toolbar-group {
+    gap: 3px;
+  }
+
+  .font-select-dropdown {
+    width: 105px;
+  }
+}
+
+
+/* ===========================================================
+   TOUCH DEVICES: no sticky "hover" highlight after a tap, so
+   only the real ON state (Bold / Italic / Align) is highlighted
+   =========================================================== */
+@media (hover: none) {
+  .toolbar-button:hover:not(:disabled):not(.active):not([aria-pressed="true"]) {
+    background-color: transparent;
+    color: #4b5563;
+  }
+
+  .toolbar-button.btn-eraser:hover:not(:disabled) {
+    background-color: transparent;
+    color: #ea580c;
+  }
+
+  .toolbar-button.btn-trash:hover:not(:disabled) {
+    background-color: transparent;
+    color: #dc2626;
+  }
+
+  .font-size-btn:hover:not(:disabled) {
+    background-color: transparent;
+    color: #4b5563;
+  }
+}
+
+
+
+
+/* .toolbar-container * {
+  box-sizing: border-box;
+}
+
 .toolbar-container {
   display: flex;
   gap: 10px;
@@ -185,4 +619,4 @@
     padding-left: 8px;
     background-position: right 4px center;
   }
-}
+} */
