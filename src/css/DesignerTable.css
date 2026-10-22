@@ -44,7 +44,12 @@
 }
 
 /* Table scrolls sideways inside the card instead of being cut off */
-.dsg-section .table-responsive { overflow-x: auto; }
+.dsg-section .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.dsg-section .table-responsive::-webkit-scrollbar { height: 8px; }
+.dsg-section .table-responsive::-webkit-scrollbar-thumb { background: #c9c9c9; border-radius: 20px; }
 
 /* ===========================================================
    FORM (desktop)
@@ -211,14 +216,130 @@
     align-items: center;
     gap: 8px;
     margin: 0;
+    padding: 0;
     cursor: pointer;
     font-weight: 600;
+    white-space: nowrap;
 }
 .dsg-select-all input,
-.dsg-section tbody input[type="checkbox"] {
+.dsg-section tbody input[type="checkbox"],
+.dsg-section thead input[type="checkbox"] {
     width: 16px;
     height: 16px;
+    flex-shrink: 0;
     cursor: pointer;
+    /* reset anything that pushes the checkbox outside its cell
+       (e.g. Bootstrap .form-check-input negative margin / float) */
+    margin: 0 !important;
+    float: none !important;
+    position: static !important;
+    transform: none !important;
+}
+
+/* ===========================================================
+   TABLE  (titles + data always line up)
+   - Fixed layout: header cell and data cells in the same column
+     always share ONE width (set by the --w1..--w9 variables)
+   - Same alignment for title and data (left), Sr. No. centered
+   - Titles NEVER wrap or break letter by letter
+   - Long data is clipped with "..."
+   - Table is as wide as its columns and scrolls sideways
+   =========================================================== */
+.dsg-section table.data-table {
+    /* column widths: Select | Sr | Name | Email | Mobile | T1 | T2 | T3 | Group */
+    --w1: 140px;
+    --w2: 100px;
+    --w3: 170px;
+    --w4: 220px;
+    --w5: 150px;
+    --w6: 120px;
+    --w7: 120px;
+    --w8: 120px;
+    --w9: 150px;
+
+    table-layout: fixed;
+    width: calc(var(--w1) + var(--w2) + var(--w3) + var(--w4) + var(--w5) + var(--w6) + var(--w7) + var(--w8) + var(--w9));
+    min-width: 100%;
+    max-width: none;
+}
+
+/* width of each column (same for th and td) */
+.dsg-section table.data-table th:nth-child(1), .dsg-section table.data-table td:nth-child(1) { width: var(--w1) !important; }
+.dsg-section table.data-table th:nth-child(2), .dsg-section table.data-table td:nth-child(2) { width: var(--w2) !important; }
+.dsg-section table.data-table th:nth-child(3), .dsg-section table.data-table td:nth-child(3) { width: var(--w3) !important; }
+.dsg-section table.data-table th:nth-child(4), .dsg-section table.data-table td:nth-child(4) { width: var(--w4) !important; }
+.dsg-section table.data-table th:nth-child(5), .dsg-section table.data-table td:nth-child(5) { width: var(--w5) !important; }
+.dsg-section table.data-table th:nth-child(6), .dsg-section table.data-table td:nth-child(6) { width: var(--w6) !important; }
+.dsg-section table.data-table th:nth-child(7), .dsg-section table.data-table td:nth-child(7) { width: var(--w7) !important; }
+.dsg-section table.data-table th:nth-child(8), .dsg-section table.data-table td:nth-child(8) { width: var(--w8) !important; }
+.dsg-section table.data-table th:nth-child(9), .dsg-section table.data-table td:nth-child(9) { width: var(--w9) !important; }
+
+/* titles */
+.dsg-section table.data-table thead th {
+    vertical-align: middle;
+    text-align: left !important;
+    font-size: clamp(12px, 1.4vw, 14px);
+    padding: 12px 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* KEY FIX: no title (or anything inside it) may wrap or break letter by letter */
+.dsg-section table.data-table thead th,
+.dsg-section table.data-table thead th * {
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    word-wrap: normal !important;
+    hyphens: none !important;
+    writing-mode: horizontal-tb !important;
+}
+
+/* inner wrapper of a title (text + sort icon) stays on one line, left aligned */
+.dsg-section table.data-table thead th > div,
+.dsg-section table.data-table thead th > span,
+.dsg-section table.data-table thead th > label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+    width: auto;
+    min-width: max-content;
+}
+
+/* Select All + Sr. No. columns: never clip (checkbox / full title must show) */
+.dsg-section table.data-table th:nth-child(1),
+.dsg-section table.data-table td:nth-child(1),
+.dsg-section table.data-table th:nth-child(2),
+.dsg-section table.data-table td:nth-child(2) {
+    overflow: visible;
+    text-overflow: clip;
+}
+
+/* data cells */
+.dsg-section table.data-table tbody td {
+    vertical-align: middle;
+    text-align: left !important;
+    padding: 10px 14px;
+    overflow: hidden;
+}
+
+.dsg-section table.data-table .td-content-clip {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Sr. No. column: title and data both centered */
+.dsg-section table.data-table th:nth-child(2),
+.dsg-section table.data-table td:nth-child(2) { text-align: center !important; }
+.dsg-section table.data-table th:nth-child(2) > div,
+.dsg-section table.data-table th:nth-child(2) > span {
+    justify-content: center;
+    min-width: 0;
 }
 
 /* ===========================================================
@@ -257,6 +378,14 @@
     .dsg-row-select .dsg-pill-round br { display: none; }
 
     .dsg-row-actions .dsg-pill { height: 36px; padding: 0 18px; }
+
+    /* table: slightly narrower columns */
+    .dsg-section table.data-table {
+        --w1: 135px; --w2: 95px; --w3: 155px; --w4: 205px; --w5: 135px;
+        --w6: 105px; --w7: 105px; --w8: 105px; --w9: 140px;
+    }
+    .dsg-section table.data-table thead th { padding: 10px 12px; font-size: 13px; }
+    .dsg-section table.data-table tbody td { padding: 9px 12px; font-size: 13px; }
 }
 
 /* ===========================================================
@@ -331,6 +460,15 @@
         height: 32px;
         padding: 0 16px;
     }
+
+    /* table: compact columns, titles + data still aligned */
+    .dsg-section table.data-table {
+        --w1: 130px; --w2: 88px; --w3: 140px; --w4: 190px; --w5: 125px;
+        --w6: 90px; --w7: 90px; --w8: 90px; --w9: 125px;
+    }
+    .dsg-section table.data-table thead th { padding: 9px 10px; font-size: 12px; }
+    .dsg-section table.data-table tbody td { padding: 8px 10px; font-size: 12.5px; }
+    .dsg-select-all { gap: 6px; }
 }
 
 /* Very small phones (iPhone SE, 320-380px): keep 2 columns, just tighten */
@@ -343,4 +481,7 @@
         font-size: 11.5px;
         padding: 0 4px;
     }
+
+    .dsg-section table.data-table thead th { font-size: 11.5px; padding: 8px 8px; }
+    .dsg-section table.data-table tbody td { font-size: 12px; padding: 8px 8px; }
 }
