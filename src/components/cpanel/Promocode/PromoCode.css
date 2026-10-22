@@ -1,424 +1,569 @@
 /* ==========================================================================
-   1. GLOBAL PAGE LAYOUT & VARIABLES
+   PAGE
    ========================================================================== */
-:root {
-  --teal-50: #e6f7f5;
-  --teal-100: #b2e8e0;
-  --teal-500: #00a896;
-  --teal-600: #028090;
-  --teal-700: #05668d;
-  --slate-50: #f8fafc;
-  --slate-100: #f1f5f9;
-  --slate-200: #e2e8f0;
-  --slate-400: #94a3b8;
-  --slate-600: #475569;
-  --slate-800: #1e293b;
-  --red-500: #ef4444;
-}
 
-/* Forces vertical stacking so table stays below the form */
 .promo-page-wrapper {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center;
-  width: 100%;
-  gap: 2rem;
-  padding: 1.5rem 1rem;
-  box-sizing: border-box;
+    padding: 20px 16px 40px;
+    min-height: 100vh;
+    background-color: #f4f8f7;
+    overflow-x: hidden;           /* the page never scrolls sideways */
+}
+
+.promo-page-wrapper *,
+.promo-page-wrapper *::before,
+.promo-page-wrapper *::after {
+    box-sizing: border-box;
 }
 
 /* ==========================================================================
-   2. FORM CONTAINER & HEADER
+   TITLES
    ========================================================================== */
-.promo-card-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
+
+.promo-page-wrapper .pc-head {
+    text-align: center;
+    margin-bottom: 18px;
 }
 
-.promo-card {
-  width: 100%;
-  max-width: 750px;
-  background: #ffffff !important;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  border: 1px solid var(--slate-200);
-  padding: 2rem;
-  box-sizing: border-box;
+.promo-page-wrapper .pc-title {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1a2e2b;
 }
 
-.promo-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  background: var(--teal-50);
-  padding: 1rem 1.25rem;
-  border-radius: 10px;
-  margin-bottom: 1.5rem;
-  border: 1px solid var(--teal-100);
-}
-
-.icon-badge {
-  background-color: #ffffff;
-  padding: 0.6rem;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.header-icon {
-  width: 24px;
-  height: 24px;
-  color: var(--teal-600);
-}
-
-.promo-title {
-  margin: 0;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--teal-700);
-}
-
-.promo-subtitle {
-  margin: 0.2rem 0 0 0;
-  font-size: 0.85rem;
-  color: var(--slate-600);
+.promo-page-wrapper .pc-underline {
+    width: 60px;
+    height: 3px;
+    margin: 10px auto 0;
+    background: #0d4e43;
 }
 
 /* ==========================================================================
-   3. FORM ELEMENTS & GRID
+   FORM CARD
    ========================================================================== */
-.promo-form {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
+
+.promo-page-wrapper .pc-form-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
 }
 
-.full-width {
-  grid-column: span 2;
+.promo-page-wrapper .pc-card {
+    width: 100%;
+    max-width: 640px;
+    padding: 26px 30px;
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid rgba(13, 78, 67, 0.12);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+.promo-page-wrapper .pc-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
 
-.form-label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--slate-800);
+.promo-page-wrapper .pc-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
 }
 
-.required {
-  color: var(--red-500);
+.promo-page-wrapper .pc-row-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
 }
 
-.input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
+.promo-page-wrapper .pc-label {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1a2e2b;
 }
 
-.input-icon {
-  position: absolute;
-  left: 1rem;
-  width: 1.1rem;
-  height: 1.1rem;
-  color: var(--teal-600);
-  pointer-events: none;
-  z-index: 2;
+.promo-page-wrapper .pc-req {
+    color: #dc3545;
+    margin-left: 2px;
 }
 
-.form-input {
-  width: 100%;
-  height: 44px;
-  padding: 0 1rem 0 2.8rem !important; /* Prevents text overlapping icon */
-  font-size: 0.9rem;
-  border-radius: 8px;
-  border: 1px solid var(--slate-200) !important;
-  background-color: #ffffff !important;
-  color: var(--slate-800) !important;
-  outline: none;
-  box-sizing: border-box;
-  transition: all 0.2s ease;
+.promo-page-wrapper .pc-input {
+    width: 100%;
+    height: 42px;
+    padding: 0 14px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    background: #ffffff;
+    font-family: inherit;
+    font-size: 0.92rem;
+    color: #1a2e2b;
+    outline: none;
+    transition: border-color 0.25s, box-shadow 0.25s;
 }
 
-.form-input:focus {
-  border-color: var(--teal-500) !important;
-  box-shadow: 0 0 0 3px rgba(0, 168, 150, 0.15) !important;
+.promo-page-wrapper .pc-input:hover,
+.promo-page-wrapper .pc-input:focus {
+    border-color: #009688;
 }
 
-.text-uppercase {
-  text-transform: uppercase;
-  font-weight: 600;
+.promo-page-wrapper .pc-input:focus {
+    box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.14);
 }
 
-/* Date input picker indicator reset */
-.date-input::-webkit-calendar-picker-indicator {
-  cursor: pointer;
-  opacity: 0.6;
+/* radio buttons */
+.promo-page-wrapper .pc-radios {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    height: 42px;
+}
+
+.promo-page-wrapper .pc-radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 0.92rem;
+    color: #1a2e2b;
+    cursor: pointer;
+}
+
+.promo-page-wrapper .pc-radio input {
+    width: 17px;
+    height: 17px;
+    accent-color: #009688;
+    cursor: pointer;
 }
 
 /* ==========================================================================
-   4. CUSTOM RADIO BUTTONS
+   PLAN DROPDOWN
    ========================================================================== */
-.custom-radio-group {
-  display: flex;
-  gap: 1rem;
+
+.promo-page-wrapper .pc-drop {
+    position: relative;
+    width: 100%;
 }
 
-.custom-radio-btn {
-  flex: 1;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  border: 1px solid var(--slate-200);
-  background-color: #ffffff;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  color: var(--slate-600);
-  transition: all 0.2s ease;
+.promo-page-wrapper .pc-drop-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    height: 42px;
+    padding: 0 14px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    background: #ffffff;
+    font-size: 0.92rem;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.25s, box-shadow 0.25s;
 }
 
-.radio-dot {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: 2px solid var(--slate-400);
-  display: inline-block;
-  position: relative;
-  box-sizing: border-box;
+.promo-page-wrapper .pc-drop-btn:hover,
+.promo-page-wrapper .pc-drop-btn:focus {
+    border-color: #009688;
+    outline: none;
 }
 
-.custom-radio-btn.active {
-  border-color: var(--teal-500);
-  background-color: var(--teal-50);
-  color: var(--teal-700);
-  font-weight: 600;
+.promo-page-wrapper .pc-drop-btn span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.custom-radio-btn.active .radio-dot {
-  border-color: var(--teal-600);
-  background-color: var(--teal-600);
-  box-shadow: inset 0 0 0 3px #ffffff;
+.promo-page-wrapper .pc-placeholder { color: #8fa3a0; }
+.promo-page-wrapper .pc-selected { color: #1a2e2b; }
+
+.promo-page-wrapper .pc-chevron {
+    flex-shrink: 0;
+    color: #5c726f;
+    transition: transform 0.2s;
+}
+
+.promo-page-wrapper .pc-chevron.open {
+    transform: rotate(180deg);
+}
+
+.promo-page-wrapper .pc-drop-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 50;
+    max-height: 240px;
+    overflow-y: auto;
+    padding: 4px;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+    scrollbar-width: thin;
+    scrollbar-color: #0d4e43 rgba(13, 78, 67, 0.1);
+}
+
+.promo-page-wrapper .pc-drop-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    color: #2b2b2b;
+    cursor: pointer;
+}
+
+.promo-page-wrapper .pc-drop-item span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.promo-page-wrapper .pc-drop-item:hover {
+    background: rgba(0, 150, 136, 0.1);
+}
+
+.promo-page-wrapper .pc-drop-item.selected {
+    background: #0d4e43;
+    color: #ffffff;
 }
 
 /* ==========================================================================
-   5. CUSTOM DROPDOWN
+   ERROR + FORM BUTTONS
    ========================================================================== */
-.custom-dropdown-container {
-  position: relative;
-  width: 100%;
+
+.promo-page-wrapper .pc-error {
+    margin: 0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #fde2e4;
+    color: #b02a37;
+    font-size: 0.84rem;
+    font-weight: 600;
 }
 
-.custom-dropdown-trigger {
-  width: 100%;
-  height: 44px;
-  padding: 0 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #ffffff;
-  border: 1px solid var(--slate-200);
-  border-radius: 8px;
-  cursor: pointer;
-  box-sizing: border-box;
-  transition: all 0.2s ease;
+.promo-page-wrapper .pc-actions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-top: 6px;
 }
 
-.custom-dropdown-trigger:focus {
-  border-color: var(--teal-500);
+.promo-page-wrapper .pc-btn-reset,
+.promo-page-wrapper .pc-btn-add {
+    width: auto !important;
+    min-width: 140px !important;
+    height: 44px !important;
+    padding: 0 26px !important;
+    border-radius: 999px !important;
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
 }
 
-.trigger-text {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.promo-page-wrapper .pc-btn-reset {
+    border: 1px solid #0d4e43 !important;
+    background: #ffffff !important;
+    color: #0d4e43 !important;
 }
 
-.input-icon-static {
-  width: 1.1rem;
-  height: 1.1rem;
-  color: var(--teal-600);
-  flex-shrink: 0;
+.promo-page-wrapper .pc-btn-reset:hover {
+    background: rgba(13, 78, 67, 0.08) !important;
 }
 
-.placeholder-text {
-  color: var(--slate-400);
-  font-size: 0.9rem;
+.promo-page-wrapper .pc-btn-add {
+    border: none !important;
+    background: linear-gradient(45deg, #009688, #26a69a) !important;
+    color: #ffffff !important;
+    box-shadow: 0 8px 18px rgba(0, 150, 136, 0.32);
 }
 
-.selected-text {
-  color: var(--slate-800);
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.chevron-icon {
-  width: 1rem;
-  height: 1rem;
-  color: var(--teal-600);
-  transition: transform 0.2s ease;
-  flex-shrink: 0;
-}
-
-.chevron-icon.open {
-  transform: rotate(180deg);
-}
-
-.custom-dropdown-menu {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  width: 100%;
-  max-height: 220px;
-  overflow-y: auto;
-  background: #ffffff !important;
-  border: 1px solid var(--slate-200);
-  border-radius: 8px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-  padding: 0.3rem;
-  box-sizing: border-box;
-}
-
-.dropdown-item {
-  padding: 0.6rem 0.8rem;
-  font-size: 0.875rem;
-  color: var(--slate-800);
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  transition: background 0.15s ease;
-}
-
-.dropdown-item:hover {
-  background-color: var(--teal-50);
-  color: var(--teal-700);
-}
-
-.dropdown-item.selected {
-  background-color: var(--teal-50);
-  font-weight: 600;
-  color: var(--teal-700);
-}
-
-.text-teal {
-  color: var(--teal-600);
+.promo-page-wrapper .pc-btn-add:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 22px rgba(0, 150, 136, 0.42);
 }
 
 /* ==========================================================================
-   6. ACTION BUTTONS
+   TABLE CARD
+   Only the container that holds the <table> scrolls sideways.
    ========================================================================== */
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--slate-100);
+
+.promo-page-wrapper .pc-table-card {
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 22px 22px 18px;
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid rgba(13, 78, 67, 0.12);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    min-width: 0;
 }
 
-.btn-primary, .btn-secondary {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.65rem 1.25rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.promo-page-wrapper .pc-scroll {
+    width: 100%;
+    overflow: visible !important;
+    min-width: 0;
 }
 
-.submit-btn {
- background-color: #0d9488 ;
-  color: #ffffff;
-  border: none !important;
+.promo-page-wrapper .table-wrapper,
+.promo-page-wrapper .data-table-container,
+.promo-page-wrapper .data-table-wrapper {
+    overflow: visible !important;
+    max-width: 100%;
+    min-width: 0;
+    padding: 0 !important;
 }
 
-.btn-primary:hover {
-  background-color: #0f766e;
+/* THE ONE scroll area */
+.promo-page-wrapper .table-responsive {
+    width: 100%;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
 }
 
-.btn-secondary {
-  background-color: #ffffff !important;
-  color: var(--slate-600) !important;
-  border: 1px solid var(--slate-200) !important;
+/* each column keeps its own width, so headers never break letter by letter */
+.promo-page-wrapper .data-table {
+    table-layout: fixed !important;
+    width: max-content !important;
+    min-width: 100% !important;
 }
 
-.btn-secondary:hover {
-  background-color: var(--slate-100) !important;
+.promo-page-wrapper .data-table th {
+    text-align: center !important;
+    white-space: nowrap;
+    word-break: normal;
+    overflow-wrap: normal;
+}
+
+.promo-page-wrapper .data-table td {
+    text-align: center !important;
+    vertical-align: middle;
+    overflow-wrap: anywhere;
+}
+
+/* Plan Type (column 6) reads left aligned */
+.promo-page-wrapper .data-table td:nth-child(6) {
+    text-align: left !important;
+}
+
+/* date and validity stay on one line */
+.promo-page-wrapper .data-table td:nth-child(2),
+.promo-page-wrapper .data-table td:nth-child(7) {
+    white-space: nowrap;
+}
+
+.promo-page-wrapper .th-content-wrapper {
+    justify-content: center !important;
+    flex-wrap: nowrap;
+}
+
+.promo-page-wrapper .table-responsive::-webkit-scrollbar { height: 8px; }
+.promo-page-wrapper .table-responsive::-webkit-scrollbar-track { background: rgba(13, 78, 67, 0.1); border-radius: 10px; }
+.promo-page-wrapper .table-responsive::-webkit-scrollbar-thumb { background: #0d4e43; border-radius: 10px; }
+.promo-page-wrapper .table-responsive::-webkit-scrollbar-thumb:hover { background: #009688; }
+
+/* toolbar rows may wrap and never exceed the card */
+.promo-page-wrapper .pc-table-card div:has(> select),
+.promo-page-wrapper .pc-table-card div:has(> input[type="search"]),
+.promo-page-wrapper .pc-table-card div:has(> input[type="text"]) {
+    flex-wrap: wrap;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.promo-page-wrapper .pc-table-card input[type="search"],
+.promo-page-wrapper .pc-table-card input[type="text"] {
+    min-width: 0;
+    max-width: 100%;
 }
 
 /* ==========================================================================
-   7. PROMO CODE DETAILS TABLE SECTION
+   TABLE CELL CONTENT + BUTTONS
+   !important and the full selector beat any global button style
    ========================================================================== */
-.promo-table-card {
-  width: 100%;
-  max-width: 1100px;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  border: 1px solid var(--slate-200);
-  padding: 1.5rem 2rem;
-  box-sizing: border-box;
+
+.promo-page-wrapper .pc-code {
+    font-weight: 700;
+    color: #0d4e43;
 }
 
-.promo-table-header {
-  text-align: center;
-  margin-bottom: 1.5rem;
+.promo-page-wrapper .data-table button.pc-pill {
+    -webkit-appearance: none;
+    appearance: none;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-width: 108px !important;
+    padding: 7px 18px !important;
+    border: none !important;
+    border-radius: 999px !important;
+    color: #ffffff !important;
+    font-family: inherit;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    line-height: 1.2;
+    cursor: pointer;
+    outline: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
-.promo-table-title {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: var(--slate-800);
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+.promo-page-wrapper .data-table button.pc-pill i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
 }
 
-.promo-table-title .highlight {
-  color:  #0d9488 !important;
+.promo-page-wrapper .data-table button.pc-pill.on {
+    background: linear-gradient(45deg, #009688, #26a69a) !important;
+    box-shadow: 0 4px 10px rgba(0, 150, 136, 0.3);
 }
 
-.title-underline {
-  width: 50px;
-  height: 3px;
-  background-color: teal ;/* Golden line accent */
-  margin: 6px auto 0 auto;
-  border-radius: 2px;
+.promo-page-wrapper .data-table button.pc-pill.off {
+    background: #8a9a98 !important;
+    box-shadow: 0 4px 10px rgba(92, 114, 111, 0.25);
 }
 
-/* Rounded Pill "Enable" Status Badge */
-.badge-status-green {
-  background-color: #16a34a;
-  color: #ffffff;
-  padding: 0.35rem 1.2rem;
-  border-radius: 50px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  display: inline-block;
-  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+.promo-page-wrapper .data-table button.pc-pill.hide {
+    background: #e5484d !important;
+    box-shadow: 0 4px 10px rgba(229, 72, 77, 0.28);
 }
 
-/* Responsive breakpoint */
-@media (max-width: 640px) {
-  .promo-form {
-    grid-template-columns: 1fr;
-  }
-  .full-width {
-    grid-column: span 1;
-  }
+.promo-page-wrapper .data-table button.pc-pill:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.06);
+}
+
+.promo-page-wrapper .data-table button.pc-pill:active {
+    transform: translateY(0);
+}
+
+.promo-page-wrapper .data-table button.pc-pill:focus-visible {
+    box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.35);
+}
+
+/* ==========================================================================
+   TABLET (up to 991px)
+   ========================================================================== */
+
+@media (max-width: 991px) {
+    .promo-page-wrapper .pc-title {
+        font-size: 1.55rem;
+    }
+
+    .promo-page-wrapper .pc-table-card {
+        padding: 16px;
+    }
+
+    /* compact form buttons, side by side */
+    .promo-page-wrapper .pc-btn-reset,
+    .promo-page-wrapper .pc-btn-add {
+        min-width: 130px !important;
+        height: 40px !important;
+        padding: 0 22px !important;
+        font-size: 0.88rem !important;
+    }
+}
+
+/* ==========================================================================
+   MOBILE (up to 767px)
+   ========================================================================== */
+
+@media (max-width: 767px) {
+    .promo-page-wrapper {
+        padding: 12px 8px 30px;
+    }
+
+    .promo-page-wrapper .pc-title {
+        font-size: 1.35rem;
+    }
+
+    .promo-page-wrapper .pc-card {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+
+    .promo-page-wrapper .pc-row-2 {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .promo-page-wrapper .pc-input,
+    .promo-page-wrapper .pc-drop-btn {
+        font-size: 1rem;        /* 16px: no zoom on iPhone */
+    }
+
+    /* Reset + Add Promo Code: compact, side by side, centered (not full width) */
+    .promo-page-wrapper .pc-actions {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .promo-page-wrapper .pc-btn-reset,
+    .promo-page-wrapper .pc-btn-add {
+        flex: 0 1 auto;
+        width: auto !important;
+        min-width: 110px !important;
+        height: 38px !important;
+        padding: 0 18px !important;
+        font-size: 0.84rem !important;
+    }
+
+    .promo-page-wrapper .pc-table-card {
+        padding: 12px 10px;
+        border-radius: 12px;
+    }
+
+    .promo-page-wrapper .data-table button.pc-pill {
+        min-width: 92px !important;
+        padding: 6px 12px !important;
+        font-size: 12px !important;
+    }
+
+    /* search box gets its own full-width row, never wider than the card */
+    .promo-page-wrapper .pc-table-card div:has(> select),
+    .promo-page-wrapper .pc-table-card div:has(> input[type="search"]),
+    .promo-page-wrapper .pc-table-card div:has(> input[type="text"]) {
+        gap: 10px;
+    }
+
+    .promo-page-wrapper .pc-table-card div:has(> input[type="search"]),
+    .promo-page-wrapper .pc-table-card div:has(> input[type="text"]) {
+        width: 100% !important;
+        flex: 1 1 100%;
+    }
+
+    .promo-page-wrapper .pc-table-card input[type="search"],
+    .promo-page-wrapper .pc-table-card input[type="text"] {
+        width: 100% !important;
+        flex: 1 1 100%;
+    }
+}
+
+/* ==========================================================================
+   VERY SMALL PHONES (up to 400px): the two buttons share the row equally
+   ========================================================================== */
+
+@media (max-width: 400px) {
+    .promo-page-wrapper .pc-btn-reset,
+    .promo-page-wrapper .pc-btn-add {
+        flex: 1 1 0;
+        min-width: 0 !important;
+        padding: 0 10px !important;
+        font-size: 0.82rem !important;
+    }
 }

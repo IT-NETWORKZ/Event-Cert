@@ -3,107 +3,252 @@
    ========================================================================== */
 
 .registration-page-wrapper {
-    background-color: #f8f9fa;
+    background-color: #f4f8f7;
     min-height: 100vh;
+    overflow-x: hidden;          /* the page never scrolls sideways */
 }
 
 /* ==========================================================================
-   UNIFORM PAGE HEADER
+   PAGE HEADER
    ========================================================================== */
+
+.crl-head {
+    text-align: center;
+    margin-bottom: 20px;
+}
 
 .header-title {
-    font-size: 22px;
-    font-weight: 700;
-    color: #212529;
-    margin-bottom: 4px;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1a2e2b;
+    margin: 0;
 }
 
-.header-subtitle {
-    font-size: 13px;
-    color: #6c757d;
-    margin-bottom: 0;
+.crl-line {
+    width: 60px;
+    height: 3px;
+    margin: 10px auto 0;
+    background: #0d4e43;
 }
 
 /* ==========================================================================
-   HORIZONTAL SCROLL SYSTEM
+   TABLE CARD
+   Only the table container scrolls sideways. Every other wrapper is
+   overflow: visible, so there is just one scrollbar.
    ========================================================================== */
 
-.table-responsive-scroll-wrapper {
+.crl-card {
+    padding: 18px;
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid rgba(13, 78, 67, 0.12);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    overflow: visible;
+    min-width: 0;
+}
+
+.registration-page-wrapper .table-responsive-scroll-wrapper {
     width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch; /* Momentum scrolling for mobile Safari */
+    overflow: visible !important;
+}
+
+.registration-page-wrapper .table-wrapper,
+.registration-page-wrapper .data-table-container,
+.registration-page-wrapper .data-table-wrapper {
+    overflow: visible !important;
+    max-width: 100%;
+    min-width: 0;
+    padding: 0 !important;
+}
+
+/* THE ONE scroll area: the container that holds the <table> */
+.registration-page-wrapper .table-responsive {
+    width: 100%;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch;
     border-radius: 12px;
 }
 
-/* Customized Scrollbar matches page formatting rules */
-.table-responsive-scroll-wrapper::-webkit-scrollbar {
-    height: 6px;
+/* 15 columns: wider than the screen, so the table scrolls inside its container */
+.registration-page-wrapper .data-table {
+    table-layout: fixed !important;
+    width: max-content !important;
+    min-width: 100% !important;
 }
 
-.table-responsive-scroll-wrapper::-webkit-scrollbar-track {
-    background: #f1f1f1;
+.registration-page-wrapper .table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.registration-page-wrapper .table-responsive::-webkit-scrollbar-track {
+    background: rgba(13, 78, 67, 0.1);
     border-radius: 10px;
 }
 
-.table-responsive-scroll-wrapper::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
+.registration-page-wrapper .table-responsive::-webkit-scrollbar-thumb {
+    background: #0d4e43;
     border-radius: 10px;
 }
 
-.table-responsive-scroll-wrapper::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
+.registration-page-wrapper .table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #009688;
 }
 
 /* ==========================================================================
-   STATUS BADGES (PLAIN TEXT FORMATTING, NO BACKGROUNDS)
+   TOOLBAR (Export / entries per page / search)
+   Any row that holds the select or the search input may wrap.
    ========================================================================== */
 
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: 500;
+.registration-page-wrapper div:has(> select),
+.registration-page-wrapper div:has(> input[type="search"]),
+.registration-page-wrapper div:has(> input[type="text"]) {
+    flex-wrap: wrap;
+    min-width: 0;
+    max-width: 100%;
 }
 
-/* Background structures completely removed */
-.status-active {
-    color: inherit;
-}
-
-.status-cancelled {
-    color: inherit;
+.registration-page-wrapper input[type="search"],
+.registration-page-wrapper input[type="text"] {
+    min-width: 0;
+    max-width: 100%;
 }
 
 /* ==========================================================================
-   ACTION BUTTONS
+   CELL ALIGNMENT
    ========================================================================== */
 
-.btn-outline-success {
-    border-radius: 18px;
-    font-size: 12px;
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-
-.btn-outline-success:hover {
-    transform: translateY(-1px);
-}
-
-/* ==========================================================================
-   UNIFORM TABLE CELL CENTERING (HEADINGS & DATA)
-   ========================================================================== */
-
-/* Centers cell contents globally inside this page wrapper */
 .registration-page-wrapper .data-table th {
     text-align: center !important;
 }
 
 .registration-page-wrapper .data-table td {
     text-align: center !important;
+    vertical-align: middle;
+    white-space: normal;
+    overflow-wrap: anywhere;
 }
 
-/* Ensures the header sort-arrow flex containers align perfectly in the middle */
+/* dates stay on one line (06-10-2000) */
+.registration-page-wrapper .data-table td:nth-child(2),
+.registration-page-wrapper .data-table td:nth-child(10) {
+    white-space: nowrap;
+}
+
 .registration-page-wrapper .th-content-wrapper {
     justify-content: center !important;
+}
+
+/* ==========================================================================
+   NAME LINK
+   ========================================================================== */
+
+.crl-name {
+    padding: 0;
+    border: none;
+    background: transparent;
+    font-size: inherit;
+    font-weight: 600;
+    color: #009688;
+    text-align: center;
+    cursor: pointer;
+}
+
+.crl-name:hover {
+    color: #0d4e43;
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   STATUS PILL
+   ========================================================================== */
+
+.crl-status {
+    min-width: 96px;
+    padding: 6px 16px;
+    border: none;
+    border-radius: 999px;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.crl-status.on {
+    background: linear-gradient(45deg, #009688, #26a69a);
+    box-shadow: 0 4px 10px rgba(0, 150, 136, 0.3);
+}
+
+.crl-status.off {
+    background: #8a9a98;
+    box-shadow: 0 4px 10px rgba(92, 114, 111, 0.25);
+}
+
+.crl-status:hover {
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   TABLET (up to 991px)
+   ========================================================================== */
+
+@media (max-width: 991px) {
+    .header-title {
+        font-size: 1.55rem;
+    }
+
+    .crl-card {
+        padding: 14px;
+    }
+}
+
+/* ==========================================================================
+   MOBILE (up to 767px)
+   ========================================================================== */
+
+@media (max-width: 767px) {
+    .registration-page-wrapper {
+        padding-top: 12px !important;
+    }
+
+    .registration-page-wrapper .container-fluid {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .header-title {
+        font-size: 1.35rem;
+    }
+
+    .crl-card {
+        padding: 10px;
+        border-radius: 12px;
+    }
+
+    /* toolbar rows wrap with a small gap */
+    .registration-page-wrapper div:has(> select),
+    .registration-page-wrapper div:has(> input[type="search"]),
+    .registration-page-wrapper div:has(> input[type="text"]) {
+        gap: 10px;
+    }
+
+    /* search box: its own full-width row, never wider than the card */
+    .registration-page-wrapper div:has(> input[type="search"]),
+    .registration-page-wrapper div:has(> input[type="text"]) {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+    }
+
+    .registration-page-wrapper input[type="search"],
+    .registration-page-wrapper input[type="text"] {
+        width: 100% !important;
+        flex: 1 1 100%;
+    }
+
+    .crl-status {
+        min-width: 84px;
+        padding: 5px 12px;
+        font-size: 12px;
+    }
 }

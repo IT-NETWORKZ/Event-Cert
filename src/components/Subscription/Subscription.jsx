@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 // Replace with your actual logo file path if necessary
 import logo from '../../assets/img/logo_EventCert.png';
-import InnerNavbar from '../common/navbar/InnerNavbar';
 import Footer from '../common/footer/Footer';
 import Button from "../common/button/Button"
 import Navbar from '../common/navbar/Navbar';

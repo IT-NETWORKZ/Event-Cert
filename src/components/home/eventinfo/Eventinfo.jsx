@@ -149,7 +149,9 @@ function Eventinfo({ events = sampleEvents }) {
   const handleSearch = () => setApplied({ state: stateVal, city: cityVal, name: nameVal });
 
   return (
-    <section className="eventinfo-section">
+    <section 
+     id="eventhub"
+     className="eventinfo-section">
       <div className="container">
 
         {/* Heading */}

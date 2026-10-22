@@ -1,0 +1,392 @@
+.ind-benefits-page {
+  background: #ffffff;
+  color: #2b2b2b;
+  padding: 48px 0 80px;
+  min-height: 80vh;
+}
+
+/* =========================================
+   HEADER (No Hero Section)
+========================================= */
+.ind-header {
+  max-width: 720px;
+  margin: 0 auto 48px;
+  text-align: center;
+}
+.ind-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  margin-bottom: 16px;
+  border-radius: 999px;
+  background: rgba(0, 150, 136, 0.1);
+  color: #0d4e43;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.ind-header h1 {
+  margin: 0 0 12px;
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #1a2e2b;
+}
+.ind-header h1 span {
+  color: #009688;
+}
+.ind-header p {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: #5c726f;
+}
+
+/* =========================================
+   INTRO CARD
+========================================= */
+.ind-intro-card {
+  max-width: 960px;
+  margin: 0 auto 60px;
+  padding: 36px 40px;
+  border-radius: 20px;
+  background: rgba(13, 78, 67, 0.04);
+  border: 1px solid rgba(13, 78, 67, 0.1);
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 32px;
+  align-items: center;
+}
+.ind-intro-text h2 {
+  margin: 0 0 12px;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #1a2e2b;
+  line-height: 1.3;
+}
+.ind-intro-text p {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.75;
+  color: #5c726f;
+}
+.ind-intro-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-left: 32px;
+  border-left: 2px solid rgba(13, 78, 67, 0.12);
+}
+.ind-stat-item h3 {
+  margin: 0 0 2px;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #0d4e43;
+}
+.ind-stat-item p {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #5c726f;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* =========================================
+   SECTION TITLES
+========================================= */
+.ind-section-title {
+  text-align: center;
+  max-width: 650px;
+  margin: 0 auto 36px;
+}
+.ind-sub-badge {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #009688;
+  margin-bottom: 8px;
+}
+.ind-section-title h2 {
+  margin: 0 0 10px;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #1a2e2b;
+}
+.ind-section-title p {
+  margin: 0;
+  font-size: 0.96rem;
+  color: #5c726f;
+  line-height: 1.6;
+}
+
+/* =========================================
+   WORKFLOW / FLOWCHART SECTION
+========================================= */
+.ind-flowchart-section {
+  max-width: 1000px;
+  margin: 0 auto 64px;
+  padding: 40px 30px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(0, 150, 136, 0.03), rgba(13, 78, 67, 0.07));
+  border: 1px solid rgba(13, 78, 67, 0.1);
+}
+.ind-flow-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  position: relative;
+}
+.ind-flow-card {
+  position: relative;
+  background: #ffffff;
+  padding: 28px 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(13, 78, 67, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.ind-flow-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(13, 78, 67, 0.1);
+}
+.ind-flow-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.ind-flow-num {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #009688;
+}
+.ind-flow-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(13, 78, 67, 0.08);
+  color: #0d4e43;
+}
+.ind-flow-card h3 {
+  margin: 0 0 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a2e2b;
+}
+.ind-flow-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #5c726f;
+}
+.ind-flow-arrow {
+  position: absolute;
+  top: 50%;
+  right: -16px;
+  transform: translateY(-50%);
+  z-index: 2;
+  color: #009688;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+}
+
+/* =========================================
+   BENEFITS GRID SECTION
+========================================= */
+.ind-benefits-grid-section {
+  max-width: 1000px;
+  margin: 0 auto 60px;
+}
+.ind-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+.ind-card {
+  background: #ffffff;
+  padding: 32px;
+  border-radius: 18px;
+  border: 1px solid rgba(13, 78, 67, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  transition: all 0.25s ease;
+}
+.ind-card:hover {
+  border-color: rgba(0, 150, 136, 0.4);
+  box-shadow: 0 10px 24px rgba(13, 78, 67, 0.08);
+  transform: translateY(-3px);
+}
+.ind-card-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: rgba(0, 150, 136, 0.1);
+  color: #0d4e43;
+  margin-bottom: 20px;
+}
+.ind-card h3 {
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a2e2b;
+}
+.ind-card p {
+  margin: 0 0 16px;
+  font-size: 0.94rem;
+  line-height: 1.7;
+  color: #5c726f;
+}
+.ind-card-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid rgba(13, 78, 67, 0.08);
+  padding-top: 16px;
+}
+.ind-card-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #2b2b2b;
+}
+.ind-card-list li svg {
+  color: #009688;
+  flex-shrink: 0;
+}
+
+/* =========================================
+   CTA BOX
+========================================= */
+.ind-cta-box {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 36px 40px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #009688, #b2dfdb);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  box-shadow: 0 8px 24px rgba(0, 150, 136, 0.2);
+}
+.ind-cta-text h3 {
+  margin: 0 0 6px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #0d4e43;
+}
+.ind-cta-text p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #1a2e2b;
+  font-weight: 500;
+}
+.ind-cta-actions {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.ind-btn-primary {
+  padding: 12px 24px;
+  border-radius: 999px;
+  background: #0d4e43;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  box-shadow: 0 6px 16px rgba(13, 78, 67, 0.3);
+  transition: all 0.2s ease;
+}
+.ind-btn-primary:hover {
+  background: #116859;
+  transform: translateY(-2px);
+  color: #ffffff;
+}
+.ind-btn-secondary {
+  padding: 12px 24px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #0d4e43;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+}
+.ind-btn-secondary:hover {
+  background: #f0f7f6;
+  transform: translateY(-2px);
+}
+
+/* =========================================
+   BACK TO TOP BUTTON
+========================================= */
+.ind-top {
+  position: fixed;
+  right: 24px;
+  bottom: 96px;
+  z-index: 900;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: none;
+  border-radius: 50%;
+  background: #0d4e43;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(13, 78, 67, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(14px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ind-top.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.ind-top:hover {
+  background: #009688;
+}
+
+/* =========================================
+   RESPONSIVE DESIGN (TABLET & MOBILE)
+========================================= */
+@media (max-width: 991px) {
+  .ind-benefits-page { padding: 36px 0 60px; }
+  .ind-header h1 { font-size: 2rem; }
+  .ind-intro-card { grid-template-columns: 1fr; padding: 28px; gap: 20px; }
+  .ind-intro-stats { padding-left: 0; border-left: none; border-top: 2px solid rgba(13, 78, 67, 0.12); padding-top: 16px; flex-direction: row; justify-content: space-around; }
+  .ind-flow-grid { grid-template-columns: 1fr; gap: 20px; }
+  .ind-flow-arrow { display: none; }
+  .ind-grid { grid-template-columns: 1fr; }
+  .ind-cta-box { flex-direction: column; align-items: flex-start; padding: 24px; }
+  .ind-cta-actions { width: 100%; flex-direction: column; }
+  .ind-btn-primary, .ind-btn-secondary { text-align: center; }
+}
+
+@media (max-width: 767px) {
+  .ind-header h1 { font-size: 1.65rem; }
+  .ind-section-title h2 { font-size: 1.5rem; }
+  .ind-card { padding: 24px; }
+  .ind-top { right: 16px; bottom: 88px; width: 42px; height: 42px; }
+}

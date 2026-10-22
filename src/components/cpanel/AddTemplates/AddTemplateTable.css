@@ -1,344 +1,252 @@
-/* ==========================================
-   PAGE WRAPPER
-========================================== */
+/* ==========================================================================
+   PAGE WRAPPER & HEADER LAYOUT
+   ========================================================================== */
 
-.add-template-page-wrapper {
-  --at-teal-50: #e6f7f5;
-  --at-teal-100: #b2e8e0;
-  --at-teal-500: #00a896;
-  --at-teal-600: #028090;
-  --at-teal-700: #05668d;
-  --at-slate-100: #f1f5f9;
-  --at-slate-200: #e2e8f0;
-  --at-slate-600: #475569;
-  --at-slate-800: #1e293b;
-
-  width: 100%;
-  min-width: 0;
-  padding: 1.5rem;
-  box-sizing: border-box;
+.c-addplans-wrapper {
+    background-color: #f4f8f7;
+    width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    margin-top: 2rem;
 }
 
-/* ==========================================
-   TABLE CARD
-========================================== */
-
-.add-template-page-wrapper .promo-table-card {
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  margin: 0;
-  padding: 1.5rem;
-  background: #ffffff !important;
-  border: 1px solid var(--at-slate-200);
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
-  box-sizing: border-box;
+.cap-head {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-/* ==========================================
-   TITLE HEADER
-========================================== */
-
-.add-template-page-wrapper .promo-table-header {
-  text-align: center;
-  margin-bottom: 1.5rem;
+.header-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1a2e2b;
+    margin: 0;
 }
 
-.add-template-page-wrapper .promo-table-title {
-  margin: 0;
-  color: var(--at-slate-800);
-  font-size: 1.5rem;
-  font-weight: 800;
-  line-height: 1.4;
+.cap-line {
+    width: 60px;
+    height: 3px;
+    margin: 10px auto 0;
+    background: #0d4e43;
 }
 
-.add-template-page-wrapper .promo-table-title .highlight {
-  color: var(--at-teal-600);
+/* ==========================================================================
+   TABLE CARD & RESPONSIVE SCROLL AREA
+   ========================================================================== */
+
+.cap-card {
+    padding: 18px;
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid rgba(13, 78, 67, 0.12);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    overflow: visible;
+    min-width: 0;
 }
 
-.add-template-page-wrapper .title-underline {
-  width: 50px;
-  height: 3px;
-  margin: 7px auto 0;
-  background: var(--at-teal-500);
-  border-radius: 3px;
+.c-addplans-wrapper .table-responsive-scroll-wrapper {
+    width: 100%;
+    overflow: visible !important;
 }
 
-/* ==========================================
-   RESPONSIVE TABLE WRAPPER
-========================================== */
-
-.add-template-page-wrapper .table-responsive-scroll-wrapper {
-  width: 100%;
-  min-width: 0;
-  overflow-x: auto;
-  overflow-y: visible;
-  border: 1px solid var(--at-slate-200);
-  border-radius: 8px;
-  background: #ffffff;
-  scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 #f8fafc;
+.c-addplans-wrapper .table-wrapper,
+.c-addplans-wrapper .data-table-container,
+.c-addplans-wrapper .data-table-wrapper {
+    overflow: visible !important;
+    max-width: 100%;
+    min-width: 0;
+    padding: 0 !important;
 }
 
-.add-template-page-wrapper
-  .table-responsive-scroll-wrapper::-webkit-scrollbar {
-  height: 7px;
+/* THE ONE horizontal scroll area */
+.c-addplans-wrapper .table-responsive {
+    width: 100%;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
 }
 
-.add-template-page-wrapper
-  .table-responsive-scroll-wrapper::-webkit-scrollbar-track {
-  background: #f8fafc;
+.c-addplans-wrapper .data-table {
+    table-layout: fixed !important;
+    width: max-content !important;
+    min-width: 100% !important;
 }
 
-.add-template-page-wrapper
-  .table-responsive-scroll-wrapper::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
+.c-addplans-wrapper .table-responsive::-webkit-scrollbar {
+    height: 8px;
 }
 
-/* ==========================================
-   DATATABLE STRUCTURE
-========================================== */
-
-.add-template-page-wrapper .data-table {
-  width: 100%;
-  min-width: 1350px;
-  margin: 0;
-  border-collapse: separate;
-  border-spacing: 0;
-  background: #ffffff;
-  font-size: 13px;
+.c-addplans-wrapper .table-responsive::-webkit-scrollbar-track {
+    background: rgba(13, 78, 67, 0.1);
+    border-radius: 10px;
 }
 
-/* Table Header */
-
-.add-template-page-wrapper .data-table thead th {
-  padding: 13px 12px !important;
-  background: var(--at-teal-50) !important;
-  color: var(--at-teal-700) !important;
-  font-size: 12px !important;
-  font-weight: 700 !important;
-  line-height: 1.5;
-  white-space: nowrap !important;
-  vertical-align: middle !important;
-  border-bottom: 1px solid var(--at-teal-100) !important;
-  border-right: 1px solid #e8f4f2 !important;
+.c-addplans-wrapper .table-responsive::-webkit-scrollbar-thumb {
+    background: #0d4e43;
+    border-radius: 10px;
 }
 
-.add-template-page-wrapper .data-table thead th:last-child {
-  border-right: none !important;
+.c-addplans-wrapper .table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #009688;
 }
 
-/* Header text and sorting icons */
+/* ==========================================================================
+   TOOLBAR RESPONSIVENESS (Search box and Entries per page)
+   ========================================================================== */
 
-.add-template-page-wrapper .data-table .th-text {
-  white-space: nowrap !important;
-  word-break: keep-all;
+.c-addplans-wrapper div:has(> select),
+.c-addplans-wrapper div:has(> input[type="search"]),
+.c-addplans-wrapper div:has(> input[type="text"]) {
+    flex-wrap: wrap;
+    min-width: 0;
+    max-width: 100%;
 }
 
-.add-template-page-wrapper .data-table .th-content-wrapper {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  white-space: nowrap;
+.c-addplans-wrapper input[type="search"],
+.c-addplans-wrapper input[type="text"] {
+    min-width: 0;
+    max-width: 100%;
 }
 
-/* Table Body */
+/* ==========================================================================
+   CELL ALIGNMENT & TEXT EXPAND
+   ========================================================================== */
 
-.add-template-page-wrapper .data-table tbody td {
-  padding: 12px !important;
-  color: #334155 !important;
-  font-size: 13px !important;
-  line-height: 1.6;
-  vertical-align: middle !important;
-  background: #ffffff;
-  border-bottom: 1px solid #edf2f7 !important;
-  border-right: 1px solid #f1f5f9;
+.c-addplans-wrapper .data-table th {
+    text-align: center !important;
 }
 
-.add-template-page-wrapper .data-table tbody td:last-child {
-  border-right: none;
+.c-addplans-wrapper .data-table td {
+    vertical-align: middle;
+    white-space: normal;
+    overflow-wrap: anywhere;
 }
 
-.add-template-page-wrapper .data-table tbody tr:last-child td {
-  border-bottom: none !important;
+/* Message column left-aligned for readability */
+.c-addplans-wrapper .data-table td:nth-child(7) {
+    text-align: left !important;
 }
 
-/* Row hover */
-
-.add-template-page-wrapper .data-table tbody tr:hover td {
-  background: #f5fbfa;
+.cap-text {
+    width: 100%;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #2b2b2b;
 }
 
-/* Alignment */
-
-.add-template-page-wrapper .data-table .text-center {
-  text-align: center !important;
+.cap-more {
+    display: inline-block;
+    margin-top: 2px;
+    margin-left: 4px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 700;
+    color: #009688;
+    cursor: pointer;
 }
 
-.add-template-page-wrapper .data-table .text-start {
-  text-align: left !important;
+.cap-more:hover {
+    color: #0d4e43;
+    text-decoration: underline;
 }
 
-.add-template-page-wrapper .data-table .text-end {
-  text-align: right !important;
+/* ==========================================================================
+   EDIT BUTTON + STATUS PILL STYLING
+   ========================================================================== */
+
+.cap-edit {
+    padding: 6px 20px;
+    border: 1px solid #0d4e43;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #0d4e43;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-/* ==========================================
-   MESSAGE CELL
-========================================== */
-
-.add-template-page-wrapper .message-cell-content {
-  width: 100%;
-  min-width: 180px;
-  max-width: 260px;
-  max-height: 85px;
-  overflow-y: auto;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;
-  color: var(--at-slate-600);
-  font-size: 12px;
-  line-height: 1.6;
-  padding-right: 4px;
+.cap-edit:hover {
+    background: #0d4e43;
+    color: #ffffff;
+    transform: translateY(-1px);
 }
 
-.add-template-page-wrapper .message-cell-content::-webkit-scrollbar {
-  width: 4px;
+.cap-status {
+    min-width: 96px;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 999px;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.add-template-page-wrapper .message-cell-content::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 5px;
+.cap-status.on {
+    background: linear-gradient(45deg, #009688, #26a69a);
+    box-shadow: 0 4px 10px rgba(0, 150, 136, 0.3);
 }
 
-/* ==========================================
-   EDIT BUTTON
-========================================== */
-
-.add-template-page-wrapper .data-table .btn-primary {
-  padding: 5px 15px !important;
-  min-width: 65px;
-  color: #ffffff !important;
-  background: var(--at-teal-600) !important;
-  border: 1px solid var(--at-teal-600) !important;
-  border-radius: 20px !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  box-shadow: none !important;
-  transition: background-color 0.2s ease;
+.cap-status.off {
+    background: #8a9a98;
+    box-shadow: 0 4px 10px rgba(92, 114, 111, 0.25);
 }
 
-.add-template-page-wrapper .data-table .btn-primary:hover {
-  background: var(--at-teal-700) !important;
-  border-color: var(--at-teal-700) !important;
+.cap-status:hover {
+    transform: translateY(-1px);
 }
 
-/* ==========================================
-   ENABLE BUTTON
-========================================== */
+/* ==========================================================================
+   MOBILE & TABLET RESPONSIVE OVERRIDES
+   ========================================================================== */
 
-.add-template-page-wrapper .data-table .btn-success {
-  min-width: 75px;
-  padding: 5px 12px !important;
-  color: #ffffff !important;
-  background: #198754 !important;
-  border: 1px solid #198754 !important;
-  border-radius: 20px !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  box-shadow: none !important;
+@media (max-width: 991px) {
+    .header-title {
+        font-size: 1.55rem;
+    }
+    .cap-card {
+        padding: 14px;
+    }
 }
 
-.add-template-page-wrapper .data-table .btn-success:hover {
-  background: #157347 !important;
-  border-color: #157347 !important;
-}
+@media (max-width: 767px) {
+    .c-addplans-wrapper {
+        padding-top: 8px !important;
+    }
 
-/* ==========================================
-   DISABLE BUTTON
-========================================== */
+    .header-title {
+        font-size: 1.35rem;
+    }
 
-.add-template-page-wrapper .data-table .btn-secondary {
-  min-width: 75px;
-  padding: 5px 12px !important;
-  color: #475569 !important;
-  background: #e2e8f0 !important;
-  border: 1px solid #cbd5e1 !important;
-  border-radius: 20px !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  box-shadow: none !important;
-}
+    .cap-card {
+        padding: 10px;
+        border-radius: 12px;
+    }
 
-.add-template-page-wrapper .data-table .btn-secondary:hover {
-  background: #cbd5e1 !important;
-  border-color: #94a3b8 !important;
-}
+    .c-addplans-wrapper div:has(> input[type="search"]),
+    .c-addplans-wrapper div:has(> input[type="text"]) {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+    }
 
-/* ==========================================
-   RESPONSIVE DESIGN
-========================================== */
+    .c-addplans-wrapper input[type="search"],
+    .c-addplans-wrapper input[type="text"] {
+        width: 100% !important;
+        flex: 1 1 100%;
+    }
 
-@media (max-width: 992px) {
-  .add-template-page-wrapper {
-    padding: 1rem;
-  }
+    .cap-status {
+        min-width: 84px;
+        padding: 5px 12px;
+        font-size: 12px;
+    }
 
-  .add-template-page-wrapper .promo-table-card {
-    padding: 1.1rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .add-template-page-wrapper {
-    padding: 0.75rem;
-  }
-
-  .add-template-page-wrapper .promo-table-card {
-    padding: 0.85rem;
-    border-radius: 9px;
-  }
-
-  .add-template-page-wrapper .promo-table-title {
-    font-size: 1.25rem;
-  }
-
-  .add-template-page-wrapper .promo-table-header {
-    margin-bottom: 1rem;
-  }
-
-  .add-template-page-wrapper .data-table {
-    min-width: 1250px;
-  }
-
-  .add-template-page-wrapper .data-table thead th {
-    padding: 10px !important;
-    font-size: 11px !important;
-  }
-
-  .add-template-page-wrapper .data-table tbody td {
-    padding: 10px !important;
-    font-size: 12px !important;
-  }
-
-  .add-template-page-wrapper .message-cell-content {
-    min-width: 170px;
-    max-width: 220px;
-  }
-}
-
-@media (max-width: 480px) {
-  .add-template-page-wrapper {
-    padding: 0.5rem;
-  }
-
-  .add-template-page-wrapper .promo-table-card {
-    padding: 0.65rem;
-  }
-
-  .add-template-page-wrapper .data-table {
-    min-width: 1150px;
-  }
+    .cap-edit {
+        padding: 5px 16px;
+        font-size: 12px;
+    }
 }

@@ -1,14 +1,14 @@
 /* ===========================================================
-   CUSTOM PLUS DESIGNER - STABLE PRODUCTIONS & LANDING FIX
+   CUSTOM PLUS DESIGNER - SCROLLABLE EDITOR + TABLE LAYOUT
+   Same layout on every screen size (desktop -> tablet -> mobile):
+   [ sidebar | page panel | canvas ]  then the table underneath.
+   Sidebar scrolls on its own, the right side scrolls as one page.
    =========================================================== */
 
-/* ==========================
-   GOOGLE FONT
-========================== */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 /* ==========================
-   RESET & SYSTEM GLOBAL RULES
+   RESET & GLOBAL
 ========================== */
 * {
     margin: 0;
@@ -17,43 +17,69 @@
     font-family: 'Inter', sans-serif;
 }
 
-/* FIXED: Changed global system overflow to allow regular home pages to scroll naturally */
 html,
 body {
     width: 100%;
     height: 100%;
     background: #edf1f7;
     overflow-x: hidden;
-    overflow-y: auto; 
+    overflow-y: auto;
+}
+
+/* Sizes that change per breakpoint live in variables */
+:root {
+    --cp-sidebar-w: 110px;
+    --cp-page-panel-w: 220px;
+    --cp-editor-h: 500px;   /* desktop/tablet: height of sidebar+panel+canvas row */
+    --cp-canvas-h: 460px;   /* mobile: height of the canvas block */
 }
 
 /* ==========================
-   LAYOUT ENGINE (App Wrapper Settings)
+   LAYOUT ENGINE
 ========================== */
 .cp-layout {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    overflow: hidden; /* Keeps screen strictly frozen inside the app view route */
-    background: #edf1f7;
-    position: fixed;   /* Prevents global body scroll interference inside the app */
+    position: fixed;
     top: 0;
     left: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: row;          /* sidebar always on the left */
+    overflow: hidden;             /* sidebar + main scroll separately */
+    background: #edf1f7;
 }
 
+/* Right side = editor row + table. THIS is the scrolling area. */
 .cp-main {
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    min-width: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+.cp-main::-webkit-scrollbar { width: 8px; }
+.cp-main::-webkit-scrollbar-thumb { background: #b9b9b9; border-radius: 20px; }
+
+/* Editor row: page panel + canvas. Fixed height so the table starts below it */
+.cp-editor {
+    flex: none;
+    height: var(--cp-editor-h);
+    display: flex;
+    flex-direction: row;
+    min-height: 0;
     overflow: hidden;
 }
 
-.cp-editor {
-    flex: 1;
-    display: flex;
-    min-height: 0;
-    overflow: hidden;
+/* Table / buttons / filters block under the editor */
+.dsg-table-wrap {
+    flex: none;
+    width: 100%;
+    padding: 0 20px 60px;
+    background: #edf1f7;
+    overflow-x: auto;
 }
 
 /* ==========================
@@ -66,11 +92,13 @@ a { text-decoration: none; }
 ul { list-style: none; }
 
 /* ==========================
-   SIDEBAR (Main Left Options Panel)
+   SIDEBAR
 ========================== */
 .cp-sidebar {
-    width: 110px;
-    min-width: 90px;
+    width: var(--cp-sidebar-w);
+    min-width: var(--cp-sidebar-w);
+    height: 100%;
+    flex-shrink: 0;
     background: #ffffff;
     border-right: 1px solid #e8e8e8;
     display: flex;
@@ -88,6 +116,7 @@ ul { list-style: none; }
 
 .cp-sidebar-item {
     width: 72px;
+    flex-shrink: 0;
     border: none;
     background: none;
     border-radius: 14px;
@@ -208,12 +237,13 @@ ul { list-style: none; }
 .cp-preview-btn:hover { background: #174db7; }
 
 /* ==========================
-   PAGE PANEL (Thumbnails Sidebar Panel)
+   PAGE PANEL (Back / Add Page / thumbnails) - always a left column
 ========================== */
 .cp-page-panel {
-    width: 220px;
-    min-width: 220px;
+    width: var(--cp-page-panel-w);
+    min-width: var(--cp-page-panel-w);
     height: 100%;
+    flex-shrink: 0;
     background: #edf1f7;
     display: flex;
     flex-direction: column;
@@ -229,11 +259,14 @@ ul { list-style: none; }
     flex-direction: column;
     gap: 15px;
     overflow-y: auto;
+    overflow-x: hidden;
     padding-right: 5px;
 }
 
 .cp-page-panel::-webkit-scrollbar { width: 6px; }
 .cp-page-panel::-webkit-scrollbar-thumb { background: #cfcfcf; border-radius: 20px; }
+.cp-page-list::-webkit-scrollbar { width: 5px; }
+.cp-page-list::-webkit-scrollbar-thumb { background: #cfcfcf; border-radius: 20px; }
 
 /* ==========================
    PAGE LIST CONTROLS & CARDS
@@ -269,54 +302,58 @@ ul { list-style: none; }
     transition: .30s;
     margin-top: 10px;
     position: relative;
+    flex-shrink: 0;
 }
 .cp-page-card:hover { transform: translateY(-3px); }
 .cp-page-card.active { border-color: #6d28d9; }
 
-.cp-page-preview { width: 100%; height: 120px; border-radius: 10px; border: 1px solid #ddd; background: white; }
-.cp-page-name { text-align: center; margin-top: 2px; font-size: 13px; font-weight: 700; }
+.cp-page-preview { width: 100%; height: 90px; border-radius: 10px; border: 1px solid #ddd; background: white; }
+.cp-page-name {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    margin: 0;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: rgba(55, 65, 81, .85);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 16px;
+}
 
 .cp-delete-page,
 .cp-duplicate-page {
     position: absolute;
-    top: 6px;              /* Moved inside the card boundary */
+    top: 6px;
     width: 24px;
     height: 24px;
     border: none;
     border-radius: 50%;
     color: white;
     cursor: pointer;
-    display: flex;         /* Symmetrically center the icon inside the circle */
+    display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 11px;       /* Ensure the icon size fits cleanly */
+    font-size: 11px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     transition: transform 0.2s, background-color 0.2s;
     z-index: 10;
 }
 
 .cp-delete-page:hover,
-.cp-duplicate-page:hover {
-    transform: scale(1.1);  /* Clean pop effect on hover */
-}
+.cp-duplicate-page:hover { transform: scale(1.1); }
 
-/* Position Copy button on the Top-Left inside corner */
-.cp-duplicate-page {
-    left: 6px;
-    background: #2563eb;
-}
+.cp-duplicate-page { left: 6px; background: #2563eb; }
+.cp-delete-page { right: 6px; background: #ef4444; }
 
-/* Position Delete button on the Top-Right inside corner */
-.cp-delete-page {
-    right: 6px;
-    background: #ef4444;
-}
 /* ===========================================================
-   CANVAS VIEW ENGINE ARCHITECTURE
+   CANVAS VIEW ENGINE
    =========================================================== */
 .cp-canvas-area {
     flex: 1;
     min-width: 0;
+    height: 100%;
     display: flex;
     flex-direction: column;
     background: #eef2f8;
@@ -325,20 +362,22 @@ ul { list-style: none; }
 
 .cp-workspace {
     flex: 1;
+    min-height: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;          /* wrapper fills the workspace height */
     overflow: auto;
-    padding: 45px;
+    padding: 14px 24px;            /* same space above and below the canvas */
     background: #edf1f7;
 }
 
 .cp-canvas-wrapper {
     position: relative;
     flex: 1;
+    min-width: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center;           /* canvas centered: equal gap on top and bottom */
     overflow: auto;
 }
 
@@ -463,7 +502,7 @@ ul { list-style: none; }
 .cp-zoom-value { min-width: 50px; text-align: center; font-weight: 700; }
 
 /* ===========================================================
-   MODALS & INTERFACES REUSABLES
+   MODALS & REUSABLES
    =========================================================== */
 .cp-icon-btn {
     width: 40px;
@@ -629,7 +668,7 @@ canvas { touch-action: none; }
 .lower-canvas { user-select: none; }
 
 /* ==========================================
-   RESIZE MODAL GRAPHICS
+   RESIZE MODAL
 ========================================== */
 .cp-resize-overlay {
     position: fixed;
@@ -846,9 +885,10 @@ canvas { touch-action: none; }
 
 @keyframes sidebarSlide { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
+/* Floating template popup - sits right next to the sidebar */
 .cp-template-section {
     position: absolute;
-    left: 90px;
+    left: var(--cp-sidebar-w);
     top: 130px;
     width: 220px;
     padding: 20px 10px;
@@ -881,11 +921,10 @@ canvas { touch-action: none; }
 }
 .cp-text-box button:hover { transform: scale(1.03); opacity: .9; }
 
-
 .cp-fab-minimized {
     position: fixed;
-    width: 180px;      /* Same width for all */
-    height: 52px;      /* Same height for all */
+    width: 180px;
+    height: 52px;
     padding: 0 20px;
     border: none;
     border-radius: 50px;
@@ -900,200 +939,165 @@ canvas { touch-action: none; }
     box-sizing: border-box;
 }
 
-.cp-fab-minimized:hover {
-  transform: scale(1.08);
-}
+.cp-fab-minimized:hover { transform: scale(1.08); }
 
-/* Each variant gets its own vertical slot so they can all
-   be minimized at the same time without overlapping */
-.cp-fab-sticker {
-  bottom: 24px;
-  background: #ff7043;
-}
-
-.cp-fab-invitation {
-  bottom: 96px;
-  background: #009688;
-}
-
-.cp-fab-greeting {
-  bottom: 168px;
-  background: #7e57c2;
-}
+.cp-fab-sticker { bottom: 24px; background: #ff7043; }
+.cp-fab-invitation { bottom: 96px; background: #009688; }
+.cp-fab-greeting { bottom: 168px; background: #7e57c2; }
 
 .cp-fab-pulse {
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  border: 2px solid currentColor;
-  opacity: 0.6;
-  animation: cp-fab-pulse-anim 1.8s infinite;
-  pointer-events: none;
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    opacity: 0.6;
+    animation: cp-fab-pulse-anim 1.8s infinite;
+    pointer-events: none;
 }
 
 @keyframes cp-fab-pulse-anim {
-  0% { transform: scale(0.9); opacity: 0.6; }
-  70% { transform: scale(1.4); opacity: 0; }
-  100% { transform: scale(1.4); opacity: 0; }
+    0% { transform: scale(0.9); opacity: 0.6; }
+    70% { transform: scale(1.4); opacity: 0; }
+    100% { transform: scale(1.4); opacity: 0; }
 }
+
+/* Upload success popup (bottom-right) */
+.cp-toast {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: calc(100vw - 32px);
+    padding: 16px 22px;
+    border-radius: 12px;
+    background: #1f2937;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .3);
+    animation: cpFade .3s ease;
+}
+.cp-toast-icon {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    background: #22c55e;
+    color: #fff;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 /* ===========================================================
-   FIXED MOBILE REFLOW MEDIA QUERIES
+   RESPONSIVE
+   Desktop + tablet : [ sidebar | page panel | canvas ] then table
+   Mobile (<=768px) : sidebar on the left, and on the right
+                      Back/Add Page -> page thumbnails strip -> canvas -> table
    =========================================================== */
 
-@media(max-width:1400px) {
+/* Small desktop */
+@media (max-width: 1400px) {
+    :root { --cp-page-panel-w: 190px; --cp-editor-h: 500px; }
     .cp-template-panel { width: 260px; min-width: 260px; }
-    .cp-page-panel { width: 190px; min-width: 190px; }
 }
 
-@media(max-width:1200px) {
-    .cp-sidebar { width: 75px; min-width: 75px; }
+/* Large tablet / narrow window */
+@media (max-width: 1200px) {
+    :root { --cp-sidebar-w: 90px; --cp-page-panel-w: 180px; --cp-editor-h: 500px; }
+    .cp-sidebar-item { width: 66px; }
     .cp-template-panel { width: 240px; min-width: 240px; }
-    .cp-page-panel { width: 180px; min-width: 180px; }
     .cp-toolbar { gap: 8px; }
+    .dsg-table-wrap { padding: 0 14px 50px; }
 }
 
-@media(max-width:992px) {
+/* Tablet */
+@media (max-width: 992px) {
+    :root { --cp-sidebar-w: 84px; --cp-page-panel-w: 160px; --cp-editor-h: 500px; }
     .cp-template-panel { display: none; }
-    .cp-page-panel { width: 170px; min-width: 170px; }
     .cp-toolbar { padding: 10px; }
+    .cp-workspace { padding: 16px 16px 6px; }
+    .cp-sidebar-gallery { width: 380px; }
 }
 
-/* Mobile Framing Overhaul
-*/
-@media(max-width:768px) {
-    /* FIXED: Prevent container property bleed over main body wrappers */
-    .cp-layout {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden !important; 
-        position: fixed;
-        top: 0;
-        left: 0;
-    }
+/* Mobile: page panel becomes a strip above the canvas */
+@media (max-width: 768px) {
+    :root { --cp-sidebar-w: 64px; --cp-canvas-h: 460px; }
 
-    /* Sets up precise vertical block stacking arrangement */
+    .cp-sidebar { padding: 10px 0; }
+    .cp-sidebar-item { width: 54px; padding: 9px 2px; margin-bottom: 6px; }
+    .cp-sidebar-icon { font-size: 18px; margin-bottom: 4px; }
+    .cp-sidebar-item span { font-size: 10px; line-height: 12px; }
+
     .cp-editor {
         flex-direction: column;
-        overflow: hidden;
-        height: calc(100% - 70px);
+        height: auto;
+        overflow: visible;
     }
 
-    /* Shift primary option menu items up top to a scrollable rail */
-    .cp-sidebar {
-        width: 100%;
-        height: 70px;
-        min-width: 100%;
-        flex-direction: row;
-        justify-content: flex-start;
-        overflow-x: auto;
-        overflow-y: hidden;
-        padding: 10px;
-        border-right: none;
-        border-bottom: 1px solid #e8e8e8;
-    }
-
-    .cp-sidebar-item {
-        min-width: 70px;
-        margin: 0 6px;
-        margin-bottom: 0;
-    }
-
-    /* MOBILE PAGE PANEL LAYOUT SETUP */
+    /* Row 1: Back + Add Page side by side. Row 2: thumbnails scroll sideways */
     .cp-page-panel {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: wrap !important;
-        width: 100% !important;
-        min-width: 100% !important;
-        height: 145px !important; 
-        border-right: none;
-        border-bottom: 1px solid #ddd;
-        flex-shrink: 0 !important;
-        padding: 10px !important;
-        gap: 8px !important;
+        width: 100%;
+        min-width: 100%;
+        height: auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 10px 4px;
+        overflow: visible;
     }
 
-    /* Distribute top row actions evenly side-by-side */
     .cp-page-panel > .cp-back-btn,
     .cp-page-panel > .cp-add-page-btn {
-        flex: 1 !important; 
-        width: auto !important;
-        margin-bottom: 0 !important;
-        height: 38px !important;
-        font-size: 12px !important;
-        border-radius: 20px !important;
+        flex: 1 1 0;
+        width: auto;
+        margin: 0;
+        padding: 8px 10px;
+        font-size: 12px;
+        gap: 6px;
+        white-space: nowrap;
     }
 
-    /* Fixed full screen rail underneath actions layout row */
     .cp-page-list {
-        width: 100% !important; 
-        flex-direction: row !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        display: flex !important;
-        gap: 12px;
-        margin-top: 4px !important;
-        flex: none !important;
-        padding-bottom: 4px;
+        flex: 1 1 100%;
+        width: 100%;
+        margin-top: 0;
+        padding: 0 0 6px;
+        flex-direction: row;
+        gap: 10px;
+        overflow-x: auto;
+        overflow-y: hidden;
     }
 
     .cp-page-card {
-        min-width: 90px;
+        width: 84px;
+        min-width: 84px;
         margin-top: 0;
         padding: 4px;
-        height: auto !important; 
+        border-radius: 10px;
     }
+    .cp-page-preview { height: 56px; border-radius: 6px; }
+    .cp-page-name { font-size: 11px; margin-top: 3px; }
 
-    .cp-page-preview {
-        height: 40px !important; 
-    }
+    .cp-delete-page,
+    .cp-duplicate-page { width: 18px; height: 18px; font-size: 8px; top: 4px; }
+    .cp-duplicate-page { left: 4px; }
+    .cp-delete-page { right: 4px; }
 
-    .cp-page-name {
-        font-size: 11px;
-        display: block !important;
-        margin-top: 4px !important;
-        line-height: 14px;
-    }
-
-    /* Core Dynamic Workspace Setup */
     .cp-canvas-area {
-        flex: 1;
-        min-width: 0;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-    }
-
-    .cp-workspace {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 15px;
-        overflow: auto;
-    }
-
-    .cp-canvas-wrapper {
-        flex: 1;
+        flex: none;
         width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 10px;
+        height: var(--cp-canvas-h);
     }
+    .cp-workspace { padding: 8px; }
 
-    .cp-bottom-toolbar {
-        flex-wrap: nowrap;
-    }
-
-    .cp-workspace-footer {
-        flex-direction: column;
-        height: auto;
-        gap: 10px;
-        padding: 12px;
-    }
+    .cp-workspace-footer { flex-direction: column; height: auto; gap: 10px; padding: 12px; }
+    .dsg-table-wrap { padding: 0 10px 50px; }
 
     .cp-resize-modal { width: 96%; height: 90vh; }
     .cp-custom-row { flex-direction: column; align-items: stretch; }
@@ -1106,7 +1110,109 @@ canvas { touch-action: none; }
     .cp-sidebar-gallery-card img { height: 220px; }
 }
 
-@media(max-width:576px) {
+
+/* Page Panel: consistent spacing */
+.cp-page-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+/* Back and Add Page buttons */
+.cp-page-panel > .cp-back-btn,
+.cp-page-panel > .cp-add-page-btn {
+    flex: 0 0 auto;
+    width: 100%;
+    min-height: 38px;
+    margin: 0;
+    padding: 9px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-sizing: border-box;
+}
+
+/* Thumbnail list starts at a consistent distance */
+.cp-page-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    margin-top: 0;
+    padding: 2px 4px 8px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+/* Individual page thumbnail */
+.cp-page-card {
+    position: relative;
+    flex: 0 0 auto;
+    width: 100%;
+    margin: 0;
+    padding: 6px;
+    box-sizing: border-box;
+}
+
+/* Blank page / thumbnail preview */
+.cp-page-preview {
+    width: 100%;
+    height: 80px;
+    margin: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Page label */
+.cp-page-name {
+    right: 10px;
+    bottom: 10px;
+    margin: 0;
+}
+
+/* Mobile spacing */
+@media (max-width: 768px) {
+    .cp-page-panel {
+        gap: 8px;
+        padding: 8px 6px;
+    }
+
+    .cp-page-panel > .cp-back-btn,
+    .cp-page-panel > .cp-add-page-btn {
+        min-height: 34px;
+        padding: 7px 3px;
+        font-size: 11px;
+        gap: 5px;
+    }
+
+    .cp-page-list {
+        gap: 10px;
+        padding-right: 3px;
+    }
+
+    .cp-page-card {
+        padding: 5px;
+    }
+
+    .cp-page-preview {
+        height: 56px;
+    }
+}
+
+
+/* Phone */
+@media (max-width: 576px) {
+    :root { --cp-sidebar-w: 58px; --cp-canvas-h: 460px; }
+
+    .cp-sidebar-item { width: 50px; }
+
     .cp-toolbar {
         justify-content: flex-start;
         overflow-x: auto;
@@ -1114,37 +1220,199 @@ canvas { touch-action: none; }
         padding: 8px 12px;
         min-height: 58px;
     }
+    .cp-toolbar button { min-width: 38px; height: 38px; }
 
-    .cp-toolbar button {
-        min-width: 38px;
-        height: 38px;
-    }
-
-    .cp-bottom-btn span {
-        display: none;
-    }
-
-    .cp-bottom-btn {
-        padding: 10px;
-    }
+    .cp-bottom-btn span { display: none; }
+    .cp-bottom-btn { padding: 10px; }
 
     .cp-template-grid,
-    .cp-upload-grid {
+    .cp-upload-grid { grid-template-columns: 1fr; }
+}
+
+/* Very small phones */
+@media (max-width: 400px) {
+    :root { --cp-sidebar-w: 54px; --cp-canvas-h: 450px; }
+    .cp-sidebar-item { width: 46px; }
+    .cp-sidebar-item span { font-size: 9px; }
+    .cp-modal-content { padding: 15px; }
+    .cp-toolbar { gap: 6px; }
+    .cp-workspace { padding: 6px; }
+}
+
+/* ==========================
+   RECENT WORK DRAWER & CARDS
+========================== */
+.cp-recent-drawer {
+    /* Uses .cp-sidebar-gallery base layout, adds specific styling if needed */
+}
+
+.cp-recent-close {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    background: #f5f5f5;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #444;
+    transition: .3s;
+}
+.cp-recent-close:hover {
+    background: #2563eb;
+    color: #fff;
+}
+
+.cp-recent-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.cp-recent-card {
+    position: relative;
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #e8e8e8;
+    cursor: pointer;
+    transition: .3s;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, .05);
+}
+
+.cp-recent-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(37, 99, 235, .15);
+}
+
+.cp-recent-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    display: block;
+    transition: .35s;
+}
+
+.cp-recent-card:hover img {
+    transform: scale(1.05);
+}
+
+.cp-recent-delete {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(239, 68, 68, 0.9);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, background-color 0.2s;
+    z-index: 10;
+}
+
+.cp-recent-delete:hover {
+    transform: scale(1.15);
+    background: #dc2626;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+    .cp-recent-grid {
         grid-template-columns: 1fr;
+    }
+    .cp-recent-card img {
+        height: 200px;
     }
 }
 
-@media(max-width:480px) {
-    .cp-sidebar-item { min-width: 60px; }
-    .cp-sidebar-item span { font-size: 10px; }
-    .cp-page-card { min-width: 90px; }
-    .cp-modal-content { padding: 15px; }
-    .cp-toolbar { gap: 6px; }
-    .cp-workspace { padding: 10px; }
-    
-    .cp-template-section {
-        left: 10px;
-        top: 80px;
-        width: calc(100% - 20px);
+
+
+
+/* for Mobile view start - compact single-view layout */
+
+@media (max-width: 768px) {
+    .cp-editor {
+        display: flex !important;
+        flex-direction: row !important;
+        height: 360px !important;
+        min-height: 360px !important;
+        overflow: hidden !important;
+    }
+
+    .cp-page-panel {
+        flex: 0 0 100px !important;
+        width: 100px !important;
+        min-width: 100px !important;
+        height: 100% !important;
+        display: flex;
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+        padding: 8px 5px !important;
+        overflow-y: auto !important;
+    }
+
+    .cp-page-panel > .cp-back-btn,
+    .cp-page-panel > .cp-add-page-btn {
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        margin-bottom: 6px !important;
+        font-size: 10px !important;
+        padding: 8px 3px !important;
+    }
+
+    .cp-page-list {
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        flex-direction: column !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        gap: 8px !important;
+    }
+
+    .cp-page-card {
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+    }
+
+    .cp-page-preview {
+        height: 48px !important;
+    }
+
+    .cp-canvas-area {
+        flex: 1 1 0 !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        height: 100% !important;
+        min-height: 0 !important;
+    }
+
+    .cp-workspace {
+        min-width: 0;
+        padding: 6px !important;
+        overflow: auto !important;
+    }
+
+    .cp-canvas-wrapper {
+        min-width: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .dsg-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        padding: 8px !important;
     }
 }
+/* for Mobile view end  */

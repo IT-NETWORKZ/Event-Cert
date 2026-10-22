@@ -7,6 +7,7 @@ import Contact from "../components/home/Contact/Contact";
 import Register from "../components/home/register/Register";
 import Subscription from "../components/Subscription/Subscription";
 import About from "../components/home/about/About";
+import AboutUs from "../components/AboutUs/AboutUs";
 
 
 
@@ -26,7 +27,12 @@ import Terms from "../components/home/footerpages/PopularLinks/T&C/Terms";
 import Shipping from "../components/home/footerpages/PopularLinks/Shipping&Delivery/Shipping";
 import PrivacyPolicy from "../components/home/footerpages/PopularLinks/PrivacyPolicy/PrivacyPolicy";
 import CancellationRefund from "../components/home/footerpages/PopularLinks/Cancellation&Refund/CancellationRefund";
-
+import FAQ from "../components/home/footerpages/OurServices/FAQ/FAQ";
+import OrganizationBenefits from "../components/home/footerpages/OurServices/OrganizationBenefits/OrganizationBenefits";
+import IndividualBenefits from "../components/home/footerpages/OurServices/IndividualBenefits/IndividualBenefits";
+import KeyFeatures from "../components/home/footerpages/OurServices/KeyFeatures/KeyFeatures";
+import WhyChooseEventCert from "../components/home/footerpages/OurServices/WhyChooseEventCert/WhyChooseEventCert";
+import GetStarted from "../components/home/footerpages/OurServices/GetStartedInMinutes/GetStarted";
 
 
 import CPanel from "../pages/CPanel/CPanel";
@@ -41,6 +47,10 @@ import CFeedbackDetails from "../pages/CPanel/CFeedbackDetails";
 import CProfile from "../pages/CPanel/CProfile";
 import CAddDraft from "../components/cpanel/AddCategory/CAddDraft";
 import CAddCategory from "../components/cpanel/AddCategory/CAddCategory";
+import AdminTransaction from "../components/cpanel/AdminTransaction/AdminTransaction";
+import Taxes from "../components/cpanel/Taxes/Taxes";
+
+
 
 function AppRoutes() {
     return (
@@ -50,7 +60,7 @@ function AppRoutes() {
 
             <Route path="/" element={<Home />} />
             <Route path="/services" element={<Services />} />
-            <Route path="/About" element={<About />} />
+            <Route path="/About" element={<AboutUs />} />
 
             <Route path="/facilities" element={<Facilities />} />
 
@@ -60,12 +70,20 @@ function AppRoutes() {
 
             <Route path="/subscription" element={<Subscription />} />
 
-            {/* NEW: Preview page (footer > Popular Links > Preview) */}
+            {/*  Popular Links (footer > Pages)) */}
             <Route path="/preview" element={<Preview />} />
             <Route path="/termsandconditions" element={<Terms />} />
             <Route path="/shippinganddelivery" element={<Shipping />} />
             <Route path="/privacyandpolicy" element={<PrivacyPolicy />} />
             <Route path="/refundprocess" element={<CancellationRefund />} />
+
+            {/* Our Services (footer > Pages) */}
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/benefits" element={<OrganizationBenefits />} />
+            <Route path="/individual_benefits" element={<IndividualBenefits />} />
+            <Route path="/keyfeatures" element={<KeyFeatures />} />
+            <Route path="/whychooseus" element={<WhyChooseEventCert />} />
+            <Route path="/getstarted" element={<GetStarted />} />
 
             {/* Admin Layout */}
             <Route path="/admin/customplus" element={<CustomPlus />} />
@@ -114,6 +132,8 @@ function AppRoutes() {
                     {/*ADD CATEGORY Routes  */}
                     <Route path="category/addcategory" element={<CAddCategory />} />
                     <Route path="category/adddraft" element={<CAddDraft />} />
+                     <Route path="transaction" element={<AdminTransaction />} />
+                     <Route path="taxes" element={<Taxes />} />
                 </Route>
             </Route>
         </Routes>

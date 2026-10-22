@@ -48,12 +48,12 @@ const STATIC_DRAFT_DATA = [
 export default function DraftDetailsTable({ draftList = [], onEditDraft }) {
   const tableData = draftList.length > 0 ? draftList : STATIC_DRAFT_DATA;
 
-  // Columns with expanded widths
   const columns = useMemo(
     () => [
       {
         header: "Sr. No.",
         accessorKey: "srNo",
+        enableSorting: false,
         meta: { width: "90px", className: "text-center" },
         cell: (info) => info.row.index + 1,
       },
@@ -105,6 +105,7 @@ export default function DraftDetailsTable({ draftList = [], onEditDraft }) {
       {
         header: "Edit",
         id: "editAction",
+        enableSorting: false,
         meta: { width: "110px", className: "text-center" },
         cell: (info) => (
           <button
@@ -121,12 +122,7 @@ export default function DraftDetailsTable({ draftList = [], onEditDraft }) {
   );
 
   return (
-    <div className="draft-details-table-card">
-      <div className="draft-details-header">
-        <h2>Draft Details</h2>
-        <div className="header-underline"></div>
-      </div>
-
+    <div className="table-responsive">
       <DataTable columns={columns} data={tableData} />
     </div>
   );
