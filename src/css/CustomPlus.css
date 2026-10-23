@@ -99,51 +99,69 @@ ul { list-style: none; }
     min-width: var(--cp-sidebar-w);
     height: 100%;
     flex-shrink: 0;
-    background: #ffffff;
-    border-right: 1px solid #e8e8e8;
+    /* same look as the EventCert main sidebar: soft teal -> deep teal + faint circles */
+    background:
+        radial-gradient(circle at 100% 0%, rgba(255, 255, 255, .16) 0 80px, transparent 81px),
+        radial-gradient(circle at 0% 100%, rgba(255, 255, 255, .14) 0 100px, transparent 101px),
+        linear-gradient(160deg, #5fb8ad 0%, #2fa194 45%, #009688 100%);
+    border-right: none;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 15px 0;
+    padding: 14px 0 18px;
     overflow-y: auto;
     overflow-x: hidden;
-    box-shadow: 3px 0 12px rgba(0, 0, 0, .05);
+    box-shadow: 3px 0 14px rgba(0, 105, 92, .22);
     z-index: 20;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, .4) transparent;
 }
 
-.cp-sidebar::-webkit-scrollbar { width: 6px; }
-.cp-sidebar::-webkit-scrollbar-thumb { background: #d3d3d3; border-radius: 20px; }
+.cp-sidebar::-webkit-scrollbar { width: 5px; }
+.cp-sidebar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .4); border-radius: 20px; }
+
+/* thin line between groups of tools */
+.cp-sidebar-divider {
+    width: 62%;
+    height: 1px;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, .28);
+    margin: 8px 0 10px;
+}
 
 .cp-sidebar-item {
-    width: 72px;
+    width: 90px;
     flex-shrink: 0;
     border: none;
     background: none;
     border-radius: 14px;
-    padding: 12px 4px;
+    padding: 10px 4px;
     cursor: pointer;
-    margin-bottom: 10px;
+    margin-bottom: 4px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: .30s;
-    color: #555;
+    transition: background .25s, color .25s, transform .25s, box-shadow .25s;
+    color: #ffffff;
 }
 
 .cp-sidebar-item:hover {
-    background: #edf3ff;
-    color: #2563eb;
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, .18);
+    color: #ffffff;
+    transform: translateX(2px);
 }
 
+/* selected = white pill with teal text, like Dashboard in EventCert */
 .cp-sidebar-item.active {
-    background: #2563eb;
-    color: #fff;
+    background: #ffffff;
+    color: #009688;
+    box-shadow: 0 6px 16px rgba(0, 77, 64, .25);
+    transform: none;
 }
 
-.cp-sidebar-icon { font-size: 22px; margin-bottom: 6px; }
-.cp-sidebar-item span { font-size: 12px; font-weight: 600; text-align: center; line-height: 16px; }
+.cp-sidebar-icon { font-size: 20px; margin-bottom: 5px; display: flex; }
+.cp-sidebar-item span { font-size: 12px; font-weight: 600; text-align: center; line-height: 15px; }
 
 /* ==========================
    TEMPLATE PANEL
@@ -1416,3 +1434,57 @@ canvas { touch-action: none; }
     }
 }
 /* for Mobile view end  */
+
+/* ==========================
+   MAIN HEADER BAR (opened from the "Menu" button)
+========================== */
+.cp-header-overlay {
+    position: fixed;
+    inset: 0 0 0 var(--cp-sidebar-w);
+    background: rgba(0, 0, 0, .3);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .3s ease, visibility .3s ease;
+    z-index: 1090;
+}
+.cp-header-overlay.open { opacity: 1; visibility: visible; }
+
+.cp-header-bar {
+    position: fixed;
+    top: 0;
+    left: var(--cp-sidebar-w);
+    right: 0;
+    height: 78px;
+    padding: 0 28px 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background: #ffffff;
+    border-top: 3px solid #2d3748;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .15);
+    transform: translateY(-110%);
+    visibility: hidden;
+    transition: transform .3s ease, visibility .3s ease;
+    z-index: 1100;
+}
+.cp-header-bar.open { transform: translateY(0); visibility: visible; }
+
+.cp-header-user { display: flex; align-items: center; gap: 16px; }
+.cp-header-user span { font-size: 18px; font-weight: 600; color: #333; }
+.cp-header-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #009688;
+    color: #fff;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 576px) {
+    .cp-header-bar { height: 64px; padding: 0 14px; }
+    .cp-header-user span { font-size: 14px; }
+    .cp-header-avatar { width: 40px; height: 40px; font-size: 18px; }
+}
