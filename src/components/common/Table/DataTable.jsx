@@ -60,34 +60,35 @@ function DataTable({ columns = [], data = [], onExportExcel, onViewAllDetails })
   return (
     <div className="table-wrapper container-fluid">
       {/* Action Controls Header Area */}
-      <div className="table-header-control-bar d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-    <div className="d-flex gap-2">
-  {onExportExcel && (
-    <Button
-      type="button"
-      className="btn btn-success action-btn-green"
-      onClick={onExportExcel}
-    >
-      Export to Excel
-    </Button>
-  )}
-  
-  {onViewAllDetails && (
-    <Button
-      type="button"
-      className="btn btn-success action-btn-green"
-      onClick={onViewAllDetails}
-    >
-      All Event Reg. Details
-    </Button>
-  )}
-</div>
+      <div className="table-header-control-bar d-flex justify-content-between align-items-center mb-0 flex-wrap gap-3">
+        <div className="d-flex gap-2">
+          {onExportExcel && (
+            <Button
+              type="button"
+              className="btn btn-success action-btn-green"
+              onClick={onExportExcel}
+            >
+              Export to Excel
+            </Button>
+          )}
 
-        <div className="d-flex align-items-center gap-3">
+          {onViewAllDetails && (
+            <Button
+              type="button"
+              className="btn btn-success action-btn-green"
+              onClick={onViewAllDetails}
+            >
+              All Event Reg. Details
+            </Button>
+          )}
+        </div>
+        <div className="d-flex align-items-center justify-content-between flex-wrap gap-3 w-100 mb-3">
+
+          {/* Left Side - Dropdown + Entries per page */}
           <div className="table-length d-flex align-items-center gap-2">
             <select
               className="form-select form-select-sm"
-              style={{ width: "auto" }}
+              style={{ width: "80px" }}
               value={table.getState().pagination.pageSize}
               onChange={(e) => table.setPageSize(Number(e.target.value))}
             >
@@ -96,10 +97,14 @@ function DataTable({ columns = [], data = [], onExportExcel, onViewAllDetails })
               <option value={15}>15</option>
               <option value={25}>25</option>
             </select>
-            <span className="text-muted small text-nowrap">Entries per page</span>
+
+            <span className="text-muted small text-nowrap">
+              Entries per page
+            </span>
           </div>
 
-          <div className="table-search">
+          {/* Right Side - Search Bar */}
+          <div className="table-search" style={{ width: "250px", maxWidth: "100%" }}>
             <input
               type="text"
               className="form-control form-control-sm"
@@ -108,11 +113,12 @@ function DataTable({ columns = [], data = [], onExportExcel, onViewAllDetails })
               onChange={(e) => setGlobalFilter(e.target.value)}
             />
           </div>
+
         </div>
       </div>
 
       {/* Main Structurally Clean Table */}
-      <div className="table-responsive table-card-border">
+      <div className="table-responsive table-card-border w-100">
         <table className="table table-hover align-middle data-table m-0">
           <colgroup>
             {memoizedColumns.map((col) => (
@@ -122,24 +128,27 @@ function DataTable({ columns = [], data = [], onExportExcel, onViewAllDetails })
               />
             ))}
           </colgroup>
+
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
-                  const alignmentClass = header.column.columnDef.meta?.className || "text-start";
+                  const alignmentClass =
+                    header.column.columnDef.meta?.className || "text-center";
 
                   return (
                     <th
                       key={header.id}
                       onClick={header.column.getToggleSortingHandler()}
                       className={alignmentClass}
-                      style={{ cursor: header.column.getCanSort() ? 'pointer' : 'default' }}
+                      style={{
+                        cursor: header.column.getCanSort() ? "pointer" : "default",
+                        verticalAlign: "middle",
+                      }}
                     >
-                      <div className={`th-content-wrapper d-flex align-items-center gap-1 ${
-                        alignmentClass === 'text-end' ? 'justify-content-end' :
-                        alignmentClass === 'text-center' ? 'justify-content-center' :
-                        'justify-content-start'
-                      }`}>
+                      <div
+                        className={`th-content-wrapper d-flex align-items-center justify-content-center gap-1`}
+                      >
                         <span className="th-text">
                           {flexRender(
                             header.column.columnDef.header,
@@ -152,9 +161,11 @@ function DataTable({ columns = [], data = [], onExportExcel, onViewAllDetails })
                             {header.column.getIsSorted() === "asc" && (
                               <ArrowUp size={13} className="active-arrow" />
                             )}
+
                             {header.column.getIsSorted() === "desc" && (
                               <ArrowDown size={13} className="active-arrow" />
                             )}
+
                             {!header.column.getIsSorted() && (
                               <ChevronsUpDown size={13} className="dimmed-arrow" />
                             )}
@@ -167,16 +178,23 @@ function DataTable({ columns = [], data = [], onExportExcel, onViewAllDetails })
               </tr>
             ))}
           </thead>
+
           <tbody>
             {rows && rows.length > 0 ? (
               <>
                 {rows.map((row) => (
                   <tr key={row.id}>
                     {row.getVisibleCells().map((cell) => {
-                      const alignmentClass = cell.column.columnDef.meta?.className || "text-start";
+                      const alignmentClass =
+                        cell.column.columnDef.meta?.className || "text-center";
+
                       return (
-                        <td key={cell.id} className={alignmentClass}>
-                          <div className="td-content-clip">
+                        <td
+                          key={cell.id}
+                          className={alignmentClass}
+                          style={{ verticalAlign: "middle" }}
+                        >
+                          <div className="td-content-clip d-flex align-items-center justify-content-center">
                             {flexRender(
                               cell.column.columnDef.cell,
                               cell.getContext()
@@ -188,10 +206,13 @@ function DataTable({ columns = [], data = [], onExportExcel, onViewAllDetails })
                   </tr>
                 ))}
 
-                {/* Invisible filler rows: keep row count == pageSize so the
-                    table height never changes between pages (fixes shake) */}
+                {/* Filler rows */}
                 {Array.from({ length: fillerCount }).map((_, idx) => (
-                  <tr key={`filler-${idx}`} className="filler-row" aria-hidden="true">
+                  <tr
+                    key={`filler-${idx}`}
+                    className="filler-row"
+                    aria-hidden="true"
+                  >
                     {memoizedColumns.map((col, colIdx) => (
                       <td key={col.id || col.accessorKey || colIdx}>&nbsp;</td>
                     ))}
@@ -200,7 +221,10 @@ function DataTable({ columns = [], data = [], onExportExcel, onViewAllDetails })
               </>
             ) : (
               <tr>
-                <td colSpan={columns?.length || 1} className="no-data text-center py-5 text-muted">
+                <td
+                  colSpan={memoizedColumns.length || 1}
+                  className="no-data text-center py-5 text-muted"
+                >
                   No records found matching criteria
                 </td>
               </tr>

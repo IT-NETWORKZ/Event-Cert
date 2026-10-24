@@ -3,7 +3,7 @@ import { FaMinus, FaTimes, FaHistory } from "react-icons/fa";
 
 // Same minimized "pill" look as the Sticker / Invitation / Greeting drawers.
 // Slots used there: sticker 110, invitation 180, greeting 250.
-// Used for both "Recent Work" (pill slot 320) and "Your Design" (pill slot 390).
+// Used for both "Recent Work" (pill slot 390) and "Your Design" (pill slot 460).
 // full -> minimized (floating pill) -> closed
 const RecentLibrary = ({
     isOpen,
@@ -14,7 +14,7 @@ const RecentLibrary = ({
     onDelete,
     title = "Recent Work",
     pillLabel = "Recent",
-    pillTop = 320,
+    pillTop = 390,
     pillColor = "#2563eb",
     icon = <FaHistory />,
 }) => {
