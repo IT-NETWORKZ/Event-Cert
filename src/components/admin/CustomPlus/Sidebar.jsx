@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import {
     FaBars,
-    FaExpandArrowsAlt,
     FaImages,
     FaFont,
     FaIcons,
@@ -10,18 +9,17 @@ import {
     FaEnvelopeOpenText,
     FaRegImage,
     FaCertificate,
-    FaFileImage,
-    FaFilePdf,
+    FaDownload,
     FaHistory,
     FaFolderOpen,
 } from "react-icons/fa";
 
 import { fabric } from "fabric";
 import { useCanvas } from "../../../context/CanvasContext";
-import Resize from "./Resize";
 import StickerLibrary from "./StickersLibrary";
 import InvitationLibrary from "./InvitationLibrary";
 import GreetingLibrary from "./GreetingLibrary";
+import CertificateLibrary from "./CertificateLibrary";
 import PreviewModal from "./PreviewModal";
 import MainHeaderBar from "./MainHeaderBar";
 import Recentlibrary from "./Recentlibrary";
@@ -33,13 +31,14 @@ import {
 } from "./Recentdesigns";
 import { downloadAllPagesAsPng } from "../../../Services/downloadPng";
 import { downloadAllPagesAsPdf } from "../../../Services/downloadPdf";
+import { smartDownload } from "./bulkExport";
 
 const MAX_DESIGN_DIMENSION = 2000;
 
 // "Upload Image" adds the picture as a small logo-sized object (longest side)
-const LOGO_MAX_SIZE = 120;
+const LOGO_MAX_SIZE = 180;
 
-const Sidebar = ({ activeMenu, setActiveMenu }) => {
+const Sidebar = ({ activeMenu, setActiveMenu, rows = [], selectedRows = [] }) => {
     const {
         canvas,
         pages,
@@ -49,7 +48,6 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
         setPages,
     } = useCanvas();
 
-    const [showResize, setShowResize] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
     const [showMainMenu, setShowMainMenu] = useState(false);
 
@@ -57,6 +55,7 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
     const [showStickerLibrary, setShowStickerLibrary] = useState(false);
     const [showInvitationLibrary, setShowInvitationLibrary] = useState(false);
     const [showGreetingLibrary, setShowGreetingLibrary] = useState(false);
+    const [showCertificateLibrary, setShowCertificateLibrary] = useState(false);
 
     // Recent Work drawer
     const [showRecent, setShowRecent] = useState(false);
@@ -66,6 +65,7 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
     const [showYourDesign, setShowYourDesign] = useState(false);
 
     const designFileInputRef = useRef(null);
+    const bulkRunningRef = useRef(false);
     const logoFileInputRef = useRef(null);
 
     // Small "Image uploaded" popup (bottom-right)
@@ -116,10 +116,10 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
             fabric.Image.fromURL(
                 evt.target.result,
                 (img) => {
-                    // never bigger than LOGO_MAX_SIZE, and never more than 30% of the canvas
+                    // never bigger than LOGO_MAX_SIZE, and never more than 40% of the canvas
                     const maxSize = Math.min(
                         LOGO_MAX_SIZE,
-                        Math.min(canvas.getWidth(), canvas.getHeight()) * 0.3
+                        Math.min(canvas.getWidth(), canvas.getHeight()) * 0.4
                     );
                     const scale = maxSize / Math.max(img.width, img.height);
 
@@ -287,6 +287,49 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
     };
 
     // ==========================
+    // PNG / PDF DOWNLOAD (one button)
+    //   no row ticked  -> the design as it is (existing service)
+    //   1 row ticked   -> that row's file, direct download
+    //   2+ rows ticked -> every row packed in one ZIP
+    // ==========================
+    const handleDownload = async (type) => {
+        if (bulkRunningRef.current) return;
+        bulkRunningRef.current = true;
+
+        try {
+            if (selectedRows.length === 0) {
+                const currentPageData = saveCurrentPageData();
+                if (type === "png") {
+                    await downloadAllPagesAsPng({ pages, activePage, currentPageData, fileName: "certificate" });
+                } else {
+                    await downloadAllPagesAsPdf({ pages, activePage, currentPageData, fileName: "certificate.pdf" });
+                }
+                return;
+            }
+
+            const result = await smartDownload({
+                type,
+                rows: selectedRows,
+                pages,
+                activePage,
+                canvas,
+                onProgress: (done, total) =>
+                    total > 1 && showToast(`Preparing ${type.toUpperCase()} ${done} / ${total}...`),
+            });
+            showToast(
+                result === "zip"
+                    ? `${selectedRows.length} ${type.toUpperCase()} file${selectedRows.length > 1 ? "s" : ""} downloaded as ZIP`
+                    : `${type.toUpperCase()} downloaded`
+            );
+        } catch (err) {
+            console.error(err);
+            alert(`Download failed: ${err.message || err}`);
+        } finally {
+            bulkRunningRef.current = false;
+        }
+    };
+
+    // ==========================
     // SIDEBAR CLICK ROUTER
     // ==========================
     const handleClick = async (id) => {
@@ -298,11 +341,6 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
         setShowMainMenu(false);
 
         switch (id) {
-            case "resize":
-                setShowResize(true);
-                setActiveMenu(id);
-                break;
-
             case "design":
                 handleDesignClick();
                 setActiveMenu(id);
@@ -342,38 +380,21 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
                 setActiveMenu(id);
                 break;
 
+            case "certificate":
+                setShowCertificateLibrary(true);
+                setActiveMenu(id);
+                break;
+
             case "preview":
                 setShowPreview(true);
                 setActiveMenu(id);
                 break;
 
-            case "png": {
-                const currentPageData = saveCurrentPageData();
-
-                await downloadAllPagesAsPng({
-                    pages,
-                    activePage,
-                    currentPageData,
-                    fileName: "certificate",
-                });
-
+            case "png":
+            case "pdf":
+                await handleDownload(id);
                 setActiveMenu(id);
                 break;
-            }
-
-            case "pdf": {
-                const currentPageData = saveCurrentPageData();
-
-                await downloadAllPagesAsPdf({
-                    pages,
-                    activePage,
-                    currentPageData,
-                    fileName: "certificate.pdf",
-                });
-
-                setActiveMenu(id);
-                break;
-            }
 
             default:
                 setActiveMenu(id);
@@ -390,7 +411,6 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
             { id: "menu", icon: <FaBars />, title: "Menu" },
         ],
         [
-            { id: "resize", icon: <FaExpandArrowsAlt />, title: "Size" },
             { id: "design", icon: <FaImages />, title: "Upload Design" },
             { id: "upload", icon: <FaUpload />, title: "Upload Image" },
             { id: "recent", icon: <FaHistory />, title: "Recent" },
@@ -414,15 +434,15 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
             { id: "preview", icon: <FaSearchPlus />, title: "Preview" },
             {
                 id: "png",
-                icon: <FaFileImage />,
+                icon: <FaDownload />,
                 title: "PNG",
-                desc: "Here you can download your design in PNG format.",
+                desc: "Download PNG (one ticked row = direct file, many = ZIP).",
             },
             {
                 id: "pdf",
-                icon: <FaFilePdf />,
+                icon: <FaDownload />,
                 title: "PDF",
-                desc: "Here you can download your design in PDF format.",
+                desc: "Download PDF (one ticked row = direct file, many = ZIP).",
             },
         ],
     ];
@@ -479,12 +499,6 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
                 onClose={() => setShowMainMenu(false)}
             />
 
-            {/* Resize Overlay Layout Modal */}
-            <Resize
-                open={showResize}
-                onClose={() => setShowResize(false)}
-            />
-
             {/* Sticker Asset Sliding Deck Container */}
             <StickerLibrary
                 isOpen={showStickerLibrary}
@@ -501,6 +515,12 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
             <GreetingLibrary
                 isOpen={showGreetingLibrary}
                 onClose={() => setShowGreetingLibrary(false)}
+            />
+
+            {/* Certificate Template Deck Drawer */}
+            <CertificateLibrary
+                isOpen={showCertificateLibrary}
+                onClose={() => setShowCertificateLibrary(false)}
             />
 
             {/* Recent Work Drawer */}
@@ -523,7 +543,7 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
                 onDelete={handleRecentDelete}
                 title="Your Design"
                 pillLabel="Your Design"
-                pillTop={390}
+                pillTop={460}
                 pillColor="#00acc1"
                 icon={<FaFolderOpen />}
             />
@@ -531,6 +551,7 @@ const Sidebar = ({ activeMenu, setActiveMenu }) => {
             <PreviewModal
                 open={showPreview}
                 onClose={() => setShowPreview(false)}
+                rows={rows}
             />
 
             {toast && (
