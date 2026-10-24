@@ -1,16 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-  FaFont,
   FaSearchPlus,
   FaSearchMinus,
-  FaCopy,
   FaArrowUp,
   FaArrowDown,
   FaTrash,
   FaUndo,
   FaRedo,
-  FaPalette,
-  FaPencilAlt,
   FaBold,
   FaItalic,
   FaAlignCenter,
@@ -615,30 +611,6 @@ const CanvasToolbar = () => {
 
       <div className="toolbar-divider" />
 
-      {/* Group 4: Color & Drawing Mode */}
-      <div className="toolbar-group">
-        <label title="Color Palette" className="color-label" style={{ backgroundColor: currentColor }}>
-          <FaPalette style={{ color: "#fff", mixBlendMode: "difference" }} />
-          <input
-            type="color"
-            value={currentColor}
-            onChange={changeColor}
-            onBlur={handleColorPickerBlur}
-            className="hidden-color-input"
-          />
-        </label>
-        <button
-          onClick={toggleDrawingMode}
-          title="Draw Mode"
-          aria-pressed={isDrawing}
-          className={`toolbar-button ${isDrawing ? "active" : ""}`}
-        >
-          <FaPencilAlt />
-        </button>
-      </div>
-
-      <div className="toolbar-divider" />
-
       {/* Group 5: Typography Selection */}
       <div className="toolbar-group">
         <select
@@ -691,10 +663,6 @@ const CanvasToolbar = () => {
           </button>
         </div>
 
-        <button className="toolbar-button" onClick={addCreativeText} title="Add Custom Text">
-          <FaFont />
-        </button>
-
         <button
           type="button"
           className={`toolbar-button ${format.bold ? "active" : ""}`}
@@ -721,9 +689,6 @@ const CanvasToolbar = () => {
       <div className="toolbar-group">
         <button className="toolbar-button" onClick={centerObject} title="Center Object">
           <FaAlignCenter />
-        </button>
-        <button className="toolbar-button" onClick={duplicate} title="Clone Object">
-          <FaCopy />
         </button>
         <button className="toolbar-button" onClick={bringForward} title="Move Layer Up">
           <FaArrowUp />
