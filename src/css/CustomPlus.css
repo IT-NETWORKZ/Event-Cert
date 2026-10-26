@@ -1,9 +1,3 @@
-/* ===========================================================
-   CUSTOM PLUS DESIGNER - SCROLLABLE EDITOR + TABLE LAYOUT
-   Same layout on every screen size (desktop -> tablet -> mobile):
-   [ sidebar | page panel | canvas ]  then the table underneath.
-   Sidebar scrolls on its own, the right side scrolls as one page.
-   =========================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 

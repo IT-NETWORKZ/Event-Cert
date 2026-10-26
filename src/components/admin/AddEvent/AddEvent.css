@@ -1,65 +1,86 @@
-/* Container Shell */
+/* ===========================================================
+   ADD EVENT - EventCert teal theme
+   (same colours as the sidebar: soft teal -> deep teal + faint circles)
+   =========================================================== */
 .add-event-container {
-  max-width: 850px;
+  --ev-teal: #009688;
+  --ev-teal-dark: #00796b;
+  --ev-teal-soft: #e0f2f1;
+  --ev-teal-line: #cfe6e3;
+  --ev-ink: #1f2937;
+  --ev-muted: #6b7280;
+  --ev-grad: linear-gradient(160deg, #5fb8ad 0%, #2fa194 45%, #009688 100%);
+
+  max-width: 900px;
   margin: 20px auto;
   background: #ffffff;
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
-  font-family: 'Segoe UI', Roboto, sans-serif;
+  border-radius: 22px;
+  padding: 0 32px 34px;
+  box-shadow: 0 10px 34px rgba(0, 105, 92, 0.14);
+  font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
+.add-event-container * { font-family: inherit; }
+
+/* ---------- Title = teal banner like the sidebar ---------- */
 .form-main-title {
+  margin: 0 -32px 28px;
+  padding: 26px 20px;
   text-align: center;
   font-size: 26px;
-  font-family: 'Georgia', serif;
-  font-style: italic;
-  color: #333333;
-  margin-bottom: 25px;
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: .4px;
+  color: #ffffff;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(255, 255, 255, .16) 0 80px, transparent 81px),
+    radial-gradient(circle at 0% 100%, rgba(255, 255, 255, .14) 0 100px, transparent 101px),
+    var(--ev-grad);
   position: relative;
 }
 
 .form-main-title::after {
   content: '';
   display: block;
-  width: 80px;
+  width: 64px;
   height: 3px;
-  background:  #00796b; /* Title underline color matched to your layout */
-  margin: 8px auto 0 auto;
+  background: rgba(255, 255, 255, .85);
+  margin: 10px auto 0;
   border-radius: 2px;
 }
 
-/* Instructions Banner */
+/* ---------- Instructions banner ---------- */
 .instructions-section {
-  background: rgb(236, 242, 244); /* Matches the soft beige/brown background */
-  border-left: 4px solid  #00796b; /* Left border indicator accent */
+  background: var(--ev-teal-soft);
+  border-left: 4px solid var(--ev-teal);
   padding: 15px 20px;
-  border-radius: 4px 12px 12px 4px;
-  margin-bottom: 25px;
+  border-radius: 6px 14px 14px 6px;
+  margin-bottom: 26px;
 }
 
 .instructions-section h3 {
   margin: 0 0 8px 0;
-  font-size: 18px;
-  font-family: 'Georgia', serif;
-  font-style: italic;
-  color: #4a4a4a;
+  font-size: 16px;
+  font-weight: 700;
+  font-style: normal;
+  color: var(--ev-teal-dark);
 }
 
 .instructions-section ul {
   margin: 0;
   padding-left: 20px;
-  color: #666666;
+  color: #3f5552;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
-/* Duration Custom Radio Select Group */
+/* ---------- Subscription plan pills ---------- */
 .duration-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
   margin-bottom: 30px;
   justify-content: flex-start;
 }
@@ -70,26 +91,40 @@
   gap: 8px;
   cursor: pointer;
   font-size: 14px;
-  color: #555556;
-  background: #f8f9fa;
-  padding: 8px 16px;
+  font-weight: 500;
+  color: #3f5552;
+  background: #f4faf9;
+  padding: 8px 18px;
   border-radius: 30px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--ev-teal-line);
   transition: all 0.2s ease;
 }
 
 .duration-label input[type="radio"] {
-  accent-color:  #00796b; /* Matches the dark brown active dot color */
+  accent-color: var(--ev-teal);
   margin: 0;
   width: 16px;
   height: 16px;
 }
 
 .duration-label:hover {
-  background: #f1f3f5;
+  background: var(--ev-teal-soft);
+  border-color: var(--ev-teal);
 }
 
-/* Responsive Grid Engine */
+/* selected plan = filled teal pill */
+.duration-label.active,
+.duration-label:has(input:checked) {
+  background: var(--ev-grad);
+  border-color: transparent;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 6px 14px rgba(0, 150, 136, .28);
+}
+.duration-label.active input[type="radio"],
+.duration-label:has(input:checked) input[type="radio"] { accent-color: #ffffff; }
+
+/* ---------- Form grid ---------- */
 .form-fields-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -98,37 +133,33 @@
   margin-bottom: 20px;
 }
 
-/* Structural Form Control Input styles */
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.form-group.full-width {
-  grid-column: span 2;
-}
+.form-group.full-width { grid-column: span 2; }
 
-.form-group label, .textarea-group label {
+.form-group label,
+.textarea-group label {
   font-size: 14px;
   font-weight: 600;
-  color: #1a2530;
+  color: var(--ev-teal-dark);
 }
 
-.required {
-  color: #e63946;
-}
+.required { color: #e63946; }
 
-.form-group input, 
+.form-group input,
 .form-group select,
 .textarea-group textarea {
   width: 100%;
   padding: 12px 16px;
   font-size: 14px;
-  border: 1px solid #f3ebd4; /* Matches the light straw/cream outline from your image */
+  border: 1px solid var(--ev-teal-line);
   border-radius: 12px;
-  background-color: #ffffff;
-  color: #333333;
+  background-color: #fbfefd;
+  color: var(--ev-ink);
   outline: none;
   box-sizing: border-box;
   transition: all 0.25s ease;
@@ -136,23 +167,37 @@
 
 .form-group input::placeholder,
 .form-group select::placeholder,
-.textarea-group textarea::placeholder {
-  color: #b5b5b5;
-}
+.textarea-group textarea::placeholder { color: #a9b8b6; }
 
-.form-group input:focus, 
+.form-group input:hover,
+.form-group select:hover,
+.textarea-group textarea:hover { border-color: #8cc9c1; }
+
+.form-group input:focus,
 .form-group select:focus,
 .textarea-group textarea:focus {
-  border-color: #009688; /* Focus teal glow matching your main sidebar palette */
-  box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.12);
+  border-color: var(--ev-teal);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.15);
 }
 
-/* Custom layout tweak for File Input fields */
-.form-group input[type="file"] {
-  padding: 8px 12px;
+/* File input: teal "Choose file" button */
+.form-group input[type="file"] { padding: 8px 12px; cursor: pointer; }
+.form-group input[type="file"]::file-selector-button {
+  margin-right: 12px;
+  padding: 7px 16px;
+  border: none;
+  border-radius: 20px;
+  background: var(--ev-teal);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s;
 }
+.form-group input[type="file"]::file-selector-button:hover { background: var(--ev-teal-dark); }
 
-/* Text Area Counters styling */
+/* ---------- Text areas ---------- */
 .textarea-group {
   display: flex;
   flex-direction: column;
@@ -160,22 +205,26 @@
   margin-bottom: 20px;
 }
 
-.textarea-group textarea {
-  height: 100px;
-  resize: none;
-}
+.textarea-group textarea { height: 100px; resize: none; }
 
 .char-counter {
   text-align: right;
   font-size: 12px;
-  color: #888888;
+  color: var(--ev-muted);
   margin-top: 2px;
 }
 
-/* Beautiful custom Checkbox element matching dashboard teal theme */
-.checkbox-container {
-  margin: 25px 0;
+/* ---------- Team size block (shown for team events) ---------- */
+.conditional-team-section {
+  margin-top: 15px;
+  background-color: #f1faf9;
+  padding: 16px;
+  border-radius: 12px;
+  border-left: 4px solid var(--ev-teal);
 }
+
+/* ---------- Checkbox ---------- */
+.checkbox-container { margin: 25px 0; }
 
 .checkbox-label {
   display: inline-flex;
@@ -183,27 +232,23 @@
   gap: 10px;
   cursor: pointer;
   font-weight: 600;
-  color: #009688; /* Teal color text to fit theme */
+  color: var(--ev-teal);
   font-size: 15px;
   user-select: none;
 }
 
-.checkbox-label input[type="checkbox"] {
-  display: none;
-}
+.checkbox-label input[type="checkbox"] { display: none; }
 
 .checkbox-custom-box {
   width: 18px;
   height: 18px;
-  border: 2px solid #009688; /* Dark teal checkbox border */
+  border: 2px solid var(--ev-teal);
   border-radius: 4px;
   position: relative;
   transition: all 0.2s ease;
 }
 
-.checkbox-label input[type="checkbox"]:checked + .checkbox-custom-box {
-  background: #009688;
-}
+.checkbox-label input[type="checkbox"]:checked + .checkbox-custom-box { background: var(--ev-teal); }
 
 .checkbox-label input[type="checkbox"]:checked + .checkbox-custom-box::after {
   content: '';
@@ -217,10 +262,10 @@
   transform: rotate(45deg);
 }
 
-/* Payment Dynamic Box UI Layout */
+/* ---------- Payment box ---------- */
 .payment-details-section {
-  background: #fafbfc;
-  border: 1px dashed #ced4da;
+  background: #f6fbfa;
+  border: 1px dashed #8cc9c1;
   border-radius: 16px;
   padding: 24px;
   margin-top: 15px;
@@ -228,17 +273,17 @@
 }
 
 .payment-title {
-  font-family: 'Georgia', serif;
-  font-style: italic;
-  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 17px;
   text-align: center;
-  color: #333333;
+  color: var(--ev-teal-dark);
   margin: 0 0 20px 0;
 }
 
 .payment-title.sub-title {
   margin: 25px 0 20px 0;
-  border-top: 1px dashed #e9ecef;
+  border-top: 1px dashed #b7dcd7;
   padding-top: 20px;
 }
 
@@ -251,7 +296,7 @@
 
 .pay-method-btn {
   background: #ffffff;
-  border: 2px solid #e9ecef;
+  border: 2px solid var(--ev-teal-line);
   border-radius: 14px;
   padding: 12px 24px;
   cursor: pointer;
@@ -262,25 +307,20 @@
   transition: all 0.25s ease;
 }
 
-.pay-method-btn:hover {
-  border-color: #ced4da;
-}
+.pay-method-btn:hover { border-color: var(--ev-teal); transform: translateY(-2px); }
 
 .pay-method-btn.selected {
-  border-color: #009688; /* Highlight payment choice wrapper green-teal color */
-  background: #eefaf8;
-  box-shadow: 0 4px 12px rgba(0, 150, 136, 0.1);
+  border-color: var(--ev-teal);
+  background: var(--ev-teal-soft);
+  box-shadow: 0 6px 14px rgba(0, 150, 136, 0.18);
 }
 
-.pay-icon {
-  font-weight: 700;
-  font-size: 15px;
-}
+.pay-icon { font-weight: 700; font-size: 15px; }
 .gpay-icon { color: #4285F4; }
 .phonepe-icon { color: #5f259f; }
 .paytm-icon { color: #00baf2; }
 
-/* Global Submission Bar styling */
+/* ---------- Submit ---------- */
 .form-actions {
   display: flex;
   justify-content: center;
@@ -288,58 +328,205 @@
 }
 
 .btn-submit-event {
-  background: #009688; /* Main deep teal */
+  background: var(--ev-grad);
   color: #ffffff;
   font-size: 16px;
   font-weight: 600;
-  padding: 14px 40px;
+  letter-spacing: .3px;
+  padding: 14px 44px;
   border: none;
   border-radius: 30px;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(0, 150, 136, 0.25);
+  box-shadow: 0 8px 18px rgba(0, 150, 136, 0.32);
   transition: all 0.25s ease;
 }
 
 .btn-submit-event:hover {
-  background: #00796b; /* Accent dark on hover action */
-  transform: translateY(-1px);
+  filter: brightness(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px rgba(0, 150, 136, 0.38);
 }
 
-/* Mobile responsive media queries breakpoints */
+.btn-submit-event:active { transform: translateY(0); }
+
+/* ---------- Tablet / mobile ---------- */
 @media (max-width: 768px) {
-  .add-event-container {
-    padding: 20px;
-    margin: 10px;
-  }
-  
-  .form-fields-grid {
-    grid-template-columns: 1fr;
-    row-gap: 16px;
-  }
-  
-  .form-group.full-width {
-    grid-column: span 1;
-  }
-
-  .payment-methods-row {
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .pay-method-btn {
-    width: 100%;
-    max-width: 200px;
-  }
+  .add-event-container { padding: 0 18px 24px; margin: 10px; border-radius: 18px; }
+  .form-main-title { margin: 0 -18px 22px; font-size: 22px; padding: 22px 16px; }
+  .form-fields-grid { grid-template-columns: 1fr; row-gap: 16px; }
+  .form-group.full-width { grid-column: span 1; }
+  .payment-methods-row { flex-direction: column; align-items: center; gap: 12px; }
+  .pay-method-btn { width: 100%; max-width: 200px; }
+  .duration-label { padding: 7px 14px; font-size: 13px; }
 }
 
 
-.conditional-team-section {
-  margin-top: 15px;
-  background-color: #f9f9f9; /* Soft backdrop so managers notice the group fields */
-  padding: 15px;
-  border-radius: 6px;
-  border-left: 4px solid #007bff; /* Highlights team limits */
+/* ---------- Subscription plan label + plan info card ---------- */
+.section-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ev-teal-dark);
+  margin-bottom: 10px;
+}
+
+.plan-info-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+  margin-bottom: 22px;
+}
+
+.remaining-event-card {
+  background: linear-gradient(160deg, #e8f6f4 0%, #d3eeea 100%);
+  border: 1px solid var(--ev-teal-line);
+  border-left: 4px solid var(--ev-teal);
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.remaining-event-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ev-teal-dark);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.remaining-event-count {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--ev-teal);
+  margin-bottom: 8px;
+}
+
+.plan-expiry-date {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ev-ink);
+}
+
+.mode-wrapper { justify-content: center; }
+
+@media (max-width: 768px) {
+  .plan-info-wrapper { grid-template-columns: 1fr; gap: 16px; }
+}
+
+
+/* ===========================================================
+   EVENT DETAILS TABLE
+   white rounded card, space left + right, centered headings and
+   values, grid lines, sideways scroll for the 17 columns
+   =========================================================== */
+.events-table {
+  width: auto;
+  margin: 34px 24px 40px;
+  padding: 22px 44px 34px;
+  background: #ffffff;
+  border: 1px solid #e3e8ee;
+  border-radius: 30px;
+  box-shadow: 0 6px 24px rgba(0, 105, 92, 0.08);
+}
+
+.event-details-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #00796b;
+  margin: 6px 0 26px;
+}
+.event-details-title::after {
+  content: "";
+  display: block;
+  width: 70px;
+  height: 3px;
+  background: #009688;
+  border-radius: 2px;
+  margin: 10px auto 0;
+}
+
+.events-table .table-wrapper { padding-left: 0; padding-right: 0; }
+
+/* the scrolling box */
+.events-table .table-responsive {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #009688 #e0f2f1;
+}
+.events-table .table-responsive::-webkit-scrollbar { height: 9px; }
+.events-table .table-responsive::-webkit-scrollbar-track { background: #e0f2f1; border-radius: 20px; }
+.events-table .table-responsive::-webkit-scrollbar-thumb { background: #009688; border-radius: 20px; }
+
+/* total width = sum of the column widths set in AddEvent.jsx */
+.events-table table.data-table {
+  width: 2640px !important;
+  min-width: 2640px !important;
+  max-width: none !important;
+  table-layout: fixed !important;
+  border-collapse: collapse;
+}
+
+/* grid lines + centered text */
+.events-table table.data-table th,
+.events-table table.data-table td {
+  border: 1px solid #dfe6ee !important;
+  text-align: center;
+  vertical-align: middle;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  hyphens: none !important;
+  padding: 14px 12px;
+}
+
+/* headings: bold, can wrap onto 2-3 lines (Adv. / Start / Date) */
+.events-table table.data-table th {
+  white-space: normal !important;
+  line-height: 1.35;
+  font-weight: 700;
+  color: #1f2937;
+  background: #ffffff;
+}
+.events-table table.data-table th .th-content-wrapper { justify-content: center !important; }
+
+.events-table table.data-table td { white-space: normal; }
+.events-table table.data-table tbody tr:nth-child(odd) td { background: #f1f3f5; }
+.events-table table.data-table tbody tr:nth-child(even) td { background: #ffffff; }
+.events-table table.data-table td img { margin: 0 auto; }
+
+/* Read More link */
+.read-more-cell { text-align: center; }
+.read-more-link {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 4px;
+  font-weight: 700;
+  color: #16803c;
+  cursor: pointer;
+}
+.read-more-link:hover { text-decoration: underline; }
+
+/* tablet */
+@media (max-width: 992px) {
+  .events-table { margin: 24px 12px 30px; padding: 18px 22px 26px; border-radius: 24px; }
+}
+
+/* phone: smaller card margin, toolbar + footer stack */
+@media (max-width: 768px) {
+  .events-table { margin: 20px 8px 26px; padding: 16px 12px 22px; border-radius: 20px; }
+  .event-details-title { font-size: 22px; margin-bottom: 18px; }
+  .events-table .table-header-control-bar { flex-direction: column; align-items: stretch !important; }
+  .events-table .table-header-control-bar > div { width: 100%; }
+  .events-table .table-search,
+  .events-table .table-search input { width: 100%; }
+  .events-table .table-pagination { justify-content: center !important; text-align: center; }
 }
 
 /* ==========================================================================
@@ -385,5 +572,11 @@
   width: 100%;
 }
 
-
-
+/* event title = link to the participants page */
+.event-title-link {
+  color: #0b5ed7;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.event-title-link:hover { color: #009688; text-decoration: underline; }
