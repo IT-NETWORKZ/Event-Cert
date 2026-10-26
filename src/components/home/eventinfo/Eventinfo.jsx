@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./eventinfo.css";
 import { Search, Calendar, MapPin, ArrowRight, QrCode } from "lucide-react";
 
@@ -114,6 +115,10 @@ const formatTime = (d) => {
 };
 
 function Eventinfo({ events = sampleEvents }) {
+  const navigate = useNavigate();
+
+  // click on an event -> Event registration page (/event) for that event
+  const openEvent = (ev) => navigate(`/event?nID=${ev.id}`, { state: { event: ev } });
   const [stateVal, setStateVal] = useState("");
   const [cityVal, setCityVal] = useState("");
   const [nameVal, setNameVal] = useState("");
@@ -224,7 +229,13 @@ function Eventinfo({ events = sampleEvents }) {
                   <span className="ev-dot" aria-hidden="true"></span>
 
                   {/* Card */}
-                  <div className="ev-card">
+                  <div
+                    className="ev-card ev-card-click"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => openEvent(ev)}
+                    onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), openEvent(ev))}
+                  >
                     <div className="ev-img">
                       {ev.image ? (
                         <img src={ev.image} alt={ev.title} />
@@ -261,7 +272,14 @@ function Eventinfo({ events = sampleEvents }) {
                           <span>ENTRY</span>
                           <strong>₹ {Number(ev.entry).toFixed(2)}</strong>
                         </div>
-                        <button type="button" className="ev-view">
+                        <button
+                          type="button"
+                          className="ev-view"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openEvent(ev);
+                          }}
+                        >
                           VIEW EVENT <ArrowRight size={16} />
                         </button>
                       </div>

@@ -490,3 +490,10 @@ input.ev-field { cursor: text; }
   .ev-foot { flex-wrap: wrap; gap: 6px 12px; }
   .ev-img { height: 120px; }
 }
+
+/* whole card is clickable -> opens the event page */
+.ev-card-click { cursor: pointer; }
+.ev-card-click:focus-visible {
+  outline: 3px solid rgba(13, 78, 67, 0.45);
+  outline-offset: 3px;
+}
