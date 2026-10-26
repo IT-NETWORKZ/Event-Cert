@@ -21,6 +21,9 @@ import Schedular from "../pages/Admin/Schedular";
 import StatusReport from "../components/common/StatusReport/StatusReport";
 import Payment from "../components/admin/Payment/Payment";
 import AddEvent from "../components/admin/AddEvent/AddEvent";
+import AdminParticipate from "../components/admin/AddEvent/AdminParticipate";
+import EventRecipants from "../components/admin/AddEvent/EventRecipants"; 
+
 import ResetPassword from "../components/admin/ResetPassword/ResetPassword";
 import Preview from "../components/home/footerpages/PopularLinks/Preview/Preview";
 import Terms from "../components/home/footerpages/PopularLinks/T&C/Terms";
@@ -49,7 +52,7 @@ import CAddDraft from "../components/cpanel/AddCategory/CAddDraft";
 import CAddCategory from "../components/cpanel/AddCategory/CAddCategory";
 import AdminTransaction from "../components/cpanel/AdminTransaction/AdminTransaction";
 import Taxes from "../components/cpanel/Taxes/Taxes";
-
+import Event from "../components/home/eventinfo/Event";
 
 
 function AppRoutes() {
@@ -69,7 +72,7 @@ function AppRoutes() {
             <Route path="/register" element={<Register />} />
 
             <Route path="/subscription" element={<Subscription />} />
-
+<Route path="/event" element={<Event />} />
             {/*  Popular Links (footer > Pages)) */}
             <Route path="/preview" element={<Preview />} />
             <Route path="/termsandconditions" element={<Terms />} />
@@ -106,6 +109,10 @@ function AppRoutes() {
                 <Route path="payment" element={<Payment />} />
                 {/* /admin/addevent */}
                 <Route path="addevent" element={<AddEvent />} />
+                 {/* /admin/AdminParticipate */}
+                <Route path="/admin/admin-participate" element={<AdminParticipate />} />
+                 {/* /admin/EventRecipants */}
+                <Route path="/admin/event-recipants" element={<EventRecipants />} />
                 {/* Delivery Report pages (inside the layout, so sidebar + navbar show) */}
                 <Route path="custom-status" element={<StatusReport type="custom" />} />
                 <Route path="schedule-status" element={<StatusReport type="schedule" />} />
