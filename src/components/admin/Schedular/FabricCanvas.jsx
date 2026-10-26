@@ -1,13 +1,24 @@
 import React, { useEffect, useRef, useState } from "react";
 import { fabric } from "fabric";
 import { useCanvas } from "../../../context/CanvasContext";
+import ObjectActionBar from "./ObjectActionBar";
+
+// On-screen canvas size:
+// HEIGHT is fixed (550px on a normal desktop), WIDTH follows the page shape.
+//   landscape -> wide canvas, portrait -> narrow canvas, blank -> square.
+// On short screens the height is reduced (55% of window height) so it never looks oversized.
+// The real canvas size (used for PNG / PDF export) is never changed by this.
+const DISPLAY_HEIGHT = 550;
+const HEIGHT_RATIO = 0.55;
+// Small gap kept around the canvas inside the workspace
+const EDGE_GAP = 8;
 
 const FabricCanvas = () => {
-    const { 
-        canvasSize, 
-        setCanvas, 
-        activePage, 
-        pages, 
+    const {
+        canvasSize,
+        setCanvas,
+        activePage,
+        pages,
         setCanvasSize,
         setPast,
         setFuture
@@ -38,16 +49,19 @@ const FabricCanvas = () => {
         fabric.Object.prototype.borderColor = "#2563eb";
         fabric.Object.prototype.cornerSize = 18;
 
+        // Delete / Backspace removes everything that is selected (one object or many)
         const handleDelete = (e) => {
             if (e.key !== "Delete" && e.key !== "Backspace") return;
-            const active = canvas.getActiveObject();
-            if (!active) return;
 
             const tag = document.activeElement?.tagName;
-            if (tag === "INPUT" || tag === "TEXTAREA") return;
-            if (active.isEditing) return;
+            if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
 
-            canvas.remove(active);
+            const active = canvas.getActiveObject();
+            if (!active || active.isEditing) return;
+
+            const selected = canvas.getActiveObjects();
+            canvas.discardActiveObject();
+            selected.forEach((o) => canvas.remove(o));
             canvas.requestRenderAll();
         };
 
@@ -57,6 +71,7 @@ const FabricCanvas = () => {
             window.removeEventListener("keydown", handleDelete);
             canvas.dispose();
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // ================= MULTI-PAGE PAGE SWITCHING SYNC =================
@@ -64,21 +79,17 @@ const FabricCanvas = () => {
         const canvas = fabricRef.current;
         if (!canvas) return;
 
-        // 1. Locate configuration settings mapped to the selected page tracking ID
         const currentPageData = pages.find((p) => p.id === activePage);
         if (!currentPageData) return;
 
-        // 2. Clear canvas object selections and clear rendering history stacks
         canvas.discardActiveObject();
         setPast([]);
         setFuture([]);
 
-        // 3. Dynamically resize the working bounds container to fit page custom parameters
         canvas.setWidth(currentPageData.width);
         canvas.setHeight(currentPageData.height);
         setCanvasSize({ width: currentPageData.width, height: currentPageData.height });
 
-        // 4. Wipe visual frames and inject target canvas json arrays
         if (currentPageData.json) {
             canvas.clear();
             canvas.loadFromJSON(currentPageData.json, () => {
@@ -90,7 +101,8 @@ const FabricCanvas = () => {
             canvas.backgroundColor = "#ffffff";
             canvas.renderAll();
         }
-    }, [activePage]); // Rely on activePage hooks to draw fresh frame layout elements
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activePage]);
 
     // ================= RESIZE CANVAS (REAL SIZE) =================
     useEffect(() => {
@@ -105,25 +117,36 @@ const FabricCanvas = () => {
         canvas.requestRenderAll();
     }, [canvasSize]);
 
-    // ================= AUTO FIT SCALE =================
+    // ================= DISPLAY SCALE =================
     useEffect(() => {
-        const PADDING = 0;
-        const MIN_SCALE = 0.5;
-        const MAX_SCALE = 1;
-
         const calculateScale = () => {
-            if (!viewportRef.current) return;
+            const el = viewportRef.current;
+            if (!el) return;
 
-            const w = viewportRef.current.clientWidth - PADDING;
-            const h = viewportRef.current.clientHeight - PADDING;
+            // available room = the workspace that holds the canvas
+            const parent = el.parentElement || el;
+            const cs = window.getComputedStyle(parent);
+            const availW =
+                parent.clientWidth -
+                parseFloat(cs.paddingLeft || 0) -
+                parseFloat(cs.paddingRight || 0) -
+                EDGE_GAP;
+            const availH =
+                parent.clientHeight -
+                parseFloat(cs.paddingTop || 0) -
+                parseFloat(cs.paddingBottom || 0) -
+                EDGE_GAP;
 
-            if (w <= 0 || h <= 0) return;
+            // 1. fixed height
+            let targetH = Math.min(DISPLAY_HEIGHT, window.innerHeight * HEIGHT_RATIO);
+            if (availH > 0) targetH = Math.min(targetH, availH);
 
-            const scaleX = w / canvasSize.width;
-            const scaleY = h / canvasSize.height;
+            let newScale = targetH / canvasSize.height;
 
-            let newScale = Math.min(scaleX, scaleY);
-            newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, newScale));
+            // 2. too wide for the screen -> shrink by width instead
+            if (availW > 0 && canvasSize.width * newScale > availW) {
+                newScale = availW / canvasSize.width;
+            }
 
             setScale(newScale);
         };
@@ -133,6 +156,9 @@ const FabricCanvas = () => {
         const observer = new ResizeObserver(calculateScale);
         if (viewportRef.current) {
             observer.observe(viewportRef.current);
+            if (viewportRef.current.parentElement) {
+                observer.observe(viewportRef.current.parentElement);
+            }
         }
 
         window.addEventListener("resize", calculateScale);
@@ -143,23 +169,35 @@ const FabricCanvas = () => {
         };
     }, [canvasSize]);
 
+    const boxWidth = canvasSize.width * scale;
+    const boxHeight = canvasSize.height * scale;
+
     return (
         <div ref={viewportRef} className="cp-canvas-wrapper">
+            {/* outer box = real on-screen size, so layout never overflows */}
             <div
-                // className="cp-canvas-wrapper"
-                 className="cp-canvas-scaled-box"
+                className="cp-canvas-frame"
                 style={{
-                    width: canvasSize.width,
-                    height: canvasSize.height,
-                    transform: `scale(${scale})`,
-                    transformOrigin: "center center"
+                    width: boxWidth,
+                    height: boxHeight,
+                    flexShrink: 0
                 }}
             >
-                <canvas ref={canvasRef} />
-            </div>
+                <div
+                    className="cp-canvas-scaled-box"
+                    style={{
+                        width: canvasSize.width,
+                        height: canvasSize.height,
+                        transform: `scale(${scale})`,
+                        transformOrigin: "top left"
+                    }}
+                >
+                    <canvas ref={canvasRef} />
+                </div>
 
-         
-    
+                {/* Copy / Duplicate / Delete + colour, floating above the selected object */}
+                <ObjectActionBar scale={scale} boxWidth={boxWidth} boxHeight={boxHeight} />
+            </div>
         </div>
     );
 };
