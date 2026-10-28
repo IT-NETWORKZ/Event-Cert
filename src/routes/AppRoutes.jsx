@@ -54,6 +54,8 @@ import AdminTransaction from "../components/cpanel/AdminTransaction/AdminTransac
 import Taxes from "../components/cpanel/Taxes/Taxes";
 import Event from "../components/home/eventinfo/Event";
 
+import ProtectedRoute from "./ProtectedRoute";
+
 
 function AppRoutes() {
     return (
@@ -88,6 +90,9 @@ function AppRoutes() {
             <Route path="/whychooseus" element={<WhyChooseEventCert />} />
             <Route path="/getstarted" element={<GetStarted />} />
 
+            {/* Admin: requires login */}
+<Route element={<ProtectedRoute />}>
+
             {/* Admin Layout */}
             <Route path="/admin/customplus" element={<CustomPlus />} />
             <Route path="/admin/schedular" element={<Schedular />} />
@@ -116,6 +121,7 @@ function AppRoutes() {
                 {/* Delivery Report pages (inside the layout, so sidebar + navbar show) */}
                 <Route path="custom-status" element={<StatusReport type="custom" />} />
                 <Route path="schedule-status" element={<StatusReport type="schedule" />} />
+            </Route>
             </Route>
 
             {/* ================= CPANEL LAYOUT ================= */}
