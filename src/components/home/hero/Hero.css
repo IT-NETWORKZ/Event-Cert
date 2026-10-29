@@ -1,6 +1,6 @@
 .hero-header {
     margin-top: -100px;
-    padding-top: 125px; /* Perfect balance between top header and bottom section */
+    padding-top: 125px; /* Balance between top header and bottom section */
     padding-bottom: 25px;
     background: url('../../../assets/img/hero-bg.jpg') center top/cover no-repeat;
     overflow: hidden;
@@ -14,6 +14,12 @@ textarea:focus {
     background: #fff;
     box-shadow: 0 0 0 4px rgba(37, 99, 235, .12);
     border: none;
+}
+
+/* ================= LAYOUT ================= */
+
+.slider-col {
+    min-width: 0; /* prevents overflow inside the flex row */
 }
 
 /* ================= SLIDER ================= */
@@ -35,11 +41,20 @@ textarea:focus {
     z-index: 1;
 }
 
-.header-carousel img {
+.header-carousel img,
+.slider-image {
     position: relative;
-    width: 100%;
     display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;      /* same size for every slide */
+    object-fit: cover;
     z-index: 2;
+    animation: heroFade 0.6s ease;
+}
+
+@keyframes heroFade {
+    from { opacity: 0.4; }
+    to   { opacity: 1; }
 }
 
 /* ================= DOTS ================= */
@@ -59,10 +74,12 @@ textarea:focus {
     width: 10px;
     height: 10px;
     border: 2px solid #fff;
+    box-sizing: border-box;
+    transition: height 0.3s ease, background 0.3s ease;
 }
 
 .active-dot {
-    height: 34px;
+    height: 34px !important;
     background: #fff;
 }
 
@@ -74,19 +91,29 @@ textarea:focus {
     justify-content: center;
 }
 
-/* ================= DESKTOP ================= */
+/* ================= LARGE DESKTOP ================= */
 
-.hero-row {
-    column-gap: 80px;
+@media (min-width: 1400px) {
+    .header-carousel {
+        padding: 55px 110px 55px 0;
+    }
+
+    .slider-dots {
+        right: 42px;
+    }
 }
 
-.slider-col {
-    padding-left: 20px;
-}
+/* ================= SMALL DESKTOP / LAPTOP ================= */
 
-.slider-image {
-    width: 100%;
-    display: block;
+@media (max-width: 1199px) {
+    .header-carousel {
+        margin-left: 15px;
+        padding: 35px 75px 35px 0;
+    }
+
+    .slider-dots {
+        right: 25px;
+    }
 }
 
 /* ================= TABLET ================= */
@@ -98,7 +125,8 @@ textarea:focus {
     }
 
     .header-carousel {
-        margin: auto;
+        max-width: 640px;
+        margin: 0 auto;
         padding: 30px 60px 30px 0;
     }
 
@@ -111,16 +139,44 @@ textarea:focus {
     }
 }
 
+/* ================= LARGE MOBILE ================= */
+
+@media (max-width: 767px) {
+    .hero-header {
+        padding-top: 45px;
+    }
+
+    .header-carousel {
+        max-width: 100%;
+        padding: 22px 48px 22px 0;
+    }
+
+    .slider-dots {
+        right: 14px;
+        gap: 10px;
+    }
+}
+
 /* ================= MOBILE ================= */
 
 @media (max-width: 576px) {
+    .hero-header {
+        padding-top: 35px;
+        padding-bottom: 15px;
+    }
+
     .header-carousel {
-        margin-top: 35px;
+        margin-top: 15px;
         padding: 15px 25px 15px 0;
     }
 
     .header-carousel::before {
         width: 65%;
+    }
+
+    .header-carousel img,
+    .slider-image {
+        aspect-ratio: 16 / 11;
     }
 
     .slider-dots {
@@ -134,6 +190,28 @@ textarea:focus {
     }
 
     .active-dot {
-        height: 24px;
+        height: 24px !important;
+    }
+}
+
+/* ================= SMALL MOBILE ================= */
+
+@media (max-width: 380px) {
+    .header-carousel {
+        padding: 12px 20px 12px 0;
+    }
+
+    .slider-dots {
+        right: 5px;
+        gap: 6px;
+    }
+
+    .slider-dots span {
+        width: 8px;
+        height: 8px;
+    }
+
+    .active-dot {
+        height: 18px !important;
     }
 }
