@@ -10,6 +10,7 @@ import Hero from "../../components/home/hero/Hero";
 import Services from "../../components/home/services/Services";
 import WhyChooseUs from "../../components/home/whychooseus/WhyChooseUs";
 import ScrollToTopButton from "../../components/common/ScrollToTopButton/ScrollToTopButton";
+import HomeFeedback from "../../components/home/feedback/HomeFeedback";
 
 import { motion } from "framer-motion";
 
@@ -76,6 +77,11 @@ function Home() {
             <FadeSection delay={0.7}>
                 <Services />
             </FadeSection>
+
+             <FadeSection delay={0.8}>
+                <HomeFeedback />
+            </FadeSection>
+
 
             <FadeSection delay={0.8}>
                 <Footer />
