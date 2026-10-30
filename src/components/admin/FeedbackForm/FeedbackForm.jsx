@@ -1,110 +1,205 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./FeedbackForm.css";
-import { FaCloudUploadAlt, FaStar } from "react-icons/fa";
-import logo from "../../../assets/img/logo_EventCert.png";
+import { FaStar, FaPaperPlane, FaCheckCircle } from "react-icons/fa";
+import { getFeedbackUser, submitFeedback } from "../../../api/feedbackService";
+import { useAuth } from "../../../context/AuthContext";
 
-function FeedbackForm() {
-  const [rating, setRating] = useState(5);
+const MAX_CHARS = 240;
+const LABELS = ["", "Poor", "Fair", "Good", "Very Good", "Excellent"];
+
+function FeedbackForm({ userName: userNameProp = "" }) {
+  const { user } = useAuth();
+
+  const [name, setName] = useState(userNameProp || user?.fullName || "");
+  const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
-  const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [file, setFile] = useState(null);
+  const [error, setError] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+  // Load the logged-in user's name from the API
+  useEffect(() => {
+    let cancelled = false;
+    getFeedbackUser()
+      .then((data) => {
+        if (!cancelled && data?.userName) setName(data.userName);
+      })
+      .catch(() => {
+        /* keep the fallback name already in state */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (rating === 0) {
+      setError("Please select a star rating.");
+      return;
+    }
+
+    if (!description.trim()) {
+      setError("Please enter your description.");
+      return;
+    }
+
+    setError("");
+    setLoading(true);
+
+    try {
+      await submitFeedback({ rating, description: description.trim() });
+      setSubmitted(true);
+    } catch (err) {
+      const status = err.response?.status;
+      if (status === 401) {
+        setError("Your session has expired. Please log in again.");
+      } else {
+        setError(
+          err.response?.data?.message ||
+            "Could not submit feedback. Please try again."
+        );
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log({ name, rating, description, file });
+  const resetForm = () => {
+    setRating(0);
+    setHover(0);
+    setDescription("");
+    setError("");
+    setSubmitted(false);
   };
 
+  const activeStars = hover || rating;
+  const percent = Math.min((description.length / MAX_CHARS) * 100, 100);
+
   return (
-    <div className="feedback-page-container">
-      <div className="feedback-card">
-        <div className="feedback-header">
-          <img src={logo} alt="EventCert Logo" className="feedback-logo" />
-          <h1>Feedback</h1>
+    <div className="fbk-page">
+      <div className="fbk-card">
+        {/* Banner */}
+        <div className="fbk-banner">
+          <h1>Share Your Feedback</h1>
+          <span className="fbk-banner-line" />
         </div>
 
-        <div className="star-rating-container">
-          {[...Array(5)].map((_, index) => {
-            const ratingValue = index + 1;
-            return (
-              <label key={index} className="star-label">
-                <input
-                  type="radio"
-                  name="rating"
-                  value={ratingValue}
-                  onClick={() => setRating(ratingValue)}
-                  style={{ display: "none" }}
-                />
-                <FaStar
-                  className="star-icon"
-                  color={ratingValue <= (hover || rating) ? "#ffc107" : "#e4e5e9"}
-                  onMouseEnter={() => setHover(ratingValue)}
-                  onMouseLeave={() => setHover(0)}
-                />
-              </label>
-            );
-          })}
-        </div>
-
-        <form onSubmit={handleSubmit} className="feedback-form">
-          <div className="input-group">
-            <label htmlFor="userName">
-              Name <span className="required-asterisk">*</span>
-            </label>
-            <input
-              type="text"
-              id="userName"
-              placeholder="Enter your name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="input-group">
-            <label htmlFor="userDescription">
-              Description <span className="required-asterisk">*</span>
-            </label>
-            <textarea
-              id="userDescription"
-              placeholder="Tell us about your experience"
-              maxLength={240}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-            />
-            <div className="character-counter">
-              {description.length} / 240 characters
+        <div className="fbk-body">
+          {submitted ? (
+            <div className="fbk-success">
+              <FaCheckCircle className="fbk-success-icon" />
+              <h2>Thank you!</h2>
+              <p>Your feedback has been submitted successfully.</p>
+              <button
+                type="button"
+                className="fbk-submit"
+                onClick={resetForm}
+              >
+                Submit Another
+              </button>
             </div>
-          </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="fbk-form" noValidate>
+              {/* Name */}
+              <div className="fbk-field">
+                <label className="fbk-label" htmlFor="fbkName">
+                  Name <span className="fbk-req">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="fbkName"
+                  className="fbk-input"
+                  value={name}
+                  placeholder="Your registered name"
+                  readOnly
+                />
+              </div>
 
-          <div className="file-upload-container">
-            <input
-              type="file"
-              id="fileUpload"
-              onChange={handleFileChange}
-              style={{ display: "none" }}
-            />
-            <label htmlFor="fileUpload" className="file-upload-label">
-              <FaCloudUploadAlt className="upload-icon" />
-              <span>
-                {file ? `Selected: ${file.name}` : "Click to upload or drag and drop"}
-              </span>
-            </label>
-          </div>
+              {/* Rating */}
+              <div className="fbk-rating">
+                <span className="fbk-label fbk-rating-title">
+                  Rate Your Experience <span className="fbk-req">*</span>
+                </span>
 
-          <div className="btn-wrapper">
-            <button type="submit" className="feedback-submit-btn">
-              Submit
-            </button>
-          </div>
-        </form>
+                <div className="fbk-rating-row">
+                  <div
+                    className="fbk-stars"
+                    role="group"
+                    aria-label="Rate your experience from 1 to 5 stars"
+                  >
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        className={`fbk-star ${
+                          star <= activeStars ? "is-on" : ""
+                        }`}
+                        onClick={() => {
+                          setRating(star);
+                          setError("");
+                        }}
+                        onMouseEnter={() => setHover(star)}
+                        onMouseLeave={() => setHover(0)}
+                        onFocus={() => setHover(star)}
+                        onBlur={() => setHover(0)}
+                        aria-label={`${star} ${star === 1 ? "star" : "stars"}`}
+                        aria-pressed={rating === star}
+                      >
+                        <FaStar />
+                      </button>
+                    ))}
+                  </div>
+
+                  <span className={`fbk-pill ${activeStars ? "is-on" : ""}`}>
+                    {activeStars ? LABELS[activeStars] : "Select rating"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="fbk-field">
+                <label className="fbk-label" htmlFor="fbkDescription">
+                  Description <span className="fbk-req">*</span>
+                </label>
+
+                <textarea
+                  id="fbkDescription"
+                  className="fbk-textarea"
+                  placeholder="Tell us about your experience..."
+                  maxLength={MAX_CHARS}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+
+                <div className="fbk-counter-row">
+                  <div className="fbk-bar">
+                    <span style={{ width: `${percent}%` }} />
+                  </div>
+                  <span className="fbk-counter">
+                    {description.length} / {MAX_CHARS}
+                  </span>
+                </div>
+              </div>
+
+              {error && <div className="fbk-error">{error}</div>}
+
+              {/* Submit */}
+              <div className="fbk-actions">
+                <button
+                  type="submit"
+                  className="fbk-submit"
+                  disabled={loading}
+                >
+                  <FaPaperPlane />
+                  <span>{loading ? "Submitting..." : "Submit Feedback"}</span>
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
       </div>
     </div>
   );

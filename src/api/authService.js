@@ -13,15 +13,16 @@ const save = (data) => {
   return user;
 };
 
+// LOGIN: saves the tokens
 export const login = async (email, password) => {
   const { data } = await api.post("/auth/login", { email, password });
   return save(data);
 };
 
+// REGISTER: creates the account, does NOT save the tokens
 export const register = async (payload) => {
-  // payload: { fullName, email, phoneNumber, password } (match your RegisterDto)
   const { data } = await api.post("/auth/register", payload);
-  return save(data);
+  return data;
 };
 
 export const googleLogin = async (idToken) => {
@@ -35,6 +36,9 @@ export const resetPassword = (token, newPassword) =>
   api.post("/auth/reset-password", { token, newPassword });
 
 export const logout = async () => {
-  try { await api.post("/auth/logout", { refreshToken: tokenStore.refresh }); }
-  finally { tokenStore.clear(); }
+  try {
+    await api.post("/auth/logout", { refreshToken: tokenStore.refresh });
+  } finally {
+    tokenStore.clear();
+  }
 };

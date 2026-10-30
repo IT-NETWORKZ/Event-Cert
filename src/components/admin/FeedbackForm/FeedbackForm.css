@@ -1,182 +1,438 @@
-.feedback-page-container {
-  min-height: 100vh;
+/* =========================================
+   1Trainee Feedback Form
+   Reference: EventCert "Add Event" design
+   All classes are prefixed "fbk-" to avoid
+   collisions with the admin layout styles.
+========================================= */
+
+.fbk-page {
   width: 100%;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding: 20px 12px;
-  background: #f4f5fa;
+  padding: 24px 16px 40px;
   box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: inherit;
 }
 
-.feedback-card {
+.fbk-card {
   width: 100%;
-  max-width: 420px;
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px 16px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+  max-width: 760px;
+  background: #ffffff;
+  border-radius: 28px;
+  box-shadow: 0 14px 40px rgba(15, 118, 110, 0.13);
+  overflow: hidden;
 }
 
-.feedback-header {
+/* Banner */
+
+.fbk-banner {
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  margin-bottom: 14px;
+  padding: 34px 20px 32px;
+  background: linear-gradient(135deg, #6dbfb5 0%, #2aa396 45%, #08978a 100%);
+  overflow: hidden;
 }
 
-.feedback-logo {
-  height: 20px;
-  object-fit: contain;
+.fbk-banner::before,
+.fbk-banner::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  pointer-events: none;
 }
 
-.feedback-header h1 {
+.fbk-banner::before {
+  width: 190px;
+  height: 190px;
+  left: -50px;
+  bottom: -90px;
+}
+
+.fbk-banner::after {
+  width: 170px;
+  height: 170px;
+  right: -40px;
+  top: -80px;
+}
+
+.fbk-banner h1 {
+  position: relative;
+  z-index: 1;
   margin: 0;
-  font-size: 1.5rem;
-  color: #4c3275;
+  color: #ffffff;
+  font-size: 2rem;
   font-weight: 700;
-}
-
-.star-rating-container {
-  display: flex;
-  justify-content: center;
-  gap: 5px;
-  margin-bottom: 18px;
-}
-
-.star-label {
-  display: flex;
-  align-items: center;
-}
-
-.star-icon {
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-.feedback-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.input-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 12px;
-}
-
-.input-group label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #1e293b;
-  margin-bottom: 5px;
-}
-
-.required-asterisk {
-  color: #ef4444;
-}
-
-.input-group input[type="text"],
-.input-group textarea {
-  width: 100%;
-  padding: 9px 10px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  background: #fff;
-  outline: none;
-  box-sizing: border-box;
-}
-
-.input-group input[type="text"]:focus,
-.input-group textarea:focus {
-  border-color: #009688;
-}
-
-.input-group textarea {
-  min-height: 90px;
-  resize: vertical;
-}
-
-.character-counter {
-  text-align: right;
-  font-size: 0.72rem;
-  color: #94a3b8;
-  margin-top: 4px;
-}
-
-.file-upload-container {
-  width: 100%;
-  margin-bottom: 16px;
-}
-
-.file-upload-label {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 100%;
-  padding: 14px 10px;
-  background: #f8fafc;
-  border: 1px dashed #94a3b8;
-  border-radius: 8px;
-  cursor: pointer;
+  letter-spacing: -0.3px;
   text-align: center;
 }
 
-.file-upload-label:hover {
-  border-color: #009688;
-  background: #f0fdfa;
+.fbk-banner-line {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 64px;
+  height: 4px;
+  margin-top: 12px;
+  background: #ffffff;
+  border-radius: 4px;
 }
 
-.upload-icon {
-  font-size: 1.4rem;
-  color: #4f46e5;
+/* Body */
+
+.fbk-body {
+  padding: 32px 40px 38px;
 }
 
-.file-upload-label span {
-  font-size: 0.82rem;
-  color: #475569;
+.fbk-form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Instructions */
+
+.fbk-instructions {
+  margin-bottom: 26px;
+  padding: 18px 24px;
+  background: #c8e6e3;
+  border-left: 5px solid #0d9488;
+  border-radius: 10px;
+}
+
+.fbk-instructions h3 {
+  margin: 0 0 8px;
+  color: #0f766e;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.fbk-instructions p {
+  margin: 4px 0 4px 6px;
+  color: #334155;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.fbk-instructions strong {
+  color: #0f172a;
+}
+
+/* Fields */
+
+.fbk-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+}
+
+.fbk-label {
+  display: block;
+  margin: 0 0 10px;
+  color: #0f766e;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.fbk-req {
+  color: #e11d48;
+}
+
+.fbk-input,
+.fbk-textarea {
+  display: block;
+  width: 100%;
+  padding: 14px 20px;
+  background: #f8fcfb;
+  border: 1px solid #d3e6e3;
+  border-radius: 14px;
+  color: #0f172a;
+  font-family: inherit;
+  font-size: 1rem;
+  outline: none;
+  box-shadow: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.fbk-input:focus,
+.fbk-textarea:focus {
+  background: #ffffff;
+  border-color: #0d9488;
+  box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.12);
+}
+
+.fbk-input[readonly] {
+  background: #eef8f6;
+  color: #334155;
+  cursor: default;
+}
+
+.fbk-textarea {
+  min-height: 140px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.fbk-input::placeholder,
+.fbk-textarea::placeholder {
+  color: #94a3b8;
+}
+
+/* Counter */
+
+.fbk-counter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.fbk-bar {
+  flex: 1;
+  height: 5px;
+  background: #dcebe8;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.fbk-bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #14b8a6, #0d9488);
+  border-radius: 5px;
+  transition: width 0.2s ease;
+}
+
+.fbk-counter {
+  color: #64748b;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+/* Rating */
+
+.fbk-rating {
+  margin-bottom: 24px;
+  padding: 18px 24px 20px;
+  background: #dff1ee;
+  border: 1px solid #cfe7e3;
+  border-left: 5px solid #0d9488;
+  border-radius: 12px;
+}
+
+.fbk-rating-title {
+  margin-bottom: 8px;
+}
+
+.fbk-rating-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.fbk-stars {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fbk-star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 4px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: #b3cfcb;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.fbk-star.is-on {
+  color: #f5b301;
+  filter: drop-shadow(0 2px 4px rgba(245, 179, 1, 0.35));
+}
+
+.fbk-star:hover {
+  transform: scale(1.15);
+}
+
+.fbk-star:focus-visible {
+  outline: 2px solid #0d9488;
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+.fbk-pill {
+  padding: 8px 22px;
+  background: #ffffff;
+  border: 1px solid #cfe7e3;
+  border-radius: 999px;
+  color: #64748b;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.fbk-pill.is-on {
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  border-color: #0d9488;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+}
+
+/* Error */
+
+.fbk-error {
+  margin-bottom: 18px;
+  padding: 10px 16px;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: 10px;
+  color: #e11d48;
+  font-size: 0.88rem;
   font-weight: 500;
 }
 
-.btn-wrapper {
+/* Submit */
+
+.fbk-actions {
   display: flex;
   justify-content: center;
 }
 
-.feedback-submit-btn {
-  background: linear-gradient(135deg, #5c4eb4, #4f46e5);
-  color: #fff;
-  border: none;
-  border-radius: 20px;
-  padding: 9px 34px;
-  font-size: 0.9rem;
+.fbk-submit.fbk-submit {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 240px;
+  height: auto;
+  margin: 0;
+  padding: 14px 34px;
+  background: linear-gradient(135deg, #14b8a6, #0d9488) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 1rem;
   font-weight: 600;
+  line-height: 1.2;
   cursor: pointer;
+  box-shadow: 0 8px 20px rgba(13, 148, 136, 0.28);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.feedback-submit-btn:hover {
-  opacity: 0.95;
+.fbk-submit.fbk-submit svg,
+.fbk-submit.fbk-submit span {
+  color: #ffffff !important;
+  fill: currentColor;
 }
 
-@media (max-width: 600px) {
-  .feedback-page-container {
-    padding: 14px 10px;
+.fbk-submit.fbk-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(13, 148, 136, 0.36);
+}
+
+.fbk-submit.fbk-submit:active {
+  transform: translateY(0);
+}
+
+.fbk-submit.fbk-submit:focus-visible {
+  outline: 2px solid #0f766e;
+  outline-offset: 3px;
+}
+
+/* Success */
+
+.fbk-success {
+  text-align: center;
+  padding: 20px 0 6px;
+}
+
+.fbk-success-icon {
+  margin-bottom: 14px;
+  color: #0d9488;
+  font-size: 3.6rem;
+}
+
+.fbk-success h2 {
+  margin: 0 0 6px;
+  color: #0f766e;
+  font-size: 1.6rem;
+}
+
+.fbk-success p {
+  margin: 0 0 26px;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+/* Responsive */
+
+@media (max-width: 640px) {
+  .fbk-page {
+    padding: 16px 10px 28px;
   }
 
-  .feedback-card {
-    padding: 16px 12px;
+  .fbk-card {
+    border-radius: 22px;
   }
 
-  .feedback-header h1 {
-    font-size: 1.3rem;
+  .fbk-banner {
+    padding: 26px 16px 24px;
   }
 
-  .star-icon {
-    font-size: 1.35rem;
+  .fbk-banner h1 {
+    font-size: 1.5rem;
   }
+
+  .fbk-body {
+    padding: 22px 16px 28px;
+  }
+
+  .fbk-instructions,
+  .fbk-rating {
+    padding: 16px;
+  }
+
+  .fbk-rating-row {
+    justify-content: center;
+  }
+
+  .fbk-star {
+    font-size: 1.75rem;
+  }
+
+  .fbk-submit.fbk-submit {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fbk-submit.fbk-submit,
+  .fbk-star,
+  .fbk-pill,
+  .fbk-bar span,
+  .fbk-input,
+  .fbk-textarea {
+    transition: none;
+  }
+}
+
+.fbk-submit:disabled {
+    opacity: .6;
+    cursor: not-allowed;
 }
