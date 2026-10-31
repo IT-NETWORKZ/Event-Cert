@@ -123,7 +123,7 @@ const Register = () => {
             </div>
           </div>
 
-          <h2 className="rg-side-title">Admin Registration</h2>
+          {/* <h2 className="rg-side-title">Admin Registration</h2> */}
         </aside>
 
         {/* ================= FORM ================= */}

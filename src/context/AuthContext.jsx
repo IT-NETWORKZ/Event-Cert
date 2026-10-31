@@ -33,6 +33,8 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  
+
   return (
     <AuthContext.Provider
       value={{

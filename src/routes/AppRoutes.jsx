@@ -91,7 +91,7 @@ function AppRoutes() {
             <Route path="/getstarted" element={<GetStarted />} />
 
             {/* Admin: requires login */}
-<Route element={<ProtectedRoute />}>
+          <Route element={<ProtectedRoute />}>
 
             {/* Admin Layout */}
             <Route path="/admin/customplus" element={<CustomPlus />} />
@@ -131,6 +131,7 @@ function AppRoutes() {
                 <Route index element={<CLogin />} />
 
                 {/* Resolves sub-routes wrapped in the <CPanel/> Layout layout */}
+                <Route element={<ProtectedRoute roles={["SuperAdmin"]} />}>
                 <Route element={<CPanel />}>
                     <Route path="dashboard" element={<CDashboard />} />
                     <Route path="contact" element={<CPContact />} />
@@ -148,7 +149,9 @@ function AppRoutes() {
                      <Route path="transaction" element={<AdminTransaction />} />
                      <Route path="taxes" element={<Taxes />} />
                 </Route>
+                 </Route>
             </Route>
+           
         </Routes>
     );
 }

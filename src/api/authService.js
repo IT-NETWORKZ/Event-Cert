@@ -42,3 +42,10 @@ export const logout = async () => {
     tokenStore.clear();
   }
 };
+
+
+// SuperAdmin Api
+export const superAdminLogin = async (email, password) => {
+  const { data } = await api.post("/auth/superadmin/login", { email, password });
+  return save(data);
+};
