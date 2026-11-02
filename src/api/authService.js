@@ -49,3 +49,11 @@ export const superAdminLogin = async (email, password) => {
   const { data } = await api.post("/auth/superadmin/login", { email, password });
   return save(data);
 };
+
+// SuperAdmin Forgot Password 
+export const superAdminForgotPassword = async (email) => {
+  const { data } = await api.post("/auth/superadmin/forgot-password", { 
+    Email: email 
+  });
+  return data;
+};

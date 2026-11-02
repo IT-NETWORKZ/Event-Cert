@@ -9,8 +9,6 @@ import Subscription from "../components/Subscription/Subscription";
 import About from "../components/home/about/About";
 import AboutUs from "../components/AboutUs/AboutUs";
 
-
-
 import Admin from "../pages/Admin/Admin";
 import Dashboard from "../components/admin/Dashboard/Dashboard";
 import Profile from "../pages/Admin/Profile";
@@ -37,10 +35,10 @@ import KeyFeatures from "../components/home/footerpages/OurServices/KeyFeatures/
 import WhyChooseEventCert from "../components/home/footerpages/OurServices/WhyChooseEventCert/WhyChooseEventCert";
 import GetStarted from "../components/home/footerpages/OurServices/GetStartedInMinutes/GetStarted";
 
-
 import CPanel from "../pages/CPanel/CPanel";
 import CDashboard from "../components/cpanel/Dashboard/CDashboard";
 import CLogin from "../components/cpanel/Login/CLogin";
+import CForgotPassword from "../pages/CPanel/CForgotPassword"; // Added Forgot Password Import
 import CPContact from "../pages/CPanel/CPContact";
 import CRegistrationList from "../pages/CPanel/CRegistrationList";
 import CAddplans from "../pages/CPanel/CAddplans";
@@ -56,26 +54,20 @@ import Event from "../components/home/eventinfo/Event";
 
 import ProtectedRoute from "./ProtectedRoute";
 
-
 function AppRoutes() {
     return (
         <Routes>
-
             {/* Public Routes */}
-
             <Route path="/" element={<Home />} />
             <Route path="/services" element={<Services />} />
             <Route path="/About" element={<AboutUs />} />
-
             <Route path="/facilities" element={<Facilities />} />
-
             <Route path="/contact" element={<Contact />} />
-
             <Route path="/register" element={<Register />} />
-
             <Route path="/subscription" element={<Subscription />} />
-<Route path="/event" element={<Event />} />
-            {/*  Popular Links (footer > Pages)) */}
+            <Route path="/event" element={<Event />} />
+
+            {/* Popular Links (footer > Pages) */}
             <Route path="/preview" element={<Preview />} />
             <Route path="/termsandconditions" element={<Terms />} />
             <Route path="/shippinganddelivery" element={<Shipping />} />
@@ -91,67 +83,55 @@ function AppRoutes() {
             <Route path="/getstarted" element={<GetStarted />} />
 
             {/* Admin: requires login */}
-          <Route element={<ProtectedRoute />}>
+            <Route element={<ProtectedRoute />}>
+                <Route path="/admin/customplus" element={<CustomPlus />} />
+                <Route path="/admin/schedular" element={<Schedular />} />
 
-            {/* Admin Layout */}
-            <Route path="/admin/customplus" element={<CustomPlus />} />
-            <Route path="/admin/schedular" element={<Schedular />} />
-
-            <Route path="/admin" element={<Admin />}>
-                {/* Default page -> /admin */}
-                <Route index element={<Dashboard />} />
-                {/* /admin/dashboard */}
-                <Route path="dashboard" element={<Dashboard />} />
-                {/* /admin/profile */}
-                <Route path="profile" element={<Profile />} />
-                {/* /admin/subscriptionplan */}
-                <Route path="subscriptionplan" element={<Subscriptionplan />} />
-                {/* /admin/resetPassword */}
-                <Route path="resetPassword" element={<ResetPassword />} />
-                {/* /admin/feedback */}
-                <Route path="feedback" element={<FeedbackForm />} />
-                {/* /admin/payment */}
-                <Route path="payment" element={<Payment />} />
-                {/* /admin/addevent */}
-                <Route path="addevent" element={<AddEvent />} />
-                 {/* /admin/AdminParticipate */}
-                <Route path="/admin/admin-participate" element={<AdminParticipate />} />
-                 {/* /admin/EventRecipants */}
-                <Route path="/admin/event-recipants" element={<EventRecipants />} />
-                {/* Delivery Report pages (inside the layout, so sidebar + navbar show) */}
-                <Route path="custom-status" element={<StatusReport type="custom" />} />
-                <Route path="schedule-status" element={<StatusReport type="schedule" />} />
-            </Route>
+                <Route path="/admin" element={<Admin />}>
+                    <Route index element={<Dashboard />} />
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="profile" element={<Profile />} />
+                    <Route path="subscriptionplan" element={<Subscriptionplan />} />
+                    <Route path="resetPassword" element={<ResetPassword />} />
+                    <Route path="feedback" element={<FeedbackForm />} />
+                    <Route path="payment" element={<Payment />} />
+                    <Route path="addevent" element={<AddEvent />} />
+                    <Route path="admin-participate" element={<AdminParticipate />} />
+                    <Route path="event-recipants" element={<EventRecipants />} />
+                    <Route path="custom-status" element={<StatusReport type="custom" />} />
+                    <Route path="schedule-status" element={<StatusReport type="schedule" />} />
+                </Route>
             </Route>
 
             {/* ================= CPANEL LAYOUT ================= */}
-            {/* Unified CPanel Route Group */}
             <Route path="/cpanel">
-                {/* Resolves exactly at: /cpanel */}
+                {/* Resolves exactly at: /cpanel (Login) */}
                 <Route index element={<CLogin />} />
+                
+                {/* Resolves at: /cpanel/forgot-password */}
+                <Route path="forgot-password" element={<CForgotPassword />} />
 
                 {/* Resolves sub-routes wrapped in the <CPanel/> Layout layout */}
                 <Route element={<ProtectedRoute roles={["SuperAdmin"]} />}>
-                <Route element={<CPanel />}>
-                    <Route path="dashboard" element={<CDashboard />} />
-                    <Route path="contact" element={<CPContact />} />
-                    <Route path="registrationlist" element={<CRegistrationList />} />
-                    <Route path="addplans" element={<CAddplans />} />
-                    <Route path="promocode" element={<CPromoCode />} />
-                    <Route path="addtemplate" element={<CAddTemplates />} />
-                    <Route path="feedbackdetails" element={<CFeedbackDetails />} />
-                    <Route path="profiledetails" element={<CProfile />} />
-                    <Route path="resetPassword" element={<ResetPassword />} />
+                    <Route element={<CPanel />}>
+                        <Route path="dashboard" element={<CDashboard />} />
+                        <Route path="contact" element={<CPContact />} />
+                        <Route path="registrationlist" element={<CRegistrationList />} />
+                        <Route path="addplans" element={<CAddplans />} />
+                        <Route path="promocode" element={<CPromoCode />} />
+                        <Route path="addtemplate" element={<CAddTemplates />} />
+                        <Route path="feedbackdetails" element={<CFeedbackDetails />} />
+                        <Route path="profiledetails" element={<CProfile />} />
+                        <Route path="resetPassword" element={<ResetPassword />} />
 
-                    {/*ADD CATEGORY Routes  */}
-                    <Route path="category/addcategory" element={<CAddCategory />} />
-                    <Route path="category/adddraft" element={<CAddDraft />} />
-                     <Route path="transaction" element={<AdminTransaction />} />
-                     <Route path="taxes" element={<Taxes />} />
+                        {/* ADD CATEGORY Routes */}
+                        <Route path="category/addcategory" element={<CAddCategory />} />
+                        <Route path="category/adddraft" element={<CAddDraft />} />
+                        <Route path="transaction" element={<AdminTransaction />} />
+                        <Route path="taxes" element={<Taxes />} />
+                    </Route>
                 </Route>
-                 </Route>
             </Route>
-           
         </Routes>
     );
 }

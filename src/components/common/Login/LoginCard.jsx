@@ -4,7 +4,12 @@ import "./LoginCard.css";
 import Button from "../../common/button/Button";
 
 
-function LoginCard({ hideRegister = false, onFormSubmit, error }) {
+function LoginCard({
+  hideRegister = false,
+  onFormSubmit,
+  error,
+  forgotPasswordPath = "/forgot-password",
+}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -84,8 +89,10 @@ function LoginCard({ hideRegister = false, onFormSubmit, error }) {
           </button>
         </div>
 
+        {error && <div className="lc-error">{error}</div>}
+
         <div className="lc-forgot">
-          <Link to="/forgot-password">Forgot password?</Link>
+          <Link to={forgotPasswordPath}>Forgot password?</Link>
         </div>
 
         <div className="submit-btn-wrapper">
