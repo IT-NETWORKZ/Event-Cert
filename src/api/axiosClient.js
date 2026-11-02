@@ -1,5 +1,22 @@
 import axios from "axios";
 
+const KEYS = ["accessToken", "refreshToken", "user"];
+
+// In-memory storage: lives only as long as the page is loaded.
+// Typing a URL, F5, or opening a new tab starts with an empty session.
+const mem = new Map();
+export const storage = {
+  getItem: (k) => (mem.has(k) ? mem.get(k) : null),
+  setItem: (k, v) => mem.set(k, String(v)),
+  removeItem: (k) => mem.delete(k),
+};
+
+// Remove any old persisted sessions from earlier versions
+KEYS.forEach((k) => {
+  localStorage.removeItem(k);
+  sessionStorage.removeItem(k);
+});
+
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "https://localhost:7151/api",
   withCredentials: true,
@@ -7,19 +24,17 @@ const api = axios.create({
 
 export const tokenStore = {
   get access() {
-    return localStorage.getItem("accessToken");
+    return storage.getItem("accessToken");
   },
   get refresh() {
-    return localStorage.getItem("refreshToken");
+    return storage.getItem("refreshToken");
   },
   set({ accessToken, refreshToken }) {
-    localStorage.setItem("accessToken", accessToken);
-    localStorage.setItem("refreshToken", refreshToken);
+    storage.setItem("accessToken", accessToken);
+    storage.setItem("refreshToken", refreshToken);
   },
   clear() {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("user");
+    KEYS.forEach((k) => storage.removeItem(k));
   },
 };
 
@@ -31,8 +46,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// One refresh at a time. The backend rotates refresh tokens, so parallel
-// refreshes would trigger its token-reuse protection and log the user out.
+// One refresh at a time (backend rotates refresh tokens)
 let refreshing = null;
 
 api.interceptors.response.use(
@@ -42,6 +56,7 @@ api.interceptors.response.use(
     const url = original?.url || "";
     const isAuthCall =
       url.includes("/auth/login") ||
+      url.includes("/auth/superadmin/login") ||
       url.includes("/auth/google-login") ||
       url.includes("/auth/refresh-token");
 
@@ -67,8 +82,9 @@ api.interceptors.response.use(
         original.headers.Authorization = `Bearer ${data.accessToken}`;
         return api(original);
       } catch {
+        const wasCPanel = window.location.pathname.startsWith("/cpanel");
         tokenStore.clear();
-        window.location.href = "/";
+        window.location.href = wasCPanel ? "/cpanel" : "/";
       }
     }
     return Promise.reject(error);
