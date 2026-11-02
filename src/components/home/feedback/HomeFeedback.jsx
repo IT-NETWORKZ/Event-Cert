@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./HomeFeedback.css";
 import { getPublicFeedback } from "../../../api/feedbackService";
 
@@ -7,16 +7,24 @@ function HomeFeedback() {
 
   useEffect(() => {
     let cancelled = false;
+    
     getPublicFeedback()
-      .then((list) => !cancelled && setItems(list))
-      .catch(() => {});
+      .then((list) => {
+        if (!cancelled && Array.isArray(list)) {
+          setItems(list);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load public feedback:", err);
+      });
+
     return () => {
       cancelled = true;
     };
   }, []);
 
-  // nothing approved yet -> don't show the section
-  if (items.length === 0) return null;
+  // Nothing to show -> don't render the section
+  if (!items || items.length === 0) return null;
 
   return (
     <section className="hf-section">
@@ -28,19 +36,19 @@ function HomeFeedback() {
 
         <div className="hf-grid">
           {items.map((f) => (
-            <div className="hf-card" key={f.feedbackId}>
+            <div className="hf-card" key={f.feedbackId || Math.random()}>
               <div className="hf-stars">
-                {"★".repeat(f.rating)}
-                {"☆".repeat(5 - f.rating)}
+                {"★".repeat(f.rating || 5)}
+                {"☆".repeat(5 - (f.rating || 5))}
               </div>
 
               <p className="hf-text">“{f.description}”</p>
 
               <div className="hf-user">
                 <div className="hf-avatar">
-                  {f.userName?.charAt(0).toUpperCase()}
+                  {f.userName?.charAt(0).toUpperCase() || "U"}
                 </div>
-                <strong>{f.userName}</strong>
+                <strong>{f.userName || "Anonymous"}</strong>
               </div>
             </div>
           ))}
