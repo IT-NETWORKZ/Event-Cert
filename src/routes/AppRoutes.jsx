@@ -54,6 +54,8 @@ import AdminTransaction from "../components/cpanel/AdminTransaction/AdminTransac
 import Taxes from "../components/cpanel/Taxes/Taxes";
 import Event from "../components/home/eventinfo/Event";
 
+import ProtectedRoute from "./ProtectedRoute";
+
 
 function AppRoutes() {
     return (
@@ -88,6 +90,9 @@ function AppRoutes() {
             <Route path="/whychooseus" element={<WhyChooseEventCert />} />
             <Route path="/getstarted" element={<GetStarted />} />
 
+            {/* Admin: requires login */}
+          <Route element={<ProtectedRoute />}>
+
             {/* Admin Layout */}
             <Route path="/admin/customplus" element={<CustomPlus />} />
             <Route path="/admin/schedular" element={<Schedular />} />
@@ -117,6 +122,7 @@ function AppRoutes() {
                 <Route path="custom-status" element={<StatusReport type="custom" />} />
                 <Route path="schedule-status" element={<StatusReport type="schedule" />} />
             </Route>
+            </Route>
 
             {/* ================= CPANEL LAYOUT ================= */}
             {/* Unified CPanel Route Group */}
@@ -125,6 +131,7 @@ function AppRoutes() {
                 <Route index element={<CLogin />} />
 
                 {/* Resolves sub-routes wrapped in the <CPanel/> Layout layout */}
+                <Route element={<ProtectedRoute roles={["SuperAdmin"]} />}>
                 <Route element={<CPanel />}>
                     <Route path="dashboard" element={<CDashboard />} />
                     <Route path="contact" element={<CPContact />} />
@@ -142,7 +149,9 @@ function AppRoutes() {
                      <Route path="transaction" element={<AdminTransaction />} />
                      <Route path="taxes" element={<Taxes />} />
                 </Route>
+                 </Route>
             </Route>
+           
         </Routes>
     );
 }

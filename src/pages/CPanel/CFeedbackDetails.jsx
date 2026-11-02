@@ -1,64 +1,66 @@
-import React, { useMemo, useState } from "react";
-import DataTable from "../../components/common/Table/DataTable"; // Adjust path as needed
+import React, { useMemo, useState, useEffect } from "react";
+import DataTable from "../../components/common/Table/DataTable";
+import { getAllFeedback, updateFeedbackStatus } from "../../api/feedbackService";
 import "../../css/CFeedbackDetails.css";
 
 const CFeedbackDetails = () => {
-  // Sample Data with DIRECT image URLs
-  const [feedbackData, setFeedbackData] = useState([
-    {
-      id: 1,
-      srNo: 1,
-      date: "10/07/2026",
-      name: "Neha Saxena",
-      rating: 3,
-      image: "https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI1LTAxL3Jhd3BpeGVsX29mZmljZV8zM19waG90b19yZWFsX2luZGlhbl9idXNpbmVzc193b21hbl90aGVfaW1hZ2VfaV85Y2E0ZTUwYy02Yzg4LTQwNTYtODg5Mi1kYTk0MDY2YTc4NDRfMi5qcGc.jpg", 
-      description: "wdf jsjkdgfljggdjvdfh kd fhk",
-      status: "Disabled",
-    },
-    {
-      id: 2,
-      srNo: 2,
-      date: "22/06/2026",
-      name: "Fdgdf",
-      rating: 3,
-      image: null,
-      description: "rtertret",
-      status: "Disabled",
-    },
-    {
-      id: 3,
-      srNo: 3,
-      date: "22/06/2026",
-      name: "Gjkdfg",
-      rating: 5,
-      image: null,
-      description: "fgdgdfg",
-      status: "Disabled",
-    },
-    {
-      id: 4,
-      srNo: 4,
-      date: "22/06/2026",
-      name: "Lkijuhyg",
-      rating: 5,
-      image: null,
-      description: "oiuytghgf",
-      status: "Disabled",
-    },
-  ]);
+  const [feedbackData, setFeedbackData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Toggle Status between Enabled/Disabled
-  const handleStatusToggle = (id) => {
-    setFeedbackData((prevData) =>
-      prevData.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              status: item.status === "Enabled" ? "Disabled" : "Enabled",
-            }
-          : item
-      )
-    );
+  // Fetch feedback data on component mount
+  useEffect(() => {
+    fetchFeedback();
+  }, []);
+
+  const fetchFeedback = async () => {
+    try {
+      setLoading(true);
+      const response = await getAllFeedback();
+      
+      // Map backend response fields to table structure
+      const formattedData = (response.feedback || []).map((item, index) => ({
+        id: item.feedbackId,
+        srNo: index + 1,
+        date: item.date || "N/A", 
+        name: item.userName,
+        rating: item.rating,
+        image: item.image || null, 
+        description: item.description,
+        status: item.nBit ? "Enabled" : "Disabled",
+        nBit: item.nBit,
+      }));
+
+      setFeedbackData(formattedData);
+    } catch (err) {
+      console.error("Failed to fetch feedback details:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Toggle Status via API call and update state
+  const handleStatusToggle = async (id, currentStatus, currentNBit) => {
+    const newNBit = !currentNBit; // Flip the boolean value
+
+    try {
+      await updateFeedbackStatus(id, newNBit);
+
+      // Update state locally on success
+      setFeedbackData((prevData) =>
+        prevData.map((item) =>
+          item.id === id
+            ? {
+                ...item,
+                status: newNBit ? "Enabled" : "Disabled",
+                nBit: newNBit,
+              }
+            : item
+        )
+      );
+    } catch (err) {
+      console.error("Failed to update status:", err);
+      alert(err.response?.data?.message || "Failed to update feedback status.");
+    }
   };
 
   // Export to Excel handler
@@ -112,7 +114,6 @@ const CFeedbackDetails = () => {
               src={imgUrl}
               alt="Feedback Thumbnail"
               className="feedback-thumb"
-              /* Fallback if URL breaks */
               onError={(e) => {
                 e.target.onerror = null;
                 e.target.src = "https://via.placeholder.com/50?text=No+Img";
@@ -135,6 +136,7 @@ const CFeedbackDetails = () => {
         cell: (info) => {
           const status = info.getValue();
           const rowId = info.row.original.id;
+          const currentNBit = info.row.original.nBit;
           const isDisabled = status === "Disabled";
 
           return (
@@ -143,7 +145,7 @@ const CFeedbackDetails = () => {
               className={`btn status-pill-btn ${
                 isDisabled ? "btn-disabled" : "btn-enabled"
               }`}
-              onClick={() => handleStatusToggle(rowId)}
+              onClick={() => handleStatusToggle(rowId, status, currentNBit)}
             >
               {status}
             </button>
@@ -164,11 +166,17 @@ const CFeedbackDetails = () => {
             </h2>
           </div>
 
-          <DataTable
-            columns={columns}
-            data={feedbackData}
-            onExportExcel={handleExportExcel}
-          />
+          {loading ? (
+            <div className="text-center py-5">
+              <p>Loading feedback...</p>
+            </div>
+          ) : (
+            <DataTable
+              columns={columns}
+              data={feedbackData}
+              onExportExcel={handleExportExcel}
+            />
+          )}
         </div>
       </div>
     </div>
@@ -176,3 +184,4 @@ const CFeedbackDetails = () => {
 };
 
 export default CFeedbackDetails;
+

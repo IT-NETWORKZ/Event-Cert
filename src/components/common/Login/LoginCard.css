@@ -7,9 +7,9 @@
     overflow: hidden;
 
     width: 100%;
-    max-width: 380px; /* Slightly wider for better proportions */
+    max-width: 380px;
     margin: 0 auto;
-    padding: 20px 24px 22px; /* Restored bottom padding so Register link isn't cut off */
+    padding: 20px 24px 22px;
 
     background: linear-gradient(135deg, #0F7B74 0%, #159C91 100%);
     color: #fff;
@@ -68,7 +68,7 @@
 ========================================================== */
 
 .login-card h1 {
-    font-size: 28px; /* Increased back for good hierarchy */
+    font-size: 28px;
     font-weight: 600;
     text-align: center;
     margin: 0 0 4px 0;
@@ -83,133 +83,105 @@
 }
 
 /* ==========================================================
-   OTP OPTIONS
+   LOGIN FIELDS
 ========================================================== */
 
-.otp-options {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-bottom: 14px;
-}
-
-.otp-options label {
+.login-card .lc-field {
     display: flex;
     align-items: center;
-    gap: 7px;
-    cursor: pointer;
-    font-size: 13.5px;
-    color: #fff;
-}
+    gap: 10px;
+    height: 46px;
+    padding: 0 12px 0 14px;
+    margin-bottom: 12px;
 
-.otp-options input[type="radio"] {
-    width: 15px;
-    height: 15px;
-    accent-color: #B2DFDB;
-    outline: none;
-    border: none;
-    box-shadow: none;
-    cursor: pointer;
-}
-
-.otp-options input[type="radio"]:focus,
-.otp-options input[type="radio"]:focus-visible,
-.otp-options input[type="radio"]:active {
-    outline: none !important;
-    border: none !important;
-    box-shadow: none !important;
-}
-
-/* ==========================================================
-   EMAIL / MOBILE INPUT
-========================================================== */
-
-.input-row-group {
-    display: flex;
-    align-items: center;
     background: #fff;
-    border-radius: 9px;
-    overflow: hidden;
-    margin-bottom: 14px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, .10);
-}
-
-.form-control {
-    flex: 1;
-    height: 42px; /* Slightly increased height */
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
-    padding: 0 14px;
-    background: transparent;
-    font-size: 14px;
-    color: #333;
-}
-
-.form-control::placeholder {
-    color: #9ca3af;
-}
-
-.form-control:focus {
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
-}
-
-.otp-btn {
-    height: 42px;
-    padding: 0 16px;
-    border: none;
-    background: linear-gradient(135deg, #009688, #26a69a);
-    color: #fff;
-    font-size: 13.5px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: .25s;
-}
-
-.otp-btn:hover {
-    filter: brightness(1.08);
-}
-
-/* ==========================================================
-   OTP SECTION
-========================================================== */
-
-.login-card h6 {
-    margin-bottom: 8px;
-    font-size: 12px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, .9);
-    text-transform: uppercase;
-    letter-spacing: .5px;
-}
-
-.otp-boxes {
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 16px;
-}
-
-.otp-boxes input {
-    width: 40px; /* Slightly taller boxes */
-    height: 40px;
     border: 2px solid transparent;
-    border-radius: 7px;
-    background: #fff;
-    color: #333;
-    text-align: center;
-    font-size: 17px;
-    font-weight: 600;
-    outline: none;
-    transition: .25s;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .10);
+    box-sizing: border-box;
+    transition: border-color .2s, box-shadow .2s;
 }
 
-.otp-boxes input:focus {
+.login-card .lc-field:focus-within {
     border-color: #B2DFDB;
-    box-shadow: 0 0 7px rgba(178, 223, 219, .45);
+    box-shadow: 0 0 0 4px rgba(178, 223, 219, .30),
+                0 4px 12px rgba(0, 0, 0, .10);
+}
+
+.login-card .lc-icon {
+    flex-shrink: 0;
+    color: #0F7B74;
+    opacity: .85;
+}
+
+.login-card .lc-input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+
+    border: 0;
+    outline: 0;
+    box-shadow: none;
+    background: transparent;
+
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.login-card .lc-input::placeholder {
+    color: #9ca3af;
+    font-weight: 400;
+    opacity: 1;
+}
+
+.login-card .lc-input:focus {
+    border: 0;
+    outline: 0;
+    box-shadow: none;
+}
+
+.login-card .lc-input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 40px #fff inset;
+    -webkit-text-fill-color: #1f2937;
+}
+
+.login-card .lc-toggle {
+    flex-shrink: 0;
+    padding: 4px 8px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: #0F7B74;
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+}
+
+.login-card .lc-toggle:hover {
+    background: #e6f4f2;
+}
+
+.login-card .lc-forgot {
+    text-align: right;
+    margin: 0 0 14px;
+}
+
+.login-card .lc-forgot a {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, .9);
+    text-decoration: none;
+}
+
+.login-card .lc-forgot a:hover {
+    color: #fff;
+    text-decoration: underline;
 }
 
 /* ==========================================================
@@ -350,39 +322,6 @@
 
     .login-card p {
         font-size: 13px;
-    }
-
-    .otp-options {
-        gap: 14px;
-        flex-wrap: wrap;
-    }
-
-    .input-row-group {
-        flex-direction: column;
-        gap: 8px;
-        background: transparent;
-        box-shadow: none;
-    }
-
-    .form-control {
-        width: 100%;
-        border-radius: 8px;
-        background: #fff;
-    }
-
-    .otp-btn {
-        width: 100%;
-        border-radius: 8px;
-    }
-
-    .otp-boxes {
-        gap: 6px;
-    }
-
-    .otp-boxes input {
-        width: 36px;
-        height: 36px;
-        font-size: 16px;
     }
 
     .submit-btn {

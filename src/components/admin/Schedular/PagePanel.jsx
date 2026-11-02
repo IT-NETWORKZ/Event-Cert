@@ -23,7 +23,11 @@ const PagePanel = () => {
 
         if (canvas) {
             currentCanvasJson = canvas.toJSON();
-            currentThumbnail = canvas.toDataURL({ format: 'jpeg', quality: 0.1 });
+            currentThumbnail = canvas.toDataURL({
+                format: 'jpeg',
+                quality: 0.7,
+                multiplier: Math.min(1, 260 / Math.max(canvas.getWidth(), canvas.getHeight()))
+            });
         }
 
         return { currentCanvasJson, currentThumbnail };
@@ -199,7 +203,7 @@ const PagePanel = () => {
                         </button>
 
                         {/* Preview Thumbnail Container */}
-                        <div className="cp-page-preview" style={{ background: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80px', overflow: 'hidden', border: '1px solid #ddd', borderRadius: '4px' }}>
+                        <div className="cp-page-preview">
                             {page.thumbnail ? (
                                 <img src={page.thumbnail} alt={`Page ${index + 1}`} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                             ) : (

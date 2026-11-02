@@ -1,34 +1,19 @@
-import { useRef } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./LoginCard.css";
-import Button from "../../common/button/Button"
+import Button from "../../common/button/Button";
 
 
-
-function LoginCard({ hideRegister = false, onFormSubmit,  }) {
-  const otpRefs = useRef([]);
-
-  const handleOTPChange = (e, index) => {
-    const value = e.target.value;
-    if (!/^\d?$/.test(value)) {
-      e.target.value = "";
-      return;
-    }
-    if (value && index < 5) {
-      otpRefs.current[index + 1].focus();
-    }
-  };
-
-  const handleKeyDown = (e, index) => {
-    if (e.key === "Backspace" && !e.target.value && index > 0) {
-      otpRefs.current[index - 1].focus();
-    }
-  };
+function LoginCard({ hideRegister = false, onFormSubmit, error }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (onFormSubmit) {
-      onFormSubmit();
+      // matches LoginDto { Email, Password } on /api/auth/login
+      onFormSubmit({ email, password });
     }
   };
 
@@ -37,49 +22,75 @@ function LoginCard({ hideRegister = false, onFormSubmit,  }) {
       <h1>LOGIN</h1>
       <p>Login to continue your journey</p>
 
-      <div className="otp-options">
-        <label>
-          <input type="radio" name="otp" defaultChecked />
-          Email OTP
-        </label>
-        <label>
-          <input type="radio" name="otp" />
-          Mobile OTP
-        </label>
-      </div>
-
       <form onSubmit={handleSubmit}>
-        <div className="input-row-group">
+        {/* Email */}
+        <div className="lc-field">
+          <svg
+            className="lc-icon"
+            viewBox="0 0 24 24"
+            width="18"
+            height="18"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <rect x="3" y="5" width="18" height="14" rx="2" />
+            <path d="M3 7l9 6 9-6" />
+          </svg>
           <input
-            type="text"
-            className="form-control"
-            placeholder="Email Id / Mobile No."
-            // defaultValue={initialValue}
+            type="email"
+            className="lc-input"
+            placeholder="Email Id"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
+            required
           />
-          <Button type="button" className="otp-btn">
-            Send OTP
-          </Button>
         </div>
 
-        <h6>Enter OTP</h6>
-        <div className="otp-boxes">
-          {[...Array(6)].map((_, index) => (
-            <input
-              key={index}
-              type="text"
-              maxLength={1}
-              inputMode="numeric"
-              pattern="\d*"
-              ref={(el) => (otpRefs.current[index] = el)}
-              onChange={(e) => handleOTPChange(e, index)}
-              onKeyDown={(e) => handleKeyDown(e, index)}
-            />
-          ))}
+        {/* Password */}
+        <div className="lc-field">
+          <svg
+            className="lc-icon"
+            viewBox="0 0 24 24"
+            width="18"
+            height="18"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <rect x="4" y="11" width="16" height="9" rx="2" />
+            <path d="M8 11V8a4 4 0 018 0v3" />
+          </svg>
+          <input
+            type={showPassword ? "text" : "password"}
+            className="lc-input"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+            required
+          />
+          <button
+            type="button"
+            className="lc-toggle"
+            onClick={() => setShowPassword((s) => !s)}
+          >
+            {showPassword ? "Hide" : "Show"}
+          </button>
+        </div>
+
+        <div className="lc-forgot">
+          <Link to="/forgot-password">Forgot password?</Link>
         </div>
 
         <div className="submit-btn-wrapper">
           <Button type="submit" className="submit-btn">
-            Submit
+            Login
           </Button>
         </div>
       </form>
@@ -96,7 +107,6 @@ function LoginCard({ hideRegister = false, onFormSubmit,  }) {
         Continue with Google
       </Button>
 
-      {/* Conditionally hide register link */}
       {!hideRegister && (
         <p className="register">
           Don't have an account?
@@ -110,4 +120,3 @@ function LoginCard({ hideRegister = false, onFormSubmit,  }) {
 }
 
 export default LoginCard;
-

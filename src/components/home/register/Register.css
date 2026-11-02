@@ -292,3 +292,38 @@
 @media (prefers-reduced-motion: reduce) {
   .rg-card { animation: none; }
 }
+
+/* ================= FORM HEADING ================= */
+
+.rg-heading {
+    text-align: center;
+    margin-bottom: 6px;
+}
+
+.rg-heading h2 {
+    margin: 0 0 4px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #0F7B74;
+    letter-spacing: .3px;
+}
+
+.rg-heading p {
+    margin: 0;
+    font-size: 13.5px;
+    color: #5f7d7a;
+}
+
+.rg-heading-line {
+    display: block;
+    width: 56px;
+    height: 3px;
+    margin: 10px auto 0;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #0F7B74, #6FD3C8);
+}
+
+@media (max-width: 576px) {
+    .rg-heading h2 { font-size: 22px; }
+    .rg-heading p  { font-size: 12.5px; }
+}

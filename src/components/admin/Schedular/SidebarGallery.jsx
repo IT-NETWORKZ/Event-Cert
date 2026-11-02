@@ -32,18 +32,28 @@ const VARIANT_CONFIG = {
     width: 180,
     background: "#ff7043",
     label: "Stickers",
+    iconOnly: true, // minimized = round icon only, name shows on hover
   },
   invitation: {
     top: 180,
     width: 180,
     background: "#009688",
     label: "Invitation",
+    iconOnly: true,
   },
   greeting: {
     top: 250,
     width: 180,
     background: "#7e57c2",
     label: "Greeting",
+    iconOnly: true,
+  },
+  certificate: {
+    top: 320,
+    width: 180,
+    background: "#f59e0b",
+    label: "Certificate",
+    iconOnly: true,
   },
 };
 const LazyImage = ({ src, alt, onClick, style, onMouseOver, onMouseOut }) => {
@@ -111,6 +121,7 @@ const SidebarGallery = ({
   const [panelState, setPanelState] = useState(isOpen ? "full" : "closed");
   const selfTriggeredCloseRef = useRef(false);
   const scrollContainerRef = useRef(null);
+  const [pillHover, setPillHover] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -175,7 +186,7 @@ const SidebarGallery = ({
       <button
         onClick={handleExpand}
         aria-label={`Expand ${cfg.label} panel`}
-        title={cfg.label}
+        title={cfg.iconOnly ? undefined : cfg.label}
         style={{
           position: "fixed",
           right: 24,
@@ -190,10 +201,18 @@ const SidebarGallery = ({
           background: cfg.background,
           boxShadow: "0 4px 14px rgba(0,0,0,0.25)",
           transition: "transform 0.2s ease",
-          padding: "6px 18px 6px 6px", // tighter around icon, roomier around label
+          padding: cfg.iconOnly ? 6 : "6px 18px 6px 6px", // icon-only pills are a plain circle
         }}
-        onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-        onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+        onMouseOver={(e) => {
+          e.currentTarget.style.transform = "scale(1.05)";
+          setPillHover(true);
+        }}
+        onMouseOut={(e) => {
+          e.currentTarget.style.transform = "scale(1)";
+          setPillHover(false);
+        }}
+        onFocus={() => setPillHover(true)}
+        onBlur={() => setPillHover(false)}
       >
         <span
           style={{
@@ -233,16 +252,41 @@ const SidebarGallery = ({
           </span>
         </span>
 
-        <span
-          style={{
-            color: "#fff",
-            fontSize: 14,
-            fontWeight: 600,
-            whiteSpace: "nowrap",
-          }}
-        >
-          {cfg.label}
-        </span>
+        {cfg.iconOnly ? (
+          <span
+            role="tooltip"
+            style={{
+              position: "absolute",
+              right: "calc(100% + 12px)",
+              top: "50%",
+              transform: `translateY(-50%) translateX(${pillHover ? 0 : 6}px)`,
+              opacity: pillHover ? 1 : 0,
+              pointerEvents: "none",
+              transition: "opacity 0.18s ease, transform 0.18s ease",
+              background: "#1f2937",
+              color: "#fff",
+              fontSize: 13,
+              fontWeight: 600,
+              padding: "6px 12px",
+              borderRadius: 8,
+              whiteSpace: "nowrap",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
+            }}
+          >
+            {cfg.label}
+          </span>
+        ) : (
+          <span
+            style={{
+              color: "#fff",
+              fontSize: 14,
+              fontWeight: 600,
+              whiteSpace: "nowrap",
+            }}
+          >
+            {cfg.label}
+          </span>
+        )}
       </button>
     );
   }
