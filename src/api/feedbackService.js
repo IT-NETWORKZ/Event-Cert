@@ -15,17 +15,20 @@ export const submitFeedback = async ({ rating, description }) => {
 // CPanel: all records
 export const getAllFeedback = async () => {
   const { data } = await api.get("/feedback/all");
-  return data.feedback ?? [];
+  return data;
 };
 
 // CPanel: enable / disable
-export const setFeedbackStatus = async (feedbackId, isEnabled) => {
-  const { data } = await api.put(`/feedback/${feedbackId}/status`, { isEnabled });
+export const updateFeedbackStatus = async (feedbackId, nBit) => {
+  const { data } = await api.patch(`/superadmin/feedback/${feedbackId}/status`, { nBit });
   return data;
 };
 
-// Home page: enabled only
+// Home page: enabled feedback only
 export const getPublicFeedback = async () => {
-  const { data } = await api.get("/feedback/public");
-  return data;
+  const { data } = await api.get("/home/feedback");
+  const adminList = data.adminFeedback ? [data.adminFeedback] : [];
+  const otherList = data.otherFeedback || [];
+
+  return [...adminList, ...otherList];
 };
