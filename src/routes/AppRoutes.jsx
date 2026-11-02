@@ -22,7 +22,7 @@ import StatusReport from "../components/common/StatusReport/StatusReport";
 import Payment from "../components/admin/Payment/Payment";
 import AddEvent from "../components/admin/AddEvent/AddEvent";
 import AdminParticipate from "../components/admin/AddEvent/AdminParticipate";
-import EventRecipants from "../components/admin/AddEvent/EventRecipants"; 
+import EventRecipants from "../components/admin/AddEvent/EventRecipants";
 
 import ResetPassword from "../components/admin/ResetPassword/ResetPassword";
 import Preview from "../components/home/footerpages/PopularLinks/Preview/Preview";
@@ -54,7 +54,7 @@ import AdminTransaction from "../components/cpanel/AdminTransaction/AdminTransac
 import Taxes from "../components/cpanel/Taxes/Taxes";
 import Event from "../components/home/eventinfo/Event";
 
-import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "../routes/ProtectedRoute";
 
 
 function AppRoutes() {
@@ -74,7 +74,7 @@ function AppRoutes() {
             <Route path="/register" element={<Register />} />
 
             <Route path="/subscription" element={<Subscription />} />
-<Route path="/event" element={<Event />} />
+            <Route path="/event" element={<Event />} />
             {/*  Popular Links (footer > Pages)) */}
             <Route path="/preview" element={<Preview />} />
             <Route path="/termsandconditions" element={<Terms />} />
@@ -91,37 +91,34 @@ function AppRoutes() {
             <Route path="/getstarted" element={<GetStarted />} />
 
             {/* Admin: requires login */}
-          <Route element={<ProtectedRoute />}>
+            {/* Admin */}
+            <Route element={<ProtectedRoute roles={["Admin", "User"]} />}>
+                <Route path="/admin/customplus" element={<CustomPlus />} />
+                <Route path="/admin/schedular" element={<Schedular />} />
 
-            {/* Admin Layout */}
-            <Route path="/admin/customplus" element={<CustomPlus />} />
-            <Route path="/admin/schedular" element={<Schedular />} />
-
-            <Route path="/admin" element={<Admin />}>
-                {/* Default page -> /admin */}
-                <Route index element={<Dashboard />} />
-                {/* /admin/dashboard */}
-                <Route path="dashboard" element={<Dashboard />} />
-                {/* /admin/profile */}
-                <Route path="profile" element={<Profile />} />
-                {/* /admin/subscriptionplan */}
-                <Route path="subscriptionplan" element={<Subscriptionplan />} />
-                {/* /admin/resetPassword */}
-                <Route path="resetPassword" element={<ResetPassword />} />
-                {/* /admin/feedback */}
-                <Route path="feedback" element={<FeedbackForm />} />
-                {/* /admin/payment */}
-                <Route path="payment" element={<Payment />} />
-                {/* /admin/addevent */}
-                <Route path="addevent" element={<AddEvent />} />
-                 {/* /admin/AdminParticipate */}
-                <Route path="/admin/admin-participate" element={<AdminParticipate />} />
-                 {/* /admin/EventRecipants */}
-                <Route path="/admin/event-recipants" element={<EventRecipants />} />
-                {/* Delivery Report pages (inside the layout, so sidebar + navbar show) */}
-                <Route path="custom-status" element={<StatusReport type="custom" />} />
-                <Route path="schedule-status" element={<StatusReport type="schedule" />} />
-            </Route>
+                <Route path="/admin" element={<Admin />}>
+                    {/* Default page -> /admin */}
+                    <Route index element={<Dashboard />} />
+                    {/* /admin/dashboard */}
+                    <Route path="dashboard" element={<Dashboard />} />
+                    {/* /admin/profile */}
+                    <Route path="profile" element={<Profile />} />
+                    {/* /admin/subscriptionplan */}
+                    <Route path="subscriptionplan" element={<Subscriptionplan />} />
+                    {/* /admin/resetPassword */}
+                    <Route path="resetPassword" element={<ResetPassword />} />
+                    {/* /admin/feedback */}
+                    <Route path="feedback" element={<FeedbackForm />} />
+                    {/* /admin/payment */}
+                    <Route path="payment" element={<Payment />} />
+                    {/* /admin/addevent */}
+                    <Route path="addevent" element={<AddEvent />} />
+                    <Route path="admin-participate" element={<AdminParticipate />} />
+                    <Route path="event-recipants" element={<EventRecipants />} />
+                    {/* Delivery Report pages (inside the layout, so sidebar + navbar show) */}
+                    <Route path="custom-status" element={<StatusReport type="custom" />} />
+                    <Route path="schedule-status" element={<StatusReport type="schedule" />} />
+                </Route>
             </Route>
 
             {/* ================= CPANEL LAYOUT ================= */}
@@ -131,27 +128,28 @@ function AppRoutes() {
                 <Route index element={<CLogin />} />
 
                 {/* Resolves sub-routes wrapped in the <CPanel/> Layout layout */}
-                <Route element={<ProtectedRoute roles={["SuperAdmin"]} />}>
-                <Route element={<CPanel />}>
-                    <Route path="dashboard" element={<CDashboard />} />
-                    <Route path="contact" element={<CPContact />} />
-                    <Route path="registrationlist" element={<CRegistrationList />} />
-                    <Route path="addplans" element={<CAddplans />} />
-                    <Route path="promocode" element={<CPromoCode />} />
-                    <Route path="addtemplate" element={<CAddTemplates />} />
-                    <Route path="feedbackdetails" element={<CFeedbackDetails />} />
-                    <Route path="profiledetails" element={<CProfile />} />
-                    <Route path="resetPassword" element={<ResetPassword />} />
+                
+                <Route element={<ProtectedRoute roles={["superadmin"]} />}>
+                    <Route element={<CPanel />}>
+                        <Route path="dashboard" element={<CDashboard />} />
+                        <Route path="contact" element={<CPContact />} />
+                        <Route path="registrationlist" element={<CRegistrationList />} />
+                        <Route path="addplans" element={<CAddplans />} />
+                        <Route path="promocode" element={<CPromoCode />} />
+                        <Route path="addtemplate" element={<CAddTemplates />} />
+                        <Route path="feedbackdetails" element={<CFeedbackDetails />} />
+                        <Route path="profiledetails" element={<CProfile />} />
+                        <Route path="resetPassword" element={<ResetPassword />} />
 
-                    {/*ADD CATEGORY Routes  */}
-                    <Route path="category/addcategory" element={<CAddCategory />} />
-                    <Route path="category/adddraft" element={<CAddDraft />} />
-                     <Route path="transaction" element={<AdminTransaction />} />
-                     <Route path="taxes" element={<Taxes />} />
+                        {/*ADD CATEGORY Routes  */}
+                        <Route path="category/addcategory" element={<CAddCategory />} />
+                        <Route path="category/adddraft" element={<CAddDraft />} />
+                        <Route path="transaction" element={<AdminTransaction />} />
+                        <Route path="taxes" element={<Taxes />} />
+                    </Route>
                 </Route>
-                 </Route>
             </Route>
-           
+
         </Routes>
     );
 }
