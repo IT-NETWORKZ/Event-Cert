@@ -1,7 +1,7 @@
-
 import { useState, useRef, useEffect } from "react";
 import "./Navbar.css";
 import { useNavigate } from "react-router-dom";
+import { logout } from "../../../api/authService"; // Adjust import path to your authService file as needed
 
 import {
     FaBars,
@@ -52,11 +52,15 @@ function Navbar({
         navigate("/admin/profile");
     };
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         setShowMenu(false);
-
-        // Add your logout logic here.
-        // Example: clear authentication and redirect to login.
+        try {
+            await logout(); // Calls API and clears tokens/user data
+        } catch (err) {
+            console.error("Logout error:", err);
+        } finally {
+            navigate("/cpanel", { replace: true }); // Redirect to CPanel login page
+        }
     };
 
     return (
@@ -128,3 +132,4 @@ function Navbar({
 }
 
 export default Navbar;
+

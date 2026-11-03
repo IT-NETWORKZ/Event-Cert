@@ -13,6 +13,8 @@ const save = (data) => {
   return user;
 };
 
+
+// # ADMIN API //
 // LOGIN: saves the tokens
 export const login = async (email, password) => {
   const { data } = await api.post("/auth/login", { email, password });
@@ -36,17 +38,19 @@ export const forgotPassword = (email) =>
 export const resetPassword = (token, newPassword) =>
   api.post("/auth/reset-password", { token, newPassword });
 
+
 export const logout = async () => {
   try {
+   
     await api.post("/auth/logout", { refreshToken: tokenStore.refresh });
   } catch {
-    // ignore, always clear locally
+    // Ignore any network errors, always ensure local clearance happens
   } finally {
-    tokenStore.clear();
+    tokenStore.clear(); // Clears accessToken, refreshToken, and user from localStorage
   }
 };
 
-// SuperAdmin Api
+// # SUPERADMIN API //
 export const superAdminLogin = async (email, password) => {
   const { data } = await api.post("/auth/superadmin/login", { email, password });
   return save(data);
