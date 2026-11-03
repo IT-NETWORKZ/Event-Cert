@@ -42,6 +42,7 @@ const CLogin = () => {
         hideRegister={true}
         onFormSubmit={handleCPanelLogin}
         error={error}
+        forgotPasswordPath="/cpanel/forgot-password"
       />
     </div>
   );

@@ -9,8 +9,6 @@ import Subscription from "../components/Subscription/Subscription";
 import About from "../components/home/about/About";
 import AboutUs from "../components/AboutUs/AboutUs";
 
-
-
 import Admin from "../pages/Admin/Admin";
 import Dashboard from "../components/admin/Dashboard/Dashboard";
 import Profile from "../pages/Admin/Profile";
@@ -37,10 +35,10 @@ import KeyFeatures from "../components/home/footerpages/OurServices/KeyFeatures/
 import WhyChooseEventCert from "../components/home/footerpages/OurServices/WhyChooseEventCert/WhyChooseEventCert";
 import GetStarted from "../components/home/footerpages/OurServices/GetStartedInMinutes/GetStarted";
 
-
 import CPanel from "../pages/CPanel/CPanel";
 import CDashboard from "../components/cpanel/Dashboard/CDashboard";
 import CLogin from "../components/cpanel/Login/CLogin";
+import CForgotPassword from "../pages/CPanel/CForgotPassword";
 import CPContact from "../pages/CPanel/CPContact";
 import CRegistrationList from "../pages/CPanel/CRegistrationList";
 import CAddplans from "../pages/CPanel/CAddplans";
@@ -56,26 +54,20 @@ import Event from "../components/home/eventinfo/Event";
 
 import ProtectedRoute from "../routes/ProtectedRoute";
 
-
 function AppRoutes() {
     return (
         <Routes>
-
-            {/* Public Routes */}
-
+            {/* ================= PUBLIC ROUTES ================= */}
             <Route path="/" element={<Home />} />
             <Route path="/services" element={<Services />} />
             <Route path="/About" element={<AboutUs />} />
-
             <Route path="/facilities" element={<Facilities />} />
-
             <Route path="/contact" element={<Contact />} />
-
             <Route path="/register" element={<Register />} />
-
             <Route path="/subscription" element={<Subscription />} />
             <Route path="/event" element={<Event />} />
-            {/*  Popular Links (footer > Pages)) */}
+
+            {/* Popular Links (footer > Pages) */}
             <Route path="/preview" element={<Preview />} />
             <Route path="/termsandconditions" element={<Terms />} />
             <Route path="/shippinganddelivery" element={<Shipping />} />
@@ -90,14 +82,13 @@ function AppRoutes() {
             <Route path="/whychooseus" element={<WhyChooseEventCert />} />
             <Route path="/getstarted" element={<GetStarted />} />
 
-            {/* Admin: requires login */}
-            {/* Admin */}
+            {/* ================= ADMIN (requires login + role) ================= */}
             <Route element={<ProtectedRoute roles={["Admin", "User"]} />}>
                 <Route path="/admin/customplus" element={<CustomPlus />} />
                 <Route path="/admin/schedular" element={<Schedular />} />
 
                 <Route path="/admin" element={<Admin />}>
-                    {/* Default page -> /admin */}
+                    {/* /admin */}
                     <Route index element={<Dashboard />} />
                     {/* /admin/dashboard */}
                     <Route path="dashboard" element={<Dashboard />} />
@@ -121,15 +112,16 @@ function AppRoutes() {
                 </Route>
             </Route>
 
-            {/* ================= CPANEL LAYOUT ================= */}
-            {/* Unified CPanel Route Group */}
+            {/* ================= CPANEL ================= */}
             <Route path="/cpanel">
-                {/* Resolves exactly at: /cpanel */}
+                {/* /cpanel (Login) - public */}
                 <Route index element={<CLogin />} />
 
-                {/* Resolves sub-routes wrapped in the <CPanel/> Layout layout */}
-                
-                <Route element={<ProtectedRoute roles={["superadmin"]} />}>
+                {/* /cpanel/forgot-password - public */}
+                <Route path="forgot-password" element={<CForgotPassword />} />
+
+                {/* Protected sub-routes wrapped in the <CPanel /> layout */}
+                <Route element={<ProtectedRoute roles={["SuperAdmin", "superadmin"]} />}>
                     <Route element={<CPanel />}>
                         <Route path="dashboard" element={<CDashboard />} />
                         <Route path="contact" element={<CPContact />} />
@@ -141,7 +133,7 @@ function AppRoutes() {
                         <Route path="profiledetails" element={<CProfile />} />
                         <Route path="resetPassword" element={<ResetPassword />} />
 
-                        {/*ADD CATEGORY Routes  */}
+                        {/* ADD CATEGORY Routes */}
                         <Route path="category/addcategory" element={<CAddCategory />} />
                         <Route path="category/adddraft" element={<CAddDraft />} />
                         <Route path="transaction" element={<AdminTransaction />} />
@@ -149,7 +141,6 @@ function AppRoutes() {
                     </Route>
                 </Route>
             </Route>
-
         </Routes>
     );
 }
