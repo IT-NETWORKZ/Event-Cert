@@ -1,4 +1,4 @@
-import api, { tokenStore } from "./axiosClient";
+import api, { tokenStore, storage } from "./axiosClient";
 
 const save = (data) => {
   tokenStore.set(data);
@@ -9,7 +9,7 @@ const save = (data) => {
     role: data.role,
     profilePicUrl: data.profilePicUrl,
   };
-  localStorage.setItem("user", JSON.stringify(user));
+  storage.setItem("user", JSON.stringify(user));
   return user;
 };
 
@@ -30,7 +30,8 @@ export const googleLogin = async (idToken) => {
   return save(data);
 };
 
-export const forgotPassword = (email) => api.post("/auth/forgot-password", { email });
+export const forgotPassword = (email) =>
+  api.post("/auth/forgot-password", { email });
 
 export const resetPassword = (token, newPassword) =>
   api.post("/auth/reset-password", { token, newPassword });
@@ -38,11 +39,12 @@ export const resetPassword = (token, newPassword) =>
 export const logout = async () => {
   try {
     await api.post("/auth/logout", { refreshToken: tokenStore.refresh });
+  } catch {
+    // ignore, always clear locally
   } finally {
     tokenStore.clear();
   }
 };
-
 
 // SuperAdmin Api
 export const superAdminLogin = async (email, password) => {
@@ -57,3 +59,4 @@ export const superAdminForgotPassword = async (email) => {
   });
   return data;
 };
+

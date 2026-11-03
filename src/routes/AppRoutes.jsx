@@ -20,7 +20,7 @@ import StatusReport from "../components/common/StatusReport/StatusReport";
 import Payment from "../components/admin/Payment/Payment";
 import AddEvent from "../components/admin/AddEvent/AddEvent";
 import AdminParticipate from "../components/admin/AddEvent/AdminParticipate";
-import EventRecipants from "../components/admin/AddEvent/EventRecipants"; 
+import EventRecipants from "../components/admin/AddEvent/EventRecipants";
 
 import ResetPassword from "../components/admin/ResetPassword/ResetPassword";
 import Preview from "../components/home/footerpages/PopularLinks/Preview/Preview";
@@ -38,7 +38,7 @@ import GetStarted from "../components/home/footerpages/OurServices/GetStartedInM
 import CPanel from "../pages/CPanel/CPanel";
 import CDashboard from "../components/cpanel/Dashboard/CDashboard";
 import CLogin from "../components/cpanel/Login/CLogin";
-import CForgotPassword from "../pages/CPanel/CForgotPassword"; // Added Forgot Password Import
+import CForgotPassword from "../pages/CPanel/CForgotPassword";
 import CPContact from "../pages/CPanel/CPContact";
 import CRegistrationList from "../pages/CPanel/CRegistrationList";
 import CAddplans from "../pages/CPanel/CAddplans";
@@ -52,12 +52,12 @@ import AdminTransaction from "../components/cpanel/AdminTransaction/AdminTransac
 import Taxes from "../components/cpanel/Taxes/Taxes";
 import Event from "../components/home/eventinfo/Event";
 
-import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "../routes/ProtectedRoute";
 
 function AppRoutes() {
     return (
         <Routes>
-            {/* Public Routes */}
+            {/* ================= PUBLIC ROUTES ================= */}
             <Route path="/" element={<Home />} />
             <Route path="/services" element={<Services />} />
             <Route path="/About" element={<AboutUs />} />
@@ -82,37 +82,46 @@ function AppRoutes() {
             <Route path="/whychooseus" element={<WhyChooseEventCert />} />
             <Route path="/getstarted" element={<GetStarted />} />
 
-            {/* Admin: requires login */}
-            <Route element={<ProtectedRoute />}>
+            {/* ================= ADMIN (requires login + role) ================= */}
+            <Route element={<ProtectedRoute roles={["Admin", "User"]} />}>
                 <Route path="/admin/customplus" element={<CustomPlus />} />
                 <Route path="/admin/schedular" element={<Schedular />} />
 
                 <Route path="/admin" element={<Admin />}>
+                    {/* /admin */}
                     <Route index element={<Dashboard />} />
+                    {/* /admin/dashboard */}
                     <Route path="dashboard" element={<Dashboard />} />
+                    {/* /admin/profile */}
                     <Route path="profile" element={<Profile />} />
+                    {/* /admin/subscriptionplan */}
                     <Route path="subscriptionplan" element={<Subscriptionplan />} />
+                    {/* /admin/resetPassword */}
                     <Route path="resetPassword" element={<ResetPassword />} />
+                    {/* /admin/feedback */}
                     <Route path="feedback" element={<FeedbackForm />} />
+                    {/* /admin/payment */}
                     <Route path="payment" element={<Payment />} />
+                    {/* /admin/addevent */}
                     <Route path="addevent" element={<AddEvent />} />
                     <Route path="admin-participate" element={<AdminParticipate />} />
                     <Route path="event-recipants" element={<EventRecipants />} />
+                    {/* Delivery Report pages (inside the layout, so sidebar + navbar show) */}
                     <Route path="custom-status" element={<StatusReport type="custom" />} />
                     <Route path="schedule-status" element={<StatusReport type="schedule" />} />
                 </Route>
             </Route>
 
-            {/* ================= CPANEL LAYOUT ================= */}
+            {/* ================= CPANEL ================= */}
             <Route path="/cpanel">
-                {/* Resolves exactly at: /cpanel (Login) */}
+                {/* /cpanel (Login) - public */}
                 <Route index element={<CLogin />} />
-                
-                {/* Resolves at: /cpanel/forgot-password */}
+
+                {/* /cpanel/forgot-password - public */}
                 <Route path="forgot-password" element={<CForgotPassword />} />
 
-                {/* Resolves sub-routes wrapped in the <CPanel/> Layout layout */}
-                <Route element={<ProtectedRoute roles={["SuperAdmin"]} />}>
+                {/* Protected sub-routes wrapped in the <CPanel /> layout */}
+                <Route element={<ProtectedRoute roles={["SuperAdmin", "superadmin"]} />}>
                     <Route element={<CPanel />}>
                         <Route path="dashboard" element={<CDashboard />} />
                         <Route path="contact" element={<CPContact />} />
