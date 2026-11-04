@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AddEvent.css";
 import DataTable from "../../common/Table/DataTable";
-
-/* ==========================================================================
-   STATIC DATA  (no API - everything on this page is dummy / local state)
-   ========================================================================== */
-const PLAN_REMAINING_EVENTS = 132;
-const PLAN_EXPIRY_DATE = "24-Feb-2028";
+import {
+  getEvents,
+  createEvent,
+  updateEvent,
+  setEventStatus,
+  toImageUrl,
+} from "../../../api/adminService.js";
 
 const durationOptions = [
   "1 Weeks", "2 Weeks", "6 Weeks",
@@ -24,7 +25,7 @@ const emptyFormData = {
   advCompletionDate: "",
   eventStartDate: "",
   eventCompletionDate: "",
-  setTime: "",
+  EventTime: "",
   venue: "",
   city: "",
   state: "",
@@ -46,80 +47,70 @@ const emptyFormData = {
   ifscCode: "",
 };
 
-/* ---------- small helpers ---------- */
+/* ---------- helpers ---------- */
 const pad = (n) => String(n).padStart(2, "0");
 
-const shiftDate = (str, days) => {
-  const d = new Date(`${str}T00:00:00`);
-  d.setDate(d.getDate() + days);
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-};
+// "2026-08-10T00:00:00" -> "2026-08-10"
+const toDateInput = (v) => (v ? String(v).slice(0, 10) : "");
 
 // 2026-08-10 -> 10/08/2026
 const fmtDate = (str) => {
-  if (!str || str === "-") return "";
+  if (!str) return "";
   const [y, m, d] = str.split("-");
   return `${d}/${m}/${y}`;
 };
 
-// 14:30 -> 02:30 PM
-const fmtTime = (str) => {
-  if (!str) return "";
-  const [h, m] = str.split(":").map(Number);
-  return `${pad(h % 12 === 0 ? 12 : h % 12)}:${pad(m)} ${h >= 12 ? "PM" : "AM"}`;
+// "10:00 AM - 5:00 PM" -> "10:00" (first time, for <input type="time">)
+const eventTimeToInput = (v) => {
+  const match = String(v || "").match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+  if (!match) return "";
+  let h = Number(match[1]) % 12;
+  if (match[3].toUpperCase() === "PM") h += 12;
+  return `${pad(h)}:${match[2]}`;
 };
 
-// static banner thumbnail (letter on a teal tile)
-const makeLogo = (title = "E") => {
-  const svg =
-    `<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'>` +
-    `<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>` +
-    `<stop offset='0' stop-color='#5fb8ad'/><stop offset='1' stop-color='#009688'/></linearGradient></defs>` +
-    `<rect width='100' height='100' rx='12' fill='url(#g)'/>` +
-    `<text x='50' y='64' font-size='46' font-family='Arial' font-weight='700' fill='white' text-anchor='middle'>` +
-    `${(title.trim()[0] || "E").toUpperCase()}</text></svg>`;
-  // base64 data URI works in every browser (no escaping problems)
-  return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))}`;
+// API row -> table / form row
+const normalizeEvent = (e) => ({
+  id: e.eventId ?? e.id,
+  duration: e.duration || "1 Weeks",
+  mode: e.mode || "",
+  organizationName: e.organizationName || "",
+  eventTitle: e.eventTitle || "",
+  advStartDate: toDateInput(e.advStartDate),
+  advCompletionDate: toDateInput(e.advCompletionDate),
+  eventStartDate: toDateInput(e.eventStartDate),
+  eventCompletionDate: toDateInput(e.eventCompletionDate),
+  eventTimeText: e.eventTime || "",
+  EventTime: eventTimeToInput(e.eventTime),
+  venue: e.venue || "",
+  city: e.city || "",
+  state: e.state || "",
+  country: e.country || "",
+  aboutEvent: e.aboutEvent || "",
+  instructions: e.instructions || "",
+  entryFee: String(e.entryFee ?? "0"),
+  paymentMode: e.paymentMode || "",
+  paymentMethod: e.gPay ? "GPay" : e.phonePe ? "PhonePe" : e.paytm ? "Paytm" : "GPay",
+  upiId: e.upiid || "",
+  mobileNo: e.paymentMobileNo || "",
+  bankHolderName: e.accountHolderName || "",
+  bankName: e.bankName || "",
+  accountNo: e.accountNumber || "",
+  ifscCode: e.ifscCode || "",
+  bannerSrc: toImageUrl(e.image1),
+  enabled: e.nBit ?? true,
+});
+
+const getErrorMessage = (err, fallback) => {
+  const data = err.response?.data;
+  if (data?.errors && typeof data.errors === "object") {
+    const first = Object.values(data.errors).flat()[0];
+    if (first) return first;
+  }
+  return data?.message || data?.title || err.message || fallback;
 };
 
-// 20 base records, then the extra fields are filled in so every column has data
-const baseEvents = [
-  { id: 1, organizationName: "TechCorp India", eventTitle: "Tech Summit 2026", mode: "Online", city: "Bangalore", state: "Karnataka", eventStartDate: "2026-08-10", eventCompletionDate: "2026-08-12", entryFee: "1500", status: "Active" },
-  { id: 2, organizationName: "AI Research Lab", eventTitle: "AI & ML Workshop", mode: "Offline", city: "Hyderabad", state: "Telangana", eventStartDate: "2026-08-15", eventCompletionDate: "2026-08-16", entryFee: "500", status: "Active" },
-  { id: 3, organizationName: "Design Guild", eventTitle: "UI/UX Design Forum", mode: "Hybrid", city: "Mumbai", state: "Maharashtra", eventStartDate: "2026-08-20", eventCompletionDate: "2026-08-22", entryFee: "0", status: "Active" },
-  { id: 4, organizationName: "CyberSec India", eventTitle: "Cybersecurity Expo", mode: "Offline", city: "New Delhi", state: "Delhi", eventStartDate: "2026-09-01", eventCompletionDate: "2026-09-03", entryFee: "2000", status: "Active" },
-  { id: 5, organizationName: "Cloud Native Group", eventTitle: "Kubernetes Days", mode: "Online", city: "Pune", state: "Maharashtra", eventStartDate: "2026-09-05", eventCompletionDate: "2026-09-05", entryFee: "300", status: "Cancelled" },
-  { id: 6, organizationName: "DevOps Central", eventTitle: "CI/CD Bootcamp", mode: "Online", city: "Chennai", state: "Tamil Nadu", eventStartDate: "2026-09-10", eventCompletionDate: "2026-09-11", entryFee: "0", status: "Active" },
-  { id: 7, organizationName: "Data Science Hub", eventTitle: "Big Data Conference", mode: "Offline", city: "Bangalore", state: "Karnataka", eventStartDate: "2026-09-15", eventCompletionDate: "2026-09-17", entryFee: "2500", status: "Active" },
-  { id: 8, organizationName: "Web3 Society", eventTitle: "Blockchain Summit", mode: "Hybrid", city: "Gurgaon", state: "Haryana", eventStartDate: "2026-09-20", eventCompletionDate: "2026-09-21", entryFee: "1000", status: "Active" },
-  { id: 9, organizationName: "FinTech Alliance", eventTitle: "Future of Payments", mode: "Offline", city: "Mumbai", state: "Maharashtra", eventStartDate: "2026-09-25", eventCompletionDate: "2026-09-26", entryFee: "1200", status: "Active" },
-  { id: 10, organizationName: "Green Energy Council", eventTitle: "CleanTech Forum", mode: "Online", city: "Ahmedabad", state: "Gujarat", eventStartDate: "2026-10-01", eventCompletionDate: "2026-10-02", entryFee: "0", status: "Active" },
-  { id: 11, organizationName: "EdTech Creators", eventTitle: "Digital Learning Expo", mode: "Hybrid", city: "Kolkata", state: "West Bengal", eventStartDate: "2026-10-05", eventCompletionDate: "2026-10-07", entryFee: "400", status: "Active" },
-  { id: 12, organizationName: "Startup Network", eventTitle: "Founders Pitch Day", mode: "Offline", city: "Bangalore", state: "Karnataka", eventStartDate: "2026-10-10", eventCompletionDate: "2026-10-10", entryFee: "0", status: "Active" },
-  { id: 13, organizationName: "QA Professionals", eventTitle: "Automation Testing Con", mode: "Online", city: "Pune", state: "Maharashtra", eventStartDate: "2026-10-15", eventCompletionDate: "2026-10-16", entryFee: "600", status: "Active" },
-  { id: 14, organizationName: "Game Dev Studio", eventTitle: "Indie Game Jam", mode: "Offline", city: "Hyderabad", state: "Telangana", eventStartDate: "2026-10-20", eventCompletionDate: "2026-10-22", entryFee: "200", status: "Active" },
-  { id: 15, organizationName: "HealthTech India", eventTitle: "MedTech Innovation", mode: "Hybrid", city: "New Delhi", state: "Delhi", eventStartDate: "2026-10-25", eventCompletionDate: "2026-10-26", entryFee: "1800", status: "Cancelled" },
-  { id: 16, organizationName: "Robotics Society", eventTitle: "Autonomous Systems", mode: "Offline", city: "Chennai", state: "Tamil Nadu", eventStartDate: "2026-11-01", eventCompletionDate: "2026-11-03", entryFee: "1500", status: "Active" },
-  { id: 17, organizationName: "Mobile Dev Group", eventTitle: "Flutter & React Native Con", mode: "Online", city: "Bangalore", state: "Karnataka", eventStartDate: "2026-11-05", eventCompletionDate: "2026-11-06", entryFee: "500", status: "Active" },
-  { id: 18, organizationName: "AgriTech Forum", eventTitle: "Smart Farming Expo", mode: "Offline", city: "Indore", state: "Madhya Pradesh", eventStartDate: "2026-11-10", eventCompletionDate: "2026-11-12", entryFee: "0", status: "Active" },
-  { id: 19, organizationName: "IoT Makers", eventTitle: "Connected Devices Workshop", mode: "Hybrid", city: "Pune", state: "Maharashtra", eventStartDate: "2026-11-15", eventCompletionDate: "2026-11-16", entryFee: "800", status: "Active" },
-  { id: 20, organizationName: "Open Source Guild", eventTitle: "FOSS Meetup 2026", mode: "Offline", city: "Mumbai", state: "Maharashtra", eventStartDate: "2026-11-20", eventCompletionDate: "2026-11-21", entryFee: "0", status: "Active" },
-];
-
-const initialDummyEvents = baseEvents.map((e, i) => ({
-  ...e,
-  advStartDate: shiftDate(e.eventStartDate, -30),
-  advCompletionDate: shiftDate(e.eventStartDate, -2),
-  aboutEvent: `${e.eventTitle} brings professionals and learners together for talks, demos and hands-on sessions.`,
-  setTime: i % 2 === 0 ? "10:00" : "14:30",
-  venue: `${e.city} Convention Centre`,
-  country: "India",
-  instructions: "Carry a valid photo ID. For queries call 9876543210.",
-  bannerSrc: makeLogo(e.eventTitle),
-  enabled: e.status === "Active",
-}));
-
-/* long text: 3 lines + green "Read More / Read Less" link (same as the reference page) */
+/* long text: 3 lines + green "Read More / Read Less" link */
 const ReadMore = ({ text = "", limit = 80 }) => {
   const [open, setOpen] = useState(false);
   const long = text.length > limit;
@@ -140,12 +131,37 @@ const ReadMore = ({ text = "", limit = 80 }) => {
 const AddEvent = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState(emptyFormData);
-  const [editingId, setEditingId] = useState(null); // null = creating, otherwise editing this row's id
-  const [eventsList, setEventsList] = useState(initialDummyEvents);
+  const [editingId, setEditingId] = useState(null);
 
-  /* ==========================================================================
-     DATATABLE COLUMNS  (same columns as the Event Details table)
-     ========================================================================== */
+  const [eventsList, setEventsList] = useState([]);
+  const [remainingEvents, setRemainingEvents] = useState(null);
+  const [planExpiry, setPlanExpiry] = useState(null);
+
+  const [tableLoading, setTableLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  /* ---------- load events ---------- */
+  const loadEvents = useCallback(async () => {
+    try {
+      const res = await getEvents();
+      setEventsList(res.list.map(normalizeEvent));
+      setRemainingEvents(res.remainingEvents);
+      setPlanExpiry(res.planExpiryDate ? fmtDate(toDateInput(res.planExpiryDate)) : null);
+    } catch (err) {
+      console.error("Load Events Error:", err);
+      setError(getErrorMessage(err, "Failed to load events."));
+    } finally {
+      setTableLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadEvents();
+  }, [loadEvents]);
+
+  /* ---------- table columns ---------- */
   const eventColumns = [
     { header: "Sr. No.", id: "srNo", meta: { className: "text-center", width: "80px" }, cell: (info) => info.row.index + 1 },
     { header: "Adv. Start Date", accessorKey: "advStartDate", meta: { className: "text-center", width: "140px" }, cell: (i) => fmtDate(i.getValue()) },
@@ -157,7 +173,6 @@ const AddEvent = () => {
       header: "Event Title",
       accessorKey: "eventTitle",
       meta: { className: "text-center", width: "200px" },
-      // click the title -> Admin Participate page (participants of this event)
       cell: (i) => {
         const row = i.row.original;
         return (
@@ -175,7 +190,7 @@ const AddEvent = () => {
       },
     },
     { header: "About Event", accessorKey: "aboutEvent", meta: { className: "text-center", width: "240px" }, cell: (i) => <ReadMore text={i.getValue()} /> },
-    { header: "Start Time", accessorKey: "setTime", meta: { className: "text-center", width: "120px" }, cell: (i) => fmtTime(i.getValue()) },
+    { header: "Event Time", accessorKey: "eventTimeText", meta: { className: "text-center", width: "170px" }, cell: (i) => i.getValue() || "-" },
     { header: "Venue", accessorKey: "venue", meta: { className: "text-center", width: "190px" } },
     {
       header: "Location",
@@ -196,13 +211,16 @@ const AddEvent = () => {
       id: "bannerSrc",
       enableSorting: false,
       meta: { className: "text-center", width: "140px" },
-      cell: (i) => (
-        <img
-          src={i.row.original.bannerSrc}
-          alt="Banner"
-          style={{ width: 70, height: 70, objectFit: "cover", borderRadius: 10, display: "inline-block" }}
-        />
-      ),
+      cell: (i) =>
+        i.row.original.bannerSrc ? (
+          <img
+            src={i.row.original.bannerSrc}
+            alt="Banner"
+            style={{ width: 70, height: 70, objectFit: "cover", borderRadius: 10, display: "inline-block" }}
+          />
+        ) : (
+          "-"
+        ),
     },
     { header: "Inst. / Contact Details", accessorKey: "instructions", meta: { className: "text-center", width: "240px" }, cell: (i) => <ReadMore text={i.getValue()} /> },
     { header: "Mode", accessorKey: "mode", meta: { className: "text-center", width: "110px" }, cell: (i) => i.getValue() || "-" },
@@ -243,7 +261,7 @@ const AddEvent = () => {
             type="button"
             className={`btn btn-sm px-3 py-1 ${row.enabled ? "btn-success" : "btn-danger"}`}
             style={{ borderRadius: "15px", fontSize: "12px" }}
-            onClick={() => toggleStatus(row.id)}
+            onClick={() => toggleStatus(row)}
           >
             {row.enabled ? "Enabled" : "Disabled"}
           </button>
@@ -252,9 +270,7 @@ const AddEvent = () => {
     },
   ];
 
-  /* ==========================================================================
-     FORM HANDLERS
-     ========================================================================== */
+  /* ---------- form handlers ---------- */
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
@@ -262,83 +278,109 @@ const AddEvent = () => {
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
-    if (files && files[0]) {
-      setFormData((prev) => ({ ...prev, [name]: files[0] }));
+    if (!files || !files[0]) return;
+
+    const file = files[0];
+
+    if (name !== "qrCode") {
+      if (!["image/jpeg", "image/png"].includes(file.type)) {
+        setError("Only PNG or JPG images are allowed for the banner.");
+        e.target.value = "";
+        return;
+      }
+      if (file.size > 2 * 1024 * 1024) {
+        setError("Banner image must not exceed 2MB.");
+        e.target.value = "";
+        return;
+      }
     }
+
+    setError("");
+    setFormData((prev) => ({ ...prev, [name]: file }));
   };
 
   const selectPaymentMethod = (method) => {
     setFormData((prev) => ({ ...prev, paymentMethod: method }));
   };
 
-  const toggleStatus = (id) => {
-    setEventsList((prev) => prev.map((r) => (r.id === id ? { ...r, enabled: !r.enabled } : r)));
+  const toggleStatus = async (row) => {
+    const next = !row.enabled;
+    setError("");
+
+    // optimistic update, rolled back on failure
+    setEventsList((prev) => prev.map((r) => (r.id === row.id ? { ...r, enabled: next } : r)));
+    try {
+      await setEventStatus(row.id, next);
+    } catch (err) {
+      console.error("Status Error:", err);
+      setEventsList((prev) => prev.map((r) => (r.id === row.id ? { ...r, enabled: row.enabled } : r)));
+      setError(getErrorMessage(err, "Failed to update status."));
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const eventRecord = {
-      advStartDate: formData.advStartDate || "-",
-      advCompletionDate: formData.advCompletionDate || "-",
-      eventStartDate: formData.eventStartDate || "-",
-      eventCompletionDate: formData.eventCompletionDate || "-",
-      organizationName: formData.organizationName,
-      eventTitle: formData.eventTitle,
-      aboutEvent: formData.aboutEvent,
-      setTime: formData.setTime,
-      venue: formData.venue,
-      city: formData.city,
-      state: formData.state,
-      country: formData.country,
-      mode: formData.mode,
-      entryFee: formData.entryFee || "0",
-      instructions: formData.instructions,
-    };
-    if (formData.bannerImage) {
-      eventRecord.bannerSrc = URL.createObjectURL(formData.bannerImage);
-    }
+    setMessage("");
+    setError("");
+    setSubmitting(true);
 
-    if (editingId !== null) {
-      setEventsList((prev) => prev.map((row) => (row.id === editingId ? { ...row, ...eventRecord } : row)));
+    try {
+      const res =
+        editingId !== null
+          ? await updateEvent(editingId, formData)
+          : await createEvent(formData);
+
+      setMessage(
+        res?.message ||
+          (editingId !== null ? "Event updated successfully." : "Event created successfully.")
+      );
       setEditingId(null);
-    } else {
-      setEventsList((prev) => [
-        {
-          id: Date.now(),
-          enabled: true,
-          status: "Active",
-          bannerSrc: makeLogo(formData.eventTitle),
-          ...eventRecord,
-        },
-        ...prev,
-      ]);
+      setFormData(emptyFormData);
+      await loadEvents();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      console.error("Save Event Error:", err);
+      setError(getErrorMessage(err, "Failed to save event."));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } finally {
+      setSubmitting(false);
     }
-
-    setFormData(emptyFormData);
   };
 
   const handleEditRow = (row) => {
     if (!row) return;
+    setMessage("");
+    setError("");
     setEditingId(row.id);
-    setFormData((prev) => ({
-      ...prev,
-      advStartDate: row.advStartDate === "-" ? "" : row.advStartDate,
-      advCompletionDate: row.advCompletionDate === "-" ? "" : row.advCompletionDate,
-      eventStartDate: row.eventStartDate === "-" ? "" : row.eventStartDate,
-      eventCompletionDate: row.eventCompletionDate === "-" ? "" : row.eventCompletionDate,
-      organizationName: row.organizationName || "",
-      eventTitle: row.eventTitle || "",
-      aboutEvent: row.aboutEvent || "",
-      setTime: row.setTime || "",
-      venue: row.venue || "",
-      city: row.city || "",
-      state: row.state || "",
-      country: row.country || "",
-      mode: row.mode || "",
-      entryFee: row.entryFee || "",
-      instructions: row.instructions || "",
-    }));
+    setFormData({
+      ...emptyFormData,
+      duration: row.duration,
+      mode: row.mode,
+      organizationName: row.organizationName,
+      eventTitle: row.eventTitle,
+      advStartDate: row.advStartDate,
+      advCompletionDate: row.advCompletionDate,
+      eventStartDate: row.eventStartDate,
+      eventCompletionDate: row.eventCompletionDate,
+      EventTime: row.EventTime,
+      venue: row.venue,
+      city: row.city,
+      state: row.state,
+      country: row.country,
+      aboutEvent: row.aboutEvent,
+      instructions: row.instructions,
+      entryFee: row.entryFee,
+      paymentMode: row.paymentMode,
+      paymentMethod: row.paymentMethod,
+      upiId: row.upiId,
+      mobileNo: row.mobileNo,
+      bankHolderName: row.bankHolderName,
+      bankName: row.bankName,
+      accountNo: row.accountNo,
+      ifscCode: row.ifscCode,
+      showPaymentDetails: !!(row.upiId || row.accountNo),
+    });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -347,15 +389,12 @@ const AddEvent = () => {
     setFormData(emptyFormData);
   };
 
-  /* ==========================================================================
-     DATATABLE BUTTON HANDLERS
-     ========================================================================== */
+  /* ---------- table buttons ---------- */
   const handleExportExcel = () => {
     console.log("Exporting events list to Excel...");
     alert("Exporting data to Excel format!");
   };
 
-  // "All Event Reg. Details" -> EventRecipants page
   const handleViewAllDetails = () => {
     navigate("/admin/event-recipants");
   };
@@ -365,8 +404,10 @@ const AddEvent = () => {
       <div className="add-event-container">
         <h2 className="form-main-title">{editingId !== null ? "Edit Event" : "Add Event"}</h2>
 
+        {message && <div className="alert alert-success">{message}</div>}
+        {error && <div className="alert alert-danger">{error}</div>}
+
         <form onSubmit={handleSubmit} className="event-form">
-          {/* Instructions */}
           <div className="instructions-section">
             <h3>Instructions</h3>
             <ul>
@@ -375,7 +416,6 @@ const AddEvent = () => {
             </ul>
           </div>
 
-          {/* Subscription plan */}
           <div className="section-label">Subscription Plan</div>
           <div className="duration-grid">
             {durationOptions.map((opt) => (
@@ -392,13 +432,12 @@ const AddEvent = () => {
             ))}
           </div>
 
-          {/* Remaining events + expiry  |  Mode */}
           <div className="plan-info-wrapper">
             <div className="remaining-event-card">
               <div className="remaining-event-title">Remaining Events</div>
-              <div className="remaining-event-count">{PLAN_REMAINING_EVENTS}</div>
+              <div className="remaining-event-count">{remainingEvents ?? "-"}</div>
               <div className="remaining-event-title">Plan Expiry Date</div>
-              <div className="plan-expiry-date">{PLAN_EXPIRY_DATE}</div>
+              <div className="plan-expiry-date">{planExpiry || "-"}</div>
             </div>
 
             <div className="mode-wrapper form-group">
@@ -412,7 +451,6 @@ const AddEvent = () => {
             </div>
           </div>
 
-          {/* Main fields */}
           <div className="form-fields-grid">
             <div className="form-group">
               <label>Organization Name <span className="required">*</span></label>
@@ -446,7 +484,7 @@ const AddEvent = () => {
 
             <div className="form-group">
               <label>Set Time <span className="required">*</span></label>
-              <input type="time" name="setTime" value={formData.setTime} onChange={handleChange} required />
+              <input type="time" name="EventTime" value={formData.EventTime} onChange={handleChange} required />
             </div>
 
             <div className="form-group">
@@ -480,7 +518,6 @@ const AddEvent = () => {
             </div>
           </div>
 
-          {/* Text areas */}
           <div className="textarea-group">
             <label>About Event <span className="required">*</span></label>
             <textarea
@@ -507,7 +544,6 @@ const AddEvent = () => {
             <div className="char-counter">{formData.instructions.length}/500 Characters</div>
           </div>
 
-          {/* Fee + payment mode */}
           <div className="form-fields-grid">
             <div className="form-group">
               <label>Entry Fee <span className="required">*</span></label>
@@ -524,7 +560,6 @@ const AddEvent = () => {
             </div>
           </div>
 
-          {/* Add payment details toggle */}
           <div className="checkbox-container">
             <label className="checkbox-label">
               <input
@@ -587,10 +622,9 @@ const AddEvent = () => {
             </div>
           )}
 
-          {/* Submit / Update */}
           <div className="form-actions">
-            <button type="submit" className="btn-submit-event">
-              {editingId !== null ? "Update" : "Submit"}
+            <button type="submit" className="btn-submit-event" disabled={submitting}>
+              {submitting ? "Saving..." : editingId !== null ? "Update" : "Submit"}
             </button>
             {editingId !== null && (
               <button
@@ -598,6 +632,7 @@ const AddEvent = () => {
                 className="btn-submit-event"
                 style={{ background: "#999", marginLeft: "10px", boxShadow: "none" }}
                 onClick={handleCancelEdit}
+                disabled={submitting}
               >
                 Cancel
               </button>
@@ -606,15 +641,18 @@ const AddEvent = () => {
         </form>
       </div>
 
-      {/* Event Details table (Export to Excel + All Event Reg. Details buttons come from DataTable) */}
       <div className="events-table">
         <h3 className="event-details-title">Event Details</h3>
-        <DataTable
-          columns={eventColumns}
-          data={eventsList}
-          onExportExcel={handleExportExcel}
-          onViewAllDetails={handleViewAllDetails}
-        />
+        {tableLoading ? (
+          <p style={{ textAlign: "center", padding: "20px" }}>Loading events...</p>
+        ) : (
+          <DataTable
+            columns={eventColumns}
+            data={eventsList}
+            onExportExcel={handleExportExcel}
+            onViewAllDetails={handleViewAllDetails}
+          />
+        )}
       </div>
     </div>
   );
