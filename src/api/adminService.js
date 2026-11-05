@@ -120,3 +120,64 @@ export const setEventStatus = async (id, enabled) => {
   return data;
 };
 
+/* ---------- RECIPIENTS (Custom+) ---------- */
+
+// Readable message from an axios error (backend sends plain text, a JSON string, or { message / title })
+export const getApiError = (err, fallback = "Something went wrong.") => {
+  const d = err?.response?.data;
+  if (typeof d === "string" && d.trim()) return d;
+  return d?.message || d?.title || (err?.response ? fallback : "Could not reach the server. Try again.");
+};
+
+// Maps one API row to the table row (camelCase or PascalCase keys both work)
+const toRecipientRow = (raw) => {
+  const lower = {};
+  Object.keys(raw).forEach((k) => (lower[k.toLowerCase()] = raw[k]));
+  const get = (...names) => {
+    for (const n of names) if (lower[n] != null) return lower[n];
+    return "";
+  };
+  const active = get("isactive", "active");
+  return {
+    id: get("recipientid", "id"),
+    name: String(get("fullname", "name")),
+    email: String(get("email")),
+    mobile: String(get("mobile")),
+    groupName: String(get("groupname", "group")),
+    text1: String(get("text1")),
+    text2: String(get("text2")),
+    text3: String(get("text3")),
+    text4: String(get("text4")),
+    isActive: active === "" ? true : Boolean(active),
+  };
+};
+
+// POST api/admin/recipients/import (multipart/form-data, .xlsx only)
+export const importRecipients = async (file) => {
+  const form = new FormData();
+  form.append("file", file);
+  const { data } = await api.post("/admin/recipients/import", form, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return {
+    inserted: data?.inserted ?? data?.Inserted ?? 0,
+    duplicates: data?.duplicates ?? data?.Duplicates ?? 0,
+    invalid: data?.invalid ?? data?.Invalid ?? 0,
+    errors: data?.errors ?? data?.Errors ?? [],
+  };
+};
+
+// GET api/admin/recipients?search=&page=&pageSize=
+export const getRecipients = async ({ search = "", page = 1, pageSize = 500 } = {}) => {
+  const { data } = await api.get("/admin/recipients", { params: { search, page, pageSize } });
+  const list = Array.isArray(data)
+    ? data
+    : data?.rows ?? data?.items ?? data?.data ?? data?.recipients ?? [];
+  return list.map(toRecipientRow);
+};
+
+// PATCH api/admin/recipients/{id}/status
+export const setRecipientStatus = async (id, isActive) => {
+  const { data } = await api.patch(`/admin/recipients/${id}/status`, { isActive });
+  return data;
+};
