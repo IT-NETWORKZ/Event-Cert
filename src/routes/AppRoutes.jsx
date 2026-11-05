@@ -8,6 +8,7 @@ import Register from "../components/home/register/Register";
 import Subscription from "../components/Subscription/Subscription";
 import About from "../components/home/about/About";
 import AboutUs from "../components/AboutUs/AboutUs";
+import CResetPass from "../pages/CPanel/CResetPass";
 
 import Admin from "../pages/Admin/Admin";
 import Dashboard from "../components/admin/Dashboard/Dashboard";
@@ -21,6 +22,7 @@ import Payment from "../components/admin/Payment/Payment";
 import AddEvent from "../components/admin/AddEvent/AddEvent";
 import AdminParticipate from "../components/admin/AddEvent/AdminParticipate";
 import EventRecipants from "../components/admin/AddEvent/EventRecipants";
+
 
 import ResetPassword from "../components/admin/ResetPassword/ResetPassword";
 import Preview from "../components/home/footerpages/PopularLinks/Preview/Preview";
@@ -49,8 +51,10 @@ import CProfile from "../pages/CPanel/CProfile";
 import CAddDraft from "../components/cpanel/AddCategory/CAddDraft";
 import CAddCategory from "../components/cpanel/AddCategory/CAddCategory";
 import AdminTransaction from "../components/cpanel/AdminTransaction/AdminTransaction";
+import CResetPassword from "../components/cpanel/ResetPassword/CResetPassword";
 import Taxes from "../components/cpanel/Taxes/Taxes";
 import Event from "../components/home/eventinfo/Event";
+
 
 import ProtectedRoute from "../routes/ProtectedRoute";
 
@@ -66,6 +70,9 @@ function AppRoutes() {
             <Route path="/register" element={<Register />} />
             <Route path="/subscription" element={<Subscription />} />
             <Route path="/event" element={<Event />} />
+            <Route path="/reset-password" element={<CResetPass />} />
+
+            
 
             {/* Popular Links (footer > Pages) */}
             <Route path="/preview" element={<Preview />} />
@@ -131,7 +138,7 @@ function AppRoutes() {
                         <Route path="addtemplate" element={<CAddTemplates />} />
                         <Route path="feedbackdetails" element={<CFeedbackDetails />} />
                         <Route path="profiledetails" element={<CProfile />} />
-                        <Route path="resetPassword" element={<ResetPassword />} />
+                        <Route path="resetpassword" element={<CResetPassword />} />
 
                         {/* ADD CATEGORY Routes */}
                         <Route path="category/addcategory" element={<CAddCategory />} />

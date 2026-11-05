@@ -64,3 +64,13 @@ export const superAdminForgotPassword = async (email) => {
   return data;
 };
 
+// SuperAdmin Reset Password
+export const superAdminResetPassword = async (token, newPassword, confirmPassword) => {
+  const { data } = await api.post("/auth/superadmin/reset-password", {
+    Token: token,
+    NewPassword: newPassword,
+    ConfirmPassword: confirmPassword,
+  });
+  return data;
+};
+
