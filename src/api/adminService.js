@@ -1,7 +1,6 @@
 import api from "../api/axiosClient";
 
 /* ---------- PROFILE ---------- */
-
 // GET api/admin/profile
 export const getAdminProfile = async () => {
   const { data } = await api.get("/admin/profile");
@@ -120,3 +119,4 @@ export const setEventStatus = async (id, enabled) => {
   const { data } = await api.patch(`/admin/events/${id}/status`, { isEnabled: enabled });
   return data;
 };
+
