@@ -33,20 +33,36 @@ const ExpandText = ({ text }) => {
   );
 };
 
-// API row -> table row (change property names here if your API differs)
+// case-insensitive field lookup: works for templateName / TemplateName / template_name
+const pick = (obj, ...keys) => {
+  const map = {};
+  Object.keys(obj || {}).forEach((k) => {
+    map[k.toLowerCase().replace(/_/g, '')] = obj[k];
+  });
+  for (const k of keys) {
+    const v = map[k.toLowerCase().replace(/_/g, '')];
+    if (v !== undefined && v !== null) return v;
+  }
+  return undefined;
+};
+
+const isTrue = (v) => [true, 1, '1', 'true', 'True', 'TRUE'].includes(v);
+
+// API row -> table row (add more property names in pick(...) if your API differs)
 const normalizeTemplate = (t, index) => {
-  const type = Number(t.templateType);
+  const type = Number(pick(t, 'templateType', 'type', 'templateTypeId'));
+  const enabled = pick(t, 'isEnabled', 'nBit', 'enabled', 'isActive', 'status');
   return {
-    id: t.templateId ?? t.id ?? index,
-    userName: t.userName ?? t.adminName ?? t.templateAdminName ?? t.templateAdminId ?? '-',
-    name: t.templateName ?? '',
+    id: pick(t, 'templateId', 'id') ?? index,
+    userName: pick(t, 'userName', 'adminName', 'templateAdminName', 'templateAdminId') ?? '-',
+    name: pick(t, 'templateName', 'name') ?? '',
     utilityType: type === 1 ? 'Yes' : '-',
     marketingType: type === 2 ? 'Yes' : '-',
-    details: labelOf(SEND_TYPES, t.sendType),
-    message: t.message ?? '',
-    withUserName: t.withUserName ? 'Yes' : 'No',
-    withParameters: t.noOfParameters ?? 0,
-    enabled: t.isEnabled ?? t.nBit ?? t.enabled ?? t.isActive ?? true,
+    details: labelOf(SEND_TYPES, pick(t, 'sendType', 'mediaType')),
+    message: pick(t, 'message', 'templateMessage', 'messageText') ?? '',
+    withUserName: isTrue(pick(t, 'withUserName', 'isWithUserName')) ? 'Yes' : 'No',
+    withParameters: pick(t, 'noOfParameters', 'parameterCount', 'paramCount') ?? 0,
+    enabled: enabled === undefined ? true : isTrue(enabled) || enabled === true,
     raw: t,
   };
 };
@@ -58,6 +74,7 @@ const AddTemplateTable = ({ templates, loading: loadingProp, onEdit, onToggleSta
   const [fetched, setFetched] = useState([]);
   const [fetching, setFetching] = useState(selfFetch);
   const [error, setError] = useState('');
+  const [statusError, setStatusError] = useState('');
   const [statusOverrides, setStatusOverrides] = useState({});
 
   const load = useCallback(async () => {
@@ -81,21 +98,44 @@ const AddTemplateTable = ({ templates, loading: loadingProp, onEdit, onToggleSta
   const source = selfFetch ? fetched : templates;
   const loading = selfFetch ? fetching : !!loadingProp;
 
+  useEffect(() => {
+    if (Array.isArray(source) && source.length) {
+      console.log('Template row from API (check field names):', source[0]);
+    }
+  }, [source]);
+
+  // newest first, so a freshly added row is always on page 1
   const tableData = useMemo(
     () =>
-      source.map((t, i) => {
-        const row = normalizeTemplate(t, i);
-        return row.id in statusOverrides
-          ? { ...row, enabled: statusOverrides[row.id] }
-          : row;
-      }),
+      (Array.isArray(source) ? source : [])
+        .map((t, i) => {
+          const row = normalizeTemplate(t, i);
+          return row.id in statusOverrides
+            ? { ...row, enabled: statusOverrides[row.id] }
+            : row;
+        })
+        .sort((a, b) => (Number(b.id) || 0) - (Number(a.id) || 0)),
     [source, statusOverrides]
   );
 
-  // local only until a status endpoint exists
-  const toggleStatus = (row) => {
-    setStatusOverrides((prev) => ({ ...prev, [row.id]: !row.enabled }));
-    if (onToggleStatus) onToggleStatus(row.raw, !row.enabled);
+  // changes whenever a row is added or removed -> DataTable remounts with fresh data, back on page 1
+  const tableKey = `${tableData.length}-${tableData[0]?.id ?? 'none'}`;
+
+  // optimistic update; rolls back if the parent's API call fails
+  const toggleStatus = async (row) => {
+    const next = !row.enabled;
+    setStatusError('');
+    setStatusOverrides((prev) => ({ ...prev, [row.id]: next }));
+
+    if (!onToggleStatus) return; // local only until a status endpoint exists
+
+    try {
+      await onToggleStatus(row.raw, next);
+    } catch (err) {
+      console.error('Update Status Error:', err, err.response?.data);
+      setStatusOverrides((prev) => ({ ...prev, [row.id]: row.enabled }));
+      setStatusError(getErrorMessage(err, 'Failed to update status.'));
+    }
   };
 
   const columns = useMemo(
@@ -180,6 +220,9 @@ const AddTemplateTable = ({ templates, loading: loadingProp, onEdit, onToggleSta
         </div>
 
         <div className="cap-card">
+          {statusError && (
+            <p className="text-danger text-center py-2 mb-0">{statusError}</p>
+          )}
           <div className="table-responsive-scroll-wrapper">
             {loading ? (
               <p className="text-center py-4 mb-0">Loading templates...</p>
@@ -194,6 +237,7 @@ const AddTemplateTable = ({ templates, loading: loadingProp, onEdit, onToggleSta
               <p className="text-center py-4 mb-0">No templates found.</p>
             ) : (
               <DataTable
+                key={tableKey}
                 columns={columns}
                 data={tableData}
                 onExportExcel={handleExportExcel}

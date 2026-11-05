@@ -12,3 +12,10 @@ export const SEND_TYPES = [
   { value: 5, label: 'Text + Button + Image' },
   { value: 6, label: 'Text + Button + Video' },
 ];
+
+// Replace with a real admins API later; value is sent as templateAdminId
+export const ADMINS = [
+  { value: 1, label: 'certwala' },
+  { value: 2, label: 'certificatewala' },
+  { value: 3, label: '1trainee' },
+];
