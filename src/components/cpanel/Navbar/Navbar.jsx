@@ -44,7 +44,7 @@ function Navbar({
 
     const handleResetPassword = () => {
         setShowMenu(false);
-        navigate("/cpanel/resetPassword");
+        navigate("/cpanel/resetpassword");
     };
 
 

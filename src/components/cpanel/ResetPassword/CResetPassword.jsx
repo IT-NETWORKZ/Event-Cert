@@ -10,7 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import "./ResetPassword.css";
 
-const ResetPassword = () => {
+const CResetPassword = () => {
   const navigate = useNavigate();
 
   const [password, setPassword] = useState("");
@@ -226,4 +226,4 @@ const ResetPassword = () => {
   );
 };
 
-export default ResetPassword;
+export default CResetPassword;
