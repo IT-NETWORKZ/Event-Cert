@@ -4,6 +4,7 @@ import DataTable from "../../common/Table/DataTable";
 import "../../../css/DesignerTable.css";
 import { useNavigate } from "react-router-dom";
 import { getApiError, getRecipients, importRecipients, setRecipientStatus } from "../../../api/adminService"; // adjust path to your service file
+import DraftModal from "../CustomPlus/DraftModal/DraftModal";
 
 // Demo rows shown until the first Excel file is added
 export const SAMPLE_ROWS = [
@@ -54,6 +55,8 @@ const DesignerTable = ({ rows = SAMPLE_ROWS, setRows = () => { }, selectedIds = 
   const [form, setForm] = useState(emptyForm);
   const [filters, setFilters] = useState(emptyFilters);
   const [status, setStatus] = useState({ type: "", text: "" });
+   const [draftOpen, setDraftOpen] = useState(false); // Draft popup
+  
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
@@ -173,7 +176,10 @@ const DesignerTable = ({ rows = SAMPLE_ROWS, setRows = () => { }, selectedIds = 
   );
 
   // ---------- Button handlers ----------
-  const handleDraft = () => console.log("Draft", form, selectedIds);
+  // const handleDraft = () => console.log("Draft", form, selectedIds);
+   // ---------- Button handlers ----------
+  const handleDraft = () => setDraftOpen(true);
+  const handleDraftClose = () => setDraftOpen(false);
 
   // Uploads the Excel file to the API, then reloads the saved recipients
   const handleAdd = async () => {
@@ -375,6 +381,10 @@ const DesignerTable = ({ rows = SAMPLE_ROWS, setRows = () => { }, selectedIds = 
 
       {/* ================= TABLE ================= */}
       <DataTable columns={columns} data={filteredData} centerToolbar />
+
+      {/* ================= DRAFT POPUP ================= */}
+      <DraftModal open={draftOpen} onClose={handleDraftClose} />
+      
     </section>
   );
 };
