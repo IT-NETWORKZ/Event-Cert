@@ -69,29 +69,23 @@ Get In Touch
 
 <span>
 
-Chennai
+Nagpur
 
 <br/>
 
-Kavin India Pvt Ltd
+ITNetworkZ Infosystems Pvt Ltd
 
 <br/>
 
-194F II Floor
+P-5/A, Akansha Building, 102-202, RPTS Rd 
 
 <br/>
 
-Venkateswara Nagar
+Laxminagar, Nagpur
 
-<br/>
 
-12th Street
 
-Kottivakkam
 
-<br/>
-
-Chennai – 41
 
 </span>
 
@@ -359,7 +353,7 @@ Designed & Developed by
 
 <b>
 
-Kavin India Pvt Ltd ©
+ITNetworkZ Infosystems Pvt Ltd ©
 
 </b>
 
