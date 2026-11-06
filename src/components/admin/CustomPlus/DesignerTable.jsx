@@ -14,8 +14,8 @@ export const SAMPLE_ROWS = [
   { id: 4, isSample: true, name: "Amit Shah", email: "sneha@gmail.com", mobile: "9123456780", text1: "VIP", text2: "Pune", text3: "A4", groupName: "Group A" },
 ];
 
-const TEMPLATE_TYPES = ["Invitation", "Greeting", "Certificate"];
-const IMAGE_TYPES = ["PNG", "JPG", "PDF"];
+const TEMPLATE_TYPES = ["Utility", "Marketing"];
+const IMAGE_TYPES = ["Only Text", "Text + Image", "Text + Document", "Text + Button + Image"];
 const WHATSAPP_TEMPLATES = ["event_invite_v1", "greeting_text", "certificate_send"];
 
 const emptyForm = {

@@ -2,15 +2,8 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FileText, Check, Layers, Image as ImageIcon, Type, MessageSquare, Hash, Shield, RotateCcw, Send } from 'lucide-react';
 import './AddTemplates.css';
 import AddTemplateTable from './AddTemplateTable';
-import { TEMPLATE_TYPES, SEND_TYPES } from './templateOptions';
-import { createTemplate, getTemplates } from '../../../api/superAdminService.js'; // adjust path if needed
-
-// Replace with a real admins API later; value is sent as templateAdminId
-const ADMINS = [
-  { value: 1, label: 'Admin 1' },
-  { value: 2, label: 'Admin 2' },
-  { value: 3, label: 'Admin 3' },
-];
+import { TEMPLATE_TYPES, SEND_TYPES, ADMINS } from './templateOptions';
+import { createTemplate, getTemplates, setTemplateStatus } from '../../../api/superAdminService.js'; // adjust path if needed
 
 const MAX_PARAMS = 20;
 
@@ -38,6 +31,7 @@ const getErrorMessage = (err, fallback) => {
     const first = Object.values(data.errors).flat()[0];
     if (first) return first;
   }
+  if (typeof data === 'string' && data.trim()) return data;
   return data?.message || data?.title || err.message || fallback;
 };
 
@@ -68,6 +62,17 @@ const CAddTemplates = () => {
   useEffect(() => {
     loadTemplates();
   }, [loadTemplates]);
+
+  /* ---------- PATCH status ---------- */
+  // Called by the table. Saves on the server first, then updates the row in the list.
+  // If the request fails it throws, and the table shows the error and keeps the old status.
+  const handleToggleStatus = useCallback(async (raw, enabled) => {
+    const id = raw.templateId ?? raw.id;
+    await setTemplateStatus(id, enabled);
+    setTemplates((prev) =>
+      prev.map((t) => ((t.templateId ?? t.id) === id ? { ...t, isEnabled: enabled } : t))
+    );
+  }, []);
 
   // bring the form top (and its message) into view whenever a message appears
   useEffect(() => {
@@ -144,7 +149,7 @@ const CAddTemplates = () => {
       setParamError('');
       setMessage('Template submitted successfully!');
 
-      await loadTemplates();
+      await loadTemplates(); // table refreshes with the saved row (newest first)
     } catch (err) {
       console.error('Add Template Error:', err, err.response?.data);
       setError(getErrorMessage(err, 'Failed to submit template.'));
@@ -366,7 +371,11 @@ const CAddTemplates = () => {
         </div>
       </div>
 
-      <AddTemplateTable templates={templates} loading={listLoading} />
+      <AddTemplateTable
+        templates={templates}
+        loading={listLoading}
+        onToggleStatus={handleToggleStatus}
+      />
     </div>
   );
 };
