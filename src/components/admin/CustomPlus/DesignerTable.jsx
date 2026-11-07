@@ -6,6 +6,8 @@ import "../../../css/DesignerTable.css";
 import { useNavigate } from "react-router-dom";
 import { useCanvas } from "../../../context/CanvasContext"; // same context FabricCanvas uses (adjust path if needed)
 import { getApiError, getRecipients, getWhatsappTemplates, importRecipients, saveCardDesign, setRecipientStatus, toImageUrl } from "../../../api/adminService"; // adjust path to your service file
+import { getApiError, getRecipients, importRecipients, setRecipientStatus } from "../../../api/adminService"; // adjust path to your service file
+import DraftModal from "../CustomPlus/DraftModal/DraftModal";
 
 // Demo rows shown until the first Excel file is added
 export const SAMPLE_ROWS = [
@@ -71,6 +73,9 @@ const IMAGE_FORMAT = "png";
 const EXPORT_MULTIPLIER = 1;
 // api/admin/cards needs a TemplateType: Invitation | Greeting | Certificate
 const CARD_TEMPLATE_TYPE = "Certificate";
+const TEMPLATE_TYPES = ["Utility", "Marketing"];
+const IMAGE_TYPES = ["Only Text", "Text + Image", "Text + Document", "Text + Button + Image"];
+const WHATSAPP_TEMPLATES = ["event_invite_v1", "greeting_text", "certificate_send"];
 
 const emptyForm = {
   excelFile: null,
@@ -184,6 +189,8 @@ const DesignerTable = ({
   const [tplLoading, setTplLoading] = useState(false);
   const [params, setParams] = useState(["", "", "", ""]); // values for {{1}}..{{4}}
   const canvas = useCanvas()?.canvas; // Fabric canvas of the active page
+   const [draftOpen, setDraftOpen] = useState(false); // Draft popup
+  
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
@@ -349,7 +356,10 @@ const DesignerTable = ({
   );
 
   // ---------- Button handlers ----------
-  const handleDraft = () => console.log("Draft", form, selectedIds);
+  // const handleDraft = () => console.log("Draft", form, selectedIds);
+   // ---------- Button handlers ----------
+  const handleDraft = () => setDraftOpen(true);
+  const handleDraftClose = () => setDraftOpen(false);
 
   // Uploads the Excel file to the API, then reloads the saved recipients
   const handleAdd = async () => {
@@ -704,6 +714,10 @@ const DesignerTable = ({
 
       {/* ================= TABLE ================= */}
       <DataTable columns={columns} data={filteredData} centerToolbar />
+
+      {/* ================= DRAFT POPUP ================= */}
+      <DraftModal open={draftOpen} onClose={handleDraftClose} />
+      
     </section>
   );
 };
