@@ -55,8 +55,8 @@ const DesignerTable = ({ rows = SAMPLE_ROWS, setRows = () => { }, selectedIds = 
   const [form, setForm] = useState(emptyForm);
   const [filters, setFilters] = useState(emptyFilters);
   const [status, setStatus] = useState({ type: "", text: "" });
-   const [draftOpen, setDraftOpen] = useState(false); // Draft popup
-  
+  const [draftOpen, setDraftOpen] = useState(false); // Draft popup
+
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
@@ -176,8 +176,6 @@ const DesignerTable = ({ rows = SAMPLE_ROWS, setRows = () => { }, selectedIds = 
   );
 
   // ---------- Button handlers ----------
-  // const handleDraft = () => console.log("Draft", form, selectedIds);
-   // ---------- Button handlers ----------
   const handleDraft = () => setDraftOpen(true);
   const handleDraftClose = () => setDraftOpen(false);
 
@@ -220,8 +218,10 @@ const DesignerTable = ({ rows = SAMPLE_ROWS, setRows = () => { }, selectedIds = 
   const handleSendImage = () => runSend("Send Image");
   const handleSendPdf = () => runSend("Send PDF");
 
-  const handlePastRecords = () => console.log("Past records");
-  const handleRetrieveRecords = () => console.log("Retrieve records");
+  // Past Records page   -> /admin/custom-past-records
+  // Retrieve Records    -> /admin/custom-retrieve-records
+  const handlePastRecords = () => navigate("/admin/custom-past-records");
+  const handleRetrieveRecords = () => navigate("/admin/custom-retrieve-records");
   const handleSentStatus = () => navigate("/admin/custom-status");
   const handleViewAll = () => setFilters(emptyFilters);
 
@@ -368,7 +368,6 @@ const DesignerTable = ({ rows = SAMPLE_ROWS, setRows = () => { }, selectedIds = 
           <span>Group Name</span>
         </label>
 
-
         <button
           type="button"
           className="dsg-clear"
@@ -384,7 +383,6 @@ const DesignerTable = ({ rows = SAMPLE_ROWS, setRows = () => { }, selectedIds = 
 
       {/* ================= DRAFT POPUP ================= */}
       <DraftModal open={draftOpen} onClose={handleDraftClose} />
-      
     </section>
   );
 };

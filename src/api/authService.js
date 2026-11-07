@@ -74,3 +74,16 @@ export const superAdminResetPassword = async (token, newPassword, confirmPasswor
   return data;
 };
 
+// SuperAdmin Logout
+export const superAdminlogout = async () => {
+  try {
+   
+    await api.post("/auth/logout", { refreshToken: tokenStore.refresh });
+  } catch (err) {
+    
+    console.error("Logout request failed, clearing local session anyway.", err);
+  } finally {
+    tokenStore.clear(); 
+  }
+};
+
