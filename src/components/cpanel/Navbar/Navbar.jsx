@@ -1,7 +1,7 @@
-
 import { useState, useRef, useEffect } from "react";
 import "./Navbar.css";
 import { useNavigate } from "react-router-dom";
+import { superAdminlogout } from "../../../api/authService"; // Adjust import path to match your file structure
 
 import {
     FaBars,
@@ -47,12 +47,15 @@ function Navbar({
         navigate("/cpanel/resetpassword");
     };
 
-
-    const handleLogout = () => {
+    const handleLogout = async () => {
         setShowMenu(false);
-
-        // Add your logout logic here.
-        // Example: clear authentication and redirect to login.
+        try {
+            await superAdminlogout(); // Calls API, clears tokens and user profile data securely
+        } catch (error) {
+            console.error("Error during logout process:", error);
+        } finally {
+            navigate("/cpanel", { replace: true }); // Redirect to CPanel login page
+        }
     };
 
     return (
@@ -93,8 +96,6 @@ function Navbar({
 
                 {showMenu && (
                     <div className="profile-dropdown">
-                      
-
                         <button
                             type="button"
                             onClick={handleResetPassword}

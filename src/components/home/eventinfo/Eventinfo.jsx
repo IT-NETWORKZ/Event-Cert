@@ -1,128 +1,64 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./eventinfo.css";
 import { Search, Calendar, MapPin, ArrowRight, QrCode } from "lucide-react";
-
-// Sample data: replace with your API / state
-const sampleEvents = [
-  {
-    id: 1,
-    title: "IT Internship - Network Communication & Security",
-    date: "2026-09-01T18:00",
-    location: "ITNetworkZ Infosystems Pvt Ltd, Plot 5, RPTS Rd, Laxmi Nagar, Nagpur - 440022.",
-    state: "Maharashtra",
-    city: "Nagpur",
-    description: "Build practical skills in Network Communication & Security with our 6-Week Technical Internship.",
-    entry: 3800,
-    image: "",
-    qr: "",
-  },
-  {
-    id: 2,
-    title: "Art Workshop",
-    date: "2026-10-16T10:00",
-    location: "Jawaharlal Darda Art Gallery, Lokmat Square",
-    state: "Maharashtra",
-    city: "Nagpur",
-    description: "Join a hands-on practical art workshop led by a professional artist, focusing on illustration, composition and visual storytelling.",
-    entry: 100,
-    image: "",
-    qr: "",
-  },
-  {
-    id: 3,
-    title: "Semaphore",
-    date: "2026-11-03T10:00",
-    location: "IICC",
-    state: "Maharashtra",
-    city: "Pune",
-    description: "An annual college event for juniors and seniors with indoor and outdoor games, including a traditional day.",
-    entry: 1500,
-    image: "",
-    qr: "",
-  },
-  {
-    id: 4,
-    title: "Freshers Party",
-    date: "2026-11-15T12:23",
-    location: "Auditorium, Main Campus",
-    state: "Maharashtra",
-    city: "Pune",
-    description: "A welcome ceremony with cultural performances, interactive games, and a Mr. and Ms. Fresher contest.",
-    entry: 0,
-    image: "",
-    qr: "",
-  },
-  {
-    id: 5,
-    title: "Introduction to Java",
-    date: "2026-11-22T11:00",
-    location: "Computer Lab 2, Tech Park, Hinjewadi",
-    state: "Maharashtra",
-    city: "Pune",
-    description: "A beginner-friendly workshop covering Java basics, OOP concepts and a small hands-on project.",
-    entry: 500,
-    image: "",
-    qr: "",
-  },
-  {
-    id: 6,
-    title: "Cyber Security Awareness Seminar",
-    date: "2026-12-05T15:00",
-    location: "Seminar Hall, Civil Lines, Nagpur",
-    state: "Maharashtra",
-    city: "Nagpur",
-    description: "Learn how to stay safe online with live demos on phishing, password hygiene and safe browsing.",
-    entry: 250,
-    image: "",
-    qr: "",
-  },
-  {
-    id: 7,
-    title: "Startup Pitch Day",
-    date: "2026-12-18T10:30",
-    location: "Innovation Hub, Navrangpura, Ahmedabad",
-    state: "Gujarat",
-    city: "Ahmedabad",
-    description: "Early-stage founders pitch their ideas to investors and mentors. Networking session included.",
-    entry: 800,
-    image: "",
-    qr: "",
-  },
-  {
-    id: 8,
-    title: "Annual Tech Fest 2027",
-    date: "2027-01-10T09:00",
-    location: "Convention Centre, Andheri East, Mumbai",
-    state: "Maharashtra",
-    city: "Mumbai",
-    description: "Two days of coding contests, robotics, hackathons and keynote talks from industry leaders.",
-    entry: 1200,
-    image: "",
-    qr: "",
-  },
-];
+import { getHomeEvents } from "../../../api/adminService"; 
 
 const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 const MONTHS_LONG = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-const formatTime = (d) => {
-  let h = d.getHours();
-  const m = String(d.getMinutes()).padStart(2, "0");
-  const ap = h >= 12 ? "PM" : "AM";
-  h = h % 12 || 12;
-  return `${String(h).padStart(2, "0")}:${m} ${ap}`;
-};
-
-function Eventinfo({ events = sampleEvents }) {
+function Eventinfo() {
   const navigate = useNavigate();
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  // click on an event -> Event registration page (/event) for that event
-  const openEvent = (ev) => navigate(`/event?nID=${ev.id}`, { state: { event: ev } });
   const [stateVal, setStateVal] = useState("");
   const [cityVal, setCityVal] = useState("");
   const [nameVal, setNameVal] = useState("");
   const [applied, setApplied] = useState({ state: "", city: "", name: "" });
+
+  // Fetch events from backend API on mount
+  useEffect(() => {
+    let cancelled = false;
+    getHomeEvents()
+      .then((res) => {
+        if (!cancelled && res && res.events) {
+          setEvents(res.events);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setError("Failed to load events.");
+          console.error(err);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Click on an event -> Event registration page (/event) passing mapped properties
+  const openEvent = (ev) => {
+    // Map backend field format back to a unified object structure expected by details page if needed
+    const formattedEvent = {
+      id: ev.eventId,
+      title: ev.eventTitle,
+      date: ev.eventStartDate,
+      location: `${ev.venue}, ${ev.city}, ${ev.state}`,
+      state: ev.state,
+      city: ev.city,
+      description: ev.aboutEvent,
+      entry: ev.entryFee,
+      image: ev.image1 ? `https://localhost:7151${ev.image1}` : "",
+      qr: ev.qrCodeUrl ? `https://localhost:7151${ev.qrCodeUrl}` : "",
+    };
+    navigate(`/event?nID=${ev.eventId}`, { state: { event: formattedEvent } });
+  };
 
   const states = useMemo(
     () => [...new Set(events.map((e) => e.state).filter(Boolean))],
@@ -147,16 +83,14 @@ function Eventinfo({ events = sampleEvents }) {
       (e) =>
         (!applied.state || e.state === applied.state) &&
         (!applied.city || e.city === applied.city) &&
-        (!q || e.title.toLowerCase().includes(q))
+        (!q || e.eventTitle?.toLowerCase().includes(q))
     );
   }, [events, applied]);
 
   const handleSearch = () => setApplied({ state: stateVal, city: cityVal, name: nameVal });
 
   return (
-    <section 
-     id="eventhub"
-     className="eventinfo-section">
+    <section id="eventhub" className="eventinfo-section">
       <div className="container">
 
         {/* Heading */}
@@ -208,19 +142,26 @@ function Eventinfo({ events = sampleEvents }) {
           </button>
         </div>
 
-        {/* Events timeline */}
-        {filtered.length === 0 ? (
+        {/* Loading / Content / Empty states */}
+        {loading ? (
+          <p className="text-center py-4">Loading events...</p>
+        ) : error ? (
+          <p className="text-center text-danger py-4">{error}</p>
+        ) : filtered.length === 0 ? (
           <p className="empty-event">No events found.</p>
         ) : (
           <div className="ev-list">
             {filtered.map((ev) => {
-              const d = new Date(ev.date);
+              const d = new Date(ev.eventStartDate);
+              const imageUrl = ev.image1 ? `https://localhost:7151${ev.image1}` : "";
+              const qrUrl = ev.qrCodeUrl ? `https://localhost:7151${ev.qrCodeUrl}` : "";
+
               return (
-                <article className="ev-item" key={ev.id}>
+                <article className="ev-item" key={ev.eventId}>
 
                   {/* Date badge */}
                   <div className="ev-date">
-                    <span className="ev-date-month">{MONTHS[d.getMonth()]}</span>
+                    <span className="ev-date-month">{MONTHS[d.getMonth()] || "JAN"}</span>
                     <strong className="ev-date-day">{String(d.getDate()).padStart(2, "0")}</strong>
                     <span className="ev-date-year">{d.getFullYear()}</span>
                   </div>
@@ -237,8 +178,8 @@ function Eventinfo({ events = sampleEvents }) {
                     onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), openEvent(ev))}
                   >
                     <div className="ev-img">
-                      {ev.image ? (
-                        <img src={ev.image} alt={ev.title} />
+                      {imageUrl ? (
+                        <img src={imageUrl} alt={ev.eventTitle} />
                       ) : (
                         <div className="ev-img-fallback">
                           <Calendar size={42} />
@@ -249,28 +190,28 @@ function Eventinfo({ events = sampleEvents }) {
                     <div className="ev-body">
                       <div className="ev-tag">
                         <span className="ev-tag-line"></span>
-                        Upcoming Event
+                        {ev.organizationName || "Upcoming Event"}
                       </div>
 
-                      <h3 className="ev-title">{ev.title}</h3>
+                      <h3 className="ev-title">{ev.eventTitle}</h3>
 
                       <div className="ev-meta">
                         <span>
                           <Calendar size={15} />
-                          {`${String(d.getDate()).padStart(2, "0")} ${MONTHS_LONG[d.getMonth()]} ${d.getFullYear()}  ${formatTime(d)}`}
+                          {`${String(d.getDate()).padStart(2, "0")} ${MONTHS_LONG[d.getMonth()]} ${d.getFullYear()}  ${ev.eventTime || ""}`}
                         </span>
                         <span className="ev-meta-light">
                           <MapPin size={15} />
-                          {ev.location}
+                          {`${ev.venue}, ${ev.city}, ${ev.state}`}
                         </span>
                       </div>
 
-                      <p className="ev-desc">{ev.description}</p>
+                      <p className="ev-desc">{ev.aboutEvent}</p>
 
                       <div className="ev-foot">
                         <div className="ev-entry">
                           <span>ENTRY</span>
-                          <strong>₹ {Number(ev.entry).toFixed(2)}</strong>
+                          <strong>₹ {Number(ev.entryFee || 0).toFixed(2)}</strong>
                         </div>
                         <button
                           type="button"
@@ -291,7 +232,7 @@ function Eventinfo({ events = sampleEvents }) {
                         <QrCode size={13} /> REGISTER
                       </span>
                       <div className="ev-qr-box">
-                        {ev.qr ? <img src={ev.qr} alt="QR code" /> : <QrCode size={70} />}
+                        {qrUrl ? <img src={qrUrl} alt="QR code" /> : <QrCode size={70} />}
                       </div>
                       <span className="ev-qr-scan">SCAN TO JOIN</span>
                     </div>
@@ -308,3 +249,4 @@ function Eventinfo({ events = sampleEvents }) {
 }
 
 export default Eventinfo;
+

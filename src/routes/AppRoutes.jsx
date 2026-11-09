@@ -22,6 +22,8 @@ import Payment from "../components/admin/Payment/Payment";
 import AddEvent from "../components/admin/AddEvent/AddEvent";
 import AdminParticipate from "../components/admin/AddEvent/AdminParticipate";
 import EventRecipants from "../components/admin/AddEvent/EventRecipants";
+import CustomPastRecords from "../components/admin/CustomPlus/CustomPastRecords";
+import CustomRetrieveRecords from "../components/admin/CustomPlus/CustomRetrieveRecords";
 
 
 import ResetPassword from "../components/admin/ResetPassword/ResetPassword";
@@ -54,6 +56,7 @@ import AdminTransaction from "../components/cpanel/AdminTransaction/AdminTransac
 import CResetPassword from "../components/cpanel/ResetPassword/CResetPassword";
 import Taxes from "../components/cpanel/Taxes/Taxes";
 import Event from "../components/home/eventinfo/Event";
+
 
 
 import ProtectedRoute from "../routes/ProtectedRoute";
@@ -116,6 +119,11 @@ function AppRoutes() {
                     {/* Delivery Report pages (inside the layout, so sidebar + navbar show) */}
                     <Route path="custom-status" element={<StatusReport type="custom" />} />
                     <Route path="schedule-status" element={<StatusReport type="schedule" />} />
+
+                    {/* PastRecords & RetrieveRecords */}
+                    <Route path="custom-past-records" element={<CustomPastRecords />} />
+                    <Route path="custom-retrieve-records" element={<CustomRetrieveRecords />} />
+
                 </Route>
             </Route>
 
