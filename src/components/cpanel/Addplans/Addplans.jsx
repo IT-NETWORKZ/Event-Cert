@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../../cpanel/Addplans/Addplans.css";
-import Button from "../../common/button/Button"
+import Button from "../../common/button/Button";
 
 const emptyPlanData = {
   planType: "Certificate", // Certificate, Event, Event + Certificate
@@ -15,8 +15,10 @@ const emptyPlanData = {
   instructionsIncludes: ""
 };
 
-const Addplans = ({ onAddPlan }) => {
-  const [formData, setFormData] = useState(emptyPlanData);
+// plan  = existing plan (edit mode), nothing = add mode
+// onSave = called with the form data when Submit is clicked
+const Addplans = ({ plan, onSave }) => {
+  const [formData, setFormData] = useState(plan || emptyPlanData);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,39 +30,19 @@ const Addplans = ({ onAddPlan }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Construct the structured plan object
-    const newPlan = {
-      id: Date.now(),
-      planType: formData.planType,
-      durationNum: formData.durationNum,
-      durationUnit: formData.durationUnit,
-      certificateQuantity: formData.certificateQuantity || "0",
-      eventQuantity: formData.eventQuantity || "0",
-      price: formData.price || "0",
-      title: formData.title,
-      status: "Active"
-    };
-
-    // Pass the new plan up to CAddplans parent container
-    if (onAddPlan) {
-      onAddPlan(newPlan);
-    }
-
-    alert("Plan Added Successfully!");
-    setFormData(emptyPlanData); // Reset form card
+    if (onSave) onSave(formData);
   };
 
   return (
     <div className="plan-form-card-compact">
       <div className="text-center mb-4">
         <h4 className="form-main-title position-relative d-inline-block pb-1">
-          Add Plans
+          {plan ? "Edit Plan" : "Add Plans"}
         </h4>
       </div>
 
       <form onSubmit={handleSubmit} className="event-form-compact">
-        
+
         {/* Plan Type - Segmented Pill Selector */}
         <div className="form-group-compact mb-3">
           <label className="compact-label">Plan Type <span className="required">*</span></label>
@@ -250,7 +232,7 @@ const Addplans = ({ onAddPlan }) => {
         {/* Centered Submit Button */}
         <div className="d-flex justify-content-center">
           <Button type="submit" className="btn btn-creative-submit px-5 py-2 fw-semibold">
-            Submit Plan
+            {plan ? "Update Plan" : "Submit Plan"}
           </Button>
         </div>
       </form>

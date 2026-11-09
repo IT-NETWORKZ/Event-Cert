@@ -1,5 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Plus, X } from "lucide-react";
 import DataTable from "../../components/common/Table/DataTable";
+import Addplans from "../../components/cpanel/Addplans/Addplans"; // adjust path if needed
 import "../../css/CAddplans.css";
 
 const LIMIT = 40; // text longer than this gets Read more / Read less
@@ -26,6 +28,41 @@ const ExpandText = ({ text, bullets = false }) => {
 const money = (n) =>
   `₹${Number(n || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
+/* ---------- table row  <->  form data ---------- */
+
+// table row -> form data (used when Edit is clicked)
+const rowToForm = (r) => {
+  const [num, ...unit] = String(r.duration || "").split(" ");
+  return {
+    planType: r.category,
+    durationNum: num || "",
+    durationUnit: unit.join(" ") || "Month/s",
+    certificateQuantity: String(r.certQty ?? ""),
+    eventQuantity: String(r.eventQty ?? ""),
+    price: String(r.price ?? ""),
+    title: r.title || "",
+    instructionsPerfectFor: r.instruction1 || "",
+    heading2: r.includes || "",
+    instructionsIncludes: r.instruction2 || "",
+  };
+};
+
+// form data -> table row (used when the form is submitted)
+const formToRow = (f, old = {}) => ({
+  id: old.id ?? Date.now(),
+  category: f.planType,
+  duration: `${f.durationNum} ${f.durationUnit}`,
+  certQty: Number(f.certificateQuantity) || 0,
+  eventQty: Number(f.eventQuantity) || 0,
+  downloadQty: old.downloadQty ?? 0,
+  price: Number(f.price) || 0,
+  title: f.title,
+  instruction1: f.instructionsPerfectFor,
+  includes: f.heading2,
+  instruction2: f.instructionsIncludes,
+  enabled: old.enabled ?? true,
+});
+
 // Sample data: replace with your API response
 const sampleData = [
   { id: 1, category: "Event", duration: "6 Week/s", certQty: 0, eventQty: 5, downloadQty: 0, price: 1499, title: "Who should choose this?", instruction1: "Duration: Up to 45 Days of event promotion and registrations.", includes: "What you can achieve", instruction2: "Promote events by sharing registration links and QR codes.", enabled: true },
@@ -34,9 +71,61 @@ const sampleData = [
   { id: 4, category: "Event", duration: "4 Month/s", certQty: 0, eventQty: 40, downloadQty: 0, price: 10999, title: "Who should choose this?", instruction1: "Duration: Up to 120 Days of event promotion and registrations.", includes: "What you can achieve", instruction2: "Maximize reach with long-running campaigns and reports.", enabled: false },
 ];
 
+/* form wrapper + close button (inline styles, so no CSS file needs to change) */
+const formWrapStyle = { position: "relative", maxWidth: 660, margin: "0 auto 24px" };
+const closeStyle = {
+  position: "absolute",
+  top: 16,
+  right: 16,
+  zIndex: 1,
+  width: 34,
+  height: 34,
+  display: "grid",
+  placeItems: "center",
+  border: 0,
+  borderRadius: "50%",
+  background: "#eef7f6",
+  color: "#173c39",
+  cursor: "pointer",
+};
+
 const CAddplans = ({ data = sampleData }) => {
-  // keeps the Enabled / Disabled switch working until you connect your API
+  // keeps the table working until you connect your API
   const [rows, setRows] = useState(data);
+
+  // form above the table: closed / add (editing = null) / edit (editing = row)
+  const [formOpen, setFormOpen] = useState(false);
+  const [editing, setEditing] = useState(null);
+  const formRef = useRef(null);
+
+  const openAdd = () => {
+    setEditing(null);
+    setFormOpen(true);
+  };
+  const openEdit = (row) => {
+    setEditing(row);
+    setFormOpen(true);
+  };
+  const closeForm = () => setFormOpen(false);
+
+  // scroll up to the form whenever it opens (or switches between plans)
+  useEffect(() => {
+    if (formOpen && formRef.current) {
+      formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [formOpen, editing]);
+
+  // Submit clicked in the form
+  const handleSave = (formData) => {
+    if (editing) {
+      // TODO: call your UPDATE plan API here
+      setRows((prev) => prev.map((r) => (r.id === editing.id ? formToRow(formData, r) : r)));
+    } else {
+      // TODO: call your ADD plan API here
+      setRows((prev) => [...prev, formToRow(formData)]);
+    }
+    closeForm();
+  };
 
   const toggleStatus = (id) => {
     // TODO: call your enable / disable API here
@@ -92,7 +181,7 @@ const CAddplans = ({ data = sampleData }) => {
         header: "Edit",
         enableSorting: false,
         cell: ({ row }) => (
-          <button type="button" className="cap-edit" onClick={() => console.log("Edit plan", row.original)}>
+          <button type="button" className="cap-edit" onClick={() => openEdit(row.original)}>
             Edit
           </button>
         ),
@@ -126,6 +215,31 @@ const CAddplans = ({ data = sampleData }) => {
   return (
     <div className="container-fluid py-4 c-addplans-wrapper">
       <div className="container-fluid px-md-4">
+
+        {/* Add Plan button */}
+        <div className="d-flex justify-content-end mb-3">
+          <button
+            type="button"
+            className="btn-creative-submit d-inline-flex align-items-center gap-2"
+            onClick={openAdd}
+          >
+            <Plus size={18} /> Add Plan
+          </button>
+        </div>
+
+        {/* Add / Edit form (shown above the table) */}
+        {formOpen && (
+          <div ref={formRef} style={formWrapStyle}>
+            <button type="button" style={closeStyle} onClick={closeForm} aria-label="Close form">
+              <X size={18} />
+            </button>
+            <Addplans
+              key={editing ? editing.id : "new"}
+              plan={editing ? rowToForm(editing) : null}
+              onSave={handleSave}
+            />
+          </div>
+        )}
 
         {/* Heading */}
         <div className="cap-head">
