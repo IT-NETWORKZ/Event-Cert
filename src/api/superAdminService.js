@@ -26,8 +26,13 @@ export const getTemplates = async () => {
     : data?.templates ?? data?.data ?? data?.items ?? [];
 };
 
-/* ---------- PLANS (api/superadmin/templates-admin) ---------- */
+// PATCH api/superadmin/templates/{id}/status   (change the URL / body key if your API differs)
+export const setTemplateStatus = async (id, enabled) => {
+  const { data } = await api.patch(`/superadmin/templates/${id}/status`, { isEnabled: enabled });
+  return data;
+};
 
+/* ---------- PLANS (api/superadmin/templates-admin) ---------- */
 export const createPlan = async (values) => {
   const payload = {
     planType: values.planType,

@@ -188,3 +188,95 @@ export const setRecipientStatus = async (id, isActive) => {
   const { data } = await api.patch(`/admin/recipients/${id}/status`, { isActive });
   return data;
 };
+
+/* ---------- CARDS + BULK JOBS (Custom+) ---------- */
+
+// POST api/admin/cards (multipart/form-data) – saves the design (source image + canvas JSON)
+// templateType: Invitation | Greeting | Certificate
+// uploadFormat: PNG | JPG | PDF  (must match the uploaded file)
+// outputFormat: PNG | JPG | PDF  (format of the files the job will produce)
+export const saveCardDesign = async ({
+  blob,
+  designName,
+  fileName,
+  templateType,
+  uploadFormat,
+  outputFormat,
+  canvasWidth,
+  canvasHeight,
+  canvasJson,
+  format = "png",
+}) => {
+  const form = new FormData();
+  // the file is sent with the exact name given by DesignerTable (e.g. "Rahul Patil.png")
+  form.append("Image", blob, fileName || `${designName || "user"}.${format}`);
+  form.append("DesignName", designName);
+  form.append("TemplateType", templateType);
+  form.append("UploadFormat", uploadFormat);
+  form.append("OutputFormat", outputFormat);
+  if (canvasWidth != null) form.append("CanvasWidth", String(canvasWidth));
+  if (canvasHeight != null) form.append("CanvasHeight", String(canvasHeight));
+  if (canvasJson != null) {
+    form.append("CanvasJson", typeof canvasJson === "string" ? canvasJson : JSON.stringify(canvasJson));
+  }
+
+  const { data } = await api.post("/admin/cards", form, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data; // { success, cardDesignId, designName, templateType, uploadFormat, outputFormat, imageUrl }
+};
+
+// POST api/admin/bulk-jobs – queues the send. outputType: Image | PDF, channels: Email | WhatsApp | Both.
+// The other field names must match BulkJobCreateDto (cardDesignId, recipientIds, whatsappTemplate,
+// parameters are assumed names).
+export const createBulkJob = async ({
+  cardDesignId,
+  outputType,
+  channels,
+  recipientIds,
+  whatsappTemplate,
+  parameters,
+  scheduledAt,
+}) => {
+  const payload = { cardDesignId, outputType, channels, recipientIds, whatsappTemplate, parameters };
+  if (scheduledAt) payload.scheduledAt = scheduledAt;
+
+  const { data } = await api.post("/admin/bulk-jobs", payload);
+  return data; // { jobId, status, statusUrl }
+};
+
+// GET api/admin/bulk-jobs/{id}
+export const getBulkJob = async (id) => {
+  const { data } = await api.get(`/admin/bulk-jobs/${id}`);
+  return data;
+};
+
+/* ---------- WHATSAPP TEMPLATES (dropdown in Custom+) ---------- */
+
+// Maps one API template to { id, name, message, params } (camelCase or PascalCase keys both work)
+const toWhatsappTemplate = (raw) => {
+  if (typeof raw === "string") return { id: raw, name: raw, message: "", params: 0, raw };
+  const lower = {};
+  Object.keys(raw || {}).forEach((k) => (lower[k.toLowerCase()] = raw[k]));
+  const get = (...names) => {
+    for (const n of names) if (lower[n] != null) return lower[n];
+    return "";
+  };
+  const name = String(get("templatename", "name", "template"));
+  return {
+    id: get("templateid", "id") || name,
+    name,
+    message: String(get("message", "templatemessage")),
+    params: Number(get("noofparameters", "parametercount")) || 0,
+    raw,
+  };
+};
+
+// GET api/admin/whatsapp-templates?templateType=1&sendType=2
+export const getWhatsappTemplates = async ({ templateType, sendType }) => {
+  const { data } = await api.get("/admin/whatsapp-templates", { params: { templateType, sendType } });
+  const list = Array.isArray(data)
+    ? data
+    : data?.templates ?? data?.items ?? data?.data ?? data?.rows ?? [];
+  return list.map(toWhatsappTemplate).filter((t) => t.name);
+};
