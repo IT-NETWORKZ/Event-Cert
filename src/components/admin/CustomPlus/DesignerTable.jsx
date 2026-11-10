@@ -50,93 +50,6 @@ const fillMessage = (message, params) =>
     return v && v.trim() ? v : match;
   });
 
-// Example values shown under each parameter box. They are picked from the words around {{n}}
-// in the template message, so every template gets sensible examples (works for any template).
-const SUGGESTION_RULES = [
-  { test: /(certificate|course|workshop|training|program|programme|participation|webinar|seminar|competition|event|exam|test)\b[^.]*$/, list: ["Python Workshop", "Web Development Training", "Annual Tech Fest 2026"] },
-  { test: /(regards|thanks|thank you|sincerely|from|team|organi[sz]ed by|issued by)\W*$/, list: ["IT-Networkz Infosystem Pvt. Ltd.", "Team ITNetworkZ", "Admin Team"] },
-  { test: /(date|dated|held on|on|from|till|until)\W*$/, list: ["10 Nov 2026", "15 Dec 2026", "01 Jan 2027"] },
-  { test: /(venue|location|place|city|at|in)\W*$/, list: ["Nagpur", "Main Auditorium", "Pune"] },
-  { test: /(amount|fee|fees|price|rs|inr|paid|payment|₹)\W*$/, list: ["500", "1500", "2999"] },
-  { test: /(otp|code|id|number|no|ticket|certificate no|roll)\W*$/, list: ["CERT-2026-001", "123456", "A1024"] },
-  { test: /(link|url|visit|website|click|download)\W*$/, list: ["https://certwala.com", "https://it-networkz.com"] },
-  { test: /(mobile|phone|contact|call|whatsapp)\W*$/, list: ["9876543210", "9123456780"] },
-  { test: /(email|e-mail|mail)\W*$/, list: ["info@it-networkz.com", "support@certwala.com"] },
-  { test: /(dear|hi|hello|name)\W*$/, list: ["Rahul Patil", "Sneha Joshi"] },
-];
-const DEFAULT_SUGGESTIONS = ["Sample value", "Sample text 1", "Sample text 2"];
-
-const getSuggestions = (message, n) => {
-  const text = String(message || "");
-  const idx = text.search(new RegExp("\\{\\{\\s*" + n + "\\s*\\}\\}"));
-  if (idx < 0) return DEFAULT_SUGGESTIONS;
-  // last ~45 characters before {{n}}, without other {{x}} markers
-  const before = text.slice(Math.max(0, idx - 45), idx).replace(/\{\{\s*\d+\s*\}\}/g, " ").toLowerCase();
-  const rule = SUGGESTION_RULES.find((r) => r.test.test(before.trim()));
-  return rule ? rule.list : DEFAULT_SUGGESTIONS;
-};
-
-const chipStyle = {
-  border: "1px dashed #93c5fd",
-  background: "#eff6ff",
-  color: "#1d4ed8",
-  borderRadius: 999,
-  fontSize: 12,
-  padding: "2px 10px",
-  cursor: "pointer",
-};
-
-// {{1}} is never typed: it is filled with the user's name from the table
-const NAME_PARAM = 1;
-
-const modalOverlayStyle = {
-  position: "fixed",
-  inset: 0,
-  background: "rgba(15, 23, 42, 0.55)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  zIndex: 2000,
-  padding: 16,
-};
-const modalBoxStyle = {
-  background: "#fff",
-  borderRadius: 14,
-  width: "min(820px, 100%)",
-  maxHeight: "85vh",
-  display: "flex",
-  flexDirection: "column",
-  boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
-};
-const modalHeadStyle = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  gap: 12,
-  padding: "14px 18px",
-  borderBottom: "1px solid #e5e7eb",
-};
-const modalBodyStyle = { padding: 16, overflowY: "auto", display: "grid", gap: 12 };
-const tplCardStyle = {
-  border: "1px solid #e5e7eb",
-  borderRadius: 10,
-  padding: "10px 14px",
-  display: "flex",
-  gap: 12,
-  alignItems: "flex-start",
-  justifyContent: "space-between",
-};
-const tplBadgeStyle = {
-  display: "inline-block",
-  background: "#eff6ff",
-  color: "#1d4ed8",
-  borderRadius: 999,
-  fontSize: 11,
-  fontWeight: 600,
-  padding: "2px 8px",
-  marginRight: 6,
-};
-
 const previewBoxStyle = {
   whiteSpace: "pre-wrap",
   background: "#f0fdf4",
@@ -272,14 +185,7 @@ const DesignerTable = ({
   const [savedFiles, setSavedFiles] = useState([]); // [{ name, url }] saved by the last Send
   const [templates, setTemplates] = useState([]); // WhatsApp templates for the chosen type + image type
   const [tplLoading, setTplLoading] = useState(false);
-  const [params, setParams] = useState(["", "", "", ""]); // values for {{1}}..{{4}} ({{1}} is the user's name)
-
-  // View All popup: every template from api/admin/whatsapp-templates
-  const [viewAllOpen, setViewAllOpen] = useState(false);
-  const [allTemplates, setAllTemplates] = useState([]);
-  const [allLoading, setAllLoading] = useState(false);
-  const [allError, setAllError] = useState("");
-  const [allSearch, setAllSearch] = useState("");
+  const [params, setParams] = useState(["", "", "", ""]); // values for {{1}}..{{4}}
   const canvas = useCanvas()?.canvas; // Fabric canvas of the active page
 
   const navigate = useNavigate();
@@ -329,25 +235,11 @@ const DesignerTable = ({
 
   // selected template, the {{n}} it uses and the typed values (in order)
   const selectedTemplate = useMemo(
-    () =>
-      templates.find((t) => t.name === form.whatsappTemplate) ||
-      allTemplates.find((t) => t.name === form.whatsappTemplate) ||
-      null,
-    [templates, allTemplates, form.whatsappTemplate]
+    () => templates.find((t) => t.name === form.whatsappTemplate) || null,
+    [templates, form.whatsappTemplate]
   );
   const paramIndexes = useMemo(() => getParamIndexes(selectedTemplate?.message), [selectedTemplate]);
-  // inputs shown to the user: everything except {{1}} (that one is the user's name)
-  const inputIndexes = useMemo(() => paramIndexes.filter((n) => n !== NAME_PARAM), [paramIndexes]);
-
-  // {{1}} shows the first ticked user's name; nothing ticked -> stays {{1}} (name not visible)
-  const previewName = useMemo(() => {
-    const row = rows.find((r) => selectedIds.includes(r.id));
-    return String(row?.name || "").trim();
-  }, [rows, selectedIds]);
-  const previewParams = useMemo(
-    () => params.map((v, i) => (i === NAME_PARAM - 1 ? previewName : v)),
-    [params, previewName]
-  );
+  const paramValues = paramIndexes.map((n) => (params[n - 1] || "").trim());
 
   // new template chosen -> clear the typed values
   useEffect(() => {
@@ -496,7 +388,7 @@ const DesignerTable = ({
       setStatus({ type: "error", text: "Tick at least one row first." });
       return;
     }
-    if (inputIndexes.some((n) => !(params[n - 1] || "").trim())) {
+    if (paramValues.some((v) => !v)) {
       setStatus({ type: "error", text: "Fill all the template parameters first." });
       return;
     }
@@ -504,13 +396,8 @@ const DesignerTable = ({
     console.log(kind, {
       template: form.whatsappTemplate,
       imageType: form.imageType,
-      // {{1}} = each user's own name, {{2}}.. = the typed values (in order)
-      rows: targets.map((r) => ({
-        ...r,
-        parameters: paramIndexes.map((n) =>
-          n === NAME_PARAM ? String(r.name || "").trim() : (params[n - 1] || "").trim()
-        ),
-      })),
+      parameters: paramValues, // in order {{1}}, {{2}} ...
+      rows: targets,
     });
   };
   const handleOnlyText = () => runSend("Only Text");
@@ -605,53 +492,7 @@ const DesignerTable = ({
   const handlePastRecords = () => navigate("/admin/custom-past-records");
   const handleRetrieveRecords = () => navigate("/admin/custom-retrieve-records");
   const handleSentStatus = () => navigate("/admin/custom-status");
-  // View All -> loads every template from api/admin/whatsapp-templates and shows them in a popup
-  const handleViewAll = () => {
-    setViewAllOpen(true);
-    setAllSearch("");
-    setAllError("");
-    setAllLoading(true);
-    getWhatsappTemplates({})
-      .then((list) => setAllTemplates(Array.isArray(list) ? list : []))
-      .catch((err) => {
-        console.error(err);
-        setAllTemplates([]);
-        setAllError(getApiError(err, "Could not load WhatsApp templates."));
-      })
-      .finally(() => setAllLoading(false));
-  };
-
-  const closeViewAll = () => setViewAllOpen(false);
-
-  // "Use" on a template in the popup -> selects it in the form
-  const useTemplate = (t) => {
-    const typeOk = (v) => v !== undefined && v !== null && TEMPLATE_TYPES.some((x) => x.value === String(v));
-    const imageOk = (v) => v !== undefined && v !== null && IMAGE_TYPES.some((x) => x.value === String(v));
-    setForm((prev) => ({
-      ...prev,
-      templateType: typeOk(t.templateType) ? String(t.templateType) : prev.templateType,
-      imageType: imageOk(t.sendType) ? String(t.sendType) : prev.imageType,
-      whatsappTemplate: t.name,
-    }));
-    setViewAllOpen(false);
-  };
-
-  useEffect(() => {
-    if (!viewAllOpen) return undefined;
-    const onKey = (e) => e.key === "Escape" && setViewAllOpen(false);
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [viewAllOpen]);
-
-  const visibleAllTemplates = useMemo(() => {
-    const q = allSearch.trim().toLowerCase();
-    if (!q) return allTemplates;
-    return allTemplates.filter(
-      (t) =>
-        String(t.name || "").toLowerCase().includes(q) ||
-        String(t.message || "").toLowerCase().includes(q)
-    );
-  }, [allTemplates, allSearch]);
+  const handleViewAll = () => setFilters(emptyFilters);
 
   return (
     <section className="dsg-section">
@@ -768,7 +609,7 @@ const DesignerTable = ({
               className="dsg-input"
               value={form.whatsappTemplate}
               onChange={(e) => setField("whatsappTemplate", e.target.value)}
-              disabled={(!form.templateType || !form.imageType || tplLoading) && !selectedTemplate}
+              disabled={!form.templateType || !form.imageType || tplLoading}
             >
               <option value="">
                 {!form.templateType || !form.imageType
@@ -782,9 +623,6 @@ const DesignerTable = ({
               {templates.map((t) => (
                 <option key={t.id} value={t.name}>{t.name}</option>
               ))}
-              {selectedTemplate && !templates.some((t) => t.name === selectedTemplate.name) && (
-                <option value={selectedTemplate.name}>{selectedTemplate.name}</option>
-              )}
             </select>
           </div>
         </div>
@@ -794,49 +632,26 @@ const DesignerTable = ({
           <div style={{ marginTop: 14 }}>
             <label style={{ fontWeight: 600, display: "block", marginBottom: 6 }}>Message</label>
             <div style={previewBoxStyle}>
-              {fillMessage(selectedTemplate.message, previewParams) || "(no message text in this template)"}
+              {fillMessage(selectedTemplate.message, params) || "(no message text in this template)"}
             </div>
 
-            {paramIndexes.length === 0 && (
-              <small style={{ display: "block", marginTop: 8 }}>This template has no parameters.</small>
-            )}
-            {paramIndexes.includes(NAME_PARAM) && (
-              <small style={{ display: "block", marginTop: 8, color: "#475569" }}>
-                {"{{1}}"} shows the user's name when you tick a row in the table.
-              </small>
-            )}
-            {inputIndexes.length > 0 && (
+            {paramIndexes.length > 0 ? (
               <div style={paramGridStyle}>
-                {inputIndexes.map((n) => {
-                  const suggestions = getSuggestions(selectedTemplate?.message, n);
-                  return (
-                    <div className="dsg-field" key={n}>
-                      <label>{`{{${n}}}`}</label>
-                      <input
-                        type="text"
-                        className="dsg-input"
-                        placeholder={`e.g. ${suggestions[0]}`}
-                        value={params[n - 1]}
-                        onChange={(e) => setParam(n - 1, e.target.value)}
-                      />
-                      {/* example values - click one to fill the box */}
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
-                        {suggestions.map((sg) => (
-                          <button
-                            key={sg}
-                            type="button"
-                            style={chipStyle}
-                            title="Click to use this example"
-                            onClick={() => setParam(n - 1, sg)}
-                          >
-                            {sg}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
+                {paramIndexes.map((n) => (
+                  <div className="dsg-field" key={n}>
+                    <label>{`{{${n}}}`}</label>
+                    <input
+                      type="text"
+                      className="dsg-input"
+                      placeholder={`Value for {{${n}}}`}
+                      value={params[n - 1]}
+                      onChange={(e) => setParam(n - 1, e.target.value)}
+                    />
+                  </div>
+                ))}
               </div>
+            ) : (
+              <small style={{ display: "block", marginTop: 8 }}>This template has no parameters.</small>
             )}
           </div>
         )}
@@ -846,7 +661,7 @@ const DesignerTable = ({
           <strong>Note:</strong>
           <ul>
             <li>Image size should be a maximum of 1-2 MB.</li>
-            <li>After selecting a template, kindly add parameters below for your WhatsApp messages. {"{{1}}"} is the user's name from the table, so fill from {"{{2}}"}.</li>
+            <li>After selecting a template, kindly add parameters below for your WhatsApp messages.</li>
             <li>Preview fills {"{{NAME}}"}, {"{{TEXT1}}"}, {"{{TEXT2}}"}, {"{{TEXT3}}"} from the ticked rows (all rows if none are ticked).</li>
             <li>Send Image / Send PDF: tick at least one user. A personalised file named after each user (Name.png / Name.pdf) is sent to the server, which saves it in its uploads folder.</li>
           </ul>
@@ -895,69 +710,9 @@ const DesignerTable = ({
       {/* ================= TABLE ================= */}
       <DataTable columns={columns} data={filteredData} centerToolbar />
 
-      {/* ================= VIEW ALL TEMPLATES POPUP ================= */}
-      {viewAllOpen && (
-        <div style={modalOverlayStyle} onClick={closeViewAll}>
-          <div style={modalBoxStyle} onClick={(e) => e.stopPropagation()}>
-            <div style={modalHeadStyle}>
-              <strong style={{ fontSize: 17 }}>
-                All WhatsApp Templates{!allLoading && !allError ? ` (${allTemplates.length})` : ""}
-              </strong>
-              <button type="button" className="dsg-clear" onClick={closeViewAll} aria-label="Close">
-                X
-              </button>
-            </div>
-
-            <div style={modalBodyStyle}>
-              <input
-                type="text"
-                className="dsg-input"
-                placeholder="Search template name or message..."
-                value={allSearch}
-                onChange={(e) => setAllSearch(e.target.value)}
-              />
-
-              {allLoading && <div>Loading templates...</div>}
-              {!allLoading && allError && <div style={{ color: "#dc2626" }}>{allError}</div>}
-              {!allLoading && !allError && visibleAllTemplates.length === 0 && (
-                <div>No templates found.</div>
-              )}
-
-              {!allLoading &&
-                visibleAllTemplates.map((t, i) => (
-                  <div key={t.id ?? `${t.name}-${i}`} style={tplCardStyle}>
-                    <div style={{ minWidth: 0 }}>
-                      <div style={{ fontWeight: 700, marginBottom: 4 }}>{t.name}</div>
-                      {(t.templateTypeName || t.templateType !== undefined) && (
-                        <span style={tplBadgeStyle}>
-                          {t.templateTypeName ||
-                            TEMPLATE_TYPES.find((x) => x.value === String(t.templateType))?.label ||
-                            String(t.templateType)}
-                        </span>
-                      )}
-                      {(t.sendTypeName || t.sendType !== undefined) && (
-                        <span style={tplBadgeStyle}>
-                          {t.sendTypeName ||
-                            IMAGE_TYPES.find((x) => x.value === String(t.sendType))?.label ||
-                            String(t.sendType)}
-                        </span>
-                      )}
-                      <div style={{ whiteSpace: "pre-wrap", fontSize: 13.5, lineHeight: 1.5, marginTop: 6 }}>
-                        {t.message || "(no message text)"}
-                      </div>
-                    </div>
-                    <button type="button" className="dsg-pill" onClick={() => useTemplate(t)}>
-                      Use
-                    </button>
-                  </div>
-                ))}
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* ================= DRAFT POPUP ================= */}
       <DraftModal open={draftOpen} onClose={handleDraftClose} />
+
     </section>
   );
 };

@@ -1,4 +1,4 @@
-import { TbFileCertificate } from "react-icons/tb"; 
+import { TbFileCertificate } from "react-icons/tb";
 import React from "react";
 import "./Sidebar.css";
 import logo from "../../../assets/img/logo_EventCert.png";
@@ -97,21 +97,21 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
           </MenuItem>
           <MenuItem
             icon={<TbFileCertificate />
-}
+            }
             component={<NavLink to="customplus" />}
             className={isActive("/customplus") ? "active-item" : ""}
           >
-            Custom Plus
+            Smart Hub
           </MenuItem>
 
-           <MenuItem
+          {/* <MenuItem
             icon={<FaCalendarCheck />
-}
+            }
             component={<NavLink to="schedular" />}
             className={isActive("/schedular") ? "active-item" : ""}
           >
             Schedular
-          </MenuItem>
+          </MenuItem> */}
 
           <MenuItem
             icon={<FaFileAlt />}
@@ -137,7 +137,7 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
             Payment
           </MenuItem> */}
 
-            <MenuItem
+          <MenuItem
             icon={<FaCalendarDay />}
             component={<NavLink to="/admin/addevent" />}
             className={isActive("/admin/addevent") ? "active-item" : ""}

@@ -1,39 +1,25 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDown, Check } from "lucide-react";
 
 import "./PromoCode.css"; // if your file is still named PromoCode.css, change this line
 import Button from "../../common/button/Button";
 import DataTable from "../../common/Table/DataTable";
-
-const PLANS = [
-  "All Plans",
-  "Event Plan - 6 Week/s",
-  "Event Plan - 2 Month/s",
-  "Event Plan - 3 Month/s",
-  "Event Plan - 4 Month/s",
-  "Event Plan - 6 Month/s",
-  "Event Plan - 1 Year/s",
-  "Certificate / Card Plan - 1 Month/s",
-  "Certificate / Card Plan - 2 Month/s",
-  "Certificate / Card Plan - 3 Month/s",
-  "Certificate / Card Plan - 1 Year/s",
-  "Event + Certificate / Card Plan - 1 Week/s",
-  "Event + Certificate / Card Plan - 6 Week/s",
-  "Event + Certificate / Card Plan - 2 Month/s",
-  "Event + Certificate / Card Plan - 3 Month/s",
-  "Event + Certificate / Card Plan - 4 Month/s",
-  "Event + Certificate / Card Plan - 6 Month/s",
-  "Event + Certificate / Card Plan - 1 Year/s",
-  "Download Certificate / Card Plan - 1 Week/s",
-  "Download Certificate / Card Plan - 1 Month/s",
-  "Download Certificate / Card Plan - 1 Year/s",
-];
+import {
+  getPromoCodes,
+  getPlanOptions,
+  createPromoCode,
+  setPromoVisibility,
+  setPromoCodeStatus,
+  apiErrorMessage,
+} from "../../../api/superAdminService"; // adjust the path to where superadminservice.js is
+import PromoCode from "../../common/promocode/PromoCode";
 
 const emptyForm = {
   promoCode: "",
   promoType: "Single",
   discount: "",
-  plan: "",
+  allPlans: false, // "All Plans" -> planIds = []
+  planIds: [], // selected plan ids
   validityStart: "",
   expireDate: "",
 };
@@ -45,25 +31,58 @@ const fmt = (iso) => {
   return `${d}/${m}/${y}`;
 };
 
-const todayIso = () => new Date().toISOString().slice(0, 10);
-
-// Sample data: replace with your API response
-const initialRows = [
-  { id: 1, date: "2026-10-16", promoCode: "shri100", promoType: "Single", discount: 100, plan: "Creatives Plan - 3 Month/s", validityStart: "2026-10-16", expireDate: "2026-10-17", enabled: true, visible: false },
-  { id: 2, date: "2026-10-09", promoCode: "100Aish", promoType: "Single", discount: 100, plan: "Download Plan - 1 Month/s", validityStart: "2026-10-09", expireDate: "2026-11-23", enabled: true, visible: false },
-  { id: 3, date: "2026-10-09", promoCode: "Aish100", promoType: "Single", discount: 100, plan: "Event + Creatives Plan - 6 Week/s", validityStart: "2026-10-09", expireDate: "2026-11-23", enabled: true, visible: false },
-  { id: 4, date: "2026-10-09", promoCode: "invitation", promoType: "Single", discount: 100, plan: "Event + Creatives Plan - 3 Month/s", validityStart: "2026-10-09", expireDate: "2026-10-10", enabled: true, visible: true },
-  { id: 5, date: "2026-07-12", promoCode: "EVENT10", promoType: "Multiple", discount: 10, plan: "Event + Certificate / Card Plan - 6 Week/s", validityStart: "2026-07-12", expireDate: "2026-08-12", enabled: false, visible: false },
-];
+const sameId = (a, b) => String(a) === String(b);
 
 const CPromoCode = () => {
-  const [rows, setRows] = useState(initialRows);
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [formData, setFormData] = useState(emptyForm);
+  const [planOptions, setPlanOptions] = useState([]); // [{ id, label }] from GET /superadmin/promocodes/plans
+  const [plansLoading, setPlansLoading] = useState(true);
+  const [plansError, setPlansError] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [pending, setPending] = useState({}); // { "<id>:<key>": true } while a toggle request is running
   const dropRef = useRef(null);
 
-  // close the plan list when clicking outside it
+  /* ---------- load list ---------- */
+  const loadRows = useCallback(async () => {
+    setLoadError("");
+    try {
+      const list = await getPromoCodes();
+      // newest first
+      setRows(list.sort((a, b) => (b.date || "").localeCompare(a.date || "") || b.id - a.id));
+    } catch (err) {
+      setLoadError(apiErrorMessage(err, "Could not load promo codes."));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadRows();
+  }, [loadRows]);
+
+  /* ---------- load plans for the dropdown: GET /superadmin/promocodes/plans ---------- */
+  const loadPlans = useCallback(async () => {
+    setPlansLoading(true);
+    setPlansError("");
+    try {
+      setPlanOptions(await getPlanOptions());
+    } catch (err) {
+      setPlansError(apiErrorMessage(err, "Could not load plans."));
+    } finally {
+      setPlansLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadPlans();
+  }, [loadPlans]);
+
+  /* ---------- close the plan list when clicking outside it ---------- */
   useEffect(() => {
     const close = (e) => {
       if (dropRef.current && !dropRef.current.contains(e.target)) setIsDropdownOpen(false);
@@ -76,10 +95,39 @@ const CPromoCode = () => {
     };
   }, []);
 
-  const toggle = (id, key) => {
-    // TODO: call your enable / show API here
-    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, [key]: !r[key] } : r)));
-  };
+  /* ---------- toggle Status (isEnabled) / Visible (visibilityType 1 or 2) ---------- */
+  const toggle = useCallback(
+    async (row, key) => {
+      const lock = `${row.id}:${key}`;
+      if (pending[lock]) return;
+
+      const next = !row[key];
+      const patchRow = (value) =>
+        setRows((prev) => prev.map((r) => (r.id === row.id ? { ...r, [key]: value } : r)));
+
+      setPending((p) => ({ ...p, [lock]: true }));
+      patchRow(next);
+      setLoadError("");
+
+      try {
+        if (key === "enabled") {
+          await setPromoCodeStatus(row.id, next, row.visible); // PATCH /{id}/status
+        } else {
+          await setPromoVisibility(row.id, next); // PUT /{id}: Show -> 2, Hide -> 1
+        }
+        await loadRows(); // reload so the table shows what the server stored
+      } catch (err) {
+        patchRow(row[key]); // rollback
+        setLoadError(apiErrorMessage(err, "Could not update the promo code."));
+      } finally {
+        setPending((p) => {
+          const { [lock]: _done, ...rest } = p;
+          return rest;
+        });
+      }
+    },
+    [pending, loadRows]
+  );
 
   const columns = useMemo(
     () => [
@@ -116,6 +164,16 @@ const CPromoCode = () => {
       {
         accessorKey: "plan",
         header: "Plan Type",
+        cell: ({ row }) => {
+          const names = row.original.planNames?.length ? row.original.planNames : [row.original.plan];
+          return (
+            <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+              {names.map((n, i) => (
+                <span key={`${n}-${i}`}>{n}</span>
+              ))}
+            </div>
+          );
+        },
         meta: { className: "text-start", width: "300px" },
       },
       {
@@ -132,7 +190,8 @@ const CPromoCode = () => {
           <button
             type="button"
             className={`pc-pill ${row.original.enabled ? "on" : "off"}`}
-            onClick={() => toggle(row.original.id, "enabled")}
+            onClick={() => toggle(row.original, "enabled")}
+            disabled={!!pending[`${row.original.id}:enabled`]}
             title="Click to change status"
           >
             <i></i>
@@ -149,7 +208,8 @@ const CPromoCode = () => {
           <button
             type="button"
             className={`pc-pill ${row.original.visible ? "on" : "hide"}`}
-            onClick={() => toggle(row.original.id, "visible")}
+            onClick={() => toggle(row.original, "visible")}
+            disabled={!!pending[`${row.original.id}:visible`]}
             title="Click to show or hide this promo code"
           >
             <i></i>
@@ -159,18 +219,41 @@ const CPromoCode = () => {
         meta: { className: "text-center", width: "160px" },
       },
     ],
-    []
+    [toggle, pending]
   );
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  /* ---------- plan dropdown ---------- */
+  // names of the selected plans, in the same order as planIds
+  const selectedLabels = useMemo(
+    () =>
+      formData.planIds
+        .map((id) => planOptions.find((o) => sameId(o.id, id))?.label)
+        .filter(Boolean),
+    [formData.planIds, planOptions]
+  );
+
+  const planLabel = formData.allPlans ? "All Plans" : selectedLabels.join(", ");
+
+  const toggleAllPlans = () => {
+    setFormData((prev) => ({ ...prev, allPlans: !prev.allPlans, planIds: [] }));
     setError("");
   };
 
-  const handleSelectPlan = (plan) => {
-    setFormData((prev) => ({ ...prev, plan }));
-    setIsDropdownOpen(false);
+  const togglePlan = (id) => {
+    setFormData((prev) => ({
+      ...prev,
+      allPlans: false,
+      planIds: prev.planIds.some((x) => sameId(x, id))
+        ? prev.planIds.filter((x) => !sameId(x, id))
+        : [...prev.planIds, id],
+    }));
+    setError("");
+  };
+
+  /* ---------- form handlers ---------- */
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
     setError("");
   };
 
@@ -180,36 +263,48 @@ const CPromoCode = () => {
     setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.plan) return setError("Please select a plan.");
+    if (submitting) return;
+
+    if (!formData.promoCode.trim()) return setError("Please enter a promo code.");
+    if (!formData.allPlans && formData.planIds.length === 0) return setError("Please select a plan.");
     if (formData.expireDate < formData.validityStart)
       return setError("Expire date cannot be before the start date.");
 
-    // TODO: call your add-promo-code API here
-    setRows((prev) => [
-      {
-        id: Date.now(),
-        date: todayIso(),
+    setSubmitting(true);
+    setError("");
+    try {
+      // POST /superadmin/promocodes  (new promo codes: Enabled, visibilityType 1 = Hide)
+      // planIds = [] means All Plans. planLabels = plan names, saved so the table shows them.
+      await createPromoCode({
         ...formData,
-        promoCode: formData.promoCode.trim(),
-        discount: Number(formData.discount),
+        planIds: formData.allPlans ? [] : formData.planIds,
+        planLabels: formData.allPlans ? ["All Plans"] : selectedLabels,
         enabled: true,
         visible: false,
-      },
-      ...prev,
-    ]);
-    handleReset();
+      });
+      handleReset();
+      await loadRows(); // reload so the new row has its real id, date and plan names
+    } catch (err) {
+      console.error("CREATE PROMO ERROR:", err?.response?.status, err?.response?.data);
+      setError(apiErrorMessage(err, "Could not add the promo code."));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleExportExcel = () => {
-    // TODO: connect your export-to-Excel logic
+    // TODO: connect your export-to-Excel logic (rows holds the current table data)
     console.log("Export promo codes", rows);
   };
 
   return (
-    <div className="promo-page-wrapper">
 
+    <div className="promo-page-wrapper">
+      {/* Shared component: renders its own side button + #promoModal.
+          role="superadmin" -> lists ALL promo codes from GET /superadmin/promocodes */}
+      <PromoCode role="superadmin" />
       {/* ================= FORM ================= */}
       <div className="pc-form-wrap">
         <div className="pc-card">
@@ -279,26 +374,63 @@ const CPromoCode = () => {
                   aria-haspopup="listbox"
                   aria-expanded={isDropdownOpen}
                 >
-                  <span className={formData.plan ? "pc-selected" : "pc-placeholder"}>
-                    {formData.plan || "-- Select Plan --"}
+                  <span className={planLabel ? "pc-selected" : "pc-placeholder"}>
+                    {planLabel || (plansLoading ? "Loading plans..." : "-- Select Plan --")}
                   </span>
                   <ChevronDown size={16} className={`pc-chevron ${isDropdownOpen ? "open" : ""}`} />
                 </button>
 
                 {isDropdownOpen && (
-                  <div className="pc-drop-menu" role="listbox">
-                    {PLANS.map((item) => (
-                      <div
-                        key={item}
-                        role="option"
-                        aria-selected={formData.plan === item}
-                        className={`pc-drop-item ${formData.plan === item ? "selected" : ""}`}
-                        onClick={() => handleSelectPlan(item)}
-                      >
-                        <span>{item}</span>
-                        {formData.plan === item && <Check size={16} />}
+                  <div
+                    className="pc-drop-menu"
+                    role="listbox"
+                    aria-multiselectable="true"
+                    style={{ maxHeight: "260px", overflowY: "auto" }}
+                  >
+                    <div
+                      role="option"
+                      aria-selected={formData.allPlans}
+                      className={`pc-drop-item ${formData.allPlans ? "selected" : ""}`}
+                      onClick={toggleAllPlans}
+                    >
+                      <span>All Plans</span>
+                      {formData.allPlans && <Check size={16} />}
+                    </div>
+
+                    {plansLoading && <div className="pc-drop-item">Loading plans...</div>}
+
+                    {!plansLoading && plansError && (
+                      <div className="pc-drop-item">
+                        <span>{plansError}</span>
+                        <button
+                          type="button"
+                          onClick={loadPlans}
+                          style={{ textDecoration: "underline", background: "none", border: 0, cursor: "pointer", color: "inherit" }}
+                        >
+                          Retry
+                        </button>
                       </div>
-                    ))}
+                    )}
+
+                    {!plansLoading && !plansError && planOptions.length === 0 && (
+                      <div className="pc-drop-item">No plans found.</div>
+                    )}
+
+                    {planOptions.map((item) => {
+                      const selected = formData.planIds.some((x) => sameId(x, item.id));
+                      return (
+                        <div
+                          key={item.id}
+                          role="option"
+                          aria-selected={selected}
+                          className={`pc-drop-item ${selected ? "selected" : ""}`}
+                          onClick={() => togglePlan(item.id)}
+                        >
+                          <span>{item.label}</span>
+                          {selected && <Check size={16} />}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -340,11 +472,11 @@ const CPromoCode = () => {
             {error && <p className="pc-error" role="alert">{error}</p>}
 
             <div className="pc-actions">
-              <Button type="button" className="pc-btn-reset" onClick={handleReset}>
+              <Button type="button" className="pc-btn-reset" onClick={handleReset} disabled={submitting}>
                 Reset
               </Button>
-              <Button type="submit" className="pc-btn-add">
-                Add Promo Code
+              <Button type="submit" className="pc-btn-add" disabled={submitting}>
+                {submitting ? "Adding..." : "Add Promo Code"}
               </Button>
             </div>
           </form>
@@ -358,11 +490,23 @@ const CPromoCode = () => {
           <div className="pc-underline"></div>
         </div>
 
+        {loadError && (
+          <p className="pc-error" role="alert">
+            {loadError}{" "}
+            <button type="button" onClick={loadRows} style={{ textDecoration: "underline", background: "none", border: 0, cursor: "pointer", color: "inherit" }}>
+              Retry
+            </button>
+          </p>
+        )}
+
         <div className="pc-scroll">
-          <DataTable columns={columns} data={rows} onExportExcel={handleExportExcel} />
+          {loading ? (
+            <p style={{ padding: "16px", textAlign: "center" }}>Loading promo codes...</p>
+          ) : (
+            <DataTable columns={columns} data={rows} onExportExcel={handleExportExcel} />
+          )}
         </div>
       </div>
-
     </div>
   );
 };
