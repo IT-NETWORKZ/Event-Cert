@@ -60,6 +60,7 @@ import Event from "../components/home/eventinfo/Event";
 
 
 import ProtectedRoute from "../routes/ProtectedRoute";
+import PaymentGateway from "../components/PaymentGateway/PaymentGateway";
 
 function AppRoutes() {
     return (
@@ -96,8 +97,10 @@ function AppRoutes() {
             <Route element={<ProtectedRoute roles={["Admin", "User"]} />}>
                 <Route path="/admin/customplus" element={<CustomPlus />} />
                 <Route path="/admin/schedular" element={<Schedular />} />
+                
 
                 <Route path="/admin" element={<Admin />}>
+                
                     {/* /admin */}
                     <Route index element={<Dashboard />} />
                     {/* /admin/dashboard */}
@@ -123,6 +126,10 @@ function AppRoutes() {
                     {/* PastRecords & RetrieveRecords */}
                     <Route path="custom-past-records" element={<CustomPastRecords />} />
                     <Route path="custom-retrieve-records" element={<CustomRetrieveRecords />} />
+
+                    <Route path="/admin/payment/:planId" element={<PaymentGateway />} />
+
+                    
 
                 </Route>
             </Route>

@@ -9,46 +9,6 @@
 }
 
 /* ==========================================================================
-   Header Navbar Layout Elements 
-   ========================================================================== */
-.sub-navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 8%;
-  background-color: #ffffff;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.sub-header-logo {
-  max-height: 48px;
-  width: auto;
-  object-fit: contain;
-}
-
-.sub-nav-links {
-  display: flex;
-  gap: 28px;
-}
-
-.sub-nav-links a {
-  text-decoration: none;
-  color: #4a5568;
-  font-size: 15px;
-  font-weight: 500;
-  transition: color 0.2s ease;
-}
-
-.sub-nav-links a:hover {
-  color: #007367;
-}
-
-.sub-nav-links a.active-nav {
-  color: #007367;
-  font-weight: 700;
-}
-
-/* ==========================================================================
    Main Core Content Layout Blocks
    ========================================================================== */
 .sub-main-content {
@@ -58,6 +18,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
 
 .sub-heading {
@@ -80,7 +41,7 @@
 .sub-tabs-wrapper {
   display: flex;
   gap: 15px;
-  margin-bottom: 60px;
+  margin-bottom: 50px;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -89,7 +50,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 28px;
+  padding: 12px 24px;
   border-radius: 30px;
   font-size: 15px;
   font-weight: 600;
@@ -110,7 +71,6 @@
   transition: all 0.2s ease;
 }
 
-/* Active Category Pill properties */
 .sub-tab-btn.selected {
   background: #007367;
   color: #ffffff;
@@ -158,37 +118,35 @@
 .sub-card-info {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   flex: 1;
 }
 
 .sub-duration-lbl {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 1.5px;
-  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 1.2px;
+  color: rgba(255, 255, 255, 0.9);
   margin-bottom: 4px;
+  text-transform: uppercase;
 }
 
 .sub-price-lbl {
-  font-size: 34px;
+  font-size: 32px;
   font-weight: 700;
   color: #ffffff;
   margin: 0;
   font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
-/* Collapsible Dropdown Arrow Icon Circle */
 .sub-arrow-toggle-btn {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.15);
-  border: none;
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -197,73 +155,245 @@
   background-color: rgba(255, 255, 255, 0.3);
 }
 
-/* Drawer transitions mechanics setup */
 .sub-card-dropdown-drawer {
-  max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background-color: rgba(0, 0, 0, 0.04);
-}
-
-.sub-price-row-card.expanded .sub-card-dropdown-drawer {
-  max-height: 200px; /* Expands to safe height buffer boundaries */
+  background-color: rgba(0, 0, 0, 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .sub-drawer-inner-content {
-  padding: 0px 35px 25px 35px;
+  padding: 20px 35px 25px 35px;
   color: #ffffff;
 }
 
-.sub-drawer-inner-content p {
-  font-size: 14.5px;
-  line-height: 1.6;
+.sub-drawer-subheading {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+.sub-formal-bullets {
+  list-style: none;
+  padding: 0;
   margin: 0 0 15px 0;
-  color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sub-formal-bullets li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .sub-purchase-action-btn {
   background-color: #ffffff;
   color: #007367;
   border: none;
-  padding: 10px 22px;
+  padding: 10px 24px;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .sub-purchase-action-btn:hover {
   background-color: #f0fdfa;
+  transform: translateY(-1px);
 }
 
-/* Responsive configurations for small viewports */
-@media (max-width: 768px) {
-  .sub-navbar {
-    flex-direction: column;
-    gap: 15px;
-    padding: 15px;
-  }
-  
-  .sub-heading {
-    font-size: 24px;
-  }
-
-  .sub-card-main-row {
-    padding: 20px;
-  }
-  
-  .sub-price-lbl {
-    font-size: 28px;
-  }
+/* ==========================================================================
+   Razorpay Checkout Modal Styles (Matching Reference)
+   ========================================================================== */
+.sub-checkout-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
+
+.sub-checkout-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  color: #333333;
+  position: relative;
+}
+
+.sub-back-to-plans-btn {
+  background: none;
+  border: none;
+  color: #007367;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  padding: 0;
+}
+
+.sub-gateway-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.sub-gateway-icon {
+  color: #007367;
+  margin-bottom: 8px;
+}
+
+.sub-gateway-header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0c2340;
+  font-style: italic;
+  margin: 0;
+}
+
+.sub-gateway-divider {
+  width: 60px;
+  height: 3px;
+  background: #f59e0b;
+  margin: 8px auto 0 auto;
+  border-radius: 2px;
+}
+
+.sub-checkout-form-group {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sub-checkout-form-group label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.sub-checkout-form-group input {
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+.sub-promo-input-row {
+  display: flex;
+  gap: 10px;
+}
+
+.sub-promo-input-row input {
+  flex: 1;
+}
+
+.sub-apply-promo-btn {
+  background: #3b82f6;
+  color: #ffffff;
+  border: none;
+  padding: 0 18px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sub-apply-promo-btn:hover {
+  background: #2563eb;
+}
+
+.sub-pricing-summary-table {
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 15px 0;
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sub-summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.sub-summary-row.total {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 16px;
+  margin-top: 5px;
+  border-top: 1px dashed #cbd5e1;
+  padding-top: 10px;
+}
+
+.sub-terms-checkbox {
+  margin-bottom: 20px;
+  font-size: 13.5px;
+}
+
+.sub-terms-checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #475569;
+}
+
+.sub-tc-link {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.sub-proceed-pay-btn {
+  width: 100%;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sub-proceed-pay-btn:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.sub-proceed-pay-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
 /* ==========================================================================
    Plan Additional Information & FAQ Section Styles
    ========================================================================== */
 .sub-info-section {
   width: 100%;
   max-width: 680px;
-  margin-top: 40px;
+  margin-top: 50px;
 }
 
 .sub-divider {
@@ -281,10 +411,13 @@
 }
 
 .sub-feature-box h3 {
-  font-size: 20px;
+  font-size: 18px;
   color: #0c2340;
   margin: 0 0 15px 0;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .sub-feature-box ul {
@@ -300,6 +433,18 @@
   font-size: 14.5px;
   color: #4a5568;
   line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sub-list-icon {
+  color: #007367;
+  flex-shrink: 0;
+}
+
+.inline-icon {
+  color: #007367;
 }
 
 .sub-faq-item {
@@ -318,4 +463,45 @@
   color: #718096;
   line-height: 1.6;
   margin: 0;
+}
+
+/* ==========================================================================
+   Responsive Configurations for Mobile / Tablet / Desktop
+   ========================================================================== */
+@media (max-width: 768px) {
+  .sub-main-content {
+    padding: 30px 15px;
+  }
+
+  .sub-heading {
+    font-size: 24px;
+  }
+
+  .sub-tabs-wrapper {
+    gap: 8px;
+    margin-bottom: 30px;
+  }
+
+  .sub-tab-btn {
+    padding: 10px 16px;
+    font-size: 13.5px;
+  }
+
+  .sub-card-main-row {
+    padding: 18px 20px;
+  }
+  
+  .sub-price-lbl {
+    font-size: 26px;
+  }
+
+  .sub-drawer-inner-content {
+    padding: 15px 20px 20px 20px;
+  }
+
+  .sub-checkout-card {
+    padding: 20px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
 }
