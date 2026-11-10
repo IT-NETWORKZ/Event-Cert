@@ -99,6 +99,12 @@ export const getEvents = async () => {
   };
 };
 
+export const getSubscriptionPlans = async () => {
+  const { data } = await api.get("/home/plans");
+  // Returns the full response object: { success, message, data }
+  return data;
+};
+
 // get all Admin - Home events for the event info section Fetch all events for the event info section
 export const getHomeEvents = async () => {
   const { data } = await api.get("/home/events");

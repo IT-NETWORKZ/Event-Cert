@@ -87,3 +87,19 @@ export const superAdminlogout = async () => {
   }
 };
 
+
+// SuperAdmin - AddEvent Get all plans
+export const getSuperAdminPlans = async () => {
+  const { data } = await api.get("/superadmin/plans");
+  const list = Array.isArray(data) ? data : data?.data || [];
+  return [...list].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+};
+
+
+// SuperAdmin - AddEvent - Toggle plan status (Enable / Disable)
+export const togglePlanStatus = async (planId, currentStatus) => {
+  // Toggle the current status to send the opposite boolean in the body
+  const payload = { isActive: !currentStatus };
+  const { data } = await api.patch(`/superadmin/plans/${planId}/status`, payload);
+  return data;
+};

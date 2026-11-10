@@ -1,13 +1,96 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Plus, X } from "lucide-react";
+import { AlertCircle, Plus, X } from "lucide-react";
 import DataTable from "../../components/common/Table/DataTable";
-import Addplans from "../../components/cpanel/Addplans/Addplans"; // adjust path if needed
+import Addplans from "../../components/cpanel/Addplans/Addplans";
+import { getApiError } from "../../api/adminService";
+import { getSuperAdminPlans, togglePlanStatus } from "../../api/authService";
 import "../../css/CAddplans.css";
 
-const LIMIT = 40; // text longer than this gets Read more / Read less
+const LIMIT = 40;
 
-// Long text cell: expands and collapses inside the row
-const ExpandText = ({ text, bullets = false }) => {
+const CATEGORY_LABEL = { 1: "Event", 2: "Creatives", 3: "Event + Creatives", 4: "Download" };
+const CATEGORY_NAME = { 1: "Events", 2: "Creatives", 3: "Events + Creatives", 4: "Download" };
+const TYPE_TO_CATEGORY = { Event: 1, Creatives: 2, "Event + Creatives": 3, Download: 4 };
+const DAYS_PER_UNIT = { Week: 7, Month: 30, Year: 365 };
+
+const itemsCache = new Map();
+const htmlToItems = (html) => {
+  const key = String(html || "");
+  if (itemsCache.has(key)) return itemsCache.get(key);
+
+  let items = [];
+  const clean = key.replace(/<[^>]*$/, "");
+  if (clean) {
+    const doc = new DOMParser().parseFromString(clean, "text/html");
+    items = [...doc.querySelectorAll("li")]
+      .map((li) => li.textContent.replace(/\s+/g, " ").trim())
+      .filter(Boolean);
+    if (!items.length) {
+      const text = doc.body.textContent.replace(/\s+/g, " ").trim();
+      if (text) items = [text];
+    }
+  }
+  itemsCache.set(key, items);
+  return items;
+};
+
+const escapeHtml = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+const linesToHtml = (text) => {
+  const lines = String(text || "")
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean);
+  return lines.length ? `<ul>${lines.map((l) => `<li>${escapeHtml(l)}</li>`).join("")}</ul>` : "";
+};
+
+const planToForm = (p) => ({
+  planType: CATEGORY_LABEL[p.planCategory] || "Creatives",
+  durationNum: String(p.durationValue ?? ""),
+  durationUnit: `${p.durationUnit}/s`,
+  certificateQuantity: String(p.quantity ?? 0),
+  eventQuantity: String(p.eventQuantity ?? 0),
+  downloadQuantity: String(p.downloadQuantity ?? 0),
+  price: String(p.price ?? ""),
+  title: p.heading1 || "",
+  instructionsPerfectFor: htmlToItems(p.content1).join("\n"),
+  heading2: p.heading2 || "",
+  instructionsIncludes: htmlToItems(p.content2).join("\n"),
+});
+
+const formToPlan = (f, old, nextOrder) => {
+  const unit = f.durationUnit.replace("/s", "");
+  const value = Number(f.durationNum) || 0;
+  const category = TYPE_TO_CATEGORY[f.planType];
+  const sameDuration = old && old.durationValue === value && old.durationUnit === unit;
+
+  return {
+    planId: old ? old.planId : Date.now(),
+    planName: `${CATEGORY_NAME[category]} ${value} ${unit}/s`,
+    planCategory: category,
+    durationValue: value,
+    durationUnit: unit,
+    durationDays: sameDuration ? old.durationDays : value * (DAYS_PER_UNIT[unit] || 30),
+    price: Number(f.price) || 0,
+    currency: old?.currency ?? "INR",
+    taxPercentage: old?.taxPercentage ?? 18,
+    quantity: Number(f.certificateQuantity) || 0,
+    eventQuantity: Number(f.eventQuantity) || 0,
+    downloadQuantity: Number(f.downloadQuantity) || 0,
+    heading1: f.title.trim(),
+    content1: linesToHtml(f.instructionsPerfectFor),
+    heading2: f.heading2.trim(),
+    content2: linesToHtml(f.instructionsIncludes),
+    isPopular: old?.isPopular ?? false,
+    displayOrder: old?.displayOrder ?? nextOrder,
+    isActive: old?.isActive ?? true,
+  };
+};
+
+const money = (n) =>
+  `₹${Number(n || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+const ExpandText = ({ text }) => {
   const [open, setOpen] = useState(false);
   const value = text || "";
   const long = value.length > LIMIT;
@@ -15,7 +98,7 @@ const ExpandText = ({ text, bullets = false }) => {
 
   return (
     <div className="cap-text">
-      <span className={bullets ? "cap-bullet" : ""}>{shown}</span>
+      <span>{shown}</span>
       {long && (
         <button type="button" className="cap-more" onClick={() => setOpen((o) => !o)}>
           {open ? "Read less" : "Read more"}
@@ -25,53 +108,33 @@ const ExpandText = ({ text, bullets = false }) => {
   );
 };
 
-const money = (n) =>
-  `₹${Number(n || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+const ExpandList = ({ items }) => {
+  const [open, setOpen] = useState(false);
+  if (!items.length) return null;
 
-/* ---------- table row  <->  form data ---------- */
+  const first = items[0];
+  const long = items.length > 1 || first.length > LIMIT;
 
-// table row -> form data (used when Edit is clicked)
-const rowToForm = (r) => {
-  const [num, ...unit] = String(r.duration || "").split(" ");
-  return {
-    planType: r.category,
-    durationNum: num || "",
-    durationUnit: unit.join(" ") || "Month/s",
-    certificateQuantity: String(r.certQty ?? ""),
-    eventQuantity: String(r.eventQty ?? ""),
-    price: String(r.price ?? ""),
-    title: r.title || "",
-    instructionsPerfectFor: r.instruction1 || "",
-    heading2: r.includes || "",
-    instructionsIncludes: r.instruction2 || "",
-  };
+  return (
+    <div className="cap-text">
+      {open ? (
+        <ul style={{ margin: 0, paddingLeft: 18, textAlign: "left" }}>
+          {items.map((t, i) => (
+            <li key={i}>{t}</li>
+          ))}
+        </ul>
+      ) : (
+        <span className="cap-bullet">{first.length > LIMIT ? `${first.slice(0, LIMIT)}…` : first}</span>
+      )}
+      {long && (
+        <button type="button" className="cap-more" onClick={() => setOpen((o) => !o)}>
+          {open ? "Read less" : "Read more"}
+        </button>
+      )}
+    </div>
+  );
 };
 
-// form data -> table row (used when the form is submitted)
-const formToRow = (f, old = {}) => ({
-  id: old.id ?? Date.now(),
-  category: f.planType,
-  duration: `${f.durationNum} ${f.durationUnit}`,
-  certQty: Number(f.certificateQuantity) || 0,
-  eventQty: Number(f.eventQuantity) || 0,
-  downloadQty: old.downloadQty ?? 0,
-  price: Number(f.price) || 0,
-  title: f.title,
-  instruction1: f.instructionsPerfectFor,
-  includes: f.heading2,
-  instruction2: f.instructionsIncludes,
-  enabled: old.enabled ?? true,
-});
-
-// Sample data: replace with your API response
-const sampleData = [
-  { id: 1, category: "Event", duration: "6 Week/s", certQty: 0, eventQty: 5, downloadQty: 0, price: 1499, title: "Who should choose this?", instruction1: "Duration: Up to 45 Days of event promotion and registrations.", includes: "What you can achieve", instruction2: "Promote events by sharing registration links and QR codes.", enabled: true },
-  { id: 2, category: "Event", duration: "2 Month/s", certQty: 0, eventQty: 15, downloadQty: 0, price: 4499, title: "Who should choose this?", instruction1: "Duration: Up to 60 Days of event promotion and registrations.", includes: "What you can achieve", instruction2: "Run longer, structured events with complete participant tracking.", enabled: true },
-  { id: 3, category: "Event", duration: "3 Month/s", certQty: 0, eventQty: 30, downloadQty: 0, price: 7999, title: "Who should choose this?", instruction1: "Duration: Up to 90 Days of event promotion and registrations.", includes: "What you can achieve", instruction2: "Manage extended, multi-event programs from one dashboard.", enabled: true },
-  { id: 4, category: "Event", duration: "4 Month/s", certQty: 0, eventQty: 40, downloadQty: 0, price: 10999, title: "Who should choose this?", instruction1: "Duration: Up to 120 Days of event promotion and registrations.", includes: "What you can achieve", instruction2: "Maximize reach with long-running campaigns and reports.", enabled: false },
-];
-
-/* form wrapper + close button (inline styles, so no CSS file needs to change) */
 const formWrapStyle = { position: "relative", maxWidth: 660, margin: "0 auto 24px" };
 const closeStyle = {
   position: "absolute",
@@ -89,47 +152,80 @@ const closeStyle = {
   cursor: "pointer",
 };
 
-const CAddplans = ({ data = sampleData }) => {
-  // keeps the table working until you connect your API
-  const [rows, setRows] = useState(data);
+const CAddplans = () => {
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [reloadKey, setReloadKey] = useState(0);
+  const [togglingId, setTogglingId] = useState(null);
 
-  // form above the table: closed / add (editing = null) / edit (editing = row)
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const formRef = useRef(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError("");
+
+    getSuperAdminPlans()
+      .then((list) => {
+        if (!cancelled) setRows(list);
+      })
+      .catch((err) => {
+        console.error(err);
+        if (!cancelled) setError(getApiError(err, "Could not load plans. Please try again."));
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [reloadKey]);
 
   const openAdd = () => {
     setEditing(null);
     setFormOpen(true);
   };
-  const openEdit = (row) => {
-    setEditing(row);
+  const openEdit = (plan) => {
+    setEditing(plan);
     setFormOpen(true);
   };
   const closeForm = () => setFormOpen(false);
 
-  // scroll up to the form whenever it opens (or switches between plans)
   useEffect(() => {
     if (formOpen && formRef.current) {
       formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [formOpen, editing]);
 
-  // Submit clicked in the form
   const handleSave = (formData) => {
     if (editing) {
-      // TODO: call your UPDATE plan API here
-      setRows((prev) => prev.map((r) => (r.id === editing.id ? formToRow(formData, r) : r)));
+      setRows((prev) => prev.map((r) => (r.planId === editing.planId ? formToPlan(formData, r) : r)));
     } else {
-      // TODO: call your ADD plan API here
-      setRows((prev) => [...prev, formToRow(formData)]);
+      const nextOrder = rows.reduce((max, r) => Math.max(max, r.displayOrder || 0), 0) + 1;
+      setRows((prev) => [...prev, formToPlan(formData, null, nextOrder)]);
     }
     closeForm();
   };
 
-  const toggleStatus = (id) => {
-    // TODO: call your enable / disable API here
-    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, enabled: !r.enabled } : r)));
+  const toggleStatus = async (planId, currentStatus) => {
+    try {
+      setTogglingId(planId);
+      const res = await togglePlanStatus(planId, currentStatus);
+      if (res && res.success) {
+        setRows((prev) =>
+          prev.map((r) => (r.planId === planId ? { ...r, isActive: res.isActive } : r))
+        );
+      }
+    } catch (err) {
+      console.error("Failed to toggle status:", err);
+      alert(getApiError(err, "Failed to update plan status."));
+    } finally {
+      setTogglingId(null);
+    }
   };
 
   const columns = useMemo(
@@ -141,11 +237,21 @@ const CAddplans = ({ data = sampleData }) => {
         cell: ({ row }) => row.index + 1,
         meta: { className: "text-center", width: "80px" },
       },
-      { accessorKey: "category", header: "Category", meta: { className: "text-center", width: "120px" } },
-      { accessorKey: "duration", header: "Duration", meta: { className: "text-center", width: "130px" } },
-      { accessorKey: "certQty", header: "Certificate Quantity", meta: { className: "text-center", width: "150px" } },
-      { accessorKey: "eventQty", header: "Event Quantity", meta: { className: "text-center", width: "130px" } },
-      { accessorKey: "downloadQty", header: "Download Quantity", meta: { className: "text-center", width: "150px" } },
+      {
+        id: "category",
+        header: "Category",
+        accessorFn: (p) => CATEGORY_LABEL[p.planCategory] || "",
+        meta: { className: "text-center", width: "120px" },
+      },
+      {
+        id: "duration",
+        header: "Duration",
+        accessorFn: (p) => `${p.durationValue} ${p.durationUnit}/s`,
+        meta: { className: "text-center", width: "130px" },
+      },
+      { accessorKey: "quantity", header: "Certificate Quantity", meta: { className: "text-center", width: "150px" } },
+      { accessorKey: "eventQuantity", header: "Event Quantity", meta: { className: "text-center", width: "130px" } },
+      { accessorKey: "downloadQuantity", header: "Download Quantity", meta: { className: "text-center", width: "150px" } },
       {
         accessorKey: "price",
         header: "Price",
@@ -153,27 +259,29 @@ const CAddplans = ({ data = sampleData }) => {
         meta: { className: "text-center", width: "120px" },
       },
       {
-        accessorKey: "title",
+        accessorKey: "heading1",
         header: "Title",
         cell: ({ getValue }) => <ExpandText text={getValue()} />,
         meta: { className: "text-start", width: "190px" },
       },
       {
-        accessorKey: "instruction1",
+        id: "instruction1",
         header: "Instruction 1",
-        cell: ({ getValue }) => <ExpandText text={getValue()} bullets />,
+        accessorFn: (p) => htmlToItems(p.content1).join(" "),
+        cell: ({ row }) => <ExpandList items={htmlToItems(row.original.content1)} />,
         meta: { className: "text-start", width: "250px" },
       },
       {
-        accessorKey: "includes",
+        accessorKey: "heading2",
         header: "Includes",
         cell: ({ getValue }) => <ExpandText text={getValue()} />,
         meta: { className: "text-start", width: "190px" },
       },
       {
-        accessorKey: "instruction2",
+        id: "instruction2",
         header: "Instruction 2",
-        cell: ({ getValue }) => <ExpandText text={getValue()} bullets />,
+        accessorFn: (p) => htmlToItems(p.content2).join(" "),
+        cell: ({ row }) => <ExpandList items={htmlToItems(row.original.content2)} />,
         meta: { className: "text-start", width: "250px" },
       },
       {
@@ -190,33 +298,34 @@ const CAddplans = ({ data = sampleData }) => {
       {
         id: "status",
         header: "Status",
-        accessorFn: (r) => (r.enabled ? "Enabled" : "Disabled"),
-        cell: ({ row }) => (
-          <button
-            type="button"
-            className={`cap-status ${row.original.enabled ? "on" : "off"}`}
-            onClick={() => toggleStatus(row.original.id)}
-            title="Click to change status"
-          >
-            {row.original.enabled ? "Enabled" : "Disabled"}
-          </button>
-        ),
+        accessorFn: (p) => (p.isActive ? "Enabled" : "Disabled"),
+        cell: ({ row }) => {
+          const isToggling = togglingId === row.original.planId;
+          return (
+            <button
+              type="button"
+              className={`cap-status ${row.original.isActive ? "on" : "off"}`}
+              onClick={() => toggleStatus(row.original.planId, row.original.isActive)}
+              disabled={isToggling}
+              title="Click to change status"
+            >
+              {isToggling ? "Updating..." : row.original.isActive ? "Enabled" : "Disabled"}
+            </button>
+          );
+        },
         meta: { className: "text-center", width: "130px" },
       },
     ],
-    []
+    [togglingId]
   );
 
   const handleExportExcel = () => {
-    // TODO: connect your export-to-Excel logic
     console.log("Export plans", rows);
   };
 
   return (
     <div className="container-fluid py-4 c-addplans-wrapper">
       <div className="container-fluid px-md-4">
-
-        {/* Add Plan button */}
         <div className="d-flex justify-content-end mb-3">
           <button
             type="button"
@@ -227,31 +336,46 @@ const CAddplans = ({ data = sampleData }) => {
           </button>
         </div>
 
-        {/* Add / Edit form (shown above the table) */}
         {formOpen && (
           <div ref={formRef} style={formWrapStyle}>
             <button type="button" style={closeStyle} onClick={closeForm} aria-label="Close form">
               <X size={18} />
             </button>
             <Addplans
-              key={editing ? editing.id : "new"}
-              plan={editing ? rowToForm(editing) : null}
+              key={editing ? editing.planId : "new"}
+              plan={editing ? planToForm(editing) : null}
               onSave={handleSave}
             />
           </div>
         )}
 
-        {/* Heading */}
         <div className="cap-head">
           <h4 className="header-title">Plans Details</h4>
           <div className="cap-line"></div>
         </div>
 
-        {/* Table card */}
-        <div className="cap-card">
-          <div className="table-responsive-scroll-wrapper">
-            <DataTable columns={columns} data={rows} onExportExcel={handleExportExcel} />
+        {error && (
+          <div className="alert alert-danger d-flex align-items-center justify-content-between gap-2" role="alert">
+            <span className="d-inline-flex align-items-center gap-2">
+              <AlertCircle size={18} /> {error}
+            </span>
+            <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => setReloadKey((k) => k + 1)}>
+              Try again
+            </button>
           </div>
+        )}
+
+        <div className="cap-card">
+          {loading ? (
+            <div className="text-center py-5">
+              <span className="spinner-border spinner-border-sm me-2" role="status" />
+              Loading plans...
+            </div>
+          ) : (
+            <div className="table-responsive-scroll-wrapper">
+              <DataTable columns={columns} data={rows} onExportExcel={handleExportExcel} />
+            </div>
+          )}
         </div>
       </div>
     </div>
