@@ -1,6 +1,12 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import DataTable from "../../common/Table/DataTable"; // adjust the path if needed
 import "./PromoCodeTable.css";
+import {
+  getPromoCodes,
+  setPromoVisibility,
+  setPromoCodeStatus,
+  apiErrorMessage,
+} from "../../../api/superAdminService"; // adjust the path to where superadminservice.js is
 
 // 2026-07-21 -> 21/07/2026
 const fmt = (iso) => {
@@ -9,24 +15,69 @@ const fmt = (iso) => {
   return `${d}/${m}/${y}`;
 };
 
-// Sample data: replace with your API response
-const sampleData = [
-  { id: 1, date: "2026-07-21", promoCode: "Kapil100", discount: 100, assignType: "Single", planType: "Event + Certificate / Card Plan - 2 Month/s", validFrom: "2026-07-21", validTo: "2026-08-06", enabled: true, visible: true },
-  { id: 2, date: "2026-07-21", promoCode: "Kapil", discount: 100, assignType: "Single", planType: "Download Plan - 1 Month/s", validFrom: "2026-07-21", validTo: "2026-08-06", enabled: true, visible: false },
-  { id: 3, date: "2026-07-21", promoCode: "Manoj100", discount: 100, assignType: "Single", planType: "Event + Certificate / Card Plan - 2 Month/s", validFrom: "2026-07-21", validTo: "2026-08-06", enabled: true, visible: true },
-  { id: 4, date: "2026-07-21", promoCode: "Manoj", discount: 100, assignType: "Single", planType: "Download Plan - 1 Month/s", validFrom: "2026-07-21", validTo: "2026-08-06", enabled: false, visible: false },
-  { id: 5, date: "2026-07-21", promoCode: "Kavita100", discount: 100, assignType: "Single", planType: "Event + Certificate / Card Plan - 2 Month/s", validFrom: "2026-07-21", validTo: "2026-08-06", enabled: true, visible: true },
-  { id: 6, date: "2026-07-21", promoCode: "Kavita", discount: 100, assignType: "Single", planType: "Download Plan - 1 Month/s", validFrom: "2026-07-21", validTo: "2026-08-06", enabled: true, visible: false },
-];
+/**
+ * Props
+ *  - onExportExcel(rows): optional export handler
+ *  - refreshKey: optional. Change it (e.g. increment after the Add form succeeds) to reload the table.
+ */
+const PromoCodeTable = ({ onExportExcel, refreshKey = 0 }) => {
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState({}); // { "<id>:<key>": true } while a request is running
 
-const PromoCodeTable = ({ data = sampleData, onExportExcel }) => {
-  const [rows, setRows] = useState(data);
+  /* ---------- GET /superadmin/promocodes (plan names are resolved inside getPromoCodes) ---------- */
+  const loadRows = useCallback(async () => {
+    setError("");
+    try {
+      const list = await getPromoCodes();
+      setRows(list.sort((a, b) => (b.date || "").localeCompare(a.date || "") || b.id - a.id));
+    } catch (err) {
+      setError(apiErrorMessage(err, "Could not load promo codes."));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  // flips "enabled" (Status) or "visible" (Visibile Status) for one row
-  const toggle = (id, key) => {
-    // TODO: call your enable / show API here
-    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, [key]: !r[key] } : r)));
-  };
+  useEffect(() => {
+    loadRows();
+  }, [loadRows, refreshKey]);
+
+  /* ---------- toggle Status (enabled) or Visibile Status (visible) ---------- */
+  // Status  -> PATCH /{id}/status  (isEnabled; current visibilityType sent along)
+  // Visible -> PUT   /{id}         (visibilityType: Show = 2, Hide = 1)
+  const toggle = useCallback(
+    async (row, key) => {
+      const lock = `${row.id}:${key}`;
+      if (pending[lock]) return;
+
+      const next = !row[key];
+      const patchRow = (value) =>
+        setRows((prev) => prev.map((r) => (r.id === row.id ? { ...r, [key]: value } : r)));
+
+      setPending((p) => ({ ...p, [lock]: true }));
+      setError("");
+      patchRow(next);
+
+      try {
+        if (key === "enabled") {
+          await setPromoCodeStatus(row.id, next, row.visible);
+        } else {
+          await setPromoVisibility(row.id, next);
+        }
+        await loadRows(); // show exactly what the server stored
+      } catch (err) {
+        patchRow(row[key]); // rollback
+        setError(apiErrorMessage(err, "Could not update the promo code."));
+      } finally {
+        setPending((p) => {
+          const { [lock]: _done, ...rest } = p;
+          return rest;
+        });
+      }
+    },
+    [pending, loadRows]
+  );
 
   const columns = useMemo(
     () => [
@@ -52,23 +103,33 @@ const PromoCodeTable = ({ data = sampleData, onExportExcel }) => {
       {
         accessorKey: "discount",
         header: "Discount (%)",
-        cell: ({ getValue }) => `${Number(getValue()).toFixed(4)}%`,
+        cell: ({ getValue }) => `${Number(getValue()).toFixed(2)}%`,
         meta: { width: "140px", className: "text-center" },
       },
       {
-        accessorKey: "assignType",
+        accessorKey: "promoType",
         header: "Assign Type",
         meta: { width: "130px", className: "text-center" },
       },
       {
-        accessorKey: "planType",
+        accessorKey: "plan",
         header: "Plan Type",
+        cell: ({ row }) => {
+          const names = row.original.planNames?.length ? row.original.planNames : [row.original.plan];
+          return (
+            <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+              {names.map((n, i) => (
+                <span key={`${n}-${i}`}>{n}</span>
+              ))}
+            </div>
+          );
+        },
         meta: { width: "300px", className: "text-start" },
       },
       {
         id: "validity",
         header: "Validity Period",
-        accessorFn: (r) => `${fmt(r.validFrom)} to ${fmt(r.validTo)}`,
+        accessorFn: (r) => `${fmt(r.validityStart)} to ${fmt(r.expireDate)}`,
         meta: { width: "230px", className: "text-center" },
       },
       {
@@ -79,7 +140,8 @@ const PromoCodeTable = ({ data = sampleData, onExportExcel }) => {
           <button
             type="button"
             className={`pct-pill ${row.original.enabled ? "on" : "off"}`}
-            onClick={() => toggle(row.original.id, "enabled")}
+            onClick={() => toggle(row.original, "enabled")}
+            disabled={!!pending[`${row.original.id}:enabled`]}
             title="Click to change status"
           >
             <i></i>
@@ -96,7 +158,8 @@ const PromoCodeTable = ({ data = sampleData, onExportExcel }) => {
           <button
             type="button"
             className={`pct-pill ${row.original.visible ? "on" : "hide"}`}
-            onClick={() => toggle(row.original.id, "visible")}
+            onClick={() => toggle(row.original, "visible")}
+            disabled={!!pending[`${row.original.id}:visible`]}
             title="Click to show or hide this promo code"
           >
             <i></i>
@@ -106,7 +169,7 @@ const PromoCodeTable = ({ data = sampleData, onExportExcel }) => {
         meta: { width: "160px", className: "text-center" },
       },
     ],
-    []
+    [toggle, pending]
   );
 
   const handleExport = () => {
@@ -125,9 +188,26 @@ const PromoCodeTable = ({ data = sampleData, onExportExcel }) => {
         <div className="pct-underline"></div>
       </div>
 
+      {error && (
+        <p role="alert" style={{ color: "#c0392b", margin: "8px 16px" }}>
+          {error}{" "}
+          <button
+            type="button"
+            onClick={loadRows}
+            style={{ textDecoration: "underline", background: "none", border: 0, cursor: "pointer", color: "inherit" }}
+          >
+            Retry
+          </button>
+        </p>
+      )}
+
       {/* Reusable DataTable */}
       <div className="pct-scroll">
-        <DataTable columns={columns} data={rows} onExportExcel={handleExport} />
+        {loading ? (
+          <p style={{ padding: "16px", textAlign: "center" }}>Loading promo codes...</p>
+        ) : (
+          <DataTable columns={columns} data={rows} onExportExcel={handleExport} />
+        )}
       </div>
     </div>
   );

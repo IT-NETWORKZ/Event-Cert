@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./Subscriptionplan.css";
+import PromoCode from "../../common/promocode/PromoCode";
 
 import {
   FaCheckCircle,
@@ -31,7 +32,8 @@ function Subscriptionplan() {
           </p>
         </div>
       </section>
-
+      {/* Promo code button + modal */}
+      <PromoCode />
       {/* Navigation Tabs */}
       <div className="subscription-tabs">
         <Button
@@ -111,13 +113,13 @@ function Subscriptionplan() {
         <h2>All plans include</h2>
         <p className="footer-tagline">Pay Less. Deliver More.</p>
         <p className="footer-description">
-          Whether you are promoting an event, generating certificates, sending digital invitations or delivering printed greetings, 
+          Whether you are promoting an event, generating certificates, sending digital invitations or delivering printed greetings,
           eventcert.com ensures premium outcomes with controlled costs—helping you do days of work in minutes.
         </p>
         <p className="footer-subtext-title">Subscription Models</p>
         <p className="footer-subtext-body">Designed for Events, Institutions & Individuals</p>
       </div>
-      
+
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import api from "../api/axiosClient";
+import { normalizePromo } from "./superAdminService";
 
 /* ---------- PROFILE ---------- */
 // GET api/admin/profile
@@ -279,4 +280,56 @@ export const getWhatsappTemplates = async ({ templateType, sendType }) => {
     ? data
     : data?.templates ?? data?.items ?? data?.data ?? data?.rows ?? [];
   return list.map(toWhatsappTemplate).filter((t) => t.name);
+};
+
+
+// Paste into adminService.js (it already has `api` imported).
+// If you also want the validation mapper there, import it: import { toPromoValidation } from "./homeService";
+import { toPromoValidation } from "./homeService";
+
+/* ---------- SUBSCRIPTION (Admin) ---------- */
+
+// GET api/admin/plans – active plans
+export const getAdminPlans = async () => {
+  const { data } = await api.get("/admin/plans");
+  return Array.isArray(data) ? data : data?.plans ?? data?.items ?? data?.data ?? data?.rows ?? [];
+};
+
+// GET api/admin/plans/{id} – plan details
+export const getAdminPlanById = async (id) => {
+  const { data } = await api.get(`/admin/plans/${id}`);
+  return data;
+};
+
+// POST api/admin/promocodes/validate (body names assumed, same as the home one)
+export const validateAdminPromoCode = async ({ code, planId, amount } = {}) => {
+  const payload = { promoCode: String(code || "").trim() };
+  if (planId != null) payload.planId = planId;
+  if (amount != null) payload.amount = amount;
+
+  try {
+    const { data } = await api.post("/admin/promocodes/validate", payload);
+    return toPromoValidation(data);
+  } catch (err) {
+    if (err?.response && err.response.status < 500) {
+      return { isValid: false, message: getApiError(err, "Invalid promo code."), discountAmount: 0, finalAmount: null, raw: null };
+    }
+    throw err;
+  }
+};
+
+// ===== Add to adminService.js =====
+
+// 1) at the top of the file, with the other imports (api is already imported there):
+
+// 2) anywhere below, next to the other subscription methods:
+
+// GET api/admin/promocodes – promo codes shown to admins in the Available Offers popup
+// (path assumed: same base as POST /admin/promocodes/validate. Change it if your API differs)
+export const getAdminPromoCodes = async () => {
+  const { data } = await api.get("/admin/promocodes");
+  const list = Array.isArray(data)
+    ? data
+    : data?.promoCodes ?? data?.items ?? data?.data ?? data?.rows ?? [];
+  return list.map(normalizePromo);
 };

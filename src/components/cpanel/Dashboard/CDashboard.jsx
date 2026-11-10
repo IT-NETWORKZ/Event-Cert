@@ -11,7 +11,6 @@ import {
   FaLayerGroup,
   FaCity,
   FaGlobeAmericas,
-  FaReceipt,
   FaCreditCard,
   FaCommentAlt,
   FaFileContract,
@@ -21,7 +20,8 @@ import {
   FaCertificate,
 } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
-import Button from "../../common/button/Button"
+import Button from "../../common/button/Button";
+import PromoCode from "../../common/promocode/PromoCode";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -39,7 +39,6 @@ const Dashboard = () => {
   };
 
   const cards = [
-
     {
       title: "Admin Registrations",
       value: dashboardData.eventsUsed,
@@ -64,19 +63,18 @@ const Dashboard = () => {
       icon: <FaLayerGroup />,
       theme: "card-theme-teal",
     },
-      {
+    {
       title: "Feedback",
       value: dashboardData.certificates,
       icon: <FaFacebookMessenger />,
       theme: "card-theme-success",
     },
-       {
+    {
       title: "Total Certificates / Cards Generated",
       value: dashboardData.certificates,
       icon: <FaCertificate />,
       theme: "card-theme-error",
     },
-  
     {
       title: "Cities Serviced",
       value: dashboardData.cities,
@@ -94,23 +92,6 @@ const Dashboard = () => {
       value: dashboardData.eventStock,
       icon: <FaMailBulk />,
       theme: "card-theme-error",
-    }
-  ];
-
-  const promoCodes = [
-    {
-      id: 1,
-      discount: "25%",
-      code: "CERT25",
-      valid: "31 Dec 2026",
-      plan: "Premium Plan",
-    },
-    {
-      id: 2,
-      discount: "40%",
-      code: "SAVE40",
-      valid: "31 Dec 2026",
-      plan: "Annual Plan",
     },
   ];
 
@@ -138,11 +119,6 @@ const Dashboard = () => {
   const handlePopupOk = () => {
     localStorage.setItem("profilePopupShown", "true");
     setShowProfilePopup(false);
-  };
-
-  const copyPromo = (code) => {
-    navigator.clipboard.writeText(code);
-    alert("Promo code copied successfully.");
   };
 
   const startConfetti = () => {
@@ -186,7 +162,6 @@ const Dashboard = () => {
 
       <section className="dashboard-wrapper">
         <div className="container-fluid dashboard-container">
-
           <div className="row g-4">
             {cards.map((card, index) => (
               <div className="col-12 col-sm-6 col-lg-3 d-flex" key={index}>
@@ -247,54 +222,9 @@ const Dashboard = () => {
         </div>
       )}
 
-      <div
-        className="promo-fab"
-        data-bs-toggle="modal"
-        data-bs-target="#promoModal"
-      >
-        <Button className="vertical-btn">Promo Code</Button>
-      </div>
-
-      <div className="modal fade" id="promoModal" tabIndex="-1">
-        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-          <div className="modal-content promo-toggle-container">
-            <div className="modal-header promo-header">
-              <h3 className="modal-title w-100 text-center">Available Offers</h3>
-              <Button className="btn-close btn-close-white" data-bs-dismiss="modal"></Button>
-            </div>
-
-            <div className="modal-body">
-              {promoCodes.map((promo) => (
-                <div className="coupon-cardd" key={promo.id}>
-                  <div className="coupon-top">
-                    <div className="gift-icon">🎁</div>
-                    <h2>{promo.discount} OFF</h2>
-                    <p>on your purchase</p>
-                    <p>
-                      Valid For : <b>{promo.plan}</b>
-                    </p>
-                  </div>
-
-                  <div className="promo-code-section">
-                    <span className="promo-code-label">Promo Code</span>
-                    <div className="code-display">
-                      <h3 className="promo-text">{promo.code}</h3>
-                      <span className="copy-link" onClick={() => copyPromo(promo.code)}>
-                        Copy Code
-                      </span>
-                    </div>
-                    <span className="valid-until">Valid Till {promo.valid}</span>
-                  </div>
-
-                  <div className="coupon-footer">
-                    <Button className="btn-fly">Unlock Benefits</Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Shared component: renders its own side button + #promoModal.
+          role="superadmin" -> lists ALL promo codes from GET /superadmin/promocodes */}
+      <PromoCode role="superadmin" />
 
       <div className="modal fade" id="guideModal" tabIndex="-1">
         <div className="modal-dialog modal-lg modal-dialog-centered">
@@ -352,4 +282,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-

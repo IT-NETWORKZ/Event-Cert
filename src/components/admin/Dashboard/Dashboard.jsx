@@ -19,6 +19,7 @@ import {
   FaFileContract,
 } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
+import PromoCode from "../../common/promocode/PromoCode";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -78,29 +79,11 @@ const Dashboard = () => {
       icon: <FaDollyFlatbed />,
       theme: "card-theme-error",
     },
-
     {
       title: "Remaining Cards Stock",
       value: dashboardData.certificateStock,
       icon: <FaReceipt />,
       theme: "card-theme-success",
-    },
-  ];
-
-  const promoCodes = [
-    {
-      id: 1,
-      discount: "25%",
-      code: "CERT25",
-      valid: "31 Dec 2026",
-      plan: "Premium Plan",
-    },
-    {
-      id: 2,
-      discount: "40%",
-      code: "SAVE40",
-      valid: "31 Dec 2026",
-      plan: "Annual Plan",
     },
   ];
 
@@ -128,11 +111,6 @@ const Dashboard = () => {
   const handlePopupOk = () => {
     localStorage.setItem("profilePopupShown", "true");
     setShowProfilePopup(false);
-  };
-
-  const copyPromo = (code) => {
-    navigator.clipboard.writeText(code);
-    alert("Promo code copied successfully.");
   };
 
   const startConfetti = () => {
@@ -176,7 +154,6 @@ const Dashboard = () => {
 
       <section className="dashboard-wrapper">
         <div className="container-fluid dashboard-container">
-
           <div className="row g-4">
             {cards.map((card, index) => (
               <div className="col-12 col-sm-6 col-lg-3 d-flex" key={index}>
@@ -237,54 +214,7 @@ const Dashboard = () => {
         </div>
       )}
 
-      <div
-        className="promo-fab"
-        data-bs-toggle="modal"
-        data-bs-target="#promoModal"
-      >
-        <button className="vertical-btn">Promo Code</button>
-      </div>
-
-      <div className="modal fade" id="promoModal" tabIndex="-1">
-        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-          <div className="modal-content promo-toggle-container">
-            <div className="modal-header promo-header">
-              <h3 className="modal-title w-100 text-center">Available Offers</h3>
-              <button className="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div className="modal-body">
-              {promoCodes.map((promo) => (
-                <div className="coupon-cardd" key={promo.id}>
-                  <div className="coupon-top">
-                    <div className="gift-icon">🎁</div>
-                    <h2>{promo.discount} OFF</h2>
-                    <p>on your purchase</p>
-                    <p>
-                      Valid For : <b>{promo.plan}</b>
-                    </p>
-                  </div>
-
-                  <div className="promo-code-section">
-                    <span className="promo-code-label">Promo Code</span>
-                    <div className="code-display">
-                      <h3 className="promo-text">{promo.code}</h3>
-                      <span className="copy-link" onClick={() => copyPromo(promo.code)}>
-                        Copy Code
-                      </span>
-                    </div>
-                    <span className="valid-until">Valid Till {promo.valid}</span>
-                  </div>
-
-                  <div className="coupon-footer">
-                    <button className="btn-fly">Unlock Benefits</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+      <PromoCode role="admin" />
 
       <div className="modal fade" id="guideModal" tabIndex="-1">
         <div className="modal-dialog modal-lg modal-dialog-centered">
@@ -342,4 +272,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
