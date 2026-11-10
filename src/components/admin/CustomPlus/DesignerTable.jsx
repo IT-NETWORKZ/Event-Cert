@@ -6,6 +6,7 @@ import "../../../css/DesignerTable.css";
 import { useNavigate } from "react-router-dom";
 import { useCanvas } from "../../../context/CanvasContext"; // same context FabricCanvas uses (adjust path if needed)
 import { getApiError, getRecipients, getWhatsappTemplates, importRecipients, saveCardDesign, setRecipientStatus, toImageUrl } from "../../../api/adminService"; // adjust path to your service file
+import DraftModal from "../CustomPlus/DraftModal/DraftModal";
 
 // Demo rows shown until the first Excel file is added
 export const SAMPLE_ROWS = [
@@ -178,12 +179,15 @@ const DesignerTable = ({
   const [form, setForm] = useState(emptyForm);
   const [filters, setFilters] = useState(emptyFilters);
   const [status, setStatus] = useState({ type: "", text: "" });
+  const [draftOpen, setDraftOpen] = useState(false); // Draft popup
+
   const [saving, setSaving] = useState(null); // "image" | "pdf" | null
   const [savedFiles, setSavedFiles] = useState([]); // [{ name, url }] saved by the last Send
   const [templates, setTemplates] = useState([]); // WhatsApp templates for the chosen type + image type
   const [tplLoading, setTplLoading] = useState(false);
   const [params, setParams] = useState(["", "", "", ""]); // values for {{1}}..{{4}}
   const canvas = useCanvas()?.canvas; // Fabric canvas of the active page
+
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
@@ -349,7 +353,8 @@ const DesignerTable = ({
   );
 
   // ---------- Button handlers ----------
-  const handleDraft = () => console.log("Draft", form, selectedIds);
+  const handleDraft = () => setDraftOpen(true);
+  const handleDraftClose = () => setDraftOpen(false);
 
   // Uploads the Excel file to the API, then reloads the saved recipients
   const handleAdd = async () => {
@@ -482,8 +487,10 @@ const DesignerTable = ({
   const handleSendImage = () => exportForUsers("image");
   const handleSendPdf = () => exportForUsers("pdf");
 
-  const handlePastRecords = () => console.log("Past records");
-  const handleRetrieveRecords = () => console.log("Retrieve records");
+  // Past Records page   -> /admin/custom-past-records
+  // Retrieve Records    -> /admin/custom-retrieve-records
+  const handlePastRecords = () => navigate("/admin/custom-past-records");
+  const handleRetrieveRecords = () => navigate("/admin/custom-retrieve-records");
   const handleSentStatus = () => navigate("/admin/custom-status");
   const handleViewAll = () => setFilters(emptyFilters);
 
@@ -618,7 +625,6 @@ const DesignerTable = ({
               ))}
             </select>
           </div>
-
         </div>
 
         {/* Selected template: message + parameter inputs */}
@@ -691,7 +697,6 @@ const DesignerTable = ({
           <span>Group Name</span>
         </label>
 
-
         <button
           type="button"
           className="dsg-clear"
@@ -704,6 +709,9 @@ const DesignerTable = ({
 
       {/* ================= TABLE ================= */}
       <DataTable columns={columns} data={filteredData} centerToolbar />
+
+      {/* ================= DRAFT POPUP ================= */}
+      <DraftModal open={draftOpen} onClose={handleDraftClose} />
     </section>
   );
 };

@@ -1,11 +1,33 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import "./Event.css";
-import { ArrowLeft, Building2, Calendar, CalendarCheck, ChevronLeft, ChevronRight, ClipboardList, Clock, Globe, IndianRupee, Info, MapPin, Phone, Plus, UserPlus, Users, X } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowLeft,
+  Building2,
+  Calendar,
+  CalendarCheck,
+  ChevronLeft,
+  ChevronRight,
+  ClipboardList,
+  Clock,
+  Globe,
+  IndianRupee,
+  Info,
+  Loader2,
+  MapPin,
+  Phone,
+  Plus,
+  UserPlus,
+  Users,
+  X,
+} from "lucide-react";
 import DataTable from "../../common/Table/DataTable";
+import { submitEventRegistration } from "../../../api/eventService";
+import { validateProfileFile, validateRegistration } from "../../../validations/eventRegistrationSchemas";
 
 /* ==========================================================================
-   STATIC HELPERS / DATA  (no API)
+   STATIC HELPERS / DATA  (no API for events, backend for registration)
    ========================================================================== */
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const pad = (n) => String(n).padStart(2, "0");
@@ -14,11 +36,13 @@ const toUri = (svg) => `data:image/svg+xml;base64,${btoa(unescape(encodeURICompo
 const fmtDate = (str) => {
   if (!str) return "";
   const [y, m, d] = str.split("-");
+  if (!y || !m || !d) return "";
   return `${pad(d)} ${MONTHS[Number(m) - 1]} ${y}`;
 };
 const fmtTime = (str) => {
   if (!str) return "";
   const [h, m] = str.split(":").map(Number);
+  if (Number.isNaN(h) || Number.isNaN(m)) return "";
   return `${pad(h % 12 === 0 ? 12 : h % 12)}:${pad(m)} ${h >= 12 ? "PM" : "AM"}`;
 };
 const ageFromDob = (dob) => {
@@ -94,26 +118,27 @@ const defaultEvent = {
 
 const buildEvent = (picked) => {
   const e = { ...defaultEvent, ...(picked || {}) };
-  const [datePart, timePart = "10:00"] = String(e.date).split("T");
+  const [datePart, timePart = "10:00"] = String(e.date || "").split("T");
+  const images = Array.isArray(e.images) && e.images.length ? e.images : e.image ? [e.image] : [e.image || makeBanner(e.title || "Event", 0), makeBanner(e.title || "Event", 1)];
   return {
-    id: e.id,
-    title: e.title,
-    startDate: datePart,
-    endDate: e.endDate || datePart,
-    time: timePart.slice(0, 5),
-    venue: e.location,
+    id: e.id ?? e.eventId ?? 0,
+    title: e.title || defaultEvent.title,
+    startDate: datePart || "2026-09-01",
+    endDate: e.endDate ? String(e.endDate).split("T")[0] : (datePart || "2026-09-01"),
+    time: (timePart || "10:00").slice(0, 5),
+    venue: e.location || defaultEvent.location,
     mode: e.mode || "Offline",
-    entry: Number(e.entry) || 0,
+    entry: Number(e.entry) || defaultEvent.entry,
     contact: e.contact || "+91 98765 43210",
     org: e.org || "ITNetworkZ Infosystems Pvt Ltd",
-    about: e.description,
+    about: e.description || defaultEvent.description,
     instructions: e.instructions || [
       "Carry a valid photo ID card to the venue.",
       "Reach the venue 30 minutes before the start time.",
       "Registration fee once paid is non-refundable.",
       "For any query, call the contact number given above.",
     ],
-    images: [e.image || makeBanner(e.title, 0), makeBanner(e.title, 1)],
+    images,
   };
 };
 
@@ -149,6 +174,18 @@ const emptyMember = (id) => ({
   organizationName: "", designation: "", experience: "",
 });
 
+const Field = ({ cls = "", label, error, hint, children }) => (
+  <div className={`evp-field ${cls}${error ? " evp-invalid" : ""}`}>
+    <label>{label}</label>
+    {children}
+    {error ? (
+      <small className="evp-err" role="alert">{error}</small>
+    ) : hint ? (
+      <small>{hint}</small>
+    ) : null}
+  </div>
+);
+
 /* ==========================================================================
    COMPONENT
    ========================================================================== */
@@ -156,6 +193,7 @@ const Event = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [params] = useSearchParams();
+
   const event = useMemo(() => buildEvent(location.state?.event), [location.state]);
   const qrSrc = useMemo(() => makeQr(event.id + 3), [event.id]);
 
@@ -171,8 +209,11 @@ const Event = () => {
   const [members, setMembers] = useState([emptyMember(1)]);
   const [nextId, setNextId] = useState(2);
   const [msg, setMsg] = useState({ type: "", text: "" });
+  const [errors, setErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
 
   const [participants, setParticipants] = useState(initialParticipants);
+  const imageCount = event.images.length;
 
   // new event opened -> start from the first picture / clean form
   useEffect(() => {
@@ -194,16 +235,34 @@ const Event = () => {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [galleryOpen, profilePreview, imgIdx]);
+  }, [galleryOpen, profilePreview, imgIdx, imageCount]);
 
   const changeImage = (step) =>
-    setImgIdx((i) => (i + step + event.images.length) % event.images.length);
+    setImgIdx((i) => (i + step + imageCount) % imageCount);
+
+  /* ---------------- error helpers ---------------- */
+  const clearError = (key) =>
+    setErrors((prev) => {
+      if (!(key in prev)) return prev;
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+
+  const clearErrorsStartingWith = (prefix) =>
+    setErrors((prev) => {
+      const next = {};
+      Object.keys(prev).forEach((k) => {
+        if (!k.startsWith(prefix)) next[k] = prev[k];
+      });
+      return next;
+    });
 
   /* ---------------- members ---------------- */
   const updateMember = (id, patch) =>
     setMembers((prev) => prev.map((m) => (m.id === id ? { ...m, ...patch } : m)));
 
-  const onMemberChange = (id, e) => {
+  const onMemberChange = (id, idx, e) => {
     const { name, value } = e.target;
     let v = value;
     if (name === "name") v = value.replace(/[^A-Za-z ]/g, "");
@@ -211,50 +270,117 @@ const Event = () => {
     const patch = { [name]: v };
     if (name === "dob") patch.age = ageFromDob(value);
     updateMember(id, patch);
+    clearError(`participants.${idx}.${name}`);
+  };
+
+  const onProfileChange = (id, idx, e) => {
+    const file = e.target.files[0] || null;
+    const problem = validateProfileFile ? validateProfileFile(file) : null;
+    const key = `participants.${idx}.profileFile`;
+    if (problem) {
+      e.target.value = "";
+      updateMember(id, { profileFile: null });
+      setErrors((prev) => ({ ...prev, [key]: problem }));
+      return;
+    }
+    clearError(key);
+    updateMember(id, { profileFile: file });
+  };
+
+  const onCategoryChange = (id, idx, category) => {
+    updateMember(id, { category });
+    clearErrorsStartingWith(`participants.${idx}.`);
   };
 
   const addMember = () => {
     setMembers((p) => [...p, emptyMember(nextId)]);
     setNextId((n) => n + 1);
+    clearError("participants");
   };
-  const removeMember = () => setMembers((p) => (p.length > 1 ? p.slice(0, -1) : p));
+
+  const removeMember = () => {
+    if (members.length <= 1) return;
+    clearErrorsStartingWith(`participants.${members.length - 1}.`);
+    setMembers((p) => p.slice(0, -1));
+  };
 
   const chooseType = (type) => {
     setRegType(type);
+    setErrors({});
+    setMsg({ type: "", text: "" });
     if (type === "Individual") setMembers((p) => p.slice(0, 1));
   };
 
   /* ---------------- Book Now ---------------- */
-  const handleBook = (e) => {
+  const handleBook = async (e) => {
     e.preventDefault();
-    if (regType === "Group" && !groupName.trim()) {
-      setMsg({ type: "error", text: "Please enter the Group Name." });
-      return;
-    }
-    const added = members.map((m, i) => ({
-      id: Date.now() + i,
-      status: "Participant",
-      groupName: regType === "Group" ? groupName.trim() : "",
-      name: m.name.trim(),
-      gender: m.gender,
-      category: m.category,
-      college: m.category === "Working Professional" ? m.organizationName : m.collegeName,
-      profile: m.profileFile ? URL.createObjectURL(m.profileFile) : "",
-    }));
-    setParticipants((prev) => [...prev, ...added]);
+    if (submitting || !event) return;
+    setMsg({ type: "", text: "" });
 
-    const total = event.entry * members.length;
-    setMsg({
-      type: "ok",
-      text: `Thank you! ${members.length} participant${members.length > 1 ? "s" : ""} registered for "${event.title}".` +
-        (total ? ` Total fee: ₹ ${total.toFixed(2)}` : " This event is free."),
-    });
-    setMembers([emptyMember(nextId)]);
-    setNextId((n) => n + 1);
-    setGroupName("");
-    setTeamLead("");
-    setRegType("Individual");
-    window.scrollTo({ top: document.getElementById("evp-register")?.offsetTop - 20 || 0, behavior: "smooth" });
+    const values = { eventId: event.id, regType, groupName, teamLead, participants: members };
+
+    // 1) Validate form via Joi schema if available
+    if (validateRegistration) {
+      const { isValid, errors: found } = validateRegistration(values);
+      setErrors(found);
+      if (!isValid) {
+        setMsg({
+          type: "error",
+          text: found.participants || found.eventId || "Please correct the highlighted fields and try again.",
+        });
+        setTimeout(() => {
+          document.querySelector(".evp-invalid")?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 50);
+        return;
+      }
+    }
+
+    // 2) POST to backend API
+    setSubmitting(true);
+    try {
+      const apiResult = await submitEventRegistration(values);
+
+      if (apiResult && apiResult.success === false) {
+        setMsg({ type: "error", text: apiResult.message || "Registration failed. Please try again." });
+        return;
+      }
+
+      const added = members.map((m, i) => ({
+        id: Date.now() + i,
+        status: "Participant",
+        groupName: regType === "Group" ? groupName.trim() : "",
+        name: m.name.trim(),
+        gender: m.gender,
+        category: m.category,
+        college: m.category === "Working Professional" ? m.organizationName : m.collegeName,
+        profile: m.profileFile ? URL.createObjectURL(m.profileFile) : "",
+      }));
+      setParticipants((prev) => [...prev, ...added]);
+
+      const total = Number(apiResult?.totalAmount ?? event.entry * members.length);
+      const count = apiResult?.totalParticipants ?? members.length;
+      setMsg({
+        type: "ok",
+        text:
+          `${apiResult?.message || "Thank you! Registration successful."}` +
+          (apiResult?.registrationId ? ` Registration ID: ${apiResult.registrationId}.` : "") +
+          ` ${count} participant${count > 1 ? "s" : ""} registered for "${event.title}".` +
+          (total ? ` Total fee: ₹ ${total.toFixed(2)}` : " This event is free."),
+      });
+
+      setMembers([emptyMember(nextId)]);
+      setNextId((n) => n + 1);
+      setGroupName("");
+      setTeamLead("");
+      setRegType("Individual");
+      setErrors({});
+      window.scrollTo({ top: document.getElementById("evp-register")?.offsetTop - 20 || 0, behavior: "smooth" });
+    } catch (err) {
+      console.error(err);
+      setMsg({ type: "error", text: err?.response?.data?.message || "Registration submission failed. Please try again." });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   /* ---------------- participants table ---------------- */
@@ -268,7 +394,7 @@ const Event = () => {
         cell: (i) => {
           const v = i.getValue();
           const cls = v === "Winner" ? "evp-winner" : v === "Runner-up" ? "evp-runnerup" : "evp-participant";
-          return <span className={`evp-status ${cls}`}>{v}</span>;
+          return <span className={`evp-status ${cls}`}>{v || "Participant"}</span>;
         },
       },
       { header: "Group Name", accessorKey: "groupName", meta: { className: "text-center", width: "160px" } },
@@ -375,19 +501,23 @@ const Event = () => {
           {/* gallery */}
           <div className="evp-gallery-area">
             <div className="evp-gallery">
-              <button type="button" className="evp-arrow evp-prev" onClick={() => changeImage(-1)} aria-label="Previous image">
-                <ChevronLeft size={20} />
-              </button>
+              {imageCount > 1 && (
+                <button type="button" className="evp-arrow evp-prev" onClick={() => changeImage(-1)} aria-label="Previous image">
+                  <ChevronLeft size={20} />
+                </button>
+              )}
 
               <div className="evp-image-box" onClick={() => setGalleryOpen(true)} title="Click to view image">
                 <img src={event.images[imgIdx]} alt={event.title} />
               </div>
 
-              <button type="button" className="evp-arrow evp-next" onClick={() => changeImage(1)} aria-label="Next image">
-                <ChevronRight size={20} />
-              </button>
+              {imageCount > 1 && (
+                <button type="button" className="evp-arrow evp-next" onClick={() => changeImage(1)} aria-label="Next image">
+                  <ChevronRight size={20} />
+                </button>
+              )}
 
-              <div className="evp-counter">{imgIdx + 1} / {event.images.length}</div>
+              {imageCount > 1 && <div className="evp-counter">{imgIdx + 1} / {imageCount}</div>}
             </div>
           </div>
         </div>
@@ -402,7 +532,7 @@ const Event = () => {
             </div>
           </div>
 
-          <form className="evp-reg-body" onSubmit={handleBook}>
+          <form className="evp-reg-body" onSubmit={handleBook} noValidate>
             {msg.text && <div className={`evp-msg ${msg.type}`}>{msg.text}</div>}
 
             {/* registration type */}
@@ -423,131 +553,149 @@ const Event = () => {
             {/* group name + team lead */}
             {regType === "Group" && (
               <div className="evp-row evp-two">
-                <div className="evp-field">
-                  <label>Group Name *</label>
-                  <input value={groupName} onChange={(e) => setGroupName(e.target.value)} maxLength={100} placeholder="Enter Group Name" />
-                </div>
-                <div className="evp-field">
-                  <label>Team Lead Name</label>
-                  <input value={teamLead} onChange={(e) => setTeamLead(e.target.value)} maxLength={100} placeholder="Enter Team Lead Name" />
-                </div>
+                <Field label="Group Name *" error={errors.groupName}>
+                  <input
+                    value={groupName}
+                    onChange={(e) => {
+                      setGroupName(e.target.value);
+                      clearError("groupName");
+                    }}
+                    maxLength={100}
+                    placeholder="Enter Group Name"
+                  />
+                </Field>
+                <Field label="Team Lead Name" error={errors.teamLead}>
+                  <input
+                    value={teamLead}
+                    onChange={(e) => {
+                      setTeamLead(e.target.value.replace(/[^A-Za-z ]/g, ""));
+                      clearError("teamLead");
+                    }}
+                    maxLength={100}
+                    placeholder="Enter Team Lead Name"
+                  />
+                </Field>
               </div>
             )}
 
             {/* participant forms */}
-            {members.map((m, idx) => (
-              <div className="evp-member" key={m.id}>
-                {regType === "Group" && <div className="evp-member-title">Participant {idx + 1}</div>}
+            {members.map((m, idx) => {
+              const err = (f) => errors[`participants.${idx}.${f}`];
+              const onChange = (e) => onMemberChange(m.id, idx, e);
+              const isProfessional = m.category === "Working Professional";
 
-                <div className="evp-grid evp-g12">
-                  <div className="evp-field evp-c5">
-                    <label>Full Name *</label>
-                    <input name="name" value={m.name} onChange={(e) => onMemberChange(m.id, e)} required maxLength={30} />
-                  </div>
-                  <div className="evp-field evp-c3">
-                    <label>Gender *</label>
-                    <select name="gender" value={m.gender} onChange={(e) => onMemberChange(m.id, e)} required>
-                      <option value="">Select</option>
-                      <option>Male</option>
-                      <option>Female</option>
-                    </select>
-                  </div>
-                  <div className="evp-field evp-c2">
-                    <label>DOB *</label>
-                    <input type="date" name="dob" value={m.dob} onChange={(e) => onMemberChange(m.id, e)} required max={new Date().toISOString().slice(0, 10)} />
-                  </div>
-                  <div className="evp-field evp-c2">
-                    <label>Age *</label>
-                    <input value={m.age} readOnly placeholder="Auto" />
-                  </div>
+              return (
+                <div className="evp-member" key={m.id}>
+                  {regType === "Group" && <div className="evp-member-title">Participant {idx + 1}</div>}
 
-                  <div className="evp-field evp-c4">
-                    <label>Email *</label>
-                    <input type="email" name="email" value={m.email} onChange={(e) => onMemberChange(m.id, e)} required maxLength={100} />
-                  </div>
-                  <div className="evp-field evp-c4">
-                    <label>WhatsApp No *</label>
-                    <input name="mobile" value={m.mobile} onChange={(e) => onMemberChange(m.id, e)} required inputMode="numeric" pattern="[0-9]{6,20}" title="6 to 20 digits" maxLength={20} />
-                  </div>
-                  <div className="evp-field evp-c4">
-                    <label>Address *</label>
-                    <input name="address" value={m.address} onChange={(e) => onMemberChange(m.id, e)} required maxLength={50} />
-                  </div>
+                  <div className="evp-grid evp-g12">
+                    <Field cls="evp-c5" label="Full Name *" error={err("name")}>
+                      <input name="name" value={m.name} onChange={onChange} maxLength={30} />
+                    </Field>
+                    <Field cls="evp-c3" label="Gender *" error={err("gender")}>
+                      <select name="gender" value={m.gender} onChange={onChange}>
+                        <option value="">Select</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                      </select>
+                    </Field>
+                    <Field cls="evp-c2" label="DOB *" error={err("dob")}>
+                      <input
+                        type="date"
+                        name="dob"
+                        value={m.dob}
+                        onChange={onChange}
+                        max={new Date().toISOString().slice(0, 10)}
+                      />
+                    </Field>
+                    <Field cls="evp-c2" label="Age *">
+                      <input value={m.age} readOnly placeholder="Auto" />
+                    </Field>
 
-                  <div className="evp-field evp-c4">
-                    <label>Profile Image</label>
-                    <input
-                      type="file"
-                      accept=".jpg,.jpeg,.png,.svg"
-                      onChange={(e) => updateMember(m.id, { profileFile: e.target.files[0] || null })}
-                    />
-                    <small>JPG, JPEG, PNG or SVG only</small>
-                  </div>
+                    <Field cls="evp-c4" label="Email *" error={err("email")}>
+                      <input type="email" name="email" value={m.email} onChange={onChange} maxLength={100} />
+                    </Field>
+                    <Field cls="evp-c4" label="WhatsApp No *" error={err("mobile")}>
+                      <input name="mobile" value={m.mobile} onChange={onChange} inputMode="numeric" maxLength={20} />
+                    </Field>
+                    <Field cls="evp-c4" label="Address *" error={err("address")}>
+                      <input name="address" value={m.address} onChange={onChange} maxLength={50} />
+                    </Field>
 
-                  {/* category */}
-                  <div className="evp-field evp-c12">
-                    <label>Registration Category *</label>
-                    <div className="evp-categories">
-                      {["Student", "Fresher", "Working Professional"].map((c) => (
-                        <label key={c} className={`evp-radio ${m.category === c ? "on" : ""}`}>
-                          <input
-                            type="radio"
-                            name={`category_${m.id}`}
-                            checked={m.category === c}
-                            onChange={() => updateMember(m.id, { category: c })}
-                          />
-                          <span>{c}</span>
-                        </label>
-                      ))}
+                    <Field cls="evp-c4" label="Profile Image" error={err("profileFile")} hint="JPG, JPEG, PNG or SVG">
+                      <input
+                        type="file"
+                        accept=".jpg,.jpeg,.png,.svg"
+                        onChange={(e) => onProfileChange(m.id, idx, e)}
+                      />
+                    </Field>
+
+                    {/* category */}
+                    <div className="evp-field evp-c12">
+                      <label>Registration Category *</label>
+                      <div className="evp-categories">
+                        {["Student", "Fresher", "Working Professional"].map((c) => (
+                          <label key={c} className={`evp-radio ${m.category === c ? "on" : ""}`}>
+                            <input
+                              type="radio"
+                              name={`category_${m.id}`}
+                              checked={m.category === c}
+                              onChange={() => onCategoryChange(m.id, idx, c)}
+                            />
+                            <span>{c}</span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
+
+                    {/* Student / Fresher */}
+                    {!isProfessional && (
+                      <>
+                        <Field cls="evp-c6" label="College Name *" error={err("collegeName")}>
+                          <input name="collegeName" value={m.collegeName} onChange={onChange} maxLength={150} placeholder="Ex: SMT College of Pharma, Nagpur" />
+                        </Field>
+                        <Field cls="evp-c6" label="Stream *" error={err("stream")}>
+                          <input name="stream" value={m.stream} onChange={onChange} maxLength={100} placeholder={m.category === "Student" ? "Ex: BTECH" : "Ex: B.Pharm"} />
+                        </Field>
+                        <Field cls="evp-c6" label="Branch *" error={err("branch")}>
+                          <input name="branch" value={m.branch} onChange={onChange} maxLength={100} placeholder="Ex: Computer Science" />
+                        </Field>
+                        <Field cls="evp-c6" label={m.category === "Student" ? "Academic Year *" : "Passout Year *"} error={err("academicYear")}>
+                          <input name="academicYear" value={m.academicYear} onChange={onChange} maxLength={50} placeholder={m.category === "Student" ? "Ex: 2nd Year" : "Ex: 2021"} />
+                        </Field>
+                      </>
+                    )}
+
+                    {/* Working professional */}
+                    {isProfessional && (
+                      <>
+                        <Field cls="evp-c4" label="Organization Name *" error={err("organizationName")}>
+                          <input name="organizationName" value={m.organizationName} onChange={onChange} maxLength={150} placeholder="Ex: Abc Pvt. Ltd." />
+                        </Field>
+                        <Field cls="evp-c4" label="Designation *" error={err("designation")}>
+                          <input name="designation" value={m.designation} onChange={onChange} maxLength={100} placeholder="Ex: Software Engineer" />
+                        </Field>
+                        <Field cls="evp-c4" label="Experience *" error={err("experience")}>
+                          <input name="experience" value={m.experience} onChange={onChange} maxLength={50} placeholder="Ex: 1.5" />
+                        </Field>
+                      </>
+                    )}
                   </div>
-
-                  {/* Student / Fresher */}
-                  {m.category !== "Working Professional" && (
-                    <>
-                      <div className="evp-field evp-c6">
-                        <label>College Name *</label>
-                        <input name="collegeName" value={m.collegeName} onChange={(e) => onMemberChange(m.id, e)} required maxLength={150} placeholder="Ex: SMT College of Pharma, Nagpur" />
-                      </div>
-                      <div className="evp-field evp-c6">
-                        <label>Stream *</label>
-                        <input name="stream" value={m.stream} onChange={(e) => onMemberChange(m.id, e)} required maxLength={100} placeholder={m.category === "Student" ? "Ex: BTECH" : "Ex: B.Pharm"} />
-                      </div>
-                      <div className="evp-field evp-c6">
-                        <label>Branch *</label>
-                        <input name="branch" value={m.branch} onChange={(e) => onMemberChange(m.id, e)} required maxLength={100} placeholder="Ex: Computer Science" />
-                      </div>
-                      <div className="evp-field evp-c6">
-                        <label>{m.category === "Student" ? "Academic Year *" : "Passout Year *"}</label>
-                        <input name="academicYear" value={m.academicYear} onChange={(e) => onMemberChange(m.id, e)} required maxLength={50} placeholder={m.category === "Student" ? "Ex: 2nd Year" : "Ex: 2021"} />
-                      </div>
-                    </>
-                  )}
-
-                  {/* Working professional */}
-                  {m.category === "Working Professional" && (
-                    <>
-                      <div className="evp-field evp-c4">
-                        <label>Organization Name *</label>
-                        <input name="organizationName" value={m.organizationName} onChange={(e) => onMemberChange(m.id, e)} required maxLength={150} placeholder="Ex: Abc Pvt. Ltd." />
-                      </div>
-                      <div className="evp-field evp-c4">
-                        <label>Designation *</label>
-                        <input name="designation" value={m.designation} onChange={(e) => onMemberChange(m.id, e)} required maxLength={100} placeholder="Ex: Software Engineer" />
-                      </div>
-                      <div className="evp-field evp-c4">
-                        <label>Experience *</label>
-                        <input name="experience" value={m.experience} onChange={(e) => onMemberChange(m.id, e)} required maxLength={50} placeholder="Ex: 1.5" />
-                      </div>
-                    </>
-                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
             {/* buttons */}
             <div className="evp-actions">
-              <button type="submit" className="evp-book-btn">Book Now</button>
+              <button type="submit" className="evp-book-btn" disabled={submitting}>
+                {submitting ? (
+                  <>
+                    <Loader2 size={18} className="evp-spin" /> Submitting...
+                  </>
+                ) : (
+                  "Book Now"
+                )}
+              </button>
 
               {regType === "Group" && (
                 <div className="evp-member-actions">
@@ -666,14 +814,18 @@ const Event = () => {
           <button type="button" className="evp-close" onClick={() => setGalleryOpen(false)} aria-label="Close preview">
             <X size={20} />
           </button>
-          <button type="button" className="evp-modal-arrow evp-modal-prev" onClick={(e) => { e.stopPropagation(); changeImage(-1); }} aria-label="Previous image">
-            <ChevronLeft size={20} />
-          </button>
+          {imageCount > 1 && (
+            <button type="button" className="evp-modal-arrow evp-modal-prev" onClick={(e) => { e.stopPropagation(); changeImage(-1); }} aria-label="Previous image">
+              <ChevronLeft size={20} />
+            </button>
+          )}
           <img className="evp-full-img" src={event.images[imgIdx]} alt={event.title} onClick={(e) => e.stopPropagation()} />
-          <button type="button" className="evp-modal-arrow evp-modal-next" onClick={(e) => { e.stopPropagation(); changeImage(1); }} aria-label="Next image">
-            <ChevronRight size={20} />
-          </button>
-          <div className="evp-modal-counter">{imgIdx + 1} / {event.images.length}</div>
+          {imageCount > 1 && (
+            <button type="button" className="evp-modal-arrow evp-modal-next" onClick={(e) => { e.stopPropagation(); changeImage(1); }} aria-label="Next image">
+              <ChevronRight size={20} />
+            </button>
+          )}
+          {imageCount > 1 && <div className="evp-modal-counter">{imgIdx + 1} / {imageCount}</div>}
         </div>
       )}
 
@@ -691,3 +843,5 @@ const Event = () => {
 };
 
 export default Event;
+
+

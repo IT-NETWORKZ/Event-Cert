@@ -98,6 +98,13 @@ export const getEvents = async () => {
   };
 };
 
+// get all Admin - Home events for the event info section Fetch all events for the event info section
+export const getHomeEvents = async () => {
+  const { data } = await api.get("/home/events");
+  
+  return data;
+};
+
 // POST api/admin/events (multipart/form-data)
 export const createEvent = async (values) => {
   const { data } = await api.post("/admin/events", buildEventForm(values), {
