@@ -86,10 +86,10 @@ const CanvasToolbar = () => {
     canvas,
     past,
     future,
-    setPast,
-    setFuture,
-    saveState,
   } = useCanvas();
+
+  // history is handled inside FabricCanvas; these just talk to it
+  const saveState = (c) => (c || canvas)?.__history?.save();
 
   const toolbarRef = useRef(null);
 
@@ -312,45 +312,8 @@ const CanvasToolbar = () => {
   };
 
   // ---------------- Undo/Redo Engine ----------------
-  const undo = () => {
-    if (pastHistory.length === 0) return;
-    const previousState = pastHistory[pastHistory.length - 1];
-    const currentState = JSON.stringify(canvas.toJSON());
-
-    setPast((prev) => prev.slice(0, -1));
-    setFuture((prev) => [currentState, ...prev]);
-
-    canvas.off("object:added");
-    canvas.off("object:modified");
-    canvas.off("object:removed");
-
-    canvas.loadFromJSON(previousState, () => {
-      canvas.renderAll();
-      canvas.on("object:added", () => saveState());
-      canvas.on("object:modified", () => saveState());
-      canvas.on("object:removed", () => saveState());
-    });
-  };
-
-  const redo = () => {
-    if (futureHistory.length === 0) return;
-    const nextState = futureHistory[0];
-    const currentState = JSON.stringify(canvas.toJSON());
-
-    setFuture((prev) => prev.slice(1));
-    setPast((prev) => [...prev, currentState]);
-
-    canvas.off("object:added");
-    canvas.off("object:modified");
-    canvas.off("object:removed");
-
-    canvas.loadFromJSON(nextState, () => {
-      canvas.renderAll();
-      canvas.on("object:added", () => saveState());
-      canvas.on("object:modified", () => saveState());
-      canvas.on("object:removed", () => saveState());
-    });
-  };
+  const undo = () => canvas?.__history?.undo();
+  const redo = () => canvas?.__history?.redo();
 
   // ---------------- Object and Brush Modifiers ----------------
   const changeColor = (e) => {
