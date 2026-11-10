@@ -51,7 +51,8 @@ const toHex = (c) => {
 let clipboard = null;
 
 const ObjectActionBar = ({ scale = 1, boxWidth = 0, boxHeight = 0 }) => {
-    const { canvas, saveState } = useCanvas();
+    const { canvas } = useCanvas();
+    const saveState = (c) => (c || canvas)?.__history?.save();
 
     const barRef = useRef(null);
     const draggingRef = useRef(false);

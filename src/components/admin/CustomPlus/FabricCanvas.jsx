@@ -49,6 +49,107 @@ const FabricCanvas = () => {
         fabric.Object.prototype.borderColor = "#2563eb";
         fabric.Object.prototype.cornerSize = 18;
 
+        // ================= UNDO / REDO ENGINE =================
+        // Snapshot based history. Every add / move / resize / edit / delete is recorded
+        // automatically, so Ctrl+Z / Ctrl+Y and the toolbar buttons all use the same stack.
+        const HISTORY_LIMIT = 50;
+        const EXTRA_PROPS = ["id", "name", "selectable", "evented", "lockMovementX", "lockMovementY", "lockScalingX", "lockScalingY", "lockRotation", "hasControls", "excludeFromExport"];
+        const hist = { past: [], future: [], current: null, busy: false, timer: null };
+
+        const snapshot = () => JSON.stringify(canvas.toJSON(EXTRA_PROPS));
+        const syncUi = () => {
+            setPast([...hist.past]);
+            setFuture([...hist.future]);
+        };
+
+        const saveHistory = () => {
+            if (hist.busy) return;
+            clearTimeout(hist.timer);
+            // small delay merges bursts (delete many, paste group, load) into one step
+            hist.timer = setTimeout(() => {
+                if (hist.busy) return;
+                const next = snapshot();
+                if (next === hist.current) return;
+                if (hist.current !== null) hist.past.push(hist.current);
+                if (hist.past.length > HISTORY_LIMIT) hist.past.shift();
+                hist.current = next;
+                hist.future = [];
+                syncUi();
+            }, 60);
+        };
+
+        const restore = (state) => {
+            hist.busy = true;
+            canvas.discardActiveObject();
+            canvas.loadFromJSON(state, () => {
+                canvas.renderAll();
+                hist.current = state;
+                hist.busy = false;
+                syncUi();
+            });
+        };
+
+        const undo = () => {
+            clearTimeout(hist.timer);
+            if (!hist.busy && hist.current !== null && snapshot() !== hist.current) {
+                // flush a change that has not been recorded yet
+                hist.past.push(hist.current);
+                hist.current = snapshot();
+            }
+            if (hist.busy || hist.past.length === 0) return;
+            hist.future.unshift(hist.current);
+            restore(hist.past.pop());
+        };
+
+        const redo = () => {
+            clearTimeout(hist.timer);
+            if (hist.busy || hist.future.length === 0) return;
+            hist.past.push(hist.current);
+            restore(hist.future.shift());
+        };
+
+        // called after a page is loaded / switched: forget old steps, start fresh
+        const resetHistory = () => {
+            clearTimeout(hist.timer);
+            hist.past = [];
+            hist.future = [];
+            hist.busy = false;
+            hist.current = snapshot();
+            syncUi();
+        };
+
+        canvas.__history = {
+            undo,
+            redo,
+            save: saveHistory,
+            reset: resetHistory,
+            setBusy: (v) => { hist.busy = v; }
+        };
+        hist.current = snapshot();
+
+        canvas.on("object:added", saveHistory);
+        canvas.on("object:modified", saveHistory);
+        canvas.on("object:removed", saveHistory);
+        canvas.on("text:editing:exited", saveHistory);
+
+        const handleUndoRedoKeys = (e) => {
+            if (!(e.ctrlKey || e.metaKey)) return;
+            const key = e.key.toLowerCase();
+            if (key !== "z" && key !== "y") return;
+
+            const tag = document.activeElement?.tagName;
+            if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+            if (document.activeElement?.isContentEditable) return;
+
+            const active = canvas.getActiveObject();
+            if (active && active.isEditing) return; // let the text box use its own undo
+
+            e.preventDefault();
+            if (key === "y" || (key === "z" && e.shiftKey)) redo();
+            else undo();
+        };
+        window.addEventListener("keydown", handleUndoRedoKeys);
+
         // Delete / Backspace removes everything that is selected (one object or many)
         const handleDelete = (e) => {
             if (e.key !== "Delete" && e.key !== "Backspace") return;
@@ -69,6 +170,8 @@ const FabricCanvas = () => {
 
         return () => {
             window.removeEventListener("keydown", handleDelete);
+            window.removeEventListener("keydown", handleUndoRedoKeys);
+            clearTimeout(hist.timer);
             canvas.dispose();
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -82,9 +185,9 @@ const FabricCanvas = () => {
         const currentPageData = pages.find((p) => p.id === activePage);
         if (!currentPageData) return;
 
+        const history = canvas.__history;
+        history?.setBusy(true); // loading a page must not count as an edit
         canvas.discardActiveObject();
-        setPast([]);
-        setFuture([]);
 
         canvas.setWidth(currentPageData.width);
         canvas.setHeight(currentPageData.height);
@@ -95,11 +198,13 @@ const FabricCanvas = () => {
             canvas.loadFromJSON(currentPageData.json, () => {
                 canvas.setBackgroundColor("#ffffff", canvas.renderAll.bind(canvas));
                 canvas.renderAll();
+                history?.reset();
             });
         } else {
             canvas.clear();
             canvas.backgroundColor = "#ffffff";
             canvas.renderAll();
+            history?.reset();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activePage]);
