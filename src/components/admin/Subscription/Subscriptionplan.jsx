@@ -12,9 +12,7 @@ import {
 } from "react-icons/fa";
 
 import Button from "../../common/button/Button";
-
-// for now we are calling homesubscription paln here for test 
-import { getApiError, getSubscriptionPlans } from "../../../api/adminService";
+import { getApiError, adminGetSubscriptionPlans } from "../../../api/adminService";
 
 // category = planCategory sent by the API
 const TABS = [
@@ -28,7 +26,6 @@ const FEATURE_LIMIT = 6; // points shown on each card
 
 // "<ul><li>A</li><li>B</li></ul>" -> ["A", "B"]
 const htmlToItems = (html) => {
-  // the API cuts some texts in the middle of a tag -> drop that broken end
   const clean = String(html || "").replace(/<[^>]*$/, "");
   if (!clean) return [];
   const doc = new DOMParser().parseFromString(clean, "text/html");
@@ -49,11 +46,11 @@ function Subscriptionplan() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // load plans from the API
+  // Load plans from admin API endpoint
   useEffect(() => {
     let cancelled = false;
 
-    getSubscriptionPlans()
+    adminGetSubscriptionPlans()
       .then((response) => {
         const list = Array.isArray(response)
           ? response
@@ -75,7 +72,7 @@ function Subscriptionplan() {
     };
   }, []);
 
-  // only the active plans of the chosen tab, in display order
+  // Filter plans based on active tab category and isActive flag
   const filteredPlans = useMemo(() => {
     const category = TABS.find((t) => t.label === activeTab)?.category;
     return plans
@@ -98,7 +95,7 @@ function Subscriptionplan() {
       {/* Promo code button + modal */}
       <PromoCode />
 
-      {/* Navigation Tabs (4 tabs: wider box + wraps on small screens) */}
+      {/* Navigation Tabs */}
       <div className="subscription-tabs" style={{ maxWidth: 680, flexWrap: "wrap" }}>
         {TABS.map((tab) => (
           <Button
@@ -175,7 +172,7 @@ function Subscriptionplan() {
         })}
       </div>
 
-      {/* New Bottom Info Section */}
+      {/* Bottom Info Section */}
       <div className="plans-footer-info">
         <h2>All plans include</h2>
         <p className="footer-tagline">Pay Less. Deliver More.</p>
@@ -191,4 +188,3 @@ function Subscriptionplan() {
 }
 
 export default Subscriptionplan;
-

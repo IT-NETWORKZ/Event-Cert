@@ -135,6 +135,7 @@ export const setEventStatus = async (id, enabled) => {
   return data;
 };
 
+
 /* ---------- RECIPIENTS (Custom+) ---------- */
 
 // Readable message from an axios error (backend sends plain text, a JSON string, or { message / title })

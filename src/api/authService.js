@@ -50,6 +50,13 @@ export const logout = async () => {
   }
 };
 
+// Admin Subscription Plans API
+export const adminGetSubscriptionPlans = async () => {
+  const response = await apiClient.get("/admin/subscription/plans");
+  return response.data; // Returns { success, message, data: [...] }
+};
+
+
 // # SUPERADMIN API //
 export const superAdminLogin = async (email, password) => {
   const { data } = await api.post("/auth/superadmin/login", { email, password });
