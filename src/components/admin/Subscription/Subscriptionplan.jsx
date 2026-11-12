@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Subscriptionplan.css";
 import PromoCode from "../../common/promocode/PromoCode";
 
@@ -10,16 +11,77 @@ import {
   FaDownload,
 } from "react-icons/fa";
 
-import subscriptionPlans from "./subscriptionData";
-import Button from "../../common/button/Button"
+import Button from "../../common/button/Button";
+
+// for now we are calling homesubscription paln here for test 
+import { getApiError, getSubscriptionPlans } from "../../../api/adminService";
+
+// category = planCategory sent by the API
+const TABS = [
+  { label: "Creatives", category: 2, icon: <FaCertificate /> },
+  { label: "Event", category: 1, icon: <FaCalendarAlt /> },
+  { label: "Event + Creatives", category: 3, icon: <FaCrown /> },
+  { label: "Download", category: 4, icon: <FaDownload /> },
+];
+
+const FEATURE_LIMIT = 6; // points shown on each card
+
+// "<ul><li>A</li><li>B</li></ul>" -> ["A", "B"]
+const htmlToItems = (html) => {
+  // the API cuts some texts in the middle of a tag -> drop that broken end
+  const clean = String(html || "").replace(/<[^>]*$/, "");
+  if (!clean) return [];
+  const doc = new DOMParser().parseFromString(clean, "text/html");
+  return [...doc.querySelectorAll("li")]
+    .map((li) => li.textContent.replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+};
+
+// 6 + "Week" -> "6 Weeks", 1 + "Month" -> "1 Month"
+const durationLabel = (p) =>
+  `${p.durationValue} ${p.durationUnit}${p.durationValue > 1 ? "s" : ""}`;
 
 function Subscriptionplan() {
-  const [activeTab, setActiveTab] = useState("Certificate");
+  const navigate = useNavigate();
 
-  // Filter plans based on the active tab selection
-  const filteredPlans = subscriptionPlans.filter(
-    (plan) => plan.type?.toLowerCase() === activeTab.toLowerCase() || plan.category?.toLowerCase() === activeTab.toLowerCase() || true
-  );
+  const [activeTab, setActiveTab] = useState(TABS[0].label);
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  // load plans from the API
+  useEffect(() => {
+    let cancelled = false;
+
+    getSubscriptionPlans()
+      .then((response) => {
+        const list = Array.isArray(response)
+          ? response
+          : Array.isArray(response?.data)
+          ? response.data
+          : [];
+        if (!cancelled) setPlans(list);
+      })
+      .catch((err) => {
+        console.error(err);
+        if (!cancelled) setError(getApiError(err, "Unable to load plans. Please try again."));
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // only the active plans of the chosen tab, in display order
+  const filteredPlans = useMemo(() => {
+    const category = TABS.find((t) => t.label === activeTab)?.category;
+    return plans
+      .filter((p) => p.planCategory === category && p.isActive !== false)
+      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+  }, [plans, activeTab]);
 
   return (
     <div className="subscription-page">
@@ -32,82 +94,87 @@ function Subscriptionplan() {
           </p>
         </div>
       </section>
+
       {/* Promo code button + modal */}
       <PromoCode />
-      {/* Navigation Tabs */}
-      <div className="subscription-tabs">
-        <Button
-          className={activeTab === "Certificate" ? "active" : ""}
-          onClick={() => setActiveTab("Certificate")}
-        >
-          <FaCertificate />
-          Certificate
-        </Button>
 
-        <Button
-          className={activeTab === "Event" ? "active" : ""}
-          onClick={() => setActiveTab("Event")}
-        >
-          <FaCalendarAlt />
-          Event
-        </Button>
-
-        <Button
-          className={activeTab === "Combo" ? "active" : ""}
-          onClick={() => setActiveTab("Combo")}
-        >
-          <FaCrown />
-          Combo
-        </Button>
-
-        <Button
-          className={activeTab === "Download" ? "active" : ""}
-          onClick={() => setActiveTab("Download")}
-        >
-          <FaDownload />
-          Download
-        </Button>
+      {/* Navigation Tabs (4 tabs: wider box + wraps on small screens) */}
+      <div className="subscription-tabs" style={{ maxWidth: 680, flexWrap: "wrap" }}>
+        {TABS.map((tab) => (
+          <Button
+            key={tab.label}
+            className={activeTab === tab.label ? "active" : ""}
+            onClick={() => setActiveTab(tab.label)}
+          >
+            {tab.icon}
+            {tab.label}
+          </Button>
+        ))}
       </div>
 
       {/* Unified Cards Wrapper */}
       <div className="plans-wrapper">
-        {filteredPlans.map((plan, index) => (
-          <div className="plan-card" key={plan.id || index}>
-            {/* Left Side Duration Banner */}
-            <div className="plan-duration">
-              <span>{plan.duration || "1 Month"}</span>
-            </div>
+        {loading && <p style={{ textAlign: "center" }}>Loading plans...</p>}
 
-            {/* Middle Structural Layout */}
-            <div className="plan-content-inner">
-              {/* Pricing Information */}
-              <div className="price-box">
-                <span className="old-price">₹ {plan.oldPrice}</span>
-                <h2>₹ {plan.price}</h2>
-                <span className="discount">{plan.discount || "Save Big"}</span>
+        {!loading && error && (
+          <p style={{ textAlign: "center", color: "#b91c1c" }}>{error}</p>
+        )}
+
+        {!loading && !error && filteredPlans.length === 0 && (
+          <p style={{ textAlign: "center" }}>No plans are available in this category right now.</p>
+        )}
+
+        {filteredPlans.map((plan) => {
+          const features = htmlToItems(plan.content1).slice(0, FEATURE_LIMIT);
+          const badge = plan.isPopular
+            ? "Most Popular"
+            : plan.taxPercentage > 0
+            ? `+ ${plan.taxPercentage}% GST`
+            : "";
+
+          return (
+            <div className="plan-card" key={plan.planId}>
+              {/* Left Side Duration Banner */}
+              <div className="plan-duration">
+                <span>{durationLabel(plan)}</span>
               </div>
 
-              {/* Dynamic Feature List */}
-              <div className="plan-features">
-                <h3>Why choose this plan?</h3>
-                <ul>
-                  {plan.features.map((feature, i) => (
-                    <li key={i}>
-                      <FaCheckCircle />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+              {/* Middle Structural Layout */}
+              <div className="plan-content-inner">
+                {/* Pricing Information */}
+                <div className="price-box">
+                  <h2>₹ {Number(plan.price).toLocaleString("en-IN")}</h2>
+                  {badge && <span className="discount">{badge}</span>}
+                </div>
+
+                {/* Dynamic Feature List */}
+                <div className="plan-features">
+                  <h3>{plan.heading1 || "Why choose this plan?"}</h3>
+                  <ul>
+                    {features.map((feature, i) => (
+                      <li key={i}>
+                        <FaCheckCircle />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {/* Right Action Section */}
+              <div className="buy-section">
+                <Button
+                  className="buy-now-btn"
+                  onClick={() => navigate(`/admin/payment/${plan.planId}`)}
+                >
+                  Buy Now
+                </Button>
               </div>
             </div>
-
-            {/* Right Action Section */}
-            <div className="buy-section">
-              <Button className="buy-now-btn">Buy Now</Button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
+
       {/* New Bottom Info Section */}
       <div className="plans-footer-info">
         <h2>All plans include</h2>
@@ -119,9 +186,9 @@ function Subscriptionplan() {
         <p className="footer-subtext-title">Subscription Models</p>
         <p className="footer-subtext-body">Designed for Events, Institutions & Individuals</p>
       </div>
-
     </div>
   );
 }
 
 export default Subscriptionplan;
+
