@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { getHomePromoCodes, validateHomePromoCode } from "../../../api/homeService";
-import { getAdminPromoCodes, validateAdminPromoCode } from "../../../api/adminService";
+import { getHomePromoCodes } from "../../../api/homeService";
+import { getAdminPromoCodes } from "../../../api/adminService";
 import { getPromoCodes, DISCOUNT_TYPE } from "../../../api/superAdminService";
 import "./PromoCode.css";
 
@@ -55,15 +55,13 @@ const fmtLong = (iso) => {
   });
 };
 
-// A promo code is "live" when it works:
-// Enabled + Show (visibilityType 2) + today is inside its validity period
-const isLive = (p, today) =>
+// Active = Enabled + today is inside the validity period (Show / Hide is ignored)
+const isActiveNow = (p, today) =>
   p.enabled &&
-  p.visible &&
   (!p.validityStart || p.validityStart <= today) &&
   (!p.expireDate || p.expireDate >= today);
 
-// Status badge (superadmin list). key "active" = works, everything else = inactive
+// Status badge (superadmin list). active: true = works, false = inactive
 const statusOf = (p, today) => {
   if (!p.enabled) return { key: "disabled", text: "Disabled", active: false };
   if (p.expireDate && p.expireDate < today) return { key: "expired", text: "Expired", active: false };
@@ -84,13 +82,16 @@ const toCard = (p, status) => ({
   status,
 });
 
-// only codes that currently work (customer-facing roles)
-const toLiveCards = (list) => {
+// admin: every active code, newest first
+const toActiveCards = (list) => {
   const today = todayIso();
-  return list.filter((p) => isLive(p, today)).map((p) => toCard(p));
+  return [...list]
+    .filter((p) => isActiveNow(p, today))
+    .sort((a, b) => (b.date || "").localeCompare(a.date || "") || b.id - a.id)
+    .map((p) => toCard(p));
 };
 
-// every promo code that was created, newest first (superadmin)
+// superadmin: every promo code that was created, newest first, with a status badge
 const toAllCards = (list) => {
   const today = todayIso();
   return [...list]
@@ -98,12 +99,11 @@ const toAllCards = (list) => {
     .map((p) => toCard(p, statusOf(p, today)));
 };
 
-// Where each role gets its offers from, and how a typed code is validated.
-// validate: null  -> the "Have a promo code?" box is hidden for that role.
+// Where each role gets its offers from
 const SOURCES = {
-  home: { load: getHomePromoCodes, validate: validateHomePromoCode }, // returns cards (discountText / plan)
-  admin: { load: async () => toLiveCards(await getAdminPromoCodes()), validate: validateAdminPromoCode },
-  superadmin: { load: async () => toAllCards(await getPromoCodes()), validate: null }, // GET /superadmin/promocodes -> all
+  home: { load: getHomePromoCodes }, // returns cards (discountText / plan)
+  admin: { load: async () => toActiveCards(await getAdminPromoCodes()) },
+  superadmin: { load: async () => toAllCards(await getPromoCodes()) }, // GET /superadmin/promocodes -> all
 };
 
 // works for cards from this file and for the ready-made cards of the home API
@@ -123,16 +123,11 @@ const FILTERS = [
 
 /**
  * Props
- *  - role     : "home" (default) | "admin" | "superadmin"  -> picks the API used
- *               (the All / Active / Inactive tabs and status badges exist only for "superadmin")
- *  - planId   : id of the selected plan (sent to the validate API)
- *  - amount   : plan price (sent to the validate API)
- *  - onApply  : (result) => void, called when a code is valid
- *               result = { code, isValid, message, discountAmount, finalAmount }
+ *  - role : "home" (default) | "admin" | "superadmin"  -> picks the API used
+ *           (the All / Active / Inactive tabs and status badges exist only for "superadmin")
  */
-const PromoCode = ({ role = "home", planId, amount, onApply }) => {
+const PromoCode = ({ role = "home" }) => {
   const source = SOURCES[role] ?? SOURCES.home;
-  const canApply = !!source.validate;
   const isSuper = role === "superadmin";
 
   const [promos, setPromos] = useState([]);
@@ -140,11 +135,6 @@ const PromoCode = ({ role = "home", planId, amount, onApply }) => {
   const [error, setError] = useState("");
   const [copiedCode, setCopiedCode] = useState("");
   const [filter, setFilter] = useState("all");
-
-  // validate section
-  const [codeInput, setCodeInput] = useState("");
-  const [checking, setChecking] = useState(false);
-  const [result, setResult] = useState(null); // { isValid, message, discountAmount, finalAmount }
 
   const loadPromos = useCallback(async () => {
     setLoading(true);
@@ -191,37 +181,7 @@ const PromoCode = ({ role = "home", planId, amount, onApply }) => {
       document.body.removeChild(el);
     }
     setCopiedCode(code);
-    if (canApply) {
-      setCodeInput(code); // also drop it into the apply box
-      setResult(null);
-    }
     setTimeout(() => setCopiedCode(""), 1800);
-  };
-
-  const applyCode = async () => {
-    if (!source.validate) return;
-    const code = codeInput.trim();
-    if (!code) {
-      setResult({ isValid: false, message: "Enter a promo code." });
-      return;
-    }
-    setChecking(true);
-    setResult(null);
-    try {
-      const res = await source.validate({ code, planId, amount });
-      setResult(res);
-      if (res.isValid && onApply) onApply({ code, ...res });
-    } catch (err) {
-      setResult({ isValid: false, message: "Could not validate the code. Please try again." });
-    } finally {
-      setChecking(false);
-    }
-  };
-
-  const successText = (r) => {
-    if (r.message) return r.message;
-    if (r.discountAmount) return `Code applied. You save ₹${r.discountAmount}.`;
-    return "Code applied successfully.";
   };
 
   return (
@@ -269,43 +229,6 @@ const PromoCode = ({ role = "home", planId, amount, onApply }) => {
                 aria-label="Close"
               ></button>
             </div>
-
-            {/* Apply a code (fixed, does not scroll) */}
-            {canApply && (
-              <div className="promo-apply">
-                <label className="promo-apply-label" htmlFor="promoInput">
-                  Have a promo code?
-                </label>
-                <div className="promo-apply-row">
-                  <input
-                    id="promoInput"
-                    type="text"
-                    className="promo-input"
-                    placeholder="Enter code"
-                    value={codeInput}
-                    autoComplete="off"
-                    onChange={(e) => {
-                      setCodeInput(e.target.value.toUpperCase());
-                      setResult(null);
-                    }}
-                    onKeyDown={(e) => e.key === "Enter" && applyCode()}
-                  />
-                  <button
-                    type="button"
-                    className="promo-apply-btn"
-                    onClick={applyCode}
-                    disabled={checking}
-                  >
-                    {checking ? "Checking…" : "Apply"}
-                  </button>
-                </div>
-                {result && (
-                  <span className={`promo-result ${result.isValid ? "ok" : "bad"}`}>
-                    {result.isValid ? successText(result) : result.message || "Invalid promo code."}
-                  </span>
-                )}
-              </div>
-            )}
 
             {/* Filter tabs: superadmin only */}
             {isSuper && !loading && !error && (
@@ -388,7 +311,7 @@ const PromoCode = ({ role = "home", planId, amount, onApply }) => {
                           ) : (
                             <span className="coupon-status is-active">
                               <i></i>
-                              Offer
+                              Active
                             </span>
                           )}
 

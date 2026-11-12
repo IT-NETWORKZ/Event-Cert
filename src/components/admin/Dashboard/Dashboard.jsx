@@ -214,7 +214,7 @@ const Dashboard = () => {
         </div>
       )}
 
-      <PromoCode role="admin" />
+      <PromoCode />
 
       <div className="modal fade" id="guideModal" tabIndex="-1">
         <div className="modal-dialog modal-lg modal-dialog-centered">

@@ -63,9 +63,9 @@
   writing-mode: horizontal-tb;
 }
 
-/* ===== Modal shell (wide) ===== */
+/* ===== Modal shell ===== */
 #promoModal .promo-dialog {
-  max-width: 1000px;
+  max-width: 900px;
   width: calc(100% - 1.5rem);
   margin-left: auto;
   margin-right: auto;
@@ -90,7 +90,6 @@
   overflow: hidden;
 }
 
-/* decorative rings */
 .promo-header::before,
 .promo-header::after {
   content: "";
@@ -108,9 +107,11 @@
   display: flex;
   align-items: center;
   gap: 14px;
+  min-width: 0;
 }
 
 .promo-header-badge {
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -139,84 +140,28 @@
 .promo-header .btn-close {
   position: relative;
   z-index: 1;
+  flex: 0 0 auto;
 }
-
-/* ===== Apply promo code (fixed above the list) ===== */
-.promo-apply {
-  margin: 18px 24px 0;
-  background: var(--teal-50);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.promo-apply-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--teal-900);
-  margin: 0;
-}
-
-.promo-apply-row {
-  display: flex;
-  gap: 8px;
-  align-items: stretch;
-}
-
-.promo-input {
-  flex: 1;
-  min-width: 0;
-  background: var(--white);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 9px 12px;
-  font-size: 14px;
-  letter-spacing: 0.8px;
-  color: var(--teal-900);
-  outline: none;
-}
-.promo-input:focus {
-  border-color: var(--teal-500);
-  box-shadow: 0 0 0 3px rgba(20, 165, 151, 0.18);
-}
-
-.promo-apply-btn {
-  width: auto;
-  flex-shrink: 0;
-  border: none;
-  background: var(--teal-700);
-  color: var(--white);
-  font-size: 13px;
-  font-weight: 600;
-  padding: 9px 24px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.promo-apply-btn:hover { background: var(--teal-900); }
-.promo-apply-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-.promo-result { font-size: 12px; font-weight: 600; }
-.promo-result.ok  { color: var(--teal-700); }
-.promo-result.bad { color: var(--teal-900); text-decoration: underline wavy var(--teal-500); text-underline-offset: 3px; }
 
 /* ===== Filter tabs (superadmin) ===== */
 .promo-tabs {
   display: inline-flex;
   align-self: flex-start;
+  max-width: calc(100% - 48px);
   gap: 4px;
   margin: 18px 24px 0;
   padding: 4px;
   background: var(--teal-50);
   border: 1px solid var(--line);
   border-radius: 999px;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
+.promo-tabs::-webkit-scrollbar { display: none; }
 
 .promo-tab {
   width: auto;
+  flex: 0 0 auto;
   border: none;
   background: transparent;
   color: var(--teal-700);
@@ -225,6 +170,7 @@
   padding: 6px 16px;
   border-radius: 999px;
   cursor: pointer;
+  white-space: nowrap;
   transition: background 0.2s, color 0.2s;
 }
 .promo-tab b {
@@ -249,7 +195,7 @@
   flex-direction: column;
   gap: 16px;
   padding: 18px 24px 24px;
-  max-height: min(60vh, 560px);
+  max-height: min(65vh, 580px);
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -307,7 +253,7 @@
   border: 1px solid var(--line);
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(15, 118, 110, 0.1);
-  transition: box-shadow 0.2s ease, border-color 0.2s ease; /* no movement on hover */
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 .coupon-cardd:hover {
   border-color: var(--teal-500);
@@ -459,7 +405,7 @@
   color: var(--muted);
 }
 
-/* code box: the code never moves when Copy is clicked */
+/* code box: promo code + Copy button. The code never moves when Copy is clicked */
 .code-display {
   display: flex;
   align-items: center;
@@ -519,6 +465,8 @@
 .coupon-cardd.is-dim .copy-link.copied { background: var(--white); color: var(--teal-700); border-color: var(--teal-700); }
 
 /* ===== Responsive ===== */
+
+/* tablet */
 @media (max-width: 768px) {
   .promo-fab {
     top: auto;
@@ -535,13 +483,24 @@
   }
 
   .promo-fab .vertical-btn:hover { padding: 11px 18px; }
+
+  .promo-header { padding: 16px 18px; }
+  .promo-tabs { margin: 14px 18px 0; max-width: calc(100% - 36px); }
+  .promo-list { padding: 16px 18px 20px; }
+
+  .coupon-cardd { --stub: 120px; }
+  .coupon-off { font-size: 34px; }
+  .coupon-right { padding: 14px 16px; }
 }
 
+/* phone: ticket stacks (stub on top), code and Copy button stay on one row */
 @media (max-width: 600px) {
-  .promo-header { padding: 16px; }
-  .promo-apply { margin: 14px 14px 0; }
-  .promo-tabs { margin: 14px 14px 0; }
-  .promo-list { padding: 14px 14px 18px; max-height: 62vh; }
+  #promoModal .promo-dialog { width: calc(100% - 1rem); }
+
+  .promo-header .modal-title { font-size: 17px; }
+  .promo-header-badge { width: 38px; height: 38px; }
+  .promo-tabs { margin: 12px 12px 0; max-width: calc(100% - 24px); }
+  .promo-list { padding: 12px 12px 16px; gap: 12px; max-height: 68vh; }
 
   .coupon-cardd { flex-direction: column; }
   .coupon-cardd::before,
@@ -557,7 +516,22 @@
     border-bottom: 2px dashed rgba(255, 255, 255, 0.7);
     border-radius: 15px 15px 0 0;
   }
-  .coupon-off { font-size: 30px; }
-  .coupon-right { padding: 14px; }
-  .copy-link { flex-basis: 96px; width: 96px; }
+  .coupon-kicker { display: none; }
+  .coupon-off { font-size: 28px; }
+  .coupon-right { padding: 14px; gap: 10px; }
+
+  .promo-text { font-size: 15px; letter-spacing: 1px; }
+  .copy-link { flex-basis: 92px; width: 92px; padding: 8px 0; }
+}
+
+/* very small phones: Copy button goes full width under the code */
+@media (max-width: 380px) {
+  .code-display {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px;
+    text-align: center;
+  }
+  .copy-link { flex: none; width: 100%; }
 }
