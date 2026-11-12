@@ -1,5 +1,6 @@
 import api from "../api/axiosClient";
 import { normalizePromo } from "./superAdminService";
+import { toPromoValidation } from "./homeService";
 
 /* ---------- PROFILE ---------- */
 // GET api/admin/profile
@@ -196,6 +197,69 @@ export const setRecipientStatus = async (id, isActive) => {
   return data;
 };
 
+// The API returns max 200 rows per page, so these helpers read every page.
+const fetchAllRecipients = async (path, search = "") => {
+  const pageSize = 200;
+  const all = [];
+  for (let page = 1; page <= 100; page++) {
+    const { data } = await api.get(path, { params: { search, page, pageSize } });
+    const list = Array.isArray(data) ? data : data?.data ?? data?.recipients ?? data?.rows ?? data?.items ?? [];
+    all.push(...list);
+    const totalPages = Array.isArray(data) ? 1 : data?.totalPages ?? 1;
+    if (page >= totalPages || list.length === 0) break;
+  }
+  return all.map(toRecipientRow);
+};
+
+// GET api/admin/recipients/active  -> users shown in Custom+
+export const getActiveRecipients = ({ search = "" } = {}) =>
+  fetchAllRecipients("/admin/recipients/active", search);
+
+// GET api/admin/recipients/inactive  -> users shown in Retrieve Records
+export const getInactiveRecipients = ({ search = "" } = {}) =>
+  fetchAllRecipients("/admin/recipients/inactive", search);
+
+// the bulk endpoints accept 1..500 ids per call, so bigger selections are sent in parts
+const idParts = (ids, size = 500) => {
+  const unique = [...new Set((ids || []).map(Number))].filter((n) => n > 0);
+  const parts = [];
+  for (let i = 0; i < unique.length; i += size) parts.push(unique.slice(i, i + size));
+  return parts;
+};
+
+// PATCH api/admin/recipients/bulk/enable  { recipientIds: [..] }  -> { enabled }
+export const enableRecipients = async (ids) => {
+  let enabled = 0;
+  for (const part of idParts(ids)) {
+    const { data } = await api.patch("/admin/recipients/bulk/enable", { recipientIds: part });
+    enabled += data?.enabled ?? 0;
+  }
+  return { enabled };
+};
+
+// PATCH api/admin/recipients/bulk/disable  { recipientIds: [..] }  -> { disabled }
+export const disableRecipients = async (ids) => {
+  let disabled = 0;
+  for (const part of idParts(ids)) {
+    const { data } = await api.patch("/admin/recipients/bulk/disable", { recipientIds: part });
+    disabled += data?.disabled ?? 0;
+  }
+  return { disabled };
+};
+
+// POST api/admin/recipients/bulk/remove  { recipientIds: [..] }  -> { deleted, notFound, inUse, warning }
+export const removeRecipients = async (ids) => {
+  const total = { deleted: 0, notFound: 0, inUse: 0, warning: null };
+  for (const part of idParts(ids)) {
+    const { data } = await api.post("/admin/recipients/bulk/remove", { recipientIds: part });
+    total.deleted += data?.deleted ?? 0;
+    total.notFound += data?.notFound ?? 0;
+    total.inUse += data?.inUse ?? 0;
+    total.warning = data?.warning || total.warning;
+  }
+  return total;
+};
+
 /* ---------- CARDS + BULK JOBS (Custom+) ---------- */
 
 // POST api/admin/cards (multipart/form-data) – saves the design (source image + canvas JSON)
@@ -233,23 +297,32 @@ export const saveCardDesign = async ({
   return data; // { success, cardDesignId, designName, templateType, uploadFormat, outputFormat, imageUrl }
 };
 
-// POST api/admin/bulk-jobs – queues the send. outputType: Image | PDF, channels: Email | WhatsApp | Both.
-// The other field names must match BulkJobCreateDto (cardDesignId, recipientIds, whatsappTemplate,
-// parameters are assumed names).
+// POST api/admin/bulk-jobs (JSON) - matches BulkJobCreateDto
+// outputType: Image | PDF, outputFormat: PNG | JPG | PDF, channels: Email | WhatsApp | Both
+// scheduledAt: UTC ISO string (e.g. "2026-11-11T13:30:00.000Z"); leave out to run now
 export const createBulkJob = async ({
   cardDesignId,
+  templateId,
   outputType,
+  outputFormat,
   channels,
   recipientIds,
-  whatsappTemplate,
-  parameters,
+  parameterValues,
   scheduledAt,
 }) => {
-  const payload = { cardDesignId, outputType, channels, recipientIds, whatsappTemplate, parameters };
+  const payload = {
+    cardDesignId,
+    templateId: templateId ?? null,
+    outputType,
+    outputFormat,
+    channels,
+    recipientIds,
+    parameterValues: parameterValues || {},
+  };
   if (scheduledAt) payload.scheduledAt = scheduledAt;
 
   const { data } = await api.post("/admin/bulk-jobs", payload);
-  return data; // { jobId, status, statusUrl }
+  return data; // { jobId, status: "Scheduled" | "Queued", statusUrl }
 };
 
 // GET api/admin/bulk-jobs/{id}
@@ -280,18 +353,13 @@ const toWhatsappTemplate = (raw) => {
 };
 
 // GET api/admin/whatsapp-templates?templateType=1&sendType=2
-export const getWhatsappTemplates = async ({ templateType, sendType }) => {
+export const getWhatsappTemplates = async ({ templateType, sendType } = {}) => {
   const { data } = await api.get("/admin/whatsapp-templates", { params: { templateType, sendType } });
   const list = Array.isArray(data)
     ? data
     : data?.templates ?? data?.items ?? data?.data ?? data?.rows ?? [];
   return list.map(toWhatsappTemplate).filter((t) => t.name);
 };
-
-
-// Paste into adminService.js (it already has `api` imported).
-// If you also want the validation mapper there, import it: import { toPromoValidation } from "./homeService";
-import { toPromoValidation } from "./homeService";
 
 /* ---------- SUBSCRIPTION (Admin) ---------- */
 
@@ -323,12 +391,6 @@ export const validateAdminPromoCode = async ({ code, planId, amount } = {}) => {
     throw err;
   }
 };
-
-// ===== Add to adminService.js =====
-
-// 1) at the top of the file, with the other imports (api is already imported there):
-
-// 2) anywhere below, next to the other subscription methods:
 
 // GET api/admin/promocodes – promo codes shown to admins in the Available Offers popup
 // (path assumed: same base as POST /admin/promocodes/validate. Change it if your API differs)

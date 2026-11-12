@@ -5,6 +5,7 @@ import {
   ArrowLeft,
   Users,
   UserCheck,
+  Trash2,
   FileSpreadsheet,
   RefreshCw,
   Loader2,
@@ -12,6 +13,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import DataTable from "../../common/Table/DataTable";
+import { enableRecipients, getApiError, getInactiveRecipients, removeRecipients } from "../../../api/adminService"; // adjust path to your service file
 import "../../../css/ACustomRetrieveRecords.css";
 
 const CustomRetrieveRecords = () => {
@@ -21,13 +23,14 @@ const CustomRetrieveRecords = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [enabling, setEnabling] = useState(false);
+  const [removing, setRemoving] = useState(false);
   const [status, setStatus] = useState({ type: "", text: "" });
 
   // ---------- Load ----------
   const loadRecords = useCallback(async () => {
     setLoading(true);
     try {
-      const list = await getRecipients({ page: 1, pageSize: 500 });
+      const list = await getInactiveRecipients(); // GET api/admin/recipients/inactive
       setRows(list);
       setSelectedIds([]);
     } catch (err) {
@@ -42,8 +45,8 @@ const CustomRetrieveRecords = () => {
     loadRecords();
   }, [loadRecords]);
 
-  // Records to retrieve = recipients that are currently Inactive
-  const pastRows = useMemo(() => rows.filter((r) => r.isActive === false), [rows]);
+  // The API already returns only the Inactive recipients
+  const pastRows = rows;
 
   // ---------- Selection ----------
   const allSelected =
@@ -66,25 +69,60 @@ const CustomRetrieveRecords = () => {
       return;
     }
 
-    setEnabling(true);
-    setStatus({ type: "", text: "" });
+    try {
+      setEnabling(true);
+      setStatus({ type: "", text: "" });
 
-    const results = await Promise.allSettled(
-      selectedIds.map((id) => setRecipientStatus(id, true))
-    );
-    const okIds = selectedIds.filter((_, i) => results[i].status === "fulfilled");
-    const failed = selectedIds.length - okIds.length;
+      // PATCH api/admin/recipients/bulk/enable  { recipientIds: [..] }
+      const { enabled } = await enableRecipients(selectedIds);
+      await loadRecords(); // enabled users leave this list (they are Active again in Custom+)
 
-    setRows((prev) => prev.map((r) => (okIds.includes(r.id) ? { ...r, isActive: true } : r)));
-    setSelectedIds((prev) => prev.filter((id) => !okIds.includes(id)));
+      setStatus({
+        type: "ok",
+        text: `${enabled} user${enabled === 1 ? "" : "s"} enabled successfully.`,
+      });
+    } catch (err) {
+      console.error(err);
+      setStatus({ type: "error", text: getApiError(err, "Could not enable users. Please try again.") });
+    } finally {
+      setEnabling(false);
+    }
+  };
 
-    setStatus({
-      type: failed ? "error" : "ok",
-      text: failed
-        ? `${okIds.length} enabled, ${failed} failed. Please try again.`
-        : `${okIds.length} user${okIds.length > 1 ? "s" : ""} enabled successfully.`,
-    });
-    setEnabling(false);
+  // ---------- Remove Users (delete the ticked records) ----------
+  // POST api/admin/recipients/bulk/remove  { recipientIds: [..] }
+  const handleRemove = async () => {
+    if (!selectedIds.length) {
+      setStatus({ type: "error", text: "Tick at least one record first." });
+      return;
+    }
+    if (
+      !window.confirm(
+        `Remove ${selectedIds.length} selected user${selectedIds.length === 1 ? "" : "s"}? This cannot be undone.`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      setRemoving(true);
+      setStatus({ type: "", text: "" });
+
+      const { deleted, inUse, warning } = await removeRecipients(selectedIds);
+      await loadRecords(); // removed users leave this list
+
+      setStatus({
+        type: inUse > 0 ? "error" : "ok",
+        text:
+          `${deleted} user${deleted === 1 ? "" : "s"} removed.` +
+          (inUse > 0 ? ` ${warning || `${inUse} could not be removed (used in a pending job).`}` : ""),
+      });
+    } catch (err) {
+      console.error(err);
+      setStatus({ type: "error", text: getApiError(err, "Could not remove users. Please try again.") });
+    } finally {
+      setRemoving(false);
+    }
   };
 
   // ---------- Export to Excel (ticked rows, or all listed rows if none ticked) ----------
@@ -183,10 +221,21 @@ const CustomRetrieveRecords = () => {
             type="button"
             className="rr-pill rr-pill-green"
             onClick={handleEnable}
-            disabled={enabling || loading}
+            disabled={enabling || removing || loading}
           >
             {enabling ? <Loader2 size={18} className="rr-spin" /> : <UserCheck size={18} />}
             <span>Enable Users</span>
+          </button>
+
+          <button
+            type="button"
+            className="rr-pill"
+            style={{ background: "#dc2626", borderColor: "#dc2626", color: "#fff" }}
+            onClick={handleRemove}
+            disabled={enabling || removing || loading}
+          >
+            {removing ? <Loader2 size={18} className="rr-spin" /> : <Trash2 size={18} />}
+            <span>Remove Users</span>
           </button>
 
           <button

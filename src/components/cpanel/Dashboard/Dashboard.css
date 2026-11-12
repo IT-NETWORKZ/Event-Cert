@@ -342,19 +342,6 @@ body {
   z-index: 999;
 }
 
-
-.promo-header {
-  background: #193e8e;
-  color: #fff;
-}
-
-.promo-header h3 {
-  margin: 0;
-  font-size: 22px;
-  font-weight: 700;
-}
-
-
 .modal-body{
 
     background:#f7f8fc;
@@ -363,79 +350,6 @@ body {
 
 }
 
- .coupon-cardd{
-
-    background:#fff;
-
-    border-radius:16px;
-
-    overflow:hidden;
-
-    box-shadow:0 8px 18px rgba(0,0,0,.08);
-
-    margin-bottom:18px;
-    
-
-}
-
-
- .coupon-top{
-
-    padding:18px;
-
-}
-
-
- .gift-icon{
-
-    font-size:32px;
-
-    margin-bottom:8px;
-
-}
-
-.coupon-top h2{
-
-    font-size:42px;
-
-    margin-bottom:8px;
-
-}
-
-.promo-code-section{
-
-    padding:18px;
-
-}
-
-.promo-code-label {
-  display: block;
-  color: #777;
-  margin-bottom: 10px;
-}
-
-.code-display {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  background: #f3f5fb;
-  border-radius: 10px;
-  padding: 14px;
-}
-
-
-.promo-text{
-
-    font-size:20px;
-
-}
-
-.copy-link {
-  cursor: pointer;
-  color: #ff5722;
-  font-weight: 700;
-}
 
 .valid-until {
   display: block;

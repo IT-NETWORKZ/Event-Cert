@@ -10,6 +10,7 @@ import {
 
 import { getSubscriptionPlans } from "../../api/adminService";
 import "./PaymentGateway.css";
+import PromoCode from "../common/promocode/PromoCode";
 
 const GST_RATE = 18;
 const OTHER_TAX_RATE = 0;
@@ -167,7 +168,8 @@ const PaymentGateway = () => {
 
   return (
     <div className="payment-page">
-
+      {/* Promo code button + modal */}
+      <PromoCode />
       <div className="payment-card">
 
         {/* Header */}
@@ -245,11 +247,10 @@ const PaymentGateway = () => {
 
             {promoMessage && (
               <p
-                className={`payment-promo-message ${
-                  discountPercent > 0
-                    ? "success"
-                    : "error"
-                }`}
+                className={`payment-promo-message ${discountPercent > 0
+                  ? "success"
+                  : "error"
+                  }`}
                 role="status"
               >
                 {promoMessage}
