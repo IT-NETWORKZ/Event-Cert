@@ -12,7 +12,7 @@ import {
 } from "react-icons/fa";
 
 import Button from "../../common/button/Button";
-import { getApiError, adminGetSubscriptionPlans } from "../../../api/adminService";
+import {  adminGetSubscriptionPlans } from "../../../api/authService";
 
 // category = planCategory sent by the API
 const TABS = [
