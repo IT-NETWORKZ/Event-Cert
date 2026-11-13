@@ -39,9 +39,74 @@
 }
 
 /* ==========================================================================
+   FILTER TABS (All / Unread / Read)
+   ========================================================================== */
+
+.cpc-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+}
+
+.cpc-tab {
+    flex: 0 0 auto;
+    padding: 7px 20px;
+    border: 1px solid rgba(13, 78, 67, 0.25);
+    border-radius: 20px;
+    background: #ffffff;
+    color: #0d4e43;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cpc-tab:hover:not(:disabled) {
+    border-color: #009688;
+    color: #009688;
+}
+
+.cpc-tab.active {
+    background: #0d4e43;
+    border-color: #0d4e43;
+    color: #ffffff;
+}
+
+.cpc-tab:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
+   ERROR / LOADING STATES
+   ========================================================================== */
+
+.cpc-error {
+    margin: 0 0 14px;
+    padding: 10px 14px;
+    border: 1px solid #f5c2c7;
+    border-radius: 10px;
+    background: #fdecee;
+    color: #b02a37;
+    font-size: 14px;
+}
+
+.cpc-state {
+    margin: 0;
+    padding: 36px 0;
+    text-align: center;
+    font-size: 14px;
+    color: #5c726f;
+}
+
+/* ==========================================================================
    TABLE CARD
-   Only the container that holds the <table> scrolls sideways.
-   Every other wrapper is overflow: visible, so there is just one scrollbar.
+   The card and every wrapper size to their content (no fixed height, no
+   min-height), so the table is exactly as tall as the rows shown.
+   Only .table-responsive scrolls, and only sideways.
    ========================================================================== */
 
 .cpc-card {
@@ -52,32 +117,37 @@
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
     overflow: visible;
     min-width: 0;
+    height: auto;
+    min-height: 0;
 }
 
 .cp-page-wrapper .table-responsive-scroll-wrapper,
-.c-addplans-wrapper .table-responsive-scroll-wrapper {
-    width: 100%;
-    overflow: visible !important;
-}
-
+.c-addplans-wrapper .table-responsive-scroll-wrapper,
 .cp-page-wrapper .table-wrapper,
 .cp-page-wrapper .data-table-container,
 .cp-page-wrapper .data-table-wrapper,
 .c-addplans-wrapper .table-wrapper,
 .c-addplans-wrapper .data-table-container,
 .c-addplans-wrapper .data-table-wrapper {
-    overflow: visible !important;
+    width: 100%;
     max-width: 100%;
     min-width: 0;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
     padding: 0 !important;
 }
 
-/* THE ONE scroll area */
+/* THE ONE scroll area: sideways only, height follows the rows */
 .cp-page-wrapper .table-responsive,
 .c-addplans-wrapper .table-responsive {
     width: 100%;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
     overflow-x: auto !important;
-    overflow-y: visible !important;
+    overflow-y: hidden !important;
     -webkit-overflow-scrolling: touch;
     border-radius: 12px;
 }
@@ -88,6 +158,26 @@
     table-layout: fixed !important;
     width: max-content !important;
     min-width: 100% !important;
+    height: auto !important;
+    margin-bottom: 0 !important;
+}
+
+.cp-page-wrapper .data-table tbody,
+.c-addplans-wrapper .data-table tbody {
+    height: auto !important;
+}
+
+/* Rows are only as tall as their content; empty filler rows are hidden */
+.cp-page-wrapper .data-table tbody tr,
+.c-addplans-wrapper .data-table tbody tr {
+    height: auto !important;
+}
+
+.cp-page-wrapper .data-table tbody tr:empty,
+.cp-page-wrapper .data-table tbody tr:not(:has(td:not(:empty))),
+.c-addplans-wrapper .data-table tbody tr:empty,
+.c-addplans-wrapper .data-table tbody tr:not(:has(td:not(:empty))) {
+    display: none;
 }
 
 .cp-page-wrapper .table-responsive::-webkit-scrollbar,
@@ -136,8 +226,24 @@
     max-width: 100%;
 }
 
+/* entries-per-page select: readable, never clipped or transparent */
+.cp-page-wrapper select,
+.c-addplans-wrapper select {
+    position: relative;
+    z-index: 5;
+    background-color: #ffffff;
+    color: #1a2e2b;
+}
+
+.cp-page-wrapper select option,
+.c-addplans-wrapper select option {
+    background: #ffffff;
+    color: #1a2e2b;
+}
+
 /* ==========================================================================
    CELL ALIGNMENT
+   Columns: 1 Sr.No | 2 Date | 3 Name | 4 Email | 5 Mobile | 6 Message | 7 Status | 8 Action
    ========================================================================== */
 
 .cp-page-wrapper .data-table th,
@@ -152,13 +258,19 @@
 }
 
 /* Message column reads better left aligned */
-.cp-page-wrapper .data-table td:last-child {
+.cp-page-wrapper .data-table td:nth-child(6) {
     text-align: left !important;
 }
 
 .cp-page-wrapper .th-content-wrapper,
 .c-addplans-wrapper .th-content-wrapper {
     justify-content: center !important;
+}
+
+/* Unread sender name */
+.cpc-unread {
+    font-weight: 700;
+    color: #0d4e43;
 }
 
 /* ==========================================================================
@@ -197,6 +309,73 @@
 }
 
 /* ==========================================================================
+   STATUS BADGE
+   ========================================================================== */
+
+.cpc-badge {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.cpc-badge.unread {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.cpc-badge.read {
+    background: #e0f2ef;
+    color: #0d4e43;
+}
+
+/* ==========================================================================
+   ROW ACTION BUTTONS (View / Mark Read)
+   ========================================================================== */
+
+.cpc-actions {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+}
+
+.cpc-btn {
+    padding: 4px 12px;
+    border: 1px solid #0d4e43;
+    border-radius: 18px;
+    background: #ffffff;
+    color: #0d4e43;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cpc-btn:hover:not(:disabled) {
+    background: #0d4e43;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.cpc-btn-primary {
+    background: #0d4e43;
+    color: #ffffff;
+}
+
+.cpc-btn-primary:hover:not(:disabled) {
+    background: #009688;
+    border-color: #009688;
+}
+
+.cpc-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
    ACTION BUTTONS (shared with other CPanel pages)
    ========================================================================== */
 
@@ -209,6 +388,84 @@
 
 .btn-outline-success:hover {
     transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   DETAILS MODAL
+   ========================================================================== */
+
+.cpc-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(13, 38, 34, 0.5);
+}
+
+.cpc-modal {
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+.cpc-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(13, 78, 67, 0.12);
+}
+
+.cpc-modal-head h5 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a2e2b;
+}
+
+.cpc-modal-x {
+    padding: 0 4px;
+    border: none;
+    background: transparent;
+    font-size: 26px;
+    line-height: 1;
+    color: #5c726f;
+    cursor: pointer;
+}
+
+.cpc-modal-x:hover {
+    color: #0d4e43;
+}
+
+.cpc-modal-body {
+    padding: 16px 20px 20px;
+}
+
+.cpc-modal-body p {
+    margin: 0 0 8px;
+    font-size: 14px;
+    color: #2b2b2b;
+    overflow-wrap: anywhere;
+}
+
+.cpc-modal-body b {
+    color: #1a2e2b;
+}
+
+.cpc-modal-msg {
+    margin-top: 12px !important;
+    padding: 12px;
+    border-radius: 10px;
+    background: #f4f8f7;
+    line-height: 1.6;
+    white-space: pre-wrap;
 }
 
 /* ==========================================================================
@@ -252,6 +509,20 @@
     .cpc-card {
         padding: 10px;
         border-radius: 12px;
+    }
+
+    .cpc-tab {
+        padding: 6px 16px;
+    }
+
+    .cpc-modal {
+        border-radius: 12px;
+    }
+
+    .cpc-modal-head,
+    .cpc-modal-body {
+        padding-left: 14px;
+        padding-right: 14px;
     }
 
     /* toolbar rows wrap with a small gap */
