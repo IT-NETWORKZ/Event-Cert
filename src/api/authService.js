@@ -102,6 +102,27 @@ export const getSuperAdminPlans = async () => {
   return [...list].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
 };
 
+// Fetch one plan using its ID
+export const getPlanById = async (planId) => {
+  const { data } = await api.get(`/superadmin/plans/${planId}`);
+  return data;
+};
+
+// Create a new subscription plan
+export const createPlans = async (payload) => {
+  const { data } = await api.post("/superadmin/plans", payload);
+  return data;
+};
+
+// Update an existing subscription plan
+export const updatePlan = async (planId, payload) => {
+  const { data } = await api.put(
+    `/superadmin/plans/${planId}`,
+    payload
+  );
+  return data;
+};
+
 
 // SuperAdmin - AddEvent - Toggle plan status (Enable / Disable)
 export const togglePlanStatus = async (planId, currentStatus) => {
@@ -110,3 +131,5 @@ export const togglePlanStatus = async (planId, currentStatus) => {
   const { data } = await api.patch(`/superadmin/plans/${planId}/status`, payload);
   return data;
 };
+
+

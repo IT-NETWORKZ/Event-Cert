@@ -1,3 +1,33 @@
+/* =========================================
+   HIDE SCROLLBARS (touch / wheel scroll still works)
+   Only applies while the payment page is mounted.
+========================================= */
+
+/* Window: no scrollbar, no page shifting */
+html:has(.payment-page),
+body:has(.payment-page) {
+  height: 100%;
+  overflow: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Every wrapper that contains the payment page
+   (layout content area, scroll container, etc.) */
+:has(.payment-page):not(html):not(body) {
+  scrollbar-width: none;            /* Firefox */
+  -ms-overflow-style: none;         /* old Edge */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;     /* never scroll the window/sidebar */
+}
+
+html:has(.payment-page)::-webkit-scrollbar,
+body:has(.payment-page)::-webkit-scrollbar,
+:has(.payment-page)::-webkit-scrollbar {
+  display: none;                    /* Chrome, Edge, Safari */
+  width: 0;
+  height: 0;
+}
 
 /* =========================================
    PAYMENT PAGE - MAIN LAYOUT
@@ -21,6 +51,7 @@
   background: #ffffff;
   color: #333333;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: visible;              /* no scrollbar of its own */
 }
 
 /* =========================================
@@ -297,15 +328,18 @@
 
 /* =========================================
    PROCEED TO PAY BUTTON
+   (fixed max width per screen size, centered)
 ========================================= */
 
 .payment-submit-btn {
   width: 100%;
+  max-width: 340px;               /* desktop */
   min-height: 52px;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 9px;
+  margin: 0 auto;                 /* centered */
   padding: 12px 18px;
   border: none;
   border-radius: 10px;
@@ -317,6 +351,7 @@
   color: #ffffff;
   font-size: 15px;
   font-weight: 700;
+  white-space: nowrap;
   cursor: pointer;
   box-shadow: 0 5px 15px rgba(0, 115, 103, 0.18);
   transition: 0.2s ease;
@@ -391,6 +426,10 @@
     max-width: 560px;
     padding: 28px;
   }
+
+  .payment-submit-btn {
+    max-width: 320px;
+  }
 }
 
 /* =========================================
@@ -421,6 +460,11 @@
 
   .payment-summary {
     padding: 16px 14px 7px;
+  }
+
+  .payment-submit-btn {
+    max-width: 290px;
+    min-height: 48px;
   }
 }
 
@@ -480,7 +524,10 @@
   }
 
   .payment-submit-btn {
+    max-width: 260px;
+    min-height: 46px;
     font-size: 13px;
-    padding: 12px 8px;
+    padding: 12px 10px;
+    gap: 7px;
   }
 }
