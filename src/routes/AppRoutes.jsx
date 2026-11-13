@@ -22,6 +22,9 @@ import Payment from "../components/admin/Payment/Payment";
 import AddEvent from "../components/admin/AddEvent/AddEvent";
 import AdminParticipate from "../components/admin/AddEvent/AdminParticipate";
 import EventRecipants from "../components/admin/AddEvent/EventRecipants";
+import EventAttendance from "../components/admin/AddEvent/EventAttendance";
+import UploadEventImages from "../components/admin/AddEvent/UploadEventImages";
+//import MarkAttendance from "./components/admin/AddEvent/MarkAttendance";
 import CustomPastRecords from "../components/admin/CustomPlus/CustomPastRecords";
 import CustomRetrieveRecords from "../components/admin/CustomPlus/CustomRetrieveRecords";
 
@@ -56,6 +59,7 @@ import AdminTransaction from "../components/cpanel/AdminTransaction/AdminTransac
 import CResetPassword from "../components/cpanel/ResetPassword/CResetPassword";
 import Taxes from "../components/cpanel/Taxes/Taxes";
 import Event from "../components/home/eventinfo/Event";
+import MarkAttendance from "../components/home/eventinfo/Event";
 
 
 
@@ -74,9 +78,10 @@ function AppRoutes() {
             <Route path="/register" element={<Register />} />
             <Route path="/subscription" element={<Subscription />} />
             <Route path="/event" element={<Event />} />
+            <Route path="/attendance" element={<MarkAttendance />} />
             <Route path="/reset-password" element={<CResetPass />} />
 
-            
+
 
             {/* Popular Links (footer > Pages) */}
             <Route path="/preview" element={<Preview />} />
@@ -97,10 +102,10 @@ function AppRoutes() {
             <Route element={<ProtectedRoute roles={["Admin", "User"]} />}>
                 <Route path="/admin/customplus" element={<CustomPlus />} />
                 <Route path="/admin/schedular" element={<Schedular />} />
-                
+
 
                 <Route path="/admin" element={<Admin />}>
-                
+
                     {/* /admin */}
                     <Route index element={<Dashboard />} />
                     {/* /admin/dashboard */}
@@ -119,6 +124,9 @@ function AppRoutes() {
                     <Route path="addevent" element={<AddEvent />} />
                     <Route path="admin-participate" element={<AdminParticipate />} />
                     <Route path="event-recipants" element={<EventRecipants />} />
+                    <Route path="event-attendance" element={<EventAttendance />} />
+                    <Route path="upload-event-images" element={<UploadEventImages />} />
+
                     {/* Delivery Report pages (inside the layout, so sidebar + navbar show) */}
                     <Route path="custom-status" element={<StatusReport type="custom" />} />
                     <Route path="schedule-status" element={<StatusReport type="schedule" />} />
@@ -129,7 +137,7 @@ function AppRoutes() {
 
                     <Route path="/admin/payment/:planId" element={<PaymentGateway />} />
 
-                    
+
 
                 </Route>
             </Route>

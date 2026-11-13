@@ -13,6 +13,7 @@ import {
   Clock,
   Globe,
   IndianRupee,
+  Images,
   Info,
   Loader2,
   MapPin,
@@ -25,6 +26,7 @@ import {
 import DataTable from "../../common/Table/DataTable";
 import { submitEventRegistration } from "../../../api/eventService";
 import { validateProfileFile, validateRegistration } from "../../../validations/eventRegistrationSchemas";
+import { getAttendanceQr, getEventImages } from "../../../api/eventImagesStore";
 
 /* ==========================================================================
    STATIC HELPERS / DATA  (no API for events, backend for registration)
@@ -200,6 +202,9 @@ const Event = () => {
   // gallery
   const [imgIdx, setImgIdx] = useState(0);
   const [galleryOpen, setGalleryOpen] = useState(false);
+  const [uploaded, setUploaded] = useState([]); // pictures added on "Upload Event Images"
+  const [attQr, setAttQr] = useState(""); // attendance QR of this event
+  const [qrOpen, setQrOpen] = useState(false);
   const [profilePreview, setProfilePreview] = useState("");
 
   // registration form
@@ -213,7 +218,31 @@ const Event = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const [participants, setParticipants] = useState(initialParticipants);
-  const imageCount = event.images.length;
+
+  // banner picture(s) of the event + every picture uploaded for it (placeholder banners are dropped)
+  const images = useMemo(() => {
+    if (!uploaded.length) return event.images;
+    const own = event.images.filter((src) => !String(src).startsWith("data:image/svg+xml"));
+    return [...own, ...uploaded];
+  }, [event.images, uploaded]);
+  const imageCount = images.length;
+
+  // pictures + attendance QR are kept in this browser (static, no backend)
+  const eventKey = event.id || params.get("nID") || 0;
+  useEffect(() => {
+    let cancelled = false;
+    setUploaded([]);
+    setAttQr("");
+    getEventImages(eventKey).then((list) => { if (!cancelled) setUploaded(list); });
+    getAttendanceQr(eventKey, { title: event.title, start: event.startDate, end: event.endDate }).then((png) => { if (!cancelled) setAttQr(png); });
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventKey]);
+
+  // keep the slider on a picture that exists
+  useEffect(() => {
+    if (imgIdx >= imageCount) setImgIdx(0);
+  }, [imageCount, imgIdx]);
 
   // new event opened -> start from the first picture / clean form
   useEffect(() => {
@@ -223,11 +252,12 @@ const Event = () => {
 
   // keyboard for the fullscreen pictures
   useEffect(() => {
-    if (!galleryOpen && !profilePreview) return undefined;
+    if (!galleryOpen && !profilePreview && !qrOpen) return undefined;
     const onKey = (e) => {
       if (e.key === "Escape") {
         setGalleryOpen(false);
         setProfilePreview("");
+        setQrOpen(false);
       }
       if (galleryOpen && e.key === "ArrowLeft") changeImage(-1);
       if (galleryOpen && e.key === "ArrowRight") changeImage(1);
@@ -235,7 +265,7 @@ const Event = () => {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [galleryOpen, profilePreview, imgIdx, imageCount]);
+  }, [galleryOpen, profilePreview, qrOpen, imgIdx, imageCount]);
 
   const changeImage = (step) =>
     setImgIdx((i) => (i + step + imageCount) % imageCount);
@@ -448,6 +478,19 @@ const Event = () => {
             <div className="evp-badge">
               <CalendarCheck size={15} /> Event Details
             </div>
+
+            {attQr && (
+              <div className="evp-qr-card">
+                <div className="evp-qr-head">
+                  <h4>Event Attendance QR Code</h4>
+                  <span className="evp-live">LIVE</span>
+                </div>
+                <button type="button" className="evp-qr-box" onClick={() => setQrOpen(true)} title="Click to enlarge the QR code">
+                  <img src={attQr} alt="Event attendance QR code" />
+                </button>
+                <p>Scan this QR code to mark your attendance.</p>
+              </div>
+            )}
             <h2 className="evp-event-title">{event.title}</h2>
 
             <div className="evp-meta-grid">
@@ -508,7 +551,7 @@ const Event = () => {
               )}
 
               <div className="evp-image-box" onClick={() => setGalleryOpen(true)} title="Click to view image">
-                <img src={event.images[imgIdx]} alt={event.title} />
+                <img src={images[imgIdx]} alt={event.title} />
               </div>
 
               {imageCount > 1 && (
@@ -517,8 +560,14 @@ const Event = () => {
                 </button>
               )}
 
-              {imageCount > 1 && <div className="evp-counter">{imgIdx + 1} / {imageCount}</div>}
+              <div className="evp-counter">{imgIdx + 1} / {imageCount}</div>
             </div>
+
+            <button type="button" className="evp-view-images" onClick={() => setGalleryOpen(true)}>
+              <Images size={18} />
+              <span>View Event Images</span>
+              <b>{imageCount}</b>
+            </button>
           </div>
         </div>
 
@@ -819,13 +868,25 @@ const Event = () => {
               <ChevronLeft size={20} />
             </button>
           )}
-          <img className="evp-full-img" src={event.images[imgIdx]} alt={event.title} onClick={(e) => e.stopPropagation()} />
+          <img className="evp-full-img" src={images[imgIdx]} alt={event.title} onClick={(e) => e.stopPropagation()} />
           {imageCount > 1 && (
             <button type="button" className="evp-modal-arrow evp-modal-next" onClick={(e) => { e.stopPropagation(); changeImage(1); }} aria-label="Next image">
               <ChevronRight size={20} />
             </button>
           )}
           {imageCount > 1 && <div className="evp-modal-counter">{imgIdx + 1} / {imageCount}</div>}
+        </div>
+      )}
+
+      {/* ===== FULLSCREEN ATTENDANCE QR ===== */}
+      {qrOpen && attQr && (
+        <div className="evp-overlay" onClick={() => setQrOpen(false)}>
+          <button type="button" className="evp-close evp-close-solid" onClick={() => setQrOpen(false)} aria-label="Close QR">
+            <X size={20} />
+          </button>
+          <div className="evp-qr-modal" onClick={(e) => e.stopPropagation()}>
+            <img src={attQr} alt="Event attendance QR code" />
+          </div>
         </div>
       )}
 

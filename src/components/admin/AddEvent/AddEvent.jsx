@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AddEvent.css";
 import DataTable from "../../common/Table/DataTable";
+import { makeAttendanceQrPng } from "../../../api/eventImagesStore";
 import {
   getEvents,
   createEvent,
@@ -13,7 +14,7 @@ import {
 const durationOptions = [
   "1 Weeks", "2 Weeks", "6 Weeks",
   "1 Month", "2 Month", "3 Months", "4 Months", "6 Months",
-  "1 Year",
+  "1 Year", "2 Years",
 ];
 
 const emptyFormData = {
@@ -110,6 +111,18 @@ const getErrorMessage = (err, fallback) => {
   return data?.message || data?.title || err.message || fallback;
 };
 
+/* ---------- static attendance QR (made in the browser, kept in localStorage) ---------- */
+const QR_STORE = "eventAttendanceQr2";
+const readQrStore = () => {
+  try { return JSON.parse(localStorage.getItem(QR_STORE) || "{}"); } catch { return {}; }
+};
+const writeQrStore = (obj) => {
+  try { localStorage.setItem(QR_STORE, JSON.stringify(obj)); } catch { /* storage full / blocked */ }
+};
+// the QR link carries the event title + dates, so the attendance page works on any phone
+const makeAttendanceQr = (r) =>
+  makeAttendanceQrPng({ id: r.id, title: r.eventTitle, start: r.eventStartDate, end: r.eventCompletionDate });
+
 /* long text: 3 lines + green "Read More / Read Less" link */
 const ReadMore = ({ text = "", limit = 80 }) => {
   const [open, setOpen] = useState(false);
@@ -136,6 +149,7 @@ const AddEvent = () => {
   const [eventsList, setEventsList] = useState([]);
   const [remainingEvents, setRemainingEvents] = useState(null);
   const [planExpiry, setPlanExpiry] = useState(null);
+  const [qrMap, setQrMap] = useState(readQrStore); // { [eventId]: png data url }
 
   const [tableLoading, setTableLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -146,12 +160,15 @@ const AddEvent = () => {
   const loadEvents = useCallback(async () => {
     try {
       const res = await getEvents();
-      setEventsList(res.list.map(normalizeEvent));
+      const list = res.list.map(normalizeEvent);
+      setEventsList(list);
       setRemainingEvents(res.remainingEvents);
       setPlanExpiry(res.planExpiryDate ? fmtDate(toDateInput(res.planExpiryDate)) : null);
+      return list;
     } catch (err) {
       console.error("Load Events Error:", err);
       setError(getErrorMessage(err, "Failed to load events."));
+      return [];
     } finally {
       setTableLoading(false);
     }
@@ -160,6 +177,21 @@ const AddEvent = () => {
   useEffect(() => {
     loadEvents();
   }, [loadEvents]);
+
+  // events that already had a QR (old link without event info) -> make it again with the new link
+  useEffect(() => {
+    let oldMap = {};
+    try { oldMap = JSON.parse(localStorage.getItem("eventAttendanceQr") || "{}"); } catch { /* ignore */ }
+    const todo = eventsList.filter((r) => oldMap[r.id] && !qrMap[r.id]);
+    if (!todo.length) return;
+    (async () => {
+      const next = { ...readQrStore() };
+      for (const r of todo) next[r.id] = await makeAttendanceQr(r);
+      writeQrStore(next);
+      setQrMap(next);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventsList]);
 
   /* ---------- table columns ---------- */
   const eventColumns = [
@@ -231,6 +263,38 @@ const AddEvent = () => {
       cell: (i) => {
         const v = i.getValue();
         return v && v !== "0" ? `₹${v}` : "Free";
+      },
+    },
+    {
+      header: "Attendance QR / Attendance",
+      id: "attendance",
+      enableSorting: false,
+      meta: { className: "text-center", width: "200px" },
+      cell: (i) => {
+        const row = i.row.original;
+        const qr = qrMap[row.id];
+        return (
+          <div className="attendance-cell">
+            {qr ? (
+              <a href={qr} download={`attendance-qr-${row.id}.png`} title="Click to download the QR">
+                <img src={qr} alt="Attendance QR" className="attendance-qr-img" />
+              </a>
+            ) : (
+              <span className="attendance-qr-none">QR Not Generated</span>
+            )}
+            <button
+              type="button"
+              className="btn btn-sm btn-primary attendance-btn"
+              onClick={() =>
+                navigate(`/admin/event-attendance?eventId=${row.id}`, {
+                  state: { eventId: row.id, eventTitle: row.eventTitle },
+                })
+              }
+            >
+              View Attendance
+            </button>
+          </div>
+        );
       },
     },
     {
@@ -325,6 +389,9 @@ const AddEvent = () => {
     setError("");
     setSubmitting(true);
 
+    const isNew = editingId === null;
+    const knownIds = new Set(eventsList.map((r) => r.id));
+
     try {
       const res =
         editingId !== null
@@ -337,7 +404,19 @@ const AddEvent = () => {
       );
       setEditingId(null);
       setFormData(emptyFormData);
-      await loadEvents();
+      const list = await loadEvents();
+
+      // new event -> make its attendance QR right here (static, no backend)
+      if (isNew) {
+        const createdId = res?.eventId ?? res?.id ?? res?.data?.eventId;
+        const fresh = list.filter((r) => r.id === createdId || !knownIds.has(r.id));
+        if (fresh.length) {
+          const next = { ...readQrStore() };
+          for (const r of fresh) next[r.id] = await makeAttendanceQr(r);
+          writeQrStore(next);
+          setQrMap(next);
+        }
+      }
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       console.error("Save Event Error:", err);

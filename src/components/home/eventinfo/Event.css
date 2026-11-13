@@ -346,3 +346,94 @@
 /* About / Instructions icons: always white on the teal square */
 .evp-detail-head .evp-detail-icon { flex: 0 0 38px; color: #ffffff; }
 .evp-detail-head .evp-detail-icon svg { color: #ffffff; stroke: #ffffff; width: 19px; height: 19px; }
+
+
+/* ===========================================================
+   Attendance QR card + "View Event Images" button
+   =========================================================== */
+.evp-qr-card {
+  max-width: 340px;
+  margin: 16px 0 4px;
+  padding: 18px 20px 16px;
+  background: #fff;
+  border: 1px solid #e3e8ee;
+  border-radius: 22px;
+  box-shadow: 0 8px 22px rgba(0, 105, 92, .12);
+  text-align: center;
+}
+.evp-qr-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.evp-qr-head h4 { margin: 0; font-size: 16px; font-weight: 700; text-align: left; color: var(--t-deep); }
+.evp-live {
+  flex: 0 0 auto;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  padding: 5px 14px;
+  border-radius: 20px;
+}
+.evp-qr-box {
+  display: grid;
+  place-items: center;
+  width: 170px;
+  height: 170px;
+  margin: 0 auto;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid #e3e8ee;
+  border-radius: 14px;
+  cursor: zoom-in;
+  transition: transform .2s, box-shadow .2s;
+}
+.evp-qr-box:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0, 150, 136, .25); }
+.evp-qr-box img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.evp-qr-card p { margin: 12px 0 0; font-size: 14px; line-height: 1.45; color: var(--muted); }
+
+/* big QR in the popup */
+.evp-qr-modal {
+  width: min(88vw, 520px);
+  padding: 28px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+}
+.evp-qr-modal img { width: 100%; display: block; }
+.evp-close-solid { background: var(--t); }
+.evp-close-solid:hover { background: var(--t-dark); }
+
+/* picture area: slider + button below it */
+.evp-gallery-area { flex-direction: column; gap: 14px; }
+.evp-view-images {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: none;
+  border-radius: 24px;
+  padding: 9px 22px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--grad);
+  box-shadow: 0 6px 14px rgba(0, 150, 136, .3);
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+}
+.evp-view-images:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0, 150, 136, .38); }
+.evp-view-images b {
+  display: inline-grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 7px;
+  border-radius: 20px;
+  background: #fff;
+  color: var(--t-dark);
+  font-size: 12px;
+}
+.evp-view-images svg { display: block; }
+
+@media (max-width: 640px) {
+  .evp-qr-card { max-width: 100%; }
+  .evp-qr-modal { padding: 18px; }
+}
