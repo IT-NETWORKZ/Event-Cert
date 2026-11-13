@@ -13,6 +13,7 @@ import {
   apiErrorMessage,
 } from "../../../api/superAdminService"; // adjust the path to where superadminservice.js is
 import PromoCode from "../../common/promocode/PromoCode";
+import { validatePromoCode } from "../../../validations/superadmin/promoCodeSchemas"; // adjust the path if needed
 
 const emptyForm = {
   promoCode: "",
@@ -33,6 +34,14 @@ const fmt = (iso) => {
 
 const sameId = (a, b) => String(a) === String(b);
 
+// small helper to show a validation message under a field
+const FieldError = ({ message }) =>
+  message ? (
+    <p className="pc-error" role="alert">
+      {message}
+    </p>
+  ) : null;
+
 const CPromoCode = () => {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,10 +51,23 @@ const CPromoCode = () => {
   const [plansLoading, setPlansLoading] = useState(true);
   const [plansError, setPlansError] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(""); // server / general error
+  const [fieldErrors, setFieldErrors] = useState({}); // Joi validation errors per field
   const [submitting, setSubmitting] = useState(false);
   const [pending, setPending] = useState({}); // { "<id>:<key>": true } while a toggle request is running
   const dropRef = useRef(null);
+
+  // red border for an invalid input
+  const invalidStyle = (name) =>
+    fieldErrors[name] ? { borderColor: "#c0392b" } : undefined;
+
+  const clearFieldError = (...names) =>
+    setFieldErrors((prev) => {
+      if (!names.some((n) => prev[n])) return prev;
+      const next = { ...prev };
+      names.forEach((n) => delete next[n]);
+      return next;
+    });
 
   /* ---------- load list ---------- */
   const loadRows = useCallback(async () => {
@@ -237,6 +259,7 @@ const CPromoCode = () => {
   const toggleAllPlans = () => {
     setFormData((prev) => ({ ...prev, allPlans: !prev.allPlans, planIds: [] }));
     setError("");
+    clearFieldError("planIds");
   };
 
   const togglePlan = (id) => {
@@ -248,6 +271,7 @@ const CPromoCode = () => {
         : [...prev.planIds, id],
     }));
     setError("");
+    clearFieldError("planIds");
   };
 
   /* ---------- form handlers ---------- */
@@ -255,22 +279,31 @@ const CPromoCode = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     setError("");
+
+    // clear this field's error; the expire date check depends on the start date
+    if (name === "validityStart") clearFieldError("validityStart", "expireDate");
+    else clearFieldError(name);
   };
 
   const handleReset = () => {
     setFormData(emptyForm);
     setIsDropdownOpen(false);
     setError("");
+    setFieldErrors({});
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (submitting) return;
 
-    if (!formData.promoCode.trim()) return setError("Please enter a promo code.");
-    if (!formData.allPlans && formData.planIds.length === 0) return setError("Please select a plan.");
-    if (formData.expireDate < formData.validityStart)
-      return setError("Expire date cannot be before the start date.");
+    // Joi validation (src/validations/superadmin/promoCodeSchemas.js)
+    const { value, errors } = validatePromoCode(formData);
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      setError("");
+      return;
+    }
+    setFieldErrors({});
 
     setSubmitting(true);
     setError("");
@@ -278,9 +311,9 @@ const CPromoCode = () => {
       // POST /superadmin/promocodes  (new promo codes: Enabled, visibilityType 1 = Hide)
       // planIds = [] means All Plans. planLabels = plan names, saved so the table shows them.
       await createPromoCode({
-        ...formData,
-        planIds: formData.allPlans ? [] : formData.planIds,
-        planLabels: formData.allPlans ? ["All Plans"] : selectedLabels,
+        ...value,
+        planIds: value.allPlans ? [] : value.planIds,
+        planLabels: value.allPlans ? ["All Plans"] : selectedLabels,
         enabled: true,
         visible: false,
       });
@@ -313,7 +346,8 @@ const CPromoCode = () => {
             <div className="pc-underline"></div>
           </div>
 
-          <form onSubmit={handleSubmit} className="pc-form">
+          {/* noValidate -> Joi shows the messages instead of the browser popups */}
+          <form onSubmit={handleSubmit} className="pc-form" noValidate>
             <div className="pc-group">
               <label htmlFor="promoCode" className="pc-label">
                 Promo-code <span className="pc-req">*</span>
@@ -325,8 +359,9 @@ const CPromoCode = () => {
                 value={formData.promoCode}
                 onChange={handleChange}
                 className="pc-input"
-                required
+                style={invalidStyle("promoCode")}
               />
+              <FieldError message={fieldErrors.promoCode} />
             </div>
 
             <div className="pc-group">
@@ -343,6 +378,7 @@ const CPromoCode = () => {
                   <span>Multiple</span>
                 </label>
               </div>
+              <FieldError message={fieldErrors.promoType} />
             </div>
 
             <div className="pc-group">
@@ -358,8 +394,9 @@ const CPromoCode = () => {
                 value={formData.discount}
                 onChange={handleChange}
                 className="pc-input"
-                required
+                style={invalidStyle("discount")}
               />
+              <FieldError message={fieldErrors.discount} />
             </div>
 
             <div className="pc-group" ref={dropRef}>
@@ -370,6 +407,7 @@ const CPromoCode = () => {
                 <button
                   type="button"
                   className="pc-drop-btn"
+                  style={invalidStyle("planIds")}
                   onClick={() => setIsDropdownOpen((o) => !o)}
                   aria-haspopup="listbox"
                   aria-expanded={isDropdownOpen}
@@ -434,6 +472,7 @@ const CPromoCode = () => {
                   </div>
                 )}
               </div>
+              <FieldError message={fieldErrors.planIds} />
             </div>
 
             <div className="pc-row-2">
@@ -448,8 +487,9 @@ const CPromoCode = () => {
                   value={formData.validityStart}
                   onChange={handleChange}
                   className="pc-input"
-                  required
+                  style={invalidStyle("validityStart")}
                 />
+                <FieldError message={fieldErrors.validityStart} />
               </div>
 
               <div className="pc-group">
@@ -464,8 +504,9 @@ const CPromoCode = () => {
                   value={formData.expireDate}
                   onChange={handleChange}
                   className="pc-input"
-                  required
+                  style={invalidStyle("expireDate")}
                 />
+                <FieldError message={fieldErrors.expireDate} />
               </div>
             </div>
 

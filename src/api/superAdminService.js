@@ -382,3 +382,4 @@ export const markContactRead = async (id) => {
   const { data } = await api.patch(`/superadmin/contacts/${id}/read`);
   return data;
 };
+
