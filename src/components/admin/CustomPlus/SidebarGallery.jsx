@@ -59,7 +59,15 @@ const VARIANT_CONFIG = {
 const LazyImage = ({ src, alt, onClick, style, onMouseOver, onMouseOut }) => {
   const [isIntersected, setIsIntersected] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [tryIdx, setTryIdx] = useState(0);
   const imgRef = useRef(null);
+
+  // live pictures may be .png, .jpg or .jpeg -> try the next extension when one is missing
+  const candidates = /\.png$/i.test(src)
+    ? [src, src.replace(/\.png$/i, ".jpg"), src.replace(/\.png$/i, ".jpeg")]
+    : [src];
+  const failed = tryIdx >= candidates.length;
+  const currentSrc = candidates[Math.min(tryIdx, candidates.length - 1)];
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -76,6 +84,35 @@ const LazyImage = ({ src, alt, onClick, style, onMouseOver, onMouseOut }) => {
     return () => observer.disconnect();
   }, []);
 
+  // nothing worked -> visible tile (so the problem can be seen), not an empty gap
+  if (failed) {
+    console.warn("Gallery image not found:", src);
+    return (
+      <div
+        title={src}
+        style={{
+          ...style,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 6,
+          background: "#fafafa",
+          border: "1px dashed #cfd8d6",
+          color: "#8a949e",
+          fontSize: 12,
+          textAlign: "center",
+          padding: 8,
+          cursor: "default",
+        }}
+      >
+        <span style={{ fontSize: 22 }}>🖼️</span>
+        <span>Image not available</span>
+        <span style={{ fontSize: 10, wordBreak: "break-all" }}>{src.split("/").pop()}</span>
+      </div>
+    );
+  }
+
   return (
     <div
       ref={imgRef}
@@ -84,12 +121,15 @@ const LazyImage = ({ src, alt, onClick, style, onMouseOver, onMouseOut }) => {
     >
       {isIntersected && (
         <img
-          src={src}
+          key={currentSrc}
+          src={currentSrc}
           alt={alt}
-          onClick={onClick}
+          referrerPolicy="no-referrer"
+          onClick={() => onClick && onClick(currentSrc)}
           onMouseOver={onMouseOver}
           onMouseOut={onMouseOut}
           onLoad={() => setIsLoaded(true)}
+          onError={() => setTryIdx((i) => i + 1)}
           style={{
             width: "100%",
             height: "100%",
@@ -116,8 +156,10 @@ const SidebarGallery = ({
   onBack,
   icon,
   variant = "invitation",
+  pageSize = 6, // pictures shown first; "Load More" adds this many
+  maxImages = Infinity, // never show more than this
 }) => {
-  const [visibleImages, setVisibleImages] = useState(6);
+  const [visibleImages, setVisibleImages] = useState(pageSize);
   const [panelState, setPanelState] = useState(isOpen ? "full" : "closed");
   const selfTriggeredCloseRef = useRef(false);
   const scrollContainerRef = useRef(null);
@@ -126,14 +168,19 @@ const SidebarGallery = ({
   useEffect(() => {
     if (isOpen) {
       setPanelState("full");
-      setVisibleImages(6);
+      setVisibleImages(pageSize);
     } else if (selfTriggeredCloseRef.current) {
       selfTriggeredCloseRef.current = false;
     }
   }, [isOpen]);
 
+  // another category / title -> start again from the first page
   useEffect(() => {
-    if (scrollContainerRef.current && visibleImages > 6) {
+    setVisibleImages(pageSize);
+  }, [title, pageSize]);
+
+  useEffect(() => {
+    if (scrollContainerRef.current && visibleImages > pageSize) {
       setTimeout(() => {
         scrollContainerRef.current.scrollTo({
           top: scrollContainerRef.current.scrollHeight,
@@ -450,12 +497,12 @@ const SidebarGallery = ({
                   gap: 15,
                 }}
               >
-                {images.slice(0, visibleImages).map((img, index) => (
+                {images.slice(0, Math.min(visibleImages, maxImages)).map((img, index) => (
                   <LazyImage
                     key={index}
                     src={img}
                     alt={`Gallery ${index}`}
-                    onClick={() => onSelect && onSelect(img)}
+                    onClick={(url) => onSelect && onSelect(url || img)}
                     style={{
                       width: "100%",
                       height: "170px",
@@ -468,10 +515,10 @@ const SidebarGallery = ({
                 ))}
               </div>
 
-              {visibleImages < images.length && (
+              {visibleImages < Math.min(images.length, maxImages) && (
                 <div style={{ textAlign: "center", marginTop: 25 }}>
                   <button
-                    onClick={() => setVisibleImages((prev) => prev + 6)}
+                    onClick={() => setVisibleImages((prev) => prev + pageSize)}
                     style={{
                       padding: "12px 28px",
                       border: "none",
