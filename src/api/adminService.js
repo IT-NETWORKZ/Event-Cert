@@ -204,6 +204,7 @@ const fetchAllRecipients = async (path, search = "") => {
   for (let page = 1; page <= 100; page++) {
     const { data } = await api.get(path, { params: { search, page, pageSize } });
     const list = Array.isArray(data) ? data : data?.data ?? data?.recipients ?? data?.rows ?? data?.items ?? [];
+    if (page === 1 && list[0] && import.meta.env?.DEV) console.debug(`[${path}] first raw row:`, list[0]);
     all.push(...list);
     const totalPages = Array.isArray(data) ? 1 : data?.totalPages ?? 1;
     if (page >= totalPages || list.length === 0) break;
@@ -325,11 +326,102 @@ export const createBulkJob = async ({
   return data; // { jobId, status: "Scheduled" | "Queued", statusUrl }
 };
 
-// GET api/admin/bulk-jobs/{id}
+/* ---------- BULK JOB HISTORY + SENT STATUS (Past Records / Sent status pages) ---------- */
+
+// reads one value from an API row, camelCase or PascalCase
+const readKey = (raw, ...names) => {
+  const lower = {};
+  Object.keys(raw || {}).forEach((k) => (lower[k.toLowerCase()] = raw[k]));
+  for (const n of names) if (lower[n] != null) return lower[n];
+  return null;
+};
+
+// fallback: first text value whose key contains one of the words (ignores ids / GUIDs / numbers)
+const GUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-/i;
+const fuzzyText = (raw, words, skip = []) => {
+  for (const k of Object.keys(raw || {})) {
+    const key = k.toLowerCase();
+    const v = raw[k];
+    if (typeof v !== "string" || !v || GUID_RE.test(v)) continue;
+    if (skip.some((x) => key.includes(x))) continue;
+    if (words.some((w) => key.includes(w))) return v;
+  }
+  return "";
+};
+
+// one row of GET api/admin/bulk-jobs  (also used for GET api/admin/bulk-jobs/{id})
+// sent / failed / pending are read from the API when present, otherwise worked out from total
+const toJobRow = (raw) => {
+  const num = (...names) => {
+    const v = readKey(raw, ...names);
+    return v == null || v === "" ? null : Number(v);
+  };
+  const total = num("total", "totalcount", "totalrecipients", "totalrecords", "recipientcount", "recipientscount", "totalusers") ?? 0;
+  const sent = num("sent", "sentcount", "success", "successcount", "successful", "successfulcount", "delivered", "deliveredcount") ?? 0;
+  const failed = num("failed", "failedcount", "failure", "failurecount") ?? 0;
+  const processed = num("processed", "processedcount");
+  const pendingRaw = num("pending", "pendingcount", "remaining", "remainingcount");
+  const done = processed ?? sent + failed;
+  return {
+    id: String(readKey(raw, "jobid", "id", "bulkjobid") ?? ""),
+    status: String(readKey(raw, "status", "jobstatus") ?? ""),
+    outputType: String(readKey(raw, "outputtype") ?? "") || fuzzyText(raw, ["outputtype", "output"], ["format", "path", "url"]),
+    outputFormat: String(readKey(raw, "outputformat") ?? "") || fuzzyText(raw, ["outputformat", "uploadformat", "format"]),
+    channels: String(readKey(raw, "channels", "channel") ?? "") || fuzzyText(raw, ["channel", "sendtype", "sendvia", "medium"]),
+    templateName: String(readKey(raw, "templatename", "template") ?? "") || fuzzyText(raw, ["template"], ["path", "url", "id"]),
+    designName: String(readKey(raw, "designname", "design") ?? "") || fuzzyText(raw, ["design", "title", "jobname", "campaign"], ["path", "url", "json", "id"]),
+    total,
+    sent,
+    failed,
+    pending: pendingRaw != null ? pendingRaw : Math.max(0, total - done),
+    scheduledAtUtc: readKey(raw, "scheduledatutc", "scheduledat"),
+    createdAt: readKey(raw, "createdat", "createdatutc"),
+    startedAt: readKey(raw, "startedat", "startedatutc"),
+    completedAt: readKey(raw, "completedat", "completedatutc"),
+  };
+};
+
+// one row of GET api/admin/bulk-jobs/{id}/recipients
+const toJobRecipientRow = (raw) => ({
+  id: readKey(raw, "recipientid", "id", "jobrecipientid"),
+  name: String(readKey(raw, "fullname", "name", "recipientname") ?? ""),
+  email: String(readKey(raw, "email", "emailaddress") ?? ""),
+  mobile: String(readKey(raw, "mobile", "mobileno", "phone", "whatsapp") ?? ""),
+  status: String(readKey(raw, "status", "recipientstatus", "sendstatus") ?? ""),
+  emailStatus: String(readKey(raw, "emailstatus", "emailsendstatus") ?? ""),
+  whatsappStatus: String(readKey(raw, "whatsappstatus", "whatsappsendstatus", "wastatus") ?? ""),
+  filePath: String(readKey(raw, "generatedimagepath", "generatedfilepath", "filepath", "imageurl") ?? ""),
+  error: String(readKey(raw, "errormessage", "error", "failurereason") ?? ""),
+  processedAt: readKey(raw, "processedatutc", "processedat", "sentat", "completedat"),
+});
+
+// reads every page of a list endpoint ({ data, totalPages })
+const fetchAllPages = async (path, params, mapRow, pageSize) => {
+  const all = [];
+  for (let page = 1; page <= 500; page++) {
+    const { data } = await api.get(path, { params: { ...params, page, pageSize } });
+    const list = Array.isArray(data) ? data : data?.data ?? data?.items ?? [];
+    if (page === 1 && list[0] && import.meta.env?.DEV) console.debug(`[${path}] first raw row:`, list[0]);
+    all.push(...list);
+    const totalPages = Array.isArray(data) ? 1 : data?.totalPages ?? 1;
+    if (page >= totalPages || list.length === 0) break;
+  }
+  return all.map(mapRow);
+};
+
+// GET api/admin/bulk-jobs/{id}  -> details + progress of one job
 export const getBulkJob = async (id) => {
   const { data } = await api.get(`/admin/bulk-jobs/${id}`);
-  return data;
+  return toJobRow(data?.job ?? data?.data ?? data);
 };
+
+// GET api/admin/bulk-jobs?status=  -> every job of the admin, newest first
+export const getBulkJobs = ({ status = "" } = {}) =>
+  fetchAllPages("/admin/bulk-jobs", { status: status || undefined }, toJobRow, 100);
+
+// GET api/admin/bulk-jobs/{jobId}/recipients  -> sent status of every user in that job
+export const getBulkJobRecipients = (jobId, { status = "" } = {}) =>
+  fetchAllPages(`/admin/bulk-jobs/${jobId}/recipients`, { status: status || undefined }, toJobRecipientRow, 100);
 
 /* ---------- WHATSAPP TEMPLATES (dropdown in Custom+) ---------- */
 
