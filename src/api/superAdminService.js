@@ -314,3 +314,71 @@ export const apiErrorMessage = (err, fallback = "Something went wrong. Please tr
   }
   return d?.message ?? d?.title ?? (typeof d === "string" ? d : null) ?? err?.message ?? fallback;
 };
+
+/* ---------- CONTACT MESSAGES (api/superadmin/contacts) ---------- */
+/*
+  GET    /superadmin/contacts                          all
+  GET    /superadmin/contacts?page=1&pageSize=10       paginated
+  GET    /superadmin/contacts?isRead=false|true        unread / read
+  GET    /superadmin/contacts/{id}                     details
+  PATCH  /superadmin/contacts/{id}/read                mark as read
+*/
+
+// backend item -> table row
+export const normalizeContact = (c = {}) => ({
+  id: c.contactId ?? c.id,
+  date: toDateOnly(c.createdAt ?? c.createdDate ?? c.submittedAt ?? c.createdOn ?? c.date),
+  name: c.fullName ?? c.name ?? "",
+  email: c.email ?? "",
+  mobile: c.phoneNumber ?? c.phone ?? c.mobile ?? "",
+  subject: c.subject ?? "",
+  message: c.message ?? "",
+  isRead: !!(c.isRead ?? c.read),
+});
+
+// GET api/superadmin/contacts  -> { items, totalCount, page, pageSize }
+// All options are optional: { page, pageSize, isRead: true | false | undefined }
+export const getContacts = async ({ page, pageSize, isRead } = {}) => {
+  const params = {};
+  if (page != null) params.page = page;
+  if (pageSize != null) params.pageSize = pageSize;
+  if (isRead === true || isRead === false) params.isRead = isRead;
+
+  const { data } = await api.get("/superadmin/contacts", { params });
+  const root = data?.data ?? data;
+  const list = Array.isArray(root)
+    ? root
+    : root?.items ?? root?.contacts ?? root?.results ?? root?.data ?? [];
+  const items = list.map(normalizeContact);
+
+  return {
+    items,
+    totalCount: Number(root?.totalCount ?? root?.total ?? root?.totalRecords ?? data?.totalCount ?? items.length),
+    page: Number(root?.page ?? root?.pageNumber ?? page ?? 1),
+    pageSize: Number(root?.pageSize ?? pageSize ?? items.length),
+  };
+};
+
+// Every contact (walks the pages), optionally filtered by read status
+export const getAllContacts = async ({ isRead } = {}) => {
+  const pageSize = 100;
+  const all = [];
+  for (let page = 1; page <= 50; page += 1) {
+    const res = await getContacts({ page, pageSize, isRead });
+    all.push(...res.items);
+    if (!res.items.length || all.length >= res.totalCount) break;
+  }
+  return all;
+};
+
+// GET api/superadmin/contacts/{id}
+export const getContactById = async (id) => {
+  const { data } = await api.get(`/superadmin/contacts/${id}`);
+  return normalizeContact(data?.data ?? data);
+};
+
+// PATCH api/superadmin/contacts/{id}/read
+export const markContactRead = async (id) => {
+  const { data } = await api.patch(`/superadmin/contacts/${id}/read`);
+  return data;
+};

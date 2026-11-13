@@ -1,12 +1,19 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import DataTable from "../../components/common/Table/DataTable";
+import { getAllContacts, getContactById, markContactRead, apiErrorMessage } from "../../api/superAdminService";
 import "../../css/CPContact.css";
 
 const MSG_LIMIT = 70; // messages longer than this get a "Read More" link
 
+const FILTERS = [
+  { key: "all", label: "All", isRead: undefined },
+  { key: "unread", label: "Unread", isRead: false },
+  { key: "read", label: "Read", isRead: true },
+];
+
 const formatDate = (iso) => {
   if (!iso) return "";
-  const [y, m, d] = iso.split("-");
+  const [y, m, d] = String(iso).split("-");
   return `${d}/${m}/${y}`;
 };
 
@@ -30,18 +37,69 @@ const MessageCell = ({ message }) => {
   );
 };
 
-// Sample data: replace with your API response
-const sampleData = [
-  { id: 1, date: "2026-10-15", name: "Robertnum", email: "ninadvhegmannjfc33@gmail.com", mobile: "86191213934", message: "Hello, I would like to know how to send certificates to all participants." },
-  { id: 2, date: "2026-10-15", name: "Robertnum", email: "ninadvhegmannjfc33@gmail.com", mobile: "88219929267", message: "Please share the subscription plan details." },
-  { id: 3, date: "2026-10-14", name: "Charlesfap", email: "michael.hallenberg@afry.com", mobile: "84347982825", message: "READ THE NEWS AND EARN $50,000,000 PER MONTH SENSIBLY https://telegra.ph/Read-the-latest-news-and-earn-50000000-in-a-month-Message-ID-652731-10-05" },
-  { id: 4, date: "2026-10-13", name: "Robertnum", email: "ninadvhegmannjfc33@gmail.com", mobile: "82526557352", message: "My OTP is not arriving on email." },
-  { id: 5, date: "2026-10-11", name: "Charlesfap", email: "JASON23MAIL@GMAIL.COM", mobile: "84422576651", message: "READ THE NEWS AND TURN KNOWLEDGE INTO $50,000,000 PER MONTH. Visit the link and start earning today with our simple guide." },
-  { id: 6, date: "2026-10-10", name: "Robertnum", email: "joshuaguerrero2v7t40d@gmail.com", mobile: "81435948422", message: "Hallo, ek wou jou prys ken." },
-  { id: 7, date: "2026-10-08", name: "Charlesfap", email: "adampukki571@gmail.com", mobile: "82157255466", message: "READ THE NEWS AND EARN $50,000,000 PER MONTH LOYALLY. Click the link below to read more about this offer and join now." },
-];
+const CPContact = () => {
+  const [contacts, setContacts] = useState([]);
+  const [filter, setFilter] = useState("all");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-const CPContact = ({ data = sampleData }) => {
+  const [selected, setSelected] = useState(null); // contact shown in the details modal
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [markingId, setMarkingId] = useState(null);
+
+  const load = useCallback(async () => {
+    const f = FILTERS.find((x) => x.key === filter);
+    try {
+      setLoading(true);
+      setError("");
+      setContacts(await getAllContacts({ isRead: f?.isRead }));
+    } catch (err) {
+      setError(apiErrorMessage(err, "Unable to load contact messages."));
+      setContacts([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [filter]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const setReadLocally = (id) => {
+    setContacts((list) => list.map((c) => (c.id === id ? { ...c, isRead: true } : c)));
+    setSelected((s) => (s && s.id === id ? { ...s, isRead: true } : s));
+  };
+
+  const markRead = useCallback(async (id) => {
+    try {
+      setMarkingId(id);
+      await markContactRead(id);
+      setReadLocally(id);
+    } catch (err) {
+      setError(apiErrorMessage(err, "Unable to mark the message as read."));
+    } finally {
+      setMarkingId(null);
+    }
+  }, []);
+
+  // open details (GET /contacts/{id}) and mark as read if it is unread
+  const openDetails = useCallback(
+    async (row) => {
+      setSelected(row);
+      try {
+        setDetailLoading(true);
+        const detail = await getContactById(row.id);
+        setSelected({ ...row, ...detail });
+        if (!(detail.isRead || row.isRead)) await markRead(row.id);
+      } catch (err) {
+        setError(apiErrorMessage(err, "Unable to load message details."));
+      } finally {
+        setDetailLoading(false);
+      }
+    },
+    [markRead]
+  );
+
   const columns = useMemo(
     () => [
       {
@@ -60,6 +118,9 @@ const CPContact = ({ data = sampleData }) => {
       {
         accessorKey: "name",
         header: "Name",
+        cell: ({ row }) => (
+          <span className={row.original.isRead ? "" : "cpc-unread"}>{row.original.name}</span>
+        ),
         meta: { className: "text-center", width: "160px" },
       },
       {
@@ -78,13 +139,68 @@ const CPContact = ({ data = sampleData }) => {
         meta: { className: "text-start", width: "420px" },
         cell: ({ row }) => <MessageCell message={row.original.message} />,
       },
+      {
+        accessorKey: "isRead",
+        header: "Status",
+        cell: ({ getValue }) => (
+          <span className={`cpc-badge ${getValue() ? "read" : "unread"}`}>
+            {getValue() ? "Read" : "Unread"}
+          </span>
+        ),
+        meta: { className: "text-center", width: "110px" },
+      },
+      {
+        id: "actions",
+        header: "Action",
+        enableSorting: false,
+        cell: ({ row }) => {
+          const c = row.original;
+          return (
+            <div className="cpc-actions">
+              <button type="button" className="cpc-btn" onClick={() => openDetails(c)}>
+                View
+              </button>
+              {!c.isRead && (
+                <button
+                  type="button"
+                  className="cpc-btn cpc-btn-primary"
+                  disabled={markingId === c.id}
+                  onClick={() => markRead(c.id)}
+                >
+                  {markingId === c.id ? "..." : "Mark Read"}
+                </button>
+              )}
+            </div>
+          );
+        },
+        meta: { className: "text-center", width: "190px" },
+      },
     ],
-    []
+    [markingId, markRead, openDetails]
   );
 
+  // CSV opens directly in Excel
   const handleExportExcel = () => {
-    // TODO: connect your export-to-Excel logic
-    console.log("Export contact details", data);
+    const esc = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const head = ["Sr. No.", "Date", "Name", "Email Id", "Mobile No.", "Subject", "Message", "Status"];
+    const rows = contacts.map((c, i) => [
+      i + 1,
+      formatDate(c.date),
+      c.name,
+      c.email,
+      c.mobile,
+      c.subject,
+      c.message,
+      c.isRead ? "Read" : "Unread",
+    ]);
+    const csv = [head, ...rows].map((r) => r.map(esc).join(",")).join("\r\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "contact-details.csv";
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -98,16 +214,82 @@ const CPContact = ({ data = sampleData }) => {
           <p className="header-subtitle">Messages received from the Contact Us form</p>
         </div>
 
+        {/* Filter tabs */}
+        <div className="cpc-tabs">
+          {FILTERS.map((f) => (
+            <button
+              key={f.key}
+              type="button"
+              className={`cpc-tab ${filter === f.key ? "active" : ""}`}
+              onClick={() => setFilter(f.key)}
+              disabled={loading}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+
+        {error && (
+          <p className="cpc-error" role="alert">
+            {error}{" "}
+            <button type="button" className="cpc-readmore" onClick={load}>
+              Retry
+            </button>
+          </p>
+        )}
+
         {/* Table card */}
         <div className="cpc-card">
-          <div className="table-responsive-scroll-wrapper">
-            <DataTable columns={columns} data={data} onExportExcel={handleExportExcel} />
-          </div>
+          {loading ? (
+            <p className="cpc-state">Loading messages...</p>
+          ) : (
+            <div className="table-responsive-scroll-wrapper">
+              {/* key resets the table (page 1, page size) when the filter changes */}
+              <DataTable
+                key={filter}
+                columns={columns}
+                data={contacts}
+                onExportExcel={handleExportExcel}
+              />
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Details modal */}
+      {selected && (
+        <div className="cpc-modal-backdrop" onClick={() => setSelected(null)}>
+          <div className="cpc-modal" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+            <div className="cpc-modal-head">
+              <h5>Message Details</h5>
+              <button type="button" className="cpc-modal-x" onClick={() => setSelected(null)} aria-label="Close">
+                ×
+              </button>
+            </div>
+
+            {detailLoading ? (
+              <p className="cpc-state">Loading...</p>
+            ) : (
+              <div className="cpc-modal-body">
+                <p><b>Date:</b> {formatDate(selected.date)}</p>
+                <p><b>Name:</b> {selected.name}</p>
+                <p><b>Email:</b> {selected.email}</p>
+                <p><b>Mobile:</b> {selected.mobile}</p>
+                {selected.subject && <p><b>Subject:</b> {selected.subject}</p>}
+                <p>
+                  <b>Status:</b>{" "}
+                  <span className={`cpc-badge ${selected.isRead ? "read" : "unread"}`}>
+                    {selected.isRead ? "Read" : "Unread"}
+                  </span>
+                </p>
+                <p className="cpc-modal-msg">{selected.message}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default CPContact;
-

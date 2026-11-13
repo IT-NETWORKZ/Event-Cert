@@ -35,7 +35,7 @@ try {
 }
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "https://localhost:7151/api",
+  baseURL:"https://localhost:7151/api" || "https://eventcert/api",
   withCredentials: true,
 });
 

@@ -129,3 +129,19 @@ export const validateHomePromoCode = async ({ code, planId, amount } = {}) => {
     throw err; // network / server errors are handled by the caller
   }
 };
+
+/* ---------- CONTACT ---------- */
+
+// POST api/home/contact – submit Contact Us form
+export const createContact = async (values) => {
+  const payload = {
+    fullName: (values.name || "").trim(),
+    email: (values.email || "").trim(),
+    phoneNumber: (values.phone || "").trim(),
+    subject: (values.subject || "").trim(),
+    message: (values.message || "").trim(),
+  };
+
+  const { data } = await api.post("/home/contact", payload);
+  return data;
+};
