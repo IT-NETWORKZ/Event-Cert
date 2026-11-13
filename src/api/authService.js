@@ -52,8 +52,8 @@ export const logout = async () => {
 
 // Admin Subscription Plans API
 export const adminGetSubscriptionPlans = async () => {
-  const response = await apiClient.get("/admin/subscription/plans");
-  return response.data; // Returns { success, message, data: [...] }
+  const { data } = await api.get("/admin/subscription/plans");
+  return data; // { success, message, data: [...] }
 };
 
 
