@@ -34,8 +34,13 @@ try {
   /* ignore */
 }
 
+
 const api = axios.create({
-  baseURL:"https://localhost:7151/api" || "https://eventcert/api",
+  baseURL:
+    import.meta.env.MODE === "development"
+      ? "https://localhost:7151/api"
+      : "https://eventcert/api",
+
   withCredentials: true,
 });
 
