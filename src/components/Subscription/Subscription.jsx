@@ -19,7 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import Footer from '../common/footer/Footer';
 import Button from "../common/button/Button";
 import Navbar from '../common/navbar/Navbar';
-import { getSubscriptionPlans } from '../../api/adminService';
+import { getHomeSubscriptionPlans, getApiError } from '../../api/homeService';
 
 // Global Animation Variants
 const fadeUpVariants = {
@@ -56,43 +56,26 @@ const Subscription = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Fetch subscription plans from backend
+  // Fetch active plans from Home API: GET /api/home/plans
   useEffect(() => {
 
     let cancelled = false;
 
-    getSubscriptionPlans()
-      .then((res) => {
-
-        if (!cancelled && res && res.data) {
-
-          const activePlans = res.data.filter((p) => p.isActive);
-
-          setPlansMap({
-            event: activePlans.filter((p) => p.planCategory === 1),
-            creative: activePlans.filter((p) => p.planCategory === 2),
-            combo: activePlans.filter((p) => p.planCategory === 3),
-            download: activePlans.filter((p) => p.planCategory === 4)
-          });
-
-        }
-
-      })
-      .catch((err) => {
-
+    const loadPlans = async () => {
+      try {
+        const grouped = await getHomeSubscriptionPlans();
+        if (!cancelled) setPlansMap(grouped);
+      } catch (err) {
         if (!cancelled) {
-          setError("Failed to load subscription plans.");
+          setError(getApiError(err, "Failed to load subscription plans."));
           console.error(err);
         }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
 
-      })
-      .finally(() => {
-
-        if (!cancelled) {
-          setLoading(false);
-        }
-
-      });
+    loadPlans();
 
     return () => {
       cancelled = true;
@@ -102,18 +85,12 @@ const Subscription = () => {
 
   // Toggle Accordion
   const toggleAccordion = (index) => {
-
-    setOpenCardIndex(
-      openCardIndex === index ? null : index
-    );
-
+    setOpenCardIndex(openCardIndex === index ? null : index);
   };
 
   // Buy Now - Navigate directly to Payment Gateway
   const handleBuyNow = (plan) => {
-
     navigate(`/admin/payment/${plan.planId}`);
-
   };
 
   return (
@@ -180,10 +157,7 @@ const Subscription = () => {
           {/* Pricing Rows Grid */}
           {loading ? (
 
-            <p
-              className="text-center py-5"
-              style={{ color: '#0c2340' }}
-            >
+            <p className="text-center py-5" style={{ color: '#0c2340' }}>
               Loading plans...
             </p>
 
@@ -205,10 +179,7 @@ const Subscription = () => {
 
               {plansMap[activeTab].length === 0 ? (
 
-                <p
-                  className="text-center py-4"
-                  style={{ color: '#4a5568' }}
-                >
+                <p className="text-center py-4" style={{ color: '#4a5568' }}>
                   No plans available in this category.
                 </p>
 
@@ -243,13 +214,8 @@ const Subscription = () => {
 
                         </div>
 
-                        <div
-                          className={`sub-arrow-toggle-btn ${isOpen ? 'rotated' : ''}`}
-                        >
-                          <ChevronDown
-                            size={20}
-                            color="#ffffff"
-                          />
+                        <div className={`sub-arrow-toggle-btn ${isOpen ? 'rotated' : ''}`}>
+                          <ChevronDown size={20} color="#ffffff" />
                         </div>
 
                       </div>
@@ -264,10 +230,7 @@ const Subscription = () => {
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: "auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
-                            transition={{
-                              duration: 0.3,
-                              ease: "easeInOut"
-                            }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
                             onClick={(e) => e.stopPropagation()}
                           >
 
@@ -281,60 +244,44 @@ const Subscription = () => {
 
                               {plan.content1 ? (
 
-                                <div
-                                  dangerouslySetInnerHTML={{
-                                    __html: plan.content1
-                                  }}
-                                />
+                                <div dangerouslySetInnerHTML={{ __html: plan.content1 }} />
 
                               ) : (
 
                                 <ul className="sub-formal-bullets">
-
                                   <li>
                                     <Check size={14} />
                                     Full access to automated event creation pipelines
                                   </li>
-
                                   <li>
                                     <Check size={14} />
                                     Instant downloadable digital certificates with QR validation
                                   </li>
-
                                 </ul>
 
                               )}
 
                               {plan.heading2 && (
-
                                 <h4 className="sub-drawer-subheading mt-3">
                                   {plan.heading2}
                                 </h4>
-
                               )}
 
                               {plan.content2 ? (
 
-                                <div
-                                  dangerouslySetInnerHTML={{
-                                    __html: plan.content2
-                                  }}
-                                />
+                                <div dangerouslySetInnerHTML={{ __html: plan.content2 }} />
 
                               ) : (
 
                                 <ul className="sub-formal-bullets">
-
                                   <li>
                                     <Check size={14} />
                                     Priority customer support desk availability
                                   </li>
-
                                   <li>
                                     <Check size={14} />
                                     Advanced telemetry and export logs
                                   </li>
-
                                 </ul>
 
                               )}
@@ -384,47 +331,27 @@ const Subscription = () => {
               <div className="sub-feature-box">
 
                 <h3>
-                  <ShieldCheck
-                    size={20}
-                    className="inline-icon"
-                  />
+                  <ShieldCheck size={20} className="inline-icon" />
                   What's included in every plan?
                 </h3>
 
                 <ul>
-
                   <li>
-                    <CheckCircle2
-                      size={16}
-                      className="sub-list-icon"
-                    />
+                    <CheckCircle2 size={16} className="sub-list-icon" />
                     Secure, verifiable QR codes on every certificate
                   </li>
-
                   <li>
-                    <Zap
-                      size={16}
-                      className="sub-list-icon"
-                    />
+                    <Zap size={16} className="sub-list-icon" />
                     High-speed automated batch generation tools
                   </li>
-
                   <li>
-                    <Smartphone
-                      size={16}
-                      className="sub-list-icon"
-                    />
+                    <Smartphone size={16} className="sub-list-icon" />
                     Responsive mobile tracking & real-time delivery telemetry
                   </li>
-
                   <li>
-                    <Cloud
-                      size={16}
-                      className="sub-list-icon"
-                    />
+                    <Cloud size={16} className="sub-list-icon" />
                     Safe & secure standard cloud infrastructure management
                   </li>
-
                 </ul>
 
               </div>
@@ -433,35 +360,22 @@ const Subscription = () => {
               <div className="sub-feature-box">
 
                 <h3>
-                  <HelpCircle
-                    size={20}
-                    className="inline-icon"
-                  />
+                  <HelpCircle size={20} className="inline-icon" />
                   Frequently Asked Questions
                 </h3>
 
                 <div className="sub-faq-item">
-
-                  <h4>
-                    Can I upgrade or downgrade later?
-                  </h4>
-
+                  <h4>Can I upgrade or downgrade later?</h4>
                   <p>
                     Yes, you can shift between plan brackets or tiers anytime directly from your profile billing dashboard panel.
                   </p>
-
                 </div>
 
                 <div className="sub-faq-item">
-
-                  <h4>
-                    Are there any hidden verification costs?
-                  </h4>
-
+                  <h4>Are there any hidden verification costs?</h4>
                   <p>
                     No, all generation metrics and data checks are included completely within the specified flat subscription costs.
                   </p>
-
                 </div>
 
               </div>
@@ -481,5 +395,3 @@ const Subscription = () => {
 };
 
 export default Subscription;
-
-

@@ -46,6 +46,52 @@ export const getHomePlanById = async (id) => {
   return data;
 };
 
+// Maps one API row to { planId, planName, price, heading1, content1, heading2, content2, category, isActive }
+// category: 'event' | 'creative' | 'combo' | 'download'
+export const toPlan = (raw, index) => {
+  const get = makeGetter(raw);
+
+  const cat = String(get("plancategory", "categoryid", "category", "plantype")).toLowerCase();
+  let category = "event";
+  if (cat === "2" || cat.includes("creative")) category = "creative";
+  else if (cat === "3" || cat.includes("combo") || cat.includes("+")) category = "combo";
+  else if (cat === "4" || cat.includes("download")) category = "download";
+
+  const activeRaw = get("isactive", "active", "isenabled");
+  const isActive =
+    activeRaw === ""
+      ? true
+      : typeof activeRaw === "string"
+      ? /^(true|active|enabled|1)$/i.test(activeRaw)
+      : Boolean(activeRaw);
+
+  return {
+    planId: get("planid", "id") || index,
+    planName: String(get("planname", "name", "title")),
+    price: Number(get("price", "amount", "planprice")) || 0,
+    heading1: String(get("heading1")),
+    content1: String(get("content1")),
+    heading2: String(get("heading2")),
+    content2: String(get("content2")),
+    category,
+    isActive,
+  };
+};
+
+// Subscription page: fetch + normalise active plans, grouped by tab
+// Returns { event: [], creative: [], combo: [], download: [] }
+export const getHomeSubscriptionPlans = async () => {
+  const list = await getHomePlans();
+  const plans = list.map(toPlan).filter((p) => p.isActive);
+
+  return {
+    event: plans.filter((p) => p.category === "event"),
+    creative: plans.filter((p) => p.category === "creative"),
+    combo: plans.filter((p) => p.category === "combo"),
+    download: plans.filter((p) => p.category === "download"),
+  };
+};
+
 /* ---------- PROMO CODES ---------- */
 
 // Maps one API row to { id, code, discountText, plan, description, validTill, isActive, expired }

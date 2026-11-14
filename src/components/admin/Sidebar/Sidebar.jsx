@@ -2,6 +2,7 @@ import { TbFileCertificate } from "react-icons/tb";
 import React from "react";
 import "./Sidebar.css";
 import logo from "../../../assets/img/logo_EventCert.png";
+ 
 
 import {
   ProSidebarProvider,
@@ -137,13 +138,33 @@ const SidebarComponent = ({ collapsed, toggled, setToggled }) => {
             Payment
           </MenuItem> */}
 
-          <MenuItem
+          {/* <MenuItem
             icon={<FaCalendarDay />}
             component={<NavLink to="/admin/addevent" />}
             className={isActive("/admin/addevent") ? "active-item" : ""}
           >
             Add Event
-          </MenuItem>
+          </MenuItem> */}
+
+          <SubMenu
+  label="Add Event"
+  icon={<FaCalendarDay />}
+  defaultOpen={isActive("/admin/addevent") || isActive("/admin/upload-event-images")}
+>
+  <MenuItem
+    component={<NavLink to="/admin/addevent" />}
+    className={isActive("/admin/addevent") ? "active-item" : ""}
+  >
+    Create New Event
+  </MenuItem>
+
+  <MenuItem
+    component={<NavLink to="/admin/upload-event-images" />}
+    className={isActive("/admin/upload-event-images") ? "active-item" : ""}
+  >
+    Upload Event Images
+  </MenuItem>
+</SubMenu>
         </Menu>
       </Sidebar>
     </ProSidebarProvider>
