@@ -1,66 +1,59 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Certificates.css';
+import { getCertificateImageUrl } from '../../../api/homeService'; // adjust path if your services folder is elsewhere
 
-// Import your actual images from assets
-import campCertImg from '../../../assets/img/verticalimage.jpg'; 
-import achievementCertImg from '../../../assets/img/verticalimage.jpg'; 
-import participationCertImg from '../../../assets/img/testimonial-3.jpg';
-import mvpCertImg from '../../../assets/img/testimonial-2.jpg';
-import weddingWishesImg from '../../../assets/img/testimonial-2.jpg';
-import newYearWishesImg from '../../../assets/img/testimonial-2.jpg';
-import diwaliWishesImg from '../../../assets/img/squaree.jpg'; 
-import festivalCardsImg from '../../../assets/img/squaree.jpg';
-import xMasInvitationImg from '../../../assets/img/testimonial-2.jpg';
-import birthdayPartyImg from '../../../assets/img/testimonial-2.jpg';
-
+// Images are fetched from the live folder (/home/rimg -> 1.png, 2.png ...) through homeService
 const categories = [
   {
-    title: "Certificates / Square",
-    subtitle: "(Vertical)",
+    title: "Wedding & Anniversary",
+    subtitle: "(Invitation Cards)",
     items: [
-      { id: 1, name: "Camp Cert", image: campCertImg },
-      { id: 2, name: "Achievement Cert", image: achievementCertImg }
+      { id: 1, name: "Wedding Anniversary", image: getCertificateImageUrl(1) },
+      { id: 3, name: "Wedding Reception", image: getCertificateImageUrl(3) }
     ]
   },
   {
-    title: "Certificates",
-    subtitle: "(Horizontal)",
+    title: "Pre-Wedding Ceremonies",
+    subtitle: "(Invitation Cards)",
     items: [
-      { id: 3, name: "Participation Cert", image: participationCertImg },
-      { id: 4, name: "MVP Cert", image: mvpCertImg }
+      { id: 6, name: "Sangeet Ceremony", image: getCertificateImageUrl(6) },
+      { id: 8, name: "Haldi Ceremony", image: getCertificateImageUrl(8) }
     ]
   },
   {
-    title: "Greetings Cards",
-    subtitle: "(Rectangle)",
+    title: "Traditional Ceremonies",
+    subtitle: "(Invitation Cards)",
     items: [
-      { id: 5, name: "Wedding Wishes", image: weddingWishesImg },
-      { id: 6, name: "New Year Wishes", image: newYearWishesImg }
+      { id: 10, name: "Mehendi Ceremony", image: getCertificateImageUrl(10) },
+      { id: 9, name: "Naming Ceremony", image: getCertificateImageUrl(9) }
     ]
   },
   {
-    title: "Greetings Cards",
-    subtitle: "(Square)",
+    title: "Party Invitations",
+    subtitle: "(Invitation Cards)",
     items: [
-      { id: 7, name: "Diwali Wishes", image: diwaliWishesImg },
-      { id: 8, name: "Festival Cards", image: festivalCardsImg }
+      { id: 5, name: "Birthday Party", image: getCertificateImageUrl(5) },
+      { id: 2, name: "Christmas Party", image: getCertificateImageUrl(2) }
     ]
   },
   {
-    title: "Invitation Cards",
-    subtitle: "(Rectangle)",
+    title: "Special Occasions",
+    subtitle: "(Invitation Cards)",
     items: [
-      { id: 9, name: "X-Mas Invitation", image: xMasInvitationImg },
-      { id: 10, name: "Birthday Party", image: birthdayPartyImg }
+      { id: 7, name: "Women's Day", image: getCertificateImageUrl(7) },
+      { id: 4, name: "Housewarming", image: getCertificateImageUrl(4) }
     ]
   }
 ];
 
 const Certificates = () => {
+  const [failed, setFailed] = useState({}); // ids whose image is missing on the server
+  const [loaded, setLoaded] = useState({}); // ids whose image finished loading
+
   return (
     <section className="certificates-section py-4">
       <div className="container-fluid px-4">
-        
+
         {/* Heading matched exactly to About Layout */}
         <div className="row mb-5">
           <div className="col-12 text-center">
@@ -74,30 +67,38 @@ const Certificates = () => {
             <div className="title-line"></div>
           </div>
         </div>
-        
+
         {/* 5-Column Grid Layout */}
-        <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4 justify-content-center">
+        <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-5 g-4 justify-content-center">
           {categories.map((category, index) => (
             <div key={index} className="col category-column">
               {/* Category Subheadings */}
-              <div className="category-header text-center mb-4">
+              <div className="category-header">
                 <h5 className="category-title mb-0">{category.title}</h5>
                 <small className="category-subtitle">{category.subtitle}</small>
               </div>
-              
-              {/* Cards Stack */}
-              <div className="d-flex flex-column gap-4">
+
+              {/* Cards Stack - every card has the same size */}
+              <div className="cert-stack">
                 {category.items.map((item) => (
-                  <div key={item.id} className="card cert-item-card border-0 shadow-sm p-3">
-                    <div className="image-wrapper d-flex align-items-center justify-content-center mb-3">
-                      <img 
-                        src={item.image} 
-                        alt={item.name} 
-                        className="cert-image" 
-                      />
+                  <div key={item.id} className="cert-card">
+                    <div className="cert-media">
+                      {failed[item.id] ? (
+                        <span className="cert-placeholder">Image not available</span>
+                      ) : (
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          loading="lazy"
+                          className={`cert-image ${loaded[item.id] ? 'is-loaded' : ''}`}
+                          onLoad={() => setLoaded((p) => ({ ...p, [item.id]: true }))}
+                          onError={() => setFailed((p) => ({ ...p, [item.id]: true }))}
+                        />
+                      )}
                     </div>
-                    <div className="text-center mt-auto">
-                      <p className="card-item-name mb-0">{item.name}</p>
+
+                    <div className="cert-footer">
+                      <span className="card-item-name">{item.name}</span>
                     </div>
                   </div>
                 ))}
@@ -106,6 +107,7 @@ const Certificates = () => {
           ))}
         </div>
       </div>
+
     </section>
   );
 };

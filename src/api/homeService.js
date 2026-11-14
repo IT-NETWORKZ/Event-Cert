@@ -1,4 +1,4 @@
-import api from "../api/axiosClient"; // same import as adminService.js
+import api, { IMAGE_BASE_URL } from "../api/axiosClient"; // same import as adminService.js
 
 /* ---------- helpers ---------- */
 
@@ -31,6 +31,11 @@ const formatDate = (value) => {
   if (Number.isNaN(d.getTime())) return String(value);
   return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
 };
+
+/* ---------- CERTIFICATE / CARD IMAGES (live folder /home/rimg) ---------- */
+
+// Public URL of one image in the live folder: https://eventcert.com/rimg/{id}.png  (ids 1 - 18)
+export const getCertificateImageUrl = (id) => `${IMAGE_BASE_URL}/${id}.png`;
 
 /* ---------- PLANS ---------- */
 

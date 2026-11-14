@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import "./Event.css";
 import {
-  AlertCircle,
   ArrowLeft,
   Building2,
   Calendar,
@@ -24,7 +23,7 @@ import {
   X,
 } from "lucide-react";
 import DataTable from "../../common/Table/DataTable";
-import { submitEventRegistration } from "../../../api/eventService";
+import { submitEventRegistration, parseRegistrationError } from "../../../api/eventService";
 import { validateProfileFile, validateRegistration } from "../../../validations/eventRegistrationSchemas";
 import { getAttendanceQr, getEventImages } from "../../../api/eventImagesStore";
 
@@ -288,6 +287,11 @@ const Event = () => {
       return next;
     });
 
+  const scrollToFirstError = () =>
+    setTimeout(() => {
+      document.querySelector(".evp-invalid")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 50);
+
   /* ---------------- members ---------------- */
   const updateMember = (id, patch) =>
     setMembers((prev) => prev.map((m) => (m.id === id ? { ...m, ...patch } : m)));
@@ -298,7 +302,10 @@ const Event = () => {
     if (name === "name") v = value.replace(/[^A-Za-z ]/g, "");
     if (name === "mobile") v = value.replace(/[^0-9]/g, "");
     const patch = { [name]: v };
-    if (name === "dob") patch.age = ageFromDob(value);
+    if (name === "dob") {
+      patch.age = ageFromDob(value);
+      clearError(`participants.${idx}.age`);
+    }
     updateMember(id, patch);
     clearError(`participants.${idx}.${name}`);
   };
@@ -349,27 +356,27 @@ const Event = () => {
 
     const values = { eventId: event.id, regType, groupName, teamLead, participants: members };
 
-    // 1) Validate form via Joi schema if available
+    // 1) Client-side validation (Joi schema)
     if (validateRegistration) {
       const { isValid, errors: found } = validateRegistration(values);
       setErrors(found);
       if (!isValid) {
+        const first = Object.values(found).find(Boolean);
         setMsg({
           type: "error",
-          text: found.participants || found.eventId || "Please correct the highlighted fields and try again.",
+          text: first ? String(first) : "Please correct the highlighted fields and try again.",
         });
-        setTimeout(() => {
-          document.querySelector(".evp-invalid")?.scrollIntoView({ behavior: "smooth", block: "center" });
-        }, 50);
+        scrollToFirstError();
         return;
       }
     }
 
-    // 2) POST to backend API
+    // 2) POST https://localhost:7151/api/event-registration
     setSubmitting(true);
     try {
       const apiResult = await submitEventRegistration(values);
 
+      // API answered 200 but reported a failure
       if (apiResult && apiResult.success === false) {
         setMsg({ type: "error", text: apiResult.message || "Registration failed. Please try again." });
         return;
@@ -387,8 +394,8 @@ const Event = () => {
       }));
       setParticipants((prev) => [...prev, ...added]);
 
+      const count = Number(apiResult?.totalParticipants ?? members.length);
       const total = Number(apiResult?.totalAmount ?? event.entry * members.length);
-      const count = apiResult?.totalParticipants ?? members.length;
       setMsg({
         type: "ok",
         text:
@@ -407,7 +414,13 @@ const Event = () => {
       window.scrollTo({ top: document.getElementById("evp-register")?.offsetTop - 20 || 0, behavior: "smooth" });
     } catch (err) {
       console.error(err);
-      setMsg({ type: "error", text: err?.response?.data?.message || "Registration submission failed. Please try again." });
+      // backend validation errors are mapped onto the form fields
+      const { message, fieldErrors } = parseRegistrationError(err);
+      if (Object.keys(fieldErrors).length) {
+        setErrors(fieldErrors);
+        scrollToFirstError();
+      }
+      setMsg({ type: "error", text: message });
     } finally {
       setSubmitting(false);
     }
@@ -657,7 +670,7 @@ const Event = () => {
                         max={new Date().toISOString().slice(0, 10)}
                       />
                     </Field>
-                    <Field cls="evp-c2" label="Age *">
+                    <Field cls="evp-c2" label="Age *" error={err("age")}>
                       <input value={m.age} readOnly placeholder="Auto" />
                     </Field>
 
@@ -904,5 +917,3 @@ const Event = () => {
 };
 
 export default Event;
-
-

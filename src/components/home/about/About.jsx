@@ -1,11 +1,17 @@
 import "./About.css";
 import { useNavigate } from "react-router-dom";
 import { Check } from "lucide-react";
-import promoImg from "../../../assets/img/EVENTPROMOTION.jpg";
-import invitationImg from "../../../assets/img/INVITATIONCARD.jpg";
-import greetingImg from "../../../assets/img/GREETINGCARD.jpg";
-import certImg from "../../../assets/img/CERTIFICATE.avif";
 import Button from "../../common/button/Button";
+import { getCertificateImageUrl } from "../../../api/homeService"; // adjust path if your services folder is elsewhere
+
+// Live folder images (/home/rimg -> about1.png, about2.png), built from the same IMAGE_BASE_URL as the certificates
+const aboutImg1 = getCertificateImageUrl("about1");
+const aboutImg2 = getCertificateImageUrl("about2");
+
+// If an image is missing on the server, hide it instead of showing a broken icon
+const hideIfBroken = (e) => {
+  e.currentTarget.parentElement.style.display = "none";
+};
 
 function About() {
   const navigate = useNavigate();
@@ -15,36 +21,28 @@ function About() {
       <section className="about-section">
         <div className="container">
           <div className="row align-items-center gy-5">
-            {/* LEFT */}
+            {/* LEFT - images from the live folder */}
             <div className="col-lg-5">
-              <div className="about-features-grid">
-                <div className="about-feature-item">
-                  <div className="about-icon-box">
-                    <img src={promoImg} alt="" />
-                  </div>
-                  <h6>EVENT PROMOTION</h6>
-                </div>
+              <div className="about-showcase">
+                <span className="about-deco about-deco-ring"></span>
+                <span className="about-deco about-deco-blob"></span>
+                <span className="about-deco about-deco-dots"></span>
 
-                <div className="about-feature-item">
-                  <div className="about-icon-box">
-                    <img src={invitationImg} alt="" />
-                  </div>
-                  <h6>INVITATION CARD</h6>
-                </div>
+                <figure className="about-photo about-photo-1">
+                  <img
+                    src={aboutImg1}
+                    alt="EventCert certificates and cards"
+                    onError={hideIfBroken}
+                  />
+                </figure>
 
-                <div className="about-feature-item">
-                  <div className="about-icon-box">
-                    <img src={greetingImg} alt="" />
-                  </div>
-                  <h6>GREETING CARD</h6>
-                </div>
-
-                <div className="about-feature-item">
-                  <div className="about-icon-box">
-                    <img src={certImg} alt="" />
-                  </div>
-                  <h6>CERTIFICATE</h6>
-                </div>
+                <figure className="about-photo about-photo-2">
+                  <img
+                    src={aboutImg2}
+                    alt="EventCert event promotion"
+                    onError={hideIfBroken}
+                  />
+                </figure>
               </div>
             </div>
 

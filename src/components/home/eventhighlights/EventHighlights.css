@@ -1,294 +1,429 @@
-.highlight-section{
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,700&family=Caveat:wght@600&display=swap");
 
-  padding:70px 0 30px;
-background:white;
-margin-bottom:0;
+.eh-section{
+  --eh-teal:#0E7872;
+  --eh-deep:#07403d;
+  --eh-mint:#dbe8e5;
+  --eh-paper:#fffdf8;
+  --eh-gold:#f2c14e;
 
+  position:relative;
+  padding:72px 0 48px;
+  overflow:hidden;
+  background:
+    radial-gradient(rgba(255,255,255,.09) 1.5px, transparent 1.5px) 0 0 / 26px 26px,
+    radial-gradient(circle at 15% 0%, #12908a 0%, transparent 45%),
+    linear-gradient(170deg, var(--eh-teal) 0%, var(--eh-deep) 100%);
+  font-family:"Bricolage Grotesque", system-ui, sans-serif;
 }
 
+/* soft ring decorations carried over from the original panel */
+.eh-glow{
+  position:absolute;
+  border:2px solid rgba(255,255,255,.14);
+  border-radius:50%;
+  pointer-events:none;
+}
+.eh-glow-1{ width:380px; height:380px; top:-140px; right:-100px; }
+.eh-glow-2{ width:240px; height:240px; bottom:-90px; left:-70px; }
 
+/* ===========================
+   HEADER
+=========================== */
 
-/* LEFT */
-
-
-.highlight-content{
-
-
-height:520px;
-
-
-
-background:#0E7872;
-
-
-padding:90px 60px;
-
-
-display:flex;
-
-flex-direction:column;
-
-justify-content:center;
-
+.eh-container{
+  max-width:1320px;
+  margin:0 auto;
+  padding:0 clamp(20px, 5vw, 64px);
 }
 
-
-
-.highlight-content h2{
-
-
-font-size:35px;
-
-
-font-weight:300;
-
-
-color:white;
-
-
-line-height:1.2;
-
+.eh-head{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:40px;
+  margin-bottom:40px;
+  padding-bottom:28px;
+  border-bottom:1.5px dashed rgba(255,255,255,.3);
 }
 
-
-
-.highlight-content span{
-
-
-display:inline-block;
-
-
-margin-top:10px;
-
-
-padding:5px 18px;
-
-
-background:#dbe8e5;
-
-
-color:#0E7872;
-
-
-font-weight:500;
-
+.eh-title{
+  margin:0;
+  color:#fff;
+  line-height:.95;
 }
 
-
-
-.highlight-content p{
-
-
-margin-top:60px;
-
-
-font-size:19px;
-
-
-line-height:1.6;
-
-
-color:white;
-
-
-max-width:430px;
-
+.eh-title-top{
+  display:block;
+  font-size:clamp(28px, 3.2vw, 42px);
+  font-weight:300;
+  letter-spacing:-.02em;
 }
 
-
-
-/* RIGHT */
-
-
-.highlight-card{
-
-
-position:relative;
-
-
-height:260px;
-
-
-overflow:hidden;
-
+.eh-title-pill{
+  display:inline-block;
+  margin-top:10px;
+  padding:4px 20px 7px;
+  background:var(--eh-mint);
+  color:var(--eh-teal);
+  font-size:clamp(24px, 2.6vw, 34px);
+  font-weight:700;
+  letter-spacing:-.02em;
+  transform:rotate(-2deg);
+  box-shadow:4px 4px 0 var(--eh-gold);
 }
 
-
-
-.highlight-card img{
-
-
-width:100%;
-
-
-height:100%;
-
-
-object-fit:cover;
-
-
-transition:.5s;
-
+.eh-intro{
+  max-width:470px;
+  color:#fff;
 }
 
-
-
-.highlight-card:hover img{
-
-
-transform:scale(1.08);
-
+.eh-intro p{
+  margin:0 0 16px;
+  font-size:16px;
+  line-height:1.6;
+  color:rgba(255,255,255,.92);
 }
 
-
-
-
-.overlay{
-
-
-position:absolute;
-
-
-left:0;
-
-
-bottom:0;
-
-
-width:100%;
-
-
-padding:18px;
-
-
-background:
-
-
-linear-gradient(
-
-transparent,
-
-rgba(0,0,0,.85)
-
-);
-
+.eh-pillars{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:0;
+  padding:0;
+  list-style:none;
 }
 
-
-
-
-.overlay p{
-
-
-color:white;
-
-
-font-size:18px;
-
-
-font-weight:500;
-
-
-margin:0;
-
-
-line-height:1.4;
-
+.eh-pillars li{
+  padding:5px 13px;
+  border-radius:999px;
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.3);
+  font-size:13px;
+  font-weight:500;
+  color:#fff;
+  white-space:nowrap;
 }
 
-
-
-
-
-@media(max-width:991px){
-
-
-.highlight-content{
-
-
-height:auto;
-
-
-padding:70px 40px;
-
-
+.eh-pillars li:first-child{
+  background:var(--eh-gold);
+  border-color:var(--eh-gold);
+  color:var(--eh-deep);
 }
 
+/* ===========================
+   WALL (two drifting rows)
+=========================== */
 
-
-.highlight-content h2{
-
-
-font-size:46px;
-
-
+.eh-wall{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding:20px 0;
+  -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+          mask-image:linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
 }
 
-
-
-.highlight-content p{
-
-
-font-size:20px;
-
-
-margin-top:30px;
-
-
+.eh-row{
+  overflow:hidden;
+  padding:18px 0;
 }
 
-
+.eh-track{
+  display:flex;
+  width:max-content;
+  animation:eh-drift 60s linear infinite;
 }
 
-
-
-@media(max-width:768px){
-
-
-
-.highlight-card{
-
-
-height:220px;
-
+.eh-row-rev .eh-track{
+  animation-direction:reverse;
+  animation-duration:70s;
 }
 
-
-
-.highlight-content{
-
-
-padding:50px 30px;
-
+.eh-row:hover .eh-track,
+.eh-row:focus-within .eh-track{
+  animation-play-state:paused;
 }
 
-
-
-.highlight-content h2{
-
-
-font-size:38px;
-
+.eh-set{
+  display:flex;
+  flex-shrink:0;
 }
 
-
-
-.highlight-content p{
-
-
-font-size:18px;
-
+@keyframes eh-drift{
+  from{ transform:translateX(0); }
+  to{ transform:translateX(-50%); }
 }
 
-
-
-.overlay p{
-
-
-font-size:18px;
-
+/* padding (not gap) keeps the -50% loop perfectly seamless */
+.eh-slot{
+  flex-shrink:0;
+  padding:0 16px;
 }
 
+/* ===========================
+   PINNED CARD
+=========================== */
 
+.eh-card{
+  position:relative;
+  display:block;
+  width:290px;
+  padding:9px 9px 5px;
+  border:0;
+  border-radius:6px;
+  background:var(--eh-paper);
+  box-shadow:0 14px 28px rgba(0,0,0,.28);
+  cursor:pointer;
+  text-align:center;
+  transform:rotate(-2.5deg);
+  transition:transform .35s cubic-bezier(.2,.8,.3,1), box-shadow .35s ease;
+}
 
+.eh-slot:nth-child(even) .eh-card{ transform:rotate(2deg); }
+.eh-slot:nth-child(3n) .eh-card{ transform:rotate(-1deg); }
+
+/* strip of tape */
+.eh-card::before{
+  content:"";
+  position:absolute;
+  top:-12px;
+  left:50%;
+  width:84px;
+  height:24px;
+  background:rgba(242,193,78,.8);
+  transform:translateX(-50%) rotate(-3deg);
+  z-index:2;
+}
+
+.eh-card:hover,
+.eh-card:focus-visible{
+  transform:rotate(0) translateY(-10px) scale(1.04);
+  box-shadow:0 26px 44px rgba(0,0,0,.4);
+  z-index:3;
+}
+
+.eh-card:focus-visible{
+  outline:3px solid var(--eh-gold);
+  outline-offset:4px;
+}
+
+/* whole banner always visible, never cropped */
+.eh-frame{
+  position:relative;
+  display:block;
+  aspect-ratio:2/1;
+  background:#e7f0ee;
+  overflow:hidden;
+}
+
+.eh-bg{
+  position:absolute;
+  inset:-20px;
+  background-size:cover;
+  background-position:center;
+  filter:blur(16px);
+  opacity:.55;
+}
+
+.eh-frame img{
+  position:relative;
+  z-index:1;
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+.eh-missing{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:12px;
+  color:#5c726f;
+  font-size:13px;
+  text-align:center;
+}
+
+.eh-caption{
+  display:block;
+  padding:8px 4px 4px;
+  color:var(--eh-deep);
+  font-family:"Caveat", cursive;
+  font-size:22px;
+  line-height:1.1;
+}
+
+.eh-hint{
+  position:relative;
+  margin:12px 0 0;
+  text-align:center;
+  font-size:14px;
+  color:rgba(255,255,255,.7);
+}
+
+/* ===========================
+   VIEWER
+=========================== */
+
+.eh-viewer{
+  position:fixed;
+  inset:0;
+  z-index:1200;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:rgba(4,30,28,.86);
+  backdrop-filter:blur(6px);
+  animation:eh-fade .25s ease;
+}
+
+@keyframes eh-fade{
+  from{ opacity:0; }
+  to{ opacity:1; }
+}
+
+.eh-viewer-body{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  width:min(1100px, 100%);
+}
+
+.eh-viewer-card{
+  flex:1;
+  min-width:0;
+  margin:0;
+  padding:12px 12px 8px;
+  background:var(--eh-paper);
+  border-radius:8px;
+  box-shadow:0 30px 60px rgba(0,0,0,.5);
+  animation:eh-pop .3s cubic-bezier(.2,.8,.3,1);
+}
+
+@keyframes eh-pop{
+  from{ transform:scale(.94) rotate(-1.5deg); opacity:0; }
+  to{ transform:scale(1) rotate(0); opacity:1; }
+}
+
+.eh-viewer-card img{
+  display:block;
+  width:100%;
+  max-height:72vh;
+  object-fit:contain;
+  background:#e7f0ee;
+}
+
+.eh-viewer-card figcaption{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  padding:10px 6px 4px;
+  color:var(--eh-deep);
+  font-family:"Caveat", cursive;
+  font-size:30px;
+}
+
+.eh-viewer-card figcaption small{
+  font-family:"Bricolage Grotesque", system-ui, sans-serif;
+  font-size:13px;
+  color:#5c726f;
+}
+
+.eh-missing-lg{
+  position:static;
+  min-height:240px;
+}
+
+.eh-nav,
+.eh-close{
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:48px;
+  height:48px;
+  border:0;
+  border-radius:50%;
+  background:var(--eh-gold);
+  color:var(--eh-deep);
+  font-size:30px;
+  line-height:1;
+  cursor:pointer;
+  transition:transform .2s ease;
+}
+
+.eh-nav:hover,
+.eh-close:hover{ transform:scale(1.1); }
+
+.eh-nav:focus-visible,
+.eh-close:focus-visible{
+  outline:3px solid #fff;
+  outline-offset:3px;
+}
+
+.eh-close{
+  position:absolute;
+  top:-20px;
+  right:-8px;
+  background:#fff;
+}
+
+/* ===========================
+   TABLET
+=========================== */
+
+@media (max-width:991px){
+  .eh-section{ padding:52px 0 40px; }
+
+  .eh-head{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:24px;
+    margin-bottom:36px;
+  }
+
+  .eh-card{ width:250px; }
+}
+
+/* ===========================
+   MOBILE
+=========================== */
+
+@media (max-width:575px){
+  .eh-card{ width:215px; }
+  .eh-slot{ padding:0 10px; }
+  .eh-caption{ font-size:21px; }
+
+  .eh-viewer{ padding:14px; }
+
+  /* arrows move below the banner so it can use the full width */
+  .eh-viewer-body{
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .eh-viewer-card{ flex:0 0 100%; order:1; }
+  .eh-prev{ order:2; }
+  .eh-next{ order:3; }
+  .eh-close{ top:-18px; right:-4px; }
+}
+
+/* ===========================
+   REDUCED MOTION
+   rows stop drifting and become swipeable
+=========================== */
+
+@media (prefers-reduced-motion:reduce){
+  .eh-row{ overflow-x:auto; }
+  .eh-track{ animation:none; }
+  .eh-set + .eh-set{ display:none; }
+  .eh-card,
+  .eh-viewer,
+  .eh-viewer-card{ transition:none; animation:none; }
 }
