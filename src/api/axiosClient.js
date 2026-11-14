@@ -34,16 +34,30 @@ try {
   /* ignore */
 }
 
+// const api = axios.create({
+//   baseURL:
+//     import.meta.env.MODE === "development"
+//       ? "https://localhost:7151/api"
+//       : "https://eventcert.com/api",
 
+//   withCredentials: true,
+// });
 const api = axios.create({
-  baseURL:
-    import.meta.env.MODE === "development"
-      ? "https://localhost:7151/api"
-      : "https://eventcert/api",
-
+  baseURL: "https://eventcert.com/api",
   withCredentials: true,
 });
 
+/*
+  Live images folder (/home/rimg on the server) is served at  <site>/rimg
+  -> https://eventcert.com/rimg/1.png, 2.png ...
+  The site origin is taken from the api baseURL (https://eventcert.com/api -> https://eventcert.com).
+  Override with VITE_IMAGE_BASE_URL in .env if the folder is exposed somewhere else.
+*/
+export const IMAGE_BASE_URL = (
+  import.meta.env.VITE_IMAGE_BASE_URL ||
+  `${new URL(api.defaults.baseURL).origin}/home/rimg`
+).replace(/\/$/, "");
+console.log("IMAGE_BASE_URL",IMAGE_BASE_URL)
 export const tokenStore = {
   get access() {
     return storage.getItem("accessToken");
@@ -142,4 +156,3 @@ api.interceptors.response.use(
 );
 
 export default api;
-
