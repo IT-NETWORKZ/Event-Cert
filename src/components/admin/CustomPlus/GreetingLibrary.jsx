@@ -2,82 +2,39 @@ import React, { useState } from "react";
 import { fabric } from "fabric";
 import { useCanvas } from "../../../context/CanvasContext";
 import SidebarGallery from "./SidebarGallery";
+import { GREET_MAX_LIMIT, GREET_PAGE_SIZE, greetingCategories } from "./greetingData";
 
-const generatePlaceholders = (startId, count) =>
-    Array.from({ length: count }, (_, i) => `https://picsum.photos/id/${startId + i}/600/800`);
-
-const greetingCategories = [
-    {
-        id: "anniversary",
-        title: "Anniversary",
-        icon: "💝",
-        images: [
-            "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&auto=format&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&auto=format&fit=crop&q=80",
-            ...generatePlaceholders(1020, 10)
-        ],
-    },
-    {
-        id: "thankyou",
-        title: "Thank You",
-        icon: "🙏",
-        images: [
-            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&auto=format&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1544816155-12df9643f363?w=600&auto=format&fit=crop&q=80",
-            ...generatePlaceholders(1040, 10)
-        ],
-    },
-    {
-        id: "congrats",
-        title: "Congratulations",
-        icon: "🎉",
-        images: [
-            "https://images.unsplash.com/photo-1513151233558-d860c5398176?w=600&auto=format&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&auto=format&fit=crop&q=80",
-            ...generatePlaceholders(1050, 10)
-        ],
-    },
-    {
-        id: "getwell",
-        title: "Get Well Soon",
-        icon: "🌻",
-        images: [
-            "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=600&auto=format&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1505784045224-1247b2b29cf3?w=600&auto=format&fit=crop&q=80",
-            ...generatePlaceholders(1070, 10)
-        ],
-    },
-];
-
-const RANDOM_CANVAS_SIZES = [
-    { width: 450, height: 450 },
-    { width: 400, height: 600 },
-    { width: 500, height: 350 },
-    { width: 420, height: 580 }
-];
-
+// Greeting templates come live from https://eventcert.com/demoimg/{id}.png
+// (ids per category are listed in greetingData.js)
 const GreetingLibrary = ({ isOpen, onClose }) => {
-    const { canvas, setCanvasSize } = useCanvas();
+    const { canvas } = useCanvas();
     const [selectedCategory, setSelectedCategory] = useState(null);
 
     const handleSelectGreeting = (imgUrl) => {
         if (!canvas) return;
 
-        const targetSize = RANDOM_CANVAS_SIZES[Math.floor(Math.random() * RANDOM_CANVAS_SIZES.length)];
-        setCanvasSize({ width: targetSize.width, height: targetSize.height });
-
         fabric.Image.fromURL(
             imgUrl,
-            (img) => {
+            (img, isError) => {
+                // picture missing on the server, or the server blocks it (CORS)
+                if (isError || !img || !img.width) {
+                    console.error("Could not load greeting image:", imgUrl);
+                    window.alert("This template could not be loaded. Please try another one.");
+                    return;
+                }
+
+                const canvasWidth = canvas.getWidth();
+                const canvasHeight = canvas.getHeight();
+
                 img.set({
                     left: 0,
                     top: 0,
-                    scaleX: targetSize.width / img.width,
-                    scaleY: targetSize.height / img.height,
+                    scaleX: canvasWidth / img.width,
+                    scaleY: canvasHeight / img.height,
                     selectable: true,
                     hasControls: true,
                     hasBorders: true,
-                    isInvitationImage: true,
+                    isInvitationImage: true, // same flag as invitations (used by "reset image size")
                     originalWidth: img.width,
                     originalHeight: img.height,
                 });
@@ -86,9 +43,12 @@ const GreetingLibrary = ({ isOpen, onClose }) => {
                 canvas.setActiveObject(img);
                 canvas.requestRenderAll();
 
-                handleClose();
+                onClose();
+                setSelectedCategory(null);
             },
-            { crossOrigin: "anonymous" }
+            {
+                crossOrigin: "anonymous",
+            }
         );
     };
 
@@ -107,7 +67,9 @@ const GreetingLibrary = ({ isOpen, onClose }) => {
             showCategories={!selectedCategory}
             categories={greetingCategories}
             images={selectedCategory ? selectedCategory.images : []}
-            onCategoryClick={setSelectedCategory}
+            pageSize={GREET_PAGE_SIZE}
+            maxImages={GREET_MAX_LIMIT}
+            onCategoryClick={(cat) => setSelectedCategory(cat)}
             onBack={() => setSelectedCategory(null)}
             onSelect={handleSelectGreeting}
             icon={selectedCategory ? selectedCategory.icon : "🎉"}

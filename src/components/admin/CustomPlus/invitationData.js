@@ -1,8 +1,25 @@
+import { createElement } from "react";
+import {
+  FaBaby,
+  FaBabyCarriage,
+  FaBirthdayCake,
+  FaBriefcase,
+  FaCut,
+  FaEnvelopeOpenText,
+  FaFire,
+  FaHeart,
+  FaHome,
+  FaPalette,
+  FaRing,
+  FaUsers,
+  FaUtensils,
+} from "react-icons/fa";
+
 // =========================================
 // INVITATION CONFIG (live images from eventcert.com)
 // image url = INVITE_BASE_URL + number + ".png"   e.g. https://eventcert.com/home/rimg/10.png
 // =========================================
-export const INVITE_BASE_URL = "https://eventcert.com/home/rimg/";
+export const INVITE_BASE_URL = "https://eventcert.com/Invitation/";
 export const INVITE_EXT = ".png";
 export const INVITE_PAGE_SIZE = 6;     // pictures shown first, "Load More" adds this many
 export const INVITE_MAX_LIMIT = 500;   // never show more than this per category
@@ -101,26 +118,27 @@ export const inviteCategoryMap = {
   ],
 };
 
-// emoji shown on each category card
+// react-icons shown on each category card (rendered as <Icon /> elements)
+const icon = (Icon) => createElement(Icon);
 const CATEGORY_ICONS = {
-  "Annaprashan Ceremony": "🍚",
-  Anniversary: "💖",
-  "Baby Shower": "👶",
-  Birthday: "🎂",
-  "Festive Holi": "🎨",
-  "Get Together": "🥂",
-  Havan: "🪔",
-  HouseWarming: "🏠",
-  Inauguration: "🎀",
-  "Naming Ceremony": "🍼",
-  Professional: "💼",
-  Wedding: "💍",
+  "Annaprashan Ceremony": icon(FaUtensils),
+  Anniversary: icon(FaHeart),
+  "Baby Shower": icon(FaBabyCarriage),
+  Birthday: icon(FaBirthdayCake),
+  "Festive Holi": icon(FaPalette),
+  "Get Together": icon(FaUsers),
+  Havan: icon(FaFire),
+  HouseWarming: icon(FaHome),
+  Inauguration: icon(FaCut),
+  "Naming Ceremony": icon(FaBaby),
+  Professional: icon(FaBriefcase),
+  Wedding: icon(FaRing),
 };
 
 // [{ id, title, icon, images: [url, ...] }]  - format SidebarGallery expects
 export const invitationCategories = Object.entries(inviteCategoryMap).map(([title, ids]) => ({
   id: title.toLowerCase().replace(/\s+/g, "-"),
   title,
-  icon: CATEGORY_ICONS[title] || "💌",
+  icon: CATEGORY_ICONS[title] || icon(FaEnvelopeOpenText),
   images: ids.slice(0, INVITE_MAX_LIMIT).map(inviteImageUrl),
 }));

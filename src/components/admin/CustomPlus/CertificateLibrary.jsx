@@ -2,19 +2,10 @@ import React, { useState } from "react";
 import { fabric } from "fabric";
 import { useCanvas } from "../../../context/CanvasContext";
 import SidebarGallery from "./SidebarGallery";
+import { CERT_MAX_LIMIT, CERT_PAGE_SIZE, certificateCategories } from "./certificateData";
 
-// Placeholder certificate backgrounds (landscape). Replace the URLs with your own templates.
-const certificateImages = (startId, count) =>
-    Array.from({ length: count }, (_, i) => `https://picsum.photos/id/${startId + i}/800/600`);
-
-const certificateCategories = [
-    { id: "achievement", title: "Achievement", icon: "🏆", images: certificateImages(1100, 8) },
-    { id: "participation", title: "Participation", icon: "🎖️", images: certificateImages(1110, 8) },
-    { id: "appreciation", title: "Appreciation", icon: "🙏", images: certificateImages(1120, 6) },
-    { id: "completion", title: "Course Completion", icon: "🎓", images: certificateImages(1130, 6) },
-    { id: "winner", title: "Winner", icon: "🥇", images: certificateImages(1140, 6) },
-];
-
+// Certificate templates come live from https://eventcert.com/demoimg/{id}.png
+// (ids per category are listed in certificateData.js)
 const CertificateLibrary = ({ isOpen, onClose }) => {
     const { canvas } = useCanvas();
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -24,7 +15,14 @@ const CertificateLibrary = ({ isOpen, onClose }) => {
 
         fabric.Image.fromURL(
             imgUrl,
-            (img) => {
+            (img, isError) => {
+                // picture missing on the server, or the server blocks it (CORS)
+                if (isError || !img || !img.width) {
+                    console.error("Could not load certificate image:", imgUrl);
+                    window.alert("This template could not be loaded. Please try another one.");
+                    return;
+                }
+
                 const canvasWidth = canvas.getWidth();
                 const canvasHeight = canvas.getHeight();
 
@@ -37,6 +35,7 @@ const CertificateLibrary = ({ isOpen, onClose }) => {
                     hasControls: true,
                     hasBorders: true,
                     isCertificateImage: true,
+                    isInvitationImage: true, // same flag as invitations (used by "reset image size")
                     originalWidth: img.width,
                     originalHeight: img.height,
                 });
@@ -49,7 +48,9 @@ const CertificateLibrary = ({ isOpen, onClose }) => {
                 onClose();
                 setSelectedCategory(null);
             },
-            { crossOrigin: "anonymous" }
+            {
+                crossOrigin: "anonymous",
+            }
         );
     };
 
@@ -68,6 +69,8 @@ const CertificateLibrary = ({ isOpen, onClose }) => {
             showCategories={!selectedCategory}
             categories={certificateCategories}
             images={selectedCategory ? selectedCategory.images : []}
+            pageSize={CERT_PAGE_SIZE}
+            maxImages={CERT_MAX_LIMIT}
             onCategoryClick={(cat) => setSelectedCategory(cat)}
             onBack={() => setSelectedCategory(null)}
             onSelect={handleSelectCertificate}
