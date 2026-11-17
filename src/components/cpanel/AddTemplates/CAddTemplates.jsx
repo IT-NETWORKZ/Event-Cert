@@ -3,9 +3,8 @@ import { FileText, Check, Layers, Image as ImageIcon, Type, MessageSquare, Hash,
 import './AddTemplates.css';
 import AddTemplateTable from './AddTemplateTable';
 import { TEMPLATE_TYPES, SEND_TYPES, ADMINS } from './templateOptions';
-import { createTemplate, getTemplates, setTemplateStatus } from '../../../api/superAdminService.js'; // adjust path if needed
-
-const MAX_PARAMS = 20;
+import { createTemplate, getTemplates, setTemplateStatus } from '../../../api/superAdminService.js';
+import { validateTemplate } from '../../../validations/superadmin/templateSchemas'; // Joi validation
 
 const emptyForm = {
   templateType: '',
@@ -15,14 +14,6 @@ const emptyForm = {
   withUserName: false,
   noOfParameters: '',
   selectedAdmin: '',
-};
-
-// returns an error string, or "" when valid
-const validateParams = (value) => {
-  if (value === '' || value === null || value === undefined) return 'No. of parameters is required.';
-  if (!/^\d+$/.test(value)) return 'Only whole numbers are allowed.';
-  if (Number(value) > MAX_PARAMS) return `Maximum ${MAX_PARAMS} parameters allowed.`;
-  return '';
 };
 
 const getErrorMessage = (err, fallback) => {
@@ -35,9 +26,17 @@ const getErrorMessage = (err, fallback) => {
   return data?.message || data?.title || err.message || fallback;
 };
 
+// Small helper component to show validation message under a field
+const FieldError = ({ message }) =>
+  message ? (
+    <small style={{ color: '#dc3545', display: 'block', marginTop: 4 }} role="alert">
+      {message}
+    </small>
+  ) : null;
+
 const CAddTemplates = () => {
   const [formData, setFormData] = useState(emptyForm);
-  const [paramError, setParamError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({}); // Joi errors mapped by field name
   const [templates, setTemplates] = useState([]);
   const [listLoading, setListLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -45,6 +44,18 @@ const CAddTemplates = () => {
   const [error, setError] = useState('');
 
   const cardRef = useRef(null);
+
+  // Red border styling for invalid inputs matching your design system
+  const invalidStyle = (name) =>
+    fieldErrors[name] ? { borderColor: '#dc3545' } : undefined;
+
+  const clearFieldError = (...names) =>
+    setFieldErrors((prev) => {
+      if (!names.some((n) => prev[n])) return prev;
+      const next = { ...prev };
+      names.forEach((n) => delete next[n]);
+      return next;
+    });
 
   /* ---------- GET ---------- */
   const loadTemplates = useCallback(async () => {
@@ -64,8 +75,6 @@ const CAddTemplates = () => {
   }, [loadTemplates]);
 
   /* ---------- PATCH status ---------- */
-  // Called by the table. Saves on the server first, then updates the row in the list.
-  // If the request fails it throws, and the table shows the error and keeps the old status.
   const handleToggleStatus = useCallback(async (raw, enabled) => {
     const id = raw.templateId ?? raw.id;
     await setTemplateStatus(id, enabled);
@@ -74,36 +83,39 @@ const CAddTemplates = () => {
     );
   }, []);
 
-  // bring the form top (and its message) into view whenever a message appears
+  // Bring form top into view whenever a global message appears
   useEffect(() => {
     if (!message && !error) return;
     cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [message, error]);
 
-  // hide the success message after 6 seconds
+  // Hide success message after 6 seconds
   useEffect(() => {
     if (!message) return;
     const t = setTimeout(() => setMessage(''), 6000);
     return () => clearTimeout(t);
   }, [message]);
 
-  /* ---------- form ---------- */
+  /* ---------- form handlers ---------- */
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
+    clearFieldError(name);
+    setError('');
   };
 
-  // digits only, max 2 characters
+  // Digits only for parameters field
   const handleParamsChange = (e) => {
     const digits = e.target.value.replace(/\D/g, '').slice(0, 2);
     setFormData((prev) => ({ ...prev, noOfParameters: digits }));
-    setParamError(digits === '' ? '' : validateParams(digits));
+    clearFieldError('noOfParameters');
+    setError('');
   };
 
-  // block characters like e, +, -, . that some browsers allow
+  // Block non-digit keys
   const blockNonDigitKeys = (e) => {
     const allowed = ['Backspace', 'Delete', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight', 'Home', 'End'];
     if (allowed.includes(e.key) || e.ctrlKey || e.metaKey) return;
@@ -112,7 +124,7 @@ const CAddTemplates = () => {
 
   const handleReset = () => {
     setFormData(emptyForm);
-    setParamError('');
+    setFieldErrors({});
     setMessage('');
     setError('');
   };
@@ -125,31 +137,31 @@ const CAddTemplates = () => {
     setMessage('');
     setError('');
 
-    const pErr = validateParams(formData.noOfParameters);
-    if (pErr) {
-      setParamError(pErr);
-      document.getElementById('noOfParameters')?.focus();
+    // 1. Run Joi Validation
+    const { value, errors } = validateTemplate(formData);
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       return;
     }
-
+    setFieldErrors({});
     setSubmitting(true);
 
     try {
       await createTemplate({
-        templateType: formData.templateType,
-        sendType: formData.mediaType,
-        templateName: formData.templateName,
-        message: formData.message,
-        withUserName: formData.withUserName,
-        noOfParameters: formData.noOfParameters,
-        templateAdminId: formData.selectedAdmin,
+        templateType: value.templateType,
+        sendType: value.mediaType,
+        templateName: value.templateName,
+        message: value.message,
+        withUserName: value.withUserName,
+        noOfParameters: value.noOfParameters,
+        templateAdminId: value.selectedAdmin,
       });
 
       setFormData(emptyForm);
-      setParamError('');
+      setFieldErrors({});
       setMessage('Template submitted successfully!');
 
-      await loadTemplates(); // table refreshes with the saved row (newest first)
+      await loadTemplates();
     } catch (err) {
       console.error('Add Template Error:', err, err.response?.data);
       setError(getErrorMessage(err, 'Failed to submit template.'));
@@ -163,7 +175,6 @@ const CAddTemplates = () => {
       <div className="at-card-container">
         <div className="at-card" ref={cardRef}>
 
-          {/* Success / error message on top of the form */}
           {message && (
             <div className="alert alert-success d-flex align-items-center gap-2" role="alert">
               <Check size={18} strokeWidth={3} />
@@ -188,7 +199,7 @@ const CAddTemplates = () => {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="at-form">
+          <form onSubmit={handleSubmit} className="at-form" noValidate>
 
             {/* Select Template Type */}
             <div className="at-form-group">
@@ -203,7 +214,7 @@ const CAddTemplates = () => {
                   className="at-form-input"
                   value={formData.templateType}
                   onChange={handleChange}
-                  required
+                  style={invalidStyle('templateType')}
                 >
                   <option value="">-- Select Type --</option>
                   {TEMPLATE_TYPES.map((t) => (
@@ -211,6 +222,7 @@ const CAddTemplates = () => {
                   ))}
                 </select>
               </div>
+              <FieldError message={fieldErrors.templateType} />
             </div>
 
             {/* Select Image/Video Type */}
@@ -226,7 +238,7 @@ const CAddTemplates = () => {
                   className="at-form-input"
                   value={formData.mediaType}
                   onChange={handleChange}
-                  required
+                  style={invalidStyle('mediaType')}
                 >
                   <option value="">-- Select Type --</option>
                   {SEND_TYPES.map((t) => (
@@ -234,6 +246,7 @@ const CAddTemplates = () => {
                   ))}
                 </select>
               </div>
+              <FieldError message={fieldErrors.mediaType} />
             </div>
 
             {/* Template Name */}
@@ -252,9 +265,10 @@ const CAddTemplates = () => {
                   value={formData.templateName}
                   onChange={handleChange}
                   maxLength={100}
-                  required
+                  style={invalidStyle('templateName')}
                 />
               </div>
+              <FieldError message={fieldErrors.templateName} />
             </div>
 
             {/* Message Textarea */}
@@ -272,9 +286,10 @@ const CAddTemplates = () => {
                   placeholder="Hello {{1}}, welcome to IT NetworkZ."
                   value={formData.message}
                   onChange={handleChange}
-                  required
+                  style={invalidStyle('message')}
                 ></textarea>
               </div>
+              <FieldError message={fieldErrors.message} />
             </div>
 
             {/* Checkbox: With UserName */}
@@ -295,7 +310,7 @@ const CAddTemplates = () => {
               </label>
             </div>
 
-            {/* No of parameters: digits only, no arrows */}
+            {/* No of parameters */}
             <div className="at-form-group">
               <label htmlFor="noOfParameters" className="at-form-label">
                 No. of Parameters <span className="at-required">*</span>
@@ -313,18 +328,12 @@ const CAddTemplates = () => {
                   value={formData.noOfParameters}
                   onChange={handleParamsChange}
                   onKeyDown={blockNonDigitKeys}
-                  onBlur={() => setParamError(validateParams(formData.noOfParameters))}
                   maxLength={2}
                   autoComplete="off"
-                  style={paramError ? { borderColor: '#dc3545' } : undefined}
-                  required
+                  style={invalidStyle('noOfParameters')}
                 />
               </div>
-              {paramError && (
-                <small style={{ color: '#dc3545', display: 'block', marginTop: 4 }}>
-                  {paramError}
-                </small>
-              )}
+              <FieldError message={fieldErrors.noOfParameters} />
             </div>
 
             {/* Select Admin Dropdown */}
@@ -340,7 +349,7 @@ const CAddTemplates = () => {
                   className="at-form-input"
                   value={formData.selectedAdmin}
                   onChange={handleChange}
-                  required
+                  style={invalidStyle('selectedAdmin')}
                 >
                   <option value="">-- Select Admin --</option>
                   {ADMINS.map((a) => (
@@ -348,6 +357,7 @@ const CAddTemplates = () => {
                   ))}
                 </select>
               </div>
+              <FieldError message={fieldErrors.selectedAdmin} />
             </div>
 
             {/* Action Buttons */}
