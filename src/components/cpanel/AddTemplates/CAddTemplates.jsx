@@ -49,7 +49,7 @@ const CAddTemplates = () => {
   const invalidStyle = (name) =>
     fieldErrors[name] ? { borderColor: '#dc3545' } : undefined;
 
-  const clearFieldError = (...names) =>
+  const clearFieldError = (...names) =>   
     setFieldErrors((prev) => {
       if (!names.some((n) => prev[n])) return prev;
       const next = { ...prev };

@@ -179,7 +179,7 @@ const Dashboard = () => {
           <div className="quick-links">
             <ul className="top-menu">
               <li>
-                <NavLink to="/cpanel/payment">
+                <NavLink to="/cpanel/transaction">
                   <FaCreditCard />
                   <span>Payment</span>
                 </NavLink>
@@ -193,10 +193,10 @@ const Dashboard = () => {
               </li>
 
               <li>
-                <NavLink to="/cpanel/terms">
+                {/* <NavLink to="/cpanel/terms">
                   <FaFileContract />
                   <span>T&amp;C</span>
-                </NavLink>
+                </NavLink> */}
               </li>
             </ul>
           </div>

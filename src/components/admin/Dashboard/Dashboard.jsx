@@ -185,10 +185,10 @@ const Dashboard = () => {
               </li>
 
               <li>
-                <NavLink to="/admin/terms">
+                {/* <NavLink to="/admin/terms">
                   <FaFileContract />
                   <span>T&amp;C</span>
-                </NavLink>
+                </NavLink> */}
               </li>
             </ul>
           </div>
