@@ -31,6 +31,7 @@ const emptyFormData = {
   city: "",
   state: "",
   country: "",
+  contactNo: "",
   bannerImage: null,
   bannerImage2: null,
   aboutEvent: "",
@@ -87,6 +88,7 @@ const normalizeEvent = (e) => ({
   city: e.city || "",
   state: e.state || "",
   country: e.country || "",
+  contactNo: e.contactNo || e.contactNumber || e.contact || "",
   aboutEvent: e.aboutEvent || "",
   instructions: e.instructions || "",
   entryFee: String(e.entryFee ?? "0"),
@@ -238,6 +240,7 @@ const AddEvent = () => {
         );
       },
     },
+    { header: "Contact No.", accessorKey: "contactNo", meta: { className: "text-center", width: "150px" }, cell: (i) => i.getValue() || "-" },
     {
       header: "Adv. Banner Logo",
       id: "bannerSrc",
@@ -447,6 +450,7 @@ const AddEvent = () => {
       city: row.city,
       state: row.state,
       country: row.country,
+      contactNo: row.contactNo,
       aboutEvent: row.aboutEvent,
       instructions: row.instructions,
       entryFee: row.entryFee,
@@ -584,6 +588,25 @@ const AddEvent = () => {
             <div className="form-group">
               <label>Country <span className="required">*</span></label>
               <input type="text" name="country" value={formData.country} onChange={handleChange} required maxLength={50} placeholder="Country" />
+            </div>
+
+            <div className="form-group">
+              <label>Contact No. <span className="required">*</span></label>
+              <input
+                type="tel"
+                name="contactNo"
+                value={formData.contactNo}
+                onChange={(e) => {
+                  const v = e.target.value.replace(/[^\d+\s-]/g, "");
+                  setFormData((prev) => ({ ...prev, contactNo: v }));
+                }}
+                required
+                minLength={10}
+                maxLength={15}
+                pattern="[+]?[0-9\s-]{10,15}"
+                title="Enter a valid contact number (10 to 15 digits)"
+                placeholder="Contact No."
+              />
             </div>
 
             <div className="form-group">

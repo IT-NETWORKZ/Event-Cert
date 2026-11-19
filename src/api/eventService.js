@@ -120,3 +120,97 @@ export const submitEventRegistration = async (values) => {
   });
   return data;
 };
+
+/* ==========================================================================
+   ATTENDANCE (public, used after scanning the event's attendance QR)
+   Flow: send-otp -> verify-otp -> attendance marked as present
+   ========================================================================== */
+
+// Reads the real message from the backend response.
+// Returns { message, status, registered }
+//   status     : HTTP status (0 when the server could not be reached)
+//   registered : false only when the backend says "not registered"
+export const parseAttendanceError = (err) => {
+  if (!err?.response) {
+    return { message: "Could not reach the server. Please try again.", status: 0, registered: true };
+  }
+
+  const d = err.response.data;
+  let message = "";
+
+  // ASP.NET Core validation: { errors: { "Email": ["..."] } }
+  if (d?.errors && typeof d.errors === "object") {
+    const first = Object.values(d.errors)[0];
+    message = Array.isArray(first) ? first[0] : String(first || "");
+  }
+
+  if (!message && typeof d === "string" && d.trim()) message = d;
+  message = message || d?.message || d?.title || "Something went wrong. Please try again.";
+
+  return { message, status: err.response.status, registered: d?.registered !== false };
+};
+
+// GET /api/home/events/{id}  -> only used to show the title and dates (optional)
+export const getAttendanceEvent = async (eventId) => {
+  const { data } = await api.get(`/home/events/${eventId}`);
+  return data?.eventDetails || null;
+};
+
+// POST /api/home/attendance/send-otp
+// Response: { success, registered, message, email }
+export const sendAttendanceOtp = async ({ eventId, email }) => {
+  const { data } = await api.post("/home/attendance/send-otp", {
+    eventId: Number(eventId),
+    email,
+  });
+  return data;
+};
+
+// POST /api/home/attendance/verify-otp
+// Response: { success, attendanceMarked, message, eventId, participantId, participantName, attendanceDate }
+export const verifyAttendanceOtp = async ({ eventId, email, otp }) => {
+  const { data } = await api.post("/home/attendance/verify-otp", {
+    eventId: Number(eventId),
+    email,
+    otp,
+  });
+  return data;
+};
+
+/* ==========================================================================
+   PUBLIC EVENTS LIST (home page)
+   GET /api/home/events  ->  { success, totalRecords, events: [...] }
+   ========================================================================== */
+export const getHomeEvents = async () => {
+  const { data } = await api.get("/home/events");
+  return data;
+};
+
+/* ==========================================================================
+   EVENT PARTICIPANTS (table on the event registration page)
+   GET /api/home/events/{id}/participants
+   ->  [ { participantId, fullName, gender, registrationCategory, groupName,
+           status, collegeName, organizationName, profileImage } ]
+       (or { success, participants: [...] })
+   ========================================================================== */
+export const getEventParticipants = async (eventId) => {
+  const { data } = await api.get(`/home/events/${eventId}/participants`);
+  return Array.isArray(data) ? data : data?.participants ?? data?.data ?? [];
+};
+
+/* ==========================================================================
+   ADMIN ATTENDANCE DASHBOARD (needs the admin JWT - axiosClient adds it)
+   GET /api/admin/attendance/events          -> { success, count, data: [events] }
+   GET /api/admin/attendance/report?eventId=&date=yyyy-MM-dd
+                                             -> { success, message, data: report }
+   Errors (400/404) carry { message } - use parseAttendanceError(err).
+   ========================================================================== */
+export const getAdminAttendanceEvents = async () => {
+  const { data } = await api.get("/admin/attendance/events");
+  return Array.isArray(data) ? data : data?.data ?? [];
+};
+
+export const getAdminAttendanceReport = async ({ eventId, date }) => {
+  const { data } = await api.get("/admin/attendance/report", { params: { eventId, date } });
+  return data?.data ?? data;
+};

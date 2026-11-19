@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as XLSX from "xlsx"; // npm i xlsx
-import { jsPDF } from "jspdf"; // npm i jspdf
 import DataTable from "../../common/Table/DataTable";
 import "../../../css/DesignerTable.css";
 import { useNavigate } from "react-router-dom";
@@ -249,18 +248,6 @@ const fillPlaceholders = (canvas, row) => {
     originals.forEach(([obj, text]) => obj.set("text", text));
     canvas.renderAll();
   };
-};
-
-// One-page PDF (page size = canvas size) from a PNG data URL
-const makePdfBlob = (dataUrl, width, height) => {
-  const pdf = new jsPDF({
-    orientation: width >= height ? "landscape" : "portrait",
-    unit: "px",
-    format: [width, height],
-    hotfixes: ["px_scaling"],
-  });
-  pdf.addImage(dataUrl, "PNG", 0, 0, width, height);
-  return pdf.output("blob");
 };
 
 // "Rahul Patil" -> "Rahul Patil.png"; the same name again -> "Rahul Patil_2.png"
@@ -560,10 +547,11 @@ const DesignerTable = ({
     }
   };
 
-  // Only Text / Send Image / Send PDF -> saves the design once, then queues ONE bulk job
-  // (POST api/admin/bulk-jobs) for all ticked users. With a Schedule Date the job runs at that time,
-  // otherwise it is queued to run now. kind: "text" | "image" | "pdf"
-  const queueJob = async (kind) => {
+  // Text / Send Image / Send PDF: for EVERY ticked user ->
+  //   1. fill {{NAME}} {{TEXT1}} ... on the canvas with that user's table data
+  //   2. save the filled image on the server, named after the user (Rahul Patil.png)
+  //   3. queue a bulk job for that user with their own saved design
+  const sendForUsers = async (kind) => {
     if (saving) return;
 
     const targets = rows.filter((r) => selectedIds.includes(r.id));
@@ -588,7 +576,6 @@ const DesignerTable = ({
       return;
     }
 
-    // Schedule Date (local time) -> UTC ISO string, e.g. 2026-11-11T13:30:00.000Z
     let scheduledAt;
     if (form.scheduleDate) {
       const when = new Date(form.scheduleDate);
@@ -601,89 +588,13 @@ const DesignerTable = ({
 
     const isPdf = kind === "pdf";
     const outputFormat = isPdf ? "PDF" : IMAGE_FORMAT.toUpperCase();
+    const parameterValues = {};
+    inputIndexes.forEach((n) => {
+      parameterValues[String(n)] = (params[n - 1] || "").trim();
+    });
+    const templateId = Number(selectedTemplate.id);
 
-    try {
-      setSaving(kind);
-      setSavedFiles([]);
-      setStatus({ type: "", text: "Saving design..." });
-      canvas.discardActiveObject(); // no selection handles in the saved image
-
-      // 1. save the design once (template with its {{placeholders}} - the job fills each user's data)
-      const dataUrl = canvas.toDataURL({ format: "png", multiplier: EXPORT_MULTIPLIER });
-      const blob = await (await fetch(dataUrl)).blob();
-      const stamp = new Date().toISOString().slice(0, 19).replace(/[T:]/g, "-");
-      const designName = `Design ${stamp}`;
-
-      const design = await saveCardDesign({
-        blob,
-        designName,
-        fileName: `${designName}.png`,
-        templateType: CARD_TEMPLATE_TYPE,
-        uploadFormat: "PNG", // the saved source image is always a PNG
-        outputFormat, // format of the files the job produces
-        canvasWidth: canvas.getWidth(),
-        canvasHeight: canvas.getHeight(),
-        canvasJson: canvas.toJSON(),
-        format: "png",
-      });
-
-      // 2. create the bulk job
-      setStatus({ type: "", text: scheduledAt ? "Scheduling job..." : "Creating job..." });
-
-      // typed values by parameter number; {{1}} is each user's name, filled for every recipient
-      const parameterValues = {};
-      inputIndexes.forEach((n) => {
-        parameterValues[String(n)] = (params[n - 1] || "").trim();
-      });
-
-      const templateId = Number(selectedTemplate.id);
-      const job = await createBulkJob({
-        cardDesignId: design.cardDesignId,
-        templateId: templateId > 0 ? templateId : null,
-        outputType: isPdf ? "PDF" : "Image",
-        outputFormat,
-        channels: JOB_CHANNELS,
-        recipientIds: targets.map((r) => Number(r.id)),
-        parameterValues,
-        scheduledAt,
-      });
-
-      const when = scheduledAt ? ` for ${new Date(scheduledAt).toLocaleString()}` : "";
-      setStatus({
-        type: "ok",
-        text: `${job?.status || "Queued"}${when}: ${targets.length} recipient(s). Job ID ${job?.jobId || ""}`,
-      });
-    } catch (err) {
-      console.error(err);
-      setStatus({ type: "error", text: getApiError(err, "Could not create the job.") });
-    } finally {
-      setSaving(null);
-    }
-  };
-  const handleOnlyText = () => queueJob("text");
-
-  // Send Image / Send PDF: for every ticked user -> fill the canvas with that user's data -> make the file
-  // -> POST api/admin/cards. The file is sent named after the user ("Rahul Patil.png") and the API
-  // saves it in its uploads folder.
-  const exportForUsers = async (kind) => {
-    if (saving) return;
-
-    const targets = rows.filter((r) => selectedIds.includes(r.id));
-    if (!targets.length) {
-      setStatus({ type: "error", text: "Tick at least one user first." });
-      return;
-    }
-    if (!canvas) {
-      setStatus({ type: "error", text: "Canvas is not ready. Open the design canvas first." });
-      return;
-    }
-
-    const isPdf = kind === "pdf";
-    const format = isPdf ? "PDF" : IMAGE_FORMAT.toUpperCase(); // UploadFormat = OutputFormat = the file we send
-    const ext = isPdf ? "pdf" : IMAGE_FORMAT;
-    const label = isPdf ? "PDF" : "image";
-
-    const used = {}; // file names already used in this send (same name twice -> Name_2)
+    const used = {}; // same name twice -> Name, Name_2
     const saved = [];
     const failed = [];
 
@@ -691,61 +602,65 @@ const DesignerTable = ({
       setSaving(kind);
       setSavedFiles([]);
       setStatus({ type: "", text: "" });
-      canvas.discardActiveObject(); // no selection handles in the exported file
+      canvas.discardActiveObject();
 
       for (let i = 0; i < targets.length; i++) {
         const row = targets[i];
-        setStatus({ type: "", text: `Saving ${i + 1} of ${targets.length}: ${row.name}...` });
+        setStatus({ type: "", text: `Sending ${i + 1} of ${targets.length}: ${row.name}...` });
 
-        const restore = fillPlaceholders(canvas, row);
+        const restore = fillPlaceholders(canvas, row); // this user's data on the canvas
         try {
-          let blob;
-          if (isPdf) {
-            const dataUrl = canvas.toDataURL({ format: "png", multiplier: EXPORT_MULTIPLIER });
-            blob = makePdfBlob(dataUrl, canvas.getWidth(), canvas.getHeight());
-          } else {
-            const dataUrl = canvas.toDataURL({
-              format: IMAGE_FORMAT === "jpg" ? "jpeg" : "png",
-              quality: 0.95,
-              multiplier: EXPORT_MULTIPLIER,
-            });
-            blob = await (await fetch(dataUrl)).blob();
-          }
+          const dataUrl = canvas.toDataURL({ format: "png", multiplier: EXPORT_MULTIPLIER });
+          const blob = await (await fetch(dataUrl)).blob();
 
-          const res = await saveCardDesign({
+          const design = await saveCardDesign({
             blob,
-            designName: row.name || "user",
-            fileName: uniqueFileName(row.name, ext, used), // "Rahul Patil.png"
+            designName: row.name || "user", // server uses this as the file name
+            fileName: uniqueFileName(row.name, "png", used),
             templateType: CARD_TEMPLATE_TYPE,
-            uploadFormat: format,
-            outputFormat: format,
+            uploadFormat: "PNG", // the saved source image is always a PNG
+            outputFormat,
             canvasWidth: canvas.getWidth(),
             canvasHeight: canvas.getHeight(),
-            canvasJson: canvas.toJSON(), // with this user's values filled in
-            format: ext,
+            canvasJson: canvas.toJSON(), // already holds this user's values
+            format: "png",
           });
-          saved.push({ name: row.name, url: res?.imageUrl || "" });
+
+          await createBulkJob({
+            cardDesignId: design.cardDesignId,
+            templateId: templateId > 0 ? templateId : null,
+            outputType: isPdf ? "PDF" : "Image",
+            outputFormat,
+            channels: JOB_CHANNELS,
+            recipientIds: [Number(row.id)],
+            parameterValues,
+            scheduledAt,
+          });
+
+          saved.push({ name: row.name, url: design?.imageUrl || "" });
         } catch (err) {
           console.error(err);
           const msg = err?.response ? getApiError(err, "Request failed.") : err?.message || "Request failed.";
           failed.push(`${row.name}: ${msg}`);
         } finally {
-          restore(); // put the template text back
+          restore(); // put the {{placeholders}} back
         }
       }
 
       setSavedFiles(saved);
+      const when = scheduledAt ? ` for ${new Date(scheduledAt).toLocaleString()}` : "";
       if (failed.length) {
-        setStatus({ type: "error", text: `${saved.length} saved, ${failed.length} failed. ${failed.slice(0, 2).join(" ")}` });
+        setStatus({ type: "error", text: `${saved.length} queued${when}, ${failed.length} failed. ${failed.slice(0, 2).join(" ")}` });
       } else {
-        setStatus({ type: "ok", text: `${saved.length} ${label}(s) saved on the server by user name.` });
+        setStatus({ type: "ok", text: `${saved.length} queued${when}. Files saved on the server by user name.` });
       }
     } finally {
       setSaving(null);
     }
   };
-  const handleSendImage = () => queueJob("image");
-  const handleSendPdf = () => queueJob("pdf");
+  const handleOnlyText = () => sendForUsers("text");
+  const handleSendImage = () => sendForUsers("image");
+  const handleSendPdf = () => sendForUsers("pdf");
 
   // Past Records page   -> /admin/custom-past-records
   // Retrieve Records    -> /admin/custom-retrieve-records

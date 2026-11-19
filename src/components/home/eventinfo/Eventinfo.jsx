@@ -53,6 +53,7 @@ function Eventinfo() {
       state: ev.state,
       city: ev.city,
       description: ev.aboutEvent,
+      contactNo: ev.contactNo || ev.contactNumber || ev.contact || "",
       entry: ev.entryFee,
       image: ev.image1 ? `https://localhost:7151${ev.image1}` : "",
       qr: ev.qrCodeUrl ? `https://localhost:7151${ev.qrCodeUrl}` : "",

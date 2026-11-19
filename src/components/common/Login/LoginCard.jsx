@@ -106,14 +106,6 @@ function LoginCard({
         <span>OR</span>
       </div>
 
-      <Button type="button" className="google-btn">
-        <img
-          src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-          alt="Google"
-        />
-        Continue with Google
-      </Button>
-
       {!hideRegister && (
         <p className="register">
           Don't have an account?

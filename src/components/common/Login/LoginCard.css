@@ -239,39 +239,6 @@
     color: rgba(255, 255, 255, .85);
 }
 
-/* ==========================================================
-   GOOGLE BUTTON
-========================================================== */
-
-.google-btn {
-    height: 42px;
-    border: none;
-    border-radius: 9px;
-    background: #fff;
-    color: #444;
-    padding: 0 24px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin: auto;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: .3s;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, .12);
-}
-
-.google-btn img {
-    width: 20px;
-    height: 20px;
-}
-
-.google-btn:hover {
-    background: #f7f7f7;
-    transform: translateY(-2px);
-    box-shadow: 0 7px 18px rgba(0, 0, 0, .18);
-}
 
 /* ==========================================================
    REGISTER

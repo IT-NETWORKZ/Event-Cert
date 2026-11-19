@@ -1,32 +1,19 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft, CalendarDays, Download, ClipboardList, UserCheck, UserX, Users } from "lucide-react";
 import DataTable from "../../common/Table/DataTable";
+import {
+  getAdminAttendanceEvents,
+  getAdminAttendanceReport,
+  parseAttendanceError,
+} from "../../../api/eventService";
 import "./EventAttendance.css";
 
 /* ==========================================================================
-   STATIC DATA (no API yet)
-   - events in the dropdown
-   - participants of every event
-   - present / absent is worked out for the chosen date
+   EVENT ATTENDANCE DASHBOARD  (admin)
+   GET /api/admin/attendance/events   -> dropdown
+   GET /api/admin/attendance/report   -> participants + present / absent for the chosen date
    ========================================================================== */
-const STATIC_EVENTS = [
-  { id: "S1", title: "Tech Summit 2026", count: 24 },
-  { id: "S2", title: "AI & ML Workshop", count: 18 },
-  { id: "S3", title: "UI/UX Design Forum", count: 15 },
-  { id: "S4", title: "Cybersecurity Expo", count: 12 },
-  { id: "S5", title: "Kubernetes Days", count: 8 },
-  { id: "S6", title: "CI/CD Bootcamp", count: 0 }, // shows the "No registered participants" state
-];
-
-const NAMES = [
-  "Rahul Patil", "Sneha Joshi", "Amit Shah", "Priya Deshmukh", "Karan Mehta",
-  "Anjali Verma", "Rohan Kulkarni", "Neha Singh", "Vikram Rao", "Pooja Nair",
-  "Sahil Khan", "Divya Iyer", "Manish Gupta", "Kavya Reddy", "Arjun Bhatt",
-  "Ritu Sharma", "Harsh Jain", "Meera Pillai", "Yash Thakur", "Isha Kapoor",
-  "Nikhil Bose", "Tanvi Gokhale", "Aditya Rane", "Swati Menon",
-];
-
 const pad = (n) => String(n).padStart(2, "0");
 
 const localToday = () => {
@@ -36,34 +23,63 @@ const localToday = () => {
 
 // "2026-11-13" -> "13-11-2026"
 const dmy = (iso) => {
-  const [y, m, d] = String(iso || "").split("-");
+  const [y, m, d] = String(iso || "").slice(0, 10).split("-");
   return y && m && d ? `${d}-${m}-${y}` : "";
 };
 
-const makeParticipants = (event) => {
-  const seed = [...String(event.id)].reduce((a, c) => a + c.charCodeAt(0), 0);
-  return Array.from({ length: event.count }, (_, i) => {
-    const name = NAMES[(i + seed) % NAMES.length];
-    return {
-      regId: 4000 + seed * 3 + i,
-      name,
-      email: `${name.split(" ")[0].toLowerCase()}${i + 1}@gmail.com`,
-      mobile: `98${String(76543210 + (seed + i) * 1357).slice(0, 8)}`,
-    };
-  });
+// first defined value among several possible API property names
+const pick = (o, ...keys) => {
+  for (const k of keys) if (o?.[k] !== undefined && o?.[k] !== null) return o[k];
+  return "";
 };
 
-// same person + same date always gives the same result; future dates are all Absent
-const markAttendance = (p, date) => {
-  if (!date || date > localToday()) return { status: "Absent", time: "" };
-  const day = Math.floor(Date.parse(date) / 86400000);
-  if ((p.regId * 7 + day * 13) % 100 >= 60) return { status: "Absent", time: "" };
-  const mins = 9 * 60 + ((p.regId * 11 + day) % 150); // between 09:00 and 11:29
-  const hh = Math.floor(mins / 60);
+// attendance time -> "13-11-2026 09:42 AM" (IST). Values with Z / offset are converted to IST.
+const fmtTime = (v) => {
+  if (!v) return "";
+  const s = String(v);
+  const d = new Date(s);
+  if (Number.isNaN(d.getTime())) return s;
+  const hasZone = /(Z|[+-]\d{2}:?\d{2})$/.test(s);
+  const parts = hasZone
+    ? new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Asia/Kolkata", day: "2-digit", month: "2-digit", year: "numeric",
+        hour: "2-digit", minute: "2-digit", hour12: true,
+      }).formatToParts(d).reduce((a, p) => ({ ...a, [p.type]: p.value }), {})
+    : {
+        day: pad(d.getDate()), month: pad(d.getMonth() + 1), year: d.getFullYear(),
+        hour: pad(d.getHours() % 12 || 12), minute: pad(d.getMinutes()),
+        dayPeriod: d.getHours() >= 12 ? "pm" : "am",
+      };
+  return `${parts.day}-${parts.month}-${parts.year} ${parts.hour}:${parts.minute} ${String(parts.dayPeriod).toUpperCase()}`;
+};
+
+const mapEvent = (e) => ({
+  id: String(pick(e, "eventId", "id")),
+  title: pick(e, "eventTitle", "title", "name") || "Untitled event",
+  start: String(pick(e, "eventStartDate", "startDate")).slice(0, 10),
+  end: String(pick(e, "eventCompletionDate", "eventEndDate", "endDate")).slice(0, 10),
+});
+
+const mapRow = (p, i) => {
+  const raw = String(pick(p, "attendanceStatus", "status")).toLowerCase();
+  const present = p?.isPresent === true || p?.present === true || raw === "present" || raw === "p";
   return {
-    status: "Present",
-    time: `${dmy(date)} ${pad(hh % 12 || 12)}:${pad(mins % 60)} ${hh >= 12 ? "PM" : "AM"}`,
+    regId: pick(p, "registrationId", "participantId", "id") || i + 1,
+    name: pick(p, "participantName", "fullName", "name"),
+    email: pick(p, "email", "emailId"),
+    mobile: pick(p, "whatsAppNo", "whatsappNo", "mobile", "mobileNo"),
+    status: present ? "Present" : "Absent",
+    time: present ? fmtTime(pick(p, "attendanceTime", "markedAt", "attendanceDateTime", "attendanceDate")) : "",
   };
+};
+
+// keep today's date inside the event's date range (the API rejects other dates)
+const clampDate = (ev) => {
+  const t = localToday();
+  if (!ev) return t;
+  if (ev.start && t < ev.start) return ev.start;
+  if (ev.end && t > ev.end) return ev.end;
+  return t;
 };
 
 /* ==========================================================================
@@ -71,25 +87,18 @@ const markAttendance = (p, date) => {
    ========================================================================== */
 const EventAttendance = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [params, setParams] = useSearchParams();
 
   // event opened from "View Attendance" in the Event Details table
-  const passedId = params.get("eventId") || params.get("nID");
-  const passedTitle = location.state?.eventTitle;
+  const passedId = params.get("eventId") || params.get("nID") || "";
 
-  const events = useMemo(() => {
-    if (passedId && !STATIC_EVENTS.some((e) => e.id === String(passedId))) {
-      return [
-        { id: String(passedId), title: passedTitle || `Event #${passedId}`, count: 10 + (Number(passedId) % 9 || 4) },
-        ...STATIC_EVENTS,
-      ];
-    }
-    return STATIC_EVENTS;
-  }, [passedId, passedTitle]);
-
+  const [events, setEvents] = useState([]);
+  const [eventsLoading, setEventsLoading] = useState(true);
   const [eventId, setEventId] = useState(passedId ? String(passedId) : "");
   const [date, setDate] = useState(localToday());
+  const [rows, setRows] = useState([]);
+  const [reportLoading, setReportLoading] = useState(false);
+  const [reportError, setReportError] = useState("");
   const [msg, setMsg] = useState({ type: "", text: "" });
 
   useEffect(() => {
@@ -98,12 +107,52 @@ const EventAttendance = () => {
     return () => clearTimeout(t);
   }, [msg]);
 
-  const event = events.find((e) => e.id === eventId) || null;
+  /* ---------- events for the dropdown ---------- */
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const list = (await getAdminAttendanceEvents()).map(mapEvent);
+        if (cancelled) return;
+        setEvents(list);
+        const first = list.find((e) => e.id === String(passedId));
+        if (first) setDate(clampDate(first));
+      } catch (err) {
+        if (!cancelled) setMsg({ type: "error", text: parseAttendanceError(err).message });
+      } finally {
+        if (!cancelled) setEventsLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const rows = useMemo(
-    () => (event ? makeParticipants(event).map((p) => ({ ...p, ...markAttendance(p, date) })) : []),
-    [event, date]
-  );
+  const event = useMemo(() => events.find((e) => e.id === eventId) || null, [events, eventId]);
+
+  /* ---------- report for the chosen event + date ---------- */
+  const loadReport = useCallback(async () => {
+    if (!eventId || !date) {
+      setRows([]);
+      setReportError("");
+      return;
+    }
+    setReportLoading(true);
+    setReportError("");
+    try {
+      const report = await getAdminAttendanceReport({ eventId: Number(eventId), date });
+      const list = Array.isArray(report) ? report : pick(report, "participants", "attendance", "records", "rows") || [];
+      setRows(list.map(mapRow));
+    } catch (err) {
+      setRows([]);
+      setReportError(parseAttendanceError(err).message);
+    } finally {
+      setReportLoading(false);
+    }
+  }, [eventId, date]);
+
+  useEffect(() => {
+    loadReport();
+  }, [loadReport]);
 
   const total = rows.length;
   const present = rows.filter((r) => r.status === "Present").length;
@@ -113,6 +162,8 @@ const EventAttendance = () => {
     const id = e.target.value;
     setEventId(id);
     setParams(id ? { eventId: id } : {}, { replace: true });
+    const ev = events.find((x) => x.id === id);
+    if (ev) setDate(clampDate(ev));
   };
 
   /* ---------------- table ---------------- */
@@ -187,8 +238,8 @@ const EventAttendance = () => {
         <div className="ea-filters">
           <label className="ea-field ea-field-grow">
             <span>Select Event</span>
-            <select value={eventId} onChange={handleSelect}>
-              <option value="">Select Event</option>
+            <select value={eventId} onChange={handleSelect} disabled={eventsLoading}>
+              <option value="">{eventsLoading ? "Loading events..." : "Select Event"}</option>
               {events.map((e) => (
                 <option key={e.id} value={e.id}>{e.title}</option>
               ))}
@@ -197,7 +248,13 @@ const EventAttendance = () => {
 
           <label className="ea-field ea-field-grow">
             <span><CalendarDays size={14} /> Attendance Date</span>
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+            <input
+              type="date"
+              value={date}
+              min={event?.start || undefined}
+              max={event?.end || undefined}
+              onChange={(e) => setDate(e.target.value)}
+            />
           </label>
 
           <button type="button" className="ea-export" onClick={exportCsv}>
@@ -224,10 +281,15 @@ const EventAttendance = () => {
           <h4 className="ea-details-title">
             <ClipboardList size={20} />
             Participant Attendance Details
+            {event && date ? <small style={{ fontWeight: 500, fontSize: 14 }}>({dmy(date)})</small> : null}
           </h4>
 
           {!event ? (
             <div className="ea-empty">Please select an event to view its attendance.</div>
+          ) : reportLoading ? (
+            <div className="ea-empty">Loading attendance...</div>
+          ) : reportError ? (
+            <div className="ea-empty">{reportError}</div>
           ) : rows.length === 0 ? (
             <div className="ea-empty">No registered participants found.</div>
           ) : (
