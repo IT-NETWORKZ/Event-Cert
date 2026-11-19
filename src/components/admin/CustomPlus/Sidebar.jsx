@@ -11,7 +11,6 @@ import {
     FaCertificate,
     FaDownload,
     FaHistory,
-    FaFolderOpen,
 } from "react-icons/fa";
 
 import { fabric } from "fabric";
@@ -61,8 +60,6 @@ const Sidebar = ({ activeMenu, setActiveMenu, rows = [], selectedRows = [] }) =>
     const [showRecent, setShowRecent] = useState(false);
     const [recentItems, setRecentItems] = useState([]);
 
-    // Your Design drawer (same saved designs, own drawer + own minimized pill)
-    const [showYourDesign, setShowYourDesign] = useState(false);
 
     const designFileInputRef = useRef(null);
     const bulkRunningRef = useRef(false);
@@ -254,14 +251,7 @@ const Sidebar = ({ activeMenu, setActiveMenu, rows = [], selectedRows = [] }) =>
     // ==========================
     const openRecent = () => {
         setRecentItems(getRecent());
-        setShowYourDesign(false);
         setShowRecent(true);
-    };
-
-    const openYourDesign = () => {
-        setRecentItems(getRecent());
-        setShowRecent(false);
-        setShowYourDesign(true);
     };
 
     const handleRecentSelect = (item) => {
@@ -275,7 +265,6 @@ const Sidebar = ({ activeMenu, setActiveMenu, rows = [], selectedRows = [] }) =>
             (img) => {
                 applyDesignToCanvas(img, { width: item.width, height: item.height });
                 setShowRecent(false);
-                setShowYourDesign(false);
                 setActiveMenu("design");
             },
             { crossOrigin: "anonymous" }
@@ -356,11 +345,6 @@ const Sidebar = ({ activeMenu, setActiveMenu, rows = [], selectedRows = [] }) =>
                 setActiveMenu(id);
                 break;
 
-            case "yourdesign":
-                openYourDesign();
-                setActiveMenu(id);
-                break;
-
             case "text":
                 setActiveMenu(id);
                 break;
@@ -414,12 +398,6 @@ const Sidebar = ({ activeMenu, setActiveMenu, rows = [], selectedRows = [] }) =>
             { id: "design", icon: <FaImages />, title: "Upload Design" },
             { id: "upload", icon: <FaUpload />, title: "Upload Image" },
             { id: "recent", icon: <FaHistory />, title: "Recent" },
-            {
-                id: "yourdesign",
-                icon: <FaFolderOpen />,
-                title: "Your Design",
-                desc: "This section allows you to access your created or customized designs.",
-            },
         ],
         [
             { id: "text", icon: <FaFont />, title: "Text" },
@@ -435,7 +413,7 @@ const Sidebar = ({ activeMenu, setActiveMenu, rows = [], selectedRows = [] }) =>
             {
                 id: "png",
                 icon: <FaDownload />,
-                title: "PNG",
+                title: "Image",
                 desc: "Download PNG (one ticked row = direct file, many = ZIP).",
             },
             {
@@ -531,21 +509,6 @@ const Sidebar = ({ activeMenu, setActiveMenu, rows = [], selectedRows = [] }) =>
                 items={recentItems}
                 onSelect={handleRecentSelect}
                 onDelete={handleRecentDelete}
-            />
-
-            {/* Your Design Drawer */}
-            <Recentlibrary
-                isOpen={showYourDesign}
-                onClose={() => setShowYourDesign(false)}
-                onExpand={openYourDesign}
-                items={recentItems}
-                onSelect={handleRecentSelect}
-                onDelete={handleRecentDelete}
-                title="Your Design"
-                pillLabel="Your Design"
-                pillTop={460}
-                pillColor="#00acc1"
-                icon={<FaFolderOpen />}
             />
 
             <PreviewModal

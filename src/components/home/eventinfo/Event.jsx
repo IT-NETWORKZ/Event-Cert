@@ -130,7 +130,7 @@ const buildEvent = (picked) => {
     venue: e.location || defaultEvent.location,
     mode: e.mode || "Offline",
     entry: Number(e.entry) || defaultEvent.entry,
-    contact: e.contact || "+91 98765 43210",
+    contact: e.contactNo || e.contact || "-",
     org: e.org || "ITNetworkZ Infosystems Pvt Ltd",
     about: e.description || defaultEvent.description,
     instructions: e.instructions || [

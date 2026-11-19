@@ -59,7 +59,7 @@ import AdminTransaction from "../components/cpanel/AdminTransaction/AdminTransac
 import CResetPassword from "../components/cpanel/ResetPassword/CResetPassword";
 import Taxes from "../components/cpanel/Taxes/Taxes";
 import Event from "../components/home/eventinfo/Event";
-import MarkAttendance from "../components/home/eventinfo/Event";
+import MarkAttendance from "../components/home/eventinfo/MarkAttendance";   // ✅
 
 
 

@@ -177,6 +177,7 @@ const UploadEventImages = () => {
           city: e.city,
           mode: e.mode,
           description: e.aboutEvent,
+          contactNo: e.contactNo || e.contactNumber || e.contact || "",
           entry: e.entryFee,
           image: toImageUrl(e.image1) || "",
         },

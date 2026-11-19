@@ -15,6 +15,7 @@ import {
   FaAlignRight,
   FaMinus,
   FaPlus,
+  FaExpandArrowsAlt,
 } from "react-icons/fa";
 import {
   MdVerticalAlignTop,
@@ -23,6 +24,7 @@ import {
 } from "react-icons/md";
 import { fabric } from "fabric";
 import { useCanvas } from "../../../context/CanvasContext";
+import { resetImageSize } from "./resetImageSize";
 import "../../../css/CanvasToolbar.css";
 
 // Insert your Google Fonts Developer API Key here to pull hundreds of live fonts!
@@ -86,7 +88,15 @@ const CanvasToolbar = () => {
     canvas,
     past,
     future,
+    activePage,
+    setCanvasSize,
+    setPages,
   } = useCanvas();
+
+  const handleResetImageSize = () => {
+    const done = resetImageSize({ canvas, setCanvasSize, setPages, activePage });
+    if (!done) window.alert("Add an image first (Upload Design, Invitation, Greeting, Certificate or Recent).");
+  };
 
   // history is handled inside FabricCanvas; these just talk to it
   const saveState = (c) => (c || canvas)?.__history?.save();
@@ -670,6 +680,9 @@ const CanvasToolbar = () => {
         </button>
         <button className="toolbar-button" onClick={() => canvas.setZoom(Math.max(0.2, canvas.getZoom() - 0.1))} title="Zoom Out">
           <FaSearchMinus />
+        </button>
+        <button className="toolbar-button" onClick={handleResetImageSize} title="Reset Image Size">
+          <FaExpandArrowsAlt />
         </button>
       </div>
 

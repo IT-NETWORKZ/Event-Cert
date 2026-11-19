@@ -80,6 +80,18 @@
 .ma-alert-ok span { font-weight: 600; overflow-wrap: anywhere; }
 .ma-alert-ok small { color: #3f7a55; font-size: 13px; }
 
+/* already marked (info) */
+.ma-alert-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: #e8f4fd;
+  border: 1px solid #b8d9f2;
+  color: #1d5f8f;
+}
+.ma-alert-info strong { font-size: 16px; }
+
 /* form */
 .ma-form { display: flex; flex-direction: column; gap: 8px; margin-top: 26px; text-align: left; }
 .ma-form label { font-size: 14px; font-weight: 700; color: var(--t-dark); }
@@ -112,6 +124,16 @@
 .ma-input input::placeholder { color: #a9b8b6; }
 .ma-err { color: #c0262d; font-size: 13px; font-weight: 600; }
 
+/* OTP input */
+.ma-input input.ma-otp {
+  letter-spacing: 8px;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+}
+.ma-hint { color: #5c726f; font-size: 13.5px; overflow-wrap: anywhere; }
+.ma-link { color: var(--t-dark); font-weight: 700; font-size: 14px; text-decoration: underline; }
+
 .ma-btn {
   height: 50px;
   margin-top: 8px;
@@ -126,8 +148,23 @@
   transition: transform .2s, box-shadow .2s, filter .2s;
 }
 .ma-btn:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: 0 12px 22px rgba(0, 150, 136, .38); }
+.ma-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; filter: none; }
+
+/* change email / resend */
+.ma-row { display: flex; justify-content: space-between; gap: 10px; margin-top: 6px; }
+.ma-text-btn {
+  border: none;
+  background: none;
+  padding: 4px 0;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--t-dark);
+  cursor: pointer;
+}
+.ma-text-btn:disabled { color: #9bb0ad; cursor: not-allowed; }
 
 @media (max-width: 480px) {
   .ma-card { padding: 28px 18px 26px; border-radius: 18px; }
   .ma-title { font-size: 24px; }
+  .ma-input input.ma-otp { letter-spacing: 6px; }
 }
