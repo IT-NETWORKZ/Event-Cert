@@ -11,13 +11,16 @@ import {
   Zap,
   Smartphone,
   Cloud,
-  Check
+  Check,
+  ClipboardList,
+  Send,
+  CalendarClock,
+  Download
 } from 'lucide-react';
 
 import { useNavigate } from 'react-router-dom';
 
 import Footer from '../common/footer/Footer';
-import Button from "../common/button/Button";
 import Navbar from '../common/navbar/Navbar';
 import { getHomeSubscriptionPlans, getApiError } from '../../api/homeService';
 
@@ -38,6 +41,14 @@ const containerVariants = {
     transition: { staggerChildren: 0.1 }
   }
 };
+
+// Tab configuration: key, icon, heading, subheading
+const TABS = [
+  { key: 'event',    Icon: ClipboardList, title: 'Create Event',          sub: 'Event Management' },
+  { key: 'creative', Icon: Send,          title: 'Personalize & Share',   sub: 'WhatsApp & Email' },
+  { key: 'combo',    Icon: CalendarClock, title: 'Event & Share',         sub: 'Combined Facility' },
+  { key: 'download', Icon: Download,      title: 'Personalize & Download', sub: 'Bulk Downloads' }
+];
 
 const Subscription = () => {
 
@@ -127,28 +138,25 @@ const Subscription = () => {
             transition={{ duration: 0.5, delay: 0.3 }}
           >
 
-            {['event', 'creative', 'combo', 'download'].map((tab) => (
+            {TABS.map(({ key, Icon, title, sub }) => (
 
-              <Button
-                key={tab}
-                className={`sub-tab-btn ${activeTab === tab ? 'selected' : ''}`}
+              <button
+                key={key}
+                type="button"
+                className={`sub-tab-btn ${activeTab === key ? 'selected' : ''}`}
                 onClick={() => {
-                  setActiveTab(tab);
+                  setActiveTab(key);
                   setOpenCardIndex(null);
                 }}
               >
 
-                <span className="sub-circle-indicator"></span>
+                <span className="sub-tab-icon-wrap">
+                  <Icon size={15} />
+                </span>
+                <span className="sub-tab-title">{title}</span>
+                <span className="sub-tab-sub">{sub}</span>
 
-                {tab === 'event'
-                  ? 'Event'
-                  : tab === 'creative'
-                    ? 'Creatives'
-                    : tab === 'combo'
-                      ? 'Event + Creatives'
-                      : 'Download'}
-
-              </Button>
+              </button>
 
             ))}
 

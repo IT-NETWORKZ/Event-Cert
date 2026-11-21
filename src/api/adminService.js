@@ -109,7 +109,7 @@ export const getSubscriptionPlans = async () => {
 // get all Admin - Home events for the event info section Fetch all events for the event info section
 export const getHomeEvents = async () => {
   const { data } = await api.get("/home/events");
-  
+
   return data;
 };
 
@@ -493,4 +493,65 @@ export const getAdminPromoCodes = async () => {
     ? data
     : data?.promoCodes ?? data?.items ?? data?.data ?? data?.rows ?? [];
   return list.map(normalizePromo);
+};
+
+/* ---------- SUBSCRIPTION CALCULATE + CHECKOUT ---------- */
+
+// maps calculate / checkout response (camelCase or PascalCase) to one shape
+const toSubscriptionCalc = (raw) => {
+  const d = raw?.data ?? raw?.result ?? raw ?? {};
+
+  // shows the real field names returned by the API (dev only)
+  if (import.meta.env?.DEV) console.debug("[calculate] raw:", d);
+
+  const num = (...names) => {
+    const v = readKey(d, ...names);
+    return v == null || v === "" ? null : Number(v);
+  };
+
+  const originalPrice =
+    num("originalprice", "baseprice", "planprice", "planamount", "originalamount", "subtotal", "price", "amount") ?? 0;
+  const discountAmount = num("discountamount", "discount", "promodiscount") ?? 0;
+  const gstAmount = num("gstamount", "gst", "taxamount", "cgstsgstamount") ?? 0;
+  const otherTaxes = num("othertaxes", "othertaxamount") ?? 0;
+  const total = num("totalamount", "total", "payableamount", "finalamount", "grandtotal") ?? 0;
+
+  const discountPercent =
+    num("discountpercent", "discountpercentage") ??
+    (originalPrice > 0 ? Number(((discountAmount / originalPrice) * 100).toFixed(2)) : 0);
+
+  return {
+    originalPrice,
+    discountAmount,
+    discountPercent,
+    gstAmount,
+    gstPercent: num("gstpercent", "gstrate", "gstpercentage"),
+    otherTaxes,
+    total,
+    isValid: readKey(d, "isvalid", "ispromovalid", "promoapplied") ?? true,
+    message: String(readKey(d, "message", "promomessage") ?? ""),
+    raw: d,
+  };
+};
+
+// POST api/admin/subscription/calculate
+// body: { planId, promoCode }  (promoCode optional)
+export const calculateSubscription = async ({ planId, promoCode } = {}) => {
+  const payload = { planId: Number(planId) || planId };
+  const code = String(promoCode || "").trim();
+  if (code) payload.promoCode = code;
+
+  const { data } = await api.post("/admin/subscription/calculate", payload);
+  return toSubscriptionCalc(data);
+};
+
+// POST api/admin/subscription/checkout
+// body: { planId, promoCode }  -> returns the raw response (order id / payment url etc.)
+export const checkoutSubscription = async ({ planId, promoCode } = {}) => {
+  const payload = { planId: Number(planId) || planId };
+  const code = String(promoCode || "").trim();
+  if (code) payload.promoCode = code;
+
+  const { data } = await api.post("/admin/subscription/checkout", payload);
+  return data?.data ?? data;
 };

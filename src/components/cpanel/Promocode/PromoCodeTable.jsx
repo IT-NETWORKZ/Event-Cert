@@ -16,6 +16,11 @@ const fmt = (iso) => {
 };
 
 /**
+ * RULES
+ *  - Status  (Enabled / Disabled): Enabled = promo card is shown to users, Disabled = not shown
+ *  - Visible (Show / Hide): Show = the code works, Hide = the code does not work
+ *  - Hide also makes the Status Disabled. A Hide code can not be enabled until it is set to Show.
+ *
  * Props
  *  - onExportExcel(rows): optional export handler
  *  - refreshKey: optional. Change it (e.g. increment after the Add form succeeds) to reload the table.
@@ -44,20 +49,30 @@ const PromoCodeTable = ({ onExportExcel, refreshKey = 0 }) => {
   }, [loadRows, refreshKey]);
 
   /* ---------- toggle Status (enabled) or Visibile Status (visible) ---------- */
-  // Status  -> PATCH /{id}/status  (isEnabled; current visibilityType sent along)
-  // Visible -> PUT   /{id}         (visibilityType: Show = 2, Hide = 1)
+  // Status  -> PATCH /{id}/status  (isEnabled; stored visibilityType sent along)
+  // Visible -> PUT   /{id}         (visibilityType: Show = 2, Hide = 1; Hide also saves Disabled)
   const toggle = useCallback(
     async (row, key) => {
       const lock = `${row.id}:${key}`;
       if (pending[lock]) return;
 
       const next = !row[key];
-      const patchRow = (value) =>
-        setRows((prev) => prev.map((r) => (r.id === row.id ? { ...r, [key]: value } : r)));
+
+      // a code that does not work (Hide) can not have its card shown
+      if (key === "enabled" && next && !row.visible) {
+        setError("Set Visible Status to Show before enabling this promo code.");
+        return;
+      }
+
+      // what changes on screen right away: Hide also turns Status to Disabled
+      const changes =
+        key === "visible" && !next ? { visible: false, enabled: false } : { [key]: next };
+      const patchRow = (values) =>
+        setRows((prev) => prev.map((r) => (r.id === row.id ? { ...r, ...values } : r)));
 
       setPending((p) => ({ ...p, [lock]: true }));
       setError("");
-      patchRow(next);
+      patchRow(changes);
 
       try {
         if (key === "enabled") {
@@ -67,7 +82,8 @@ const PromoCodeTable = ({ onExportExcel, refreshKey = 0 }) => {
         }
         await loadRows(); // show exactly what the server stored
       } catch (err) {
-        patchRow(row[key]); // rollback
+        patchRow({ enabled: row.enabled, visible: row.visible }); // rollback
+        console.error("TOGGLE PROMO ERROR:", err?.response?.status, err?.response?.data);
         setError(apiErrorMessage(err, "Could not update the promo code."));
       } finally {
         setPending((p) => {
@@ -136,18 +152,28 @@ const PromoCodeTable = ({ onExportExcel, refreshKey = 0 }) => {
         id: "status",
         header: "Status",
         accessorFn: (r) => (r.enabled ? "Enabled" : "Disabled"),
-        cell: ({ row }) => (
-          <button
-            type="button"
-            className={`pct-pill ${row.original.enabled ? "on" : "off"}`}
-            onClick={() => toggle(row.original, "enabled")}
-            disabled={!!pending[`${row.original.id}:enabled`]}
-            title="Click to change status"
-          >
-            <i></i>
-            {row.original.enabled ? "Enabled" : "Disabled"}
-          </button>
-        ),
+        cell: ({ row }) => {
+          const r = row.original;
+          const blocked = !r.enabled && !r.visible; // Hide code: must be set to Show first
+          return (
+            <button
+              type="button"
+              className={`pct-pill ${r.enabled ? "on" : "off"}`}
+              onClick={() => toggle(r, "enabled")}
+              disabled={!!pending[`${r.id}:enabled`] || blocked}
+              title={
+                blocked
+                  ? "Set Visible Status to Show before enabling"
+                  : r.enabled
+                  ? "Enabled: promo card is shown to users. Click to disable"
+                  : "Disabled: promo card is not shown to users. Click to enable"
+              }
+            >
+              <i></i>
+              {r.enabled ? "Enabled" : "Disabled"}
+            </button>
+          );
+        },
         meta: { width: "150px", className: "text-center" },
       },
       {
@@ -160,7 +186,11 @@ const PromoCodeTable = ({ onExportExcel, refreshKey = 0 }) => {
             className={`pct-pill ${row.original.visible ? "on" : "hide"}`}
             onClick={() => toggle(row.original, "visible")}
             disabled={!!pending[`${row.original.id}:visible`]}
-            title="Click to show or hide this promo code"
+            title={
+              row.original.visible
+                ? "Show: promo code works. Click to hide (also disables the card)"
+                : "Hide: promo code does not work. Click to show"
+            }
           >
             <i></i>
             {row.original.visible ? "Show" : "Hide"}
