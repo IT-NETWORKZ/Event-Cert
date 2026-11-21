@@ -179,22 +179,72 @@ const toPromoPayload = (v) => {
     startDate: startOfDay(v.validityStart),
     expiryDate: endOfDay(v.expireDate),
     maximumUsage: single ? 1 : Number(v.maximumUsage) || null,
-    isActive: v.enabled ?? true,
+    // Hide = the code does not work, so it is always saved as Disabled (card not shown) too
+    isActive: v.visible === true ? (v.enabled ?? true) : false,
     planIds: Array.isArray(v.planIds) ? v.planIds.map(toPlanId) : [], // [] = all plans
   };
 };
 
+/* ----- reading the API record -----
+   The API can send booleans, 1/2 numbers, or words ("Active", "Public"...).
+   These helpers turn all of them into true / false, or undefined when the field is missing. */
+const parseBool = (raw) => {
+  if (typeof raw === "boolean") return raw;
+  if (typeof raw === "number") return raw === 1;
+  if (typeof raw === "string") {
+    const s = raw.trim().toLowerCase();
+    if (["true", "1", "yes", "active", "enabled", "enable"].includes(s)) return true;
+    if (["false", "0", "no", "inactive", "disabled", "disable"].includes(s)) return false;
+  }
+  return undefined;
+};
+
+// Status column: Enabled (true) / Disabled (false)
+const readEnabled = (p) => {
+  for (const key of ["isActive", "isEnabled", "enabled", "status"]) {
+    const v = parseBool(p[key]);
+    if (v !== undefined) return v;
+  }
+  return undefined;
+};
+
+// Visibile Status column: Show (true, visibilityType 2) / Hide (false, visibilityType 1)
+const readVisible = (p) => {
+  if (typeof p.isVisible === "boolean") return p.isVisible;
+
+  const raw = p.visibilityType ?? p.visibility;
+  if (raw === undefined || raw === null || raw === "") return undefined;
+
+  if (typeof raw === "string" && Number.isNaN(Number(raw))) {
+    const s = raw.trim().toLowerCase();
+    if (["public", "show", "shown", "visible"].includes(s)) return true;
+    if (["private", "hide", "hidden", "invisible"].includes(s)) return false;
+    return undefined;
+  }
+
+  const n = Number(raw);
+  return Number.isNaN(n) ? undefined : n === VISIBILITY.PUBLIC;
+};
+
+// plan ids from planIds, or from a plans array ([{ id }], [{ planId }], [1, 2])
+const readPlanIds = (p) => {
+  if (Array.isArray(p.planIds) && p.planIds.length) return p.planIds;
+  if (Array.isArray(p.plans) && p.plans.length) {
+    return p.plans
+      .map((x) => (x && typeof x === "object" ? x.id ?? x.planId ?? x.planID ?? x.templateAdminId : x))
+      .filter((x) => x !== undefined && x !== null);
+  }
+  return [];
+};
+
 // backend item -> table row
 // If an API sends no enabled / visibility fields at all, the row counts as Enabled + Show.
-const has = (p, keys) => keys.some((k) => p[k] !== undefined && p[k] !== null);
-
 export const normalizePromo = (p, planMap = {}, createdMap = {}, savedPlans = {}) => {
-  const vis = Number(p.visibilityType);
-  const hasEnabled = has(p, ["isActive", "isEnabled", "enabled"]);
-  const hasVisible = has(p, ["visibilityType", "isVisible"]);
+  const enabled = readEnabled(p);
+  const visible = readVisible(p);
   const maximumUsage = p.maximumUsage ?? null;
   const code = p.promoCode ?? p.promoName ?? p.code ?? "";
-  const planIds = Array.isArray(p.planIds) ? p.planIds : [];
+  const planIds = readPlanIds(p);
   const saved = Array.isArray(savedPlans[codeKey(code)]) ? savedPlans[codeKey(code)] : [];
 
   // Plan Type column, in this order:
@@ -241,8 +291,9 @@ export const normalizePromo = (p, planMap = {}, createdMap = {}, savedPlans = {}
     plan: planNames.join(", "), // joined text (sorting / search / export)
     validityStart: toDateOnly(p.startDate ?? p.validityStart ?? p.validFrom),
     expireDate: toDateOnly(p.expiryDate ?? p.expireDate ?? p.validTo ?? p.endDate),
-    enabled: hasEnabled ? !!(p.isActive ?? p.isEnabled ?? p.enabled) : true, // Status: Enabled / Disabled
-    visible: hasVisible ? vis === VISIBILITY.PUBLIC || p.isVisible === true : true, // Show (2) / Hide (1)
+    // Status: Enabled / Disabled. A Hide code is always Disabled.
+    enabled: (enabled ?? true) && (visible ?? true),
+    visible: visible ?? true, // Visibile Status: Show (2) / Hide (1)
   };
 };
 
@@ -283,26 +334,83 @@ export const updatePromoCode = async (id, values) => {
   return data;
 };
 
-// Show / Hide: GET /{id} -> change only visibilityType -> PUT /{id}
-// The PUT body is the record exactly as the server returned it, so no other field can be lost or renamed.
-export const setPromoVisibility = async (id, visible) => {
+// Latest record from the server (unwrapped)
+const fetchCurrentPromo = async (id) => {
   const { data: res } = await api.get(`/superadmin/promocodes/${id}`);
-  const current = res?.data ?? res;
-  const body = { ...current, visibilityType: visFromVisible(visible) }; // Show = 2, Hide = 1
+  return res?.data ?? res;
+};
+
+// Builds a full PUT body from the server record, changing only what is passed in `changes`.
+// Built field by field (not by copying the raw record), so a field the PUT does not accept can not break it,
+// and planIds / dates / usage always go back exactly as stored.
+const buildPutBody = (current, changes = {}) => {
+  const row = normalizePromo(current);
+  const body = toPromoPayload({
+    promoCode: row.promoCode,
+    promoType: row.promoType,
+    maximumUsage: row.maximumUsage,
+    discountType: row.discountType,
+    discount: row.discount,
+    validityStart: row.validityStart,
+    expireDate: row.expireDate,
+    planIds: row.planIds,
+    enabled: changes.enabled ?? row.enabled,
+    visible: changes.visible ?? row.visible,
+  });
+
+  if (current.promoName) body.promoName = current.promoName; // keep the stored name
+
+  // some APIs also want the id inside the body: send it under the same name the server uses
+  if (current.promoCodeId !== undefined) body.promoCodeId = current.promoCodeId;
+  else if (current.id !== undefined) body.id = current.id;
+  else if (current.promoId !== undefined) body.promoId = current.promoId;
+
+  return body;
+};
+
+// Show / Hide: PUT /{id} with the stored record and only the visibility changed (Show = 2, Hide = 1)
+// Hide = the code does not work, so toPromoPayload also saves it as Disabled (card not shown).
+// Show = the code works; Status (Enabled / Disabled) stays as it was.
+export const setPromoVisibility = async (id, visible) => {
+  const current = await fetchCurrentPromo(id);
+  const body = buildPutBody(current, { visible: !!visible });
   const { data } = await api.put(`/superadmin/promocodes/${id}`, body);
   return data;
 };
 
-// PATCH api/superadmin/promocodes/{id}/status
-// enabled = Enabled/Disabled. visible = the row's current Show/Hide, sent along so visibilityType is never 0.
-export const setPromoCodeStatus = async (id, enabled, visible = false) => {
+// Enable / Disable: PATCH /{id}/status
+// The stored Show/Hide value is read from the server and sent back unchanged, so changing the status
+// can never flip a code between Show and Hide. `visible` is only used if the server sends no visibility.
+export const setPromoCodeStatus = async (id, enabled, visible) => {
+  const current = await fetchCurrentPromo(id);
+  const storedVisible = readVisible(current);
+  const finalVisible = storedVisible !== undefined ? storedVisible : visible === true;
+
+  // a code that does not work (Hide) can not have its card shown
+  if (enabled && !finalVisible) {
+    throw new Error("Set Visible Status to Show before enabling this promo code.");
+  }
+
   const body = {
     isActive: !!enabled,
     isEnabled: !!enabled,
-    visibilityType: visFromVisible(visible),
+    visibilityType: visFromVisible(finalVisible),
   };
-  const { data } = await api.patch(`/superadmin/promocodes/${id}/status`, body);
-  return data;
+
+  try {
+    const { data } = await api.patch(`/superadmin/promocodes/${id}/status`, body);
+    return data;
+  } catch (err) {
+    // the server has no PATCH status route: fall back to a full update
+    if ([404, 405, 415].includes(err?.response?.status)) {
+      const { data } = await api.put(
+        `/superadmin/promocodes/${id}`,
+        buildPutBody(current, { enabled: !!enabled, visible: finalVisible })
+      );
+      return data;
+    }
+    throw err;
+  }
 };
 
 // readable message from an axios error (also lists validation errors)
@@ -382,4 +490,3 @@ export const markContactRead = async (id) => {
   const { data } = await api.patch(`/superadmin/contacts/${id}/read`);
   return data;
 };
-

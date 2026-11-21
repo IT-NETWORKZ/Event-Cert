@@ -42,45 +42,82 @@
 }
 
 .subscription-tabs {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  margin: -22px auto 1.5rem auto; 
+  margin: -22px auto 1.5rem auto;
   position: relative;
   z-index: 10;
-  max-width: 540px;
-  background: #ffffff;
-  padding: 5px;
-  border-radius: 50px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  max-width: 680px;
+  padding: 0 20px;
 }
 
 .subscription-tabs button {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 8px;
+  align-items: center;
+  padding: 7px 8px;
+  background: #ffffff;
+  border: 1.5px solid #d5e6e3;
+  border-radius: 10px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.subscription-tabs .tab-icon-wrap {
+  grid-row: 1 / span 2;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: #e6f4f2;
+  color: #009688;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 8px 18px;
-  border: none;
-  background: transparent;
-  color: #555;
-  font-weight: 600;
-  font-size: 0.9rem;
-  border-radius: 50px;
-  cursor: pointer;
+  font-size: 13px;
   transition: all 0.2s ease;
-  flex: 1;
-  white-space: nowrap;
+}
+
+.subscription-tabs .tab-title {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #0c2340;
+}
+
+.subscription-tabs .tab-sub {
+  font-size: 9.5px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #6b7c8f;
 }
 
 .subscription-tabs button:hover {
-  color: #009688;
+  border-color: #009688;
 }
 
 .subscription-tabs button.active {
-  background-color: #009688;
+  background: linear-gradient(135deg, #00bfa5 0%, #007367 100%);
+  border-color: transparent;
+  box-shadow: 0 4px 10px rgba(0, 115, 103, 0.3);
+}
+
+.subscription-tabs button.active .tab-icon-wrap {
+  background: rgba(255, 255, 255, 0.2);
   color: #ffffff;
-  box-shadow: 0 3px 10px rgba(0, 150, 136, 0.2);
+}
+
+.subscription-tabs button.active .tab-title {
+  color: #ffffff;
+}
+
+.subscription-tabs button.active .tab-sub {
+  color: rgba(255, 255, 255, 0.85);
 }
 
 
@@ -281,18 +318,9 @@
   }
 
   .subscription-tabs {
-    flex-wrap: wrap;
-    border-radius: 12px;
-    margin: -20px 10px 1.25rem 10px;
-    padding: 4px;
-    gap: 4px;
-  }
-
-  .subscription-tabs button {
-    width: calc(50% - 2px); 
-    flex: none;
-    padding: 8px 4px;
-    font-size: 0.8rem;
+    grid-template-columns: repeat(2, 1fr);
+    margin: -20px auto 1.25rem auto;
+    padding: 0 10px;
   }
 
   .plan-card {

@@ -5,9 +5,9 @@ import PromoCode from "../../common/promocode/PromoCode";
 
 import {
   FaCheckCircle,
-  FaCrown,
-  FaCertificate,
-  FaCalendarAlt,
+  FaClipboardList,
+  FaPaperPlane,
+  FaCalendarCheck,
   FaDownload,
 } from "react-icons/fa";
 
@@ -17,10 +17,10 @@ import { getApiError } from "../../../api/adminService";
 
 // category = planCategory sent by the API
 const TABS = [
-  { label: "Creatives", category: 2, icon: <FaCertificate /> },
-  { label: "Event", category: 1, icon: <FaCalendarAlt /> },
-  { label: "Event + Creatives", category: 3, icon: <FaCrown /> },
-  { label: "Download", category: 4, icon: <FaDownload /> },
+  { label: "Creatives", category: 2, icon: <FaPaperPlane />, title: "Personalize & Share", sub: "WhatsApp & Email" },
+  { label: "Event", category: 1, icon: <FaClipboardList />, title: "Create Event", sub: "Event Management" },
+  { label: "Event + Creatives", category: 3, icon: <FaCalendarCheck />, title: "Event & Share", sub: "Combined Facility" },
+  { label: "Download", category: 4, icon: <FaDownload />, title: "Personalize & Download", sub: "Bulk Downloads" },
 ];
 
 const FEATURE_LIMIT = 6; // points shown on each card
@@ -97,16 +97,18 @@ function Subscriptionplan() {
       <PromoCode />
 
       {/* Navigation Tabs */}
-      <div className="subscription-tabs" style={{ maxWidth: 680, flexWrap: "wrap" }}>
+      <div className="subscription-tabs">
         {TABS.map((tab) => (
-          <Button
+          <button
             key={tab.label}
+            type="button"
             className={activeTab === tab.label ? "active" : ""}
             onClick={() => setActiveTab(tab.label)}
           >
-            {tab.icon}
-            {tab.label}
-          </Button>
+            <span className="tab-icon-wrap">{tab.icon}</span>
+            <span className="tab-title">{tab.title}</span>
+            <span className="tab-sub">{tab.sub}</span>
+          </button>
         ))}
       </div>
 

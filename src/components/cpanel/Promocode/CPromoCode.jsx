@@ -42,6 +42,13 @@ const FieldError = ({ message }) =>
     </p>
   ) : null;
 
+/*
+  RULES
+  - Status  (Enabled / Disabled): Enabled = promo card is shown to users, Disabled = not shown
+  - Visible (Show / Hide): Show = the code works, Hide = the code does not work
+  - Hide also makes the Status Disabled. A Hide code can not be enabled until it is set to Show.
+  - A new promo code is saved as Hide + Disabled until it is set to Show.
+*/
 const CPromoCode = () => {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -124,22 +131,33 @@ const CPromoCode = () => {
       if (pending[lock]) return;
 
       const next = !row[key];
-      const patchRow = (value) =>
-        setRows((prev) => prev.map((r) => (r.id === row.id ? { ...r, [key]: value } : r)));
+
+      // a code that does not work (Hide) can not have its card shown
+      if (key === "enabled" && next && !row.visible) {
+        setLoadError("Set Visible Status to Show before enabling this promo code.");
+        return;
+      }
+
+      // what changes on screen right away: Hide also turns Status to Disabled
+      const changes =
+        key === "visible" && !next ? { visible: false, enabled: false } : { [key]: next };
+      const patchRow = (values) =>
+        setRows((prev) => prev.map((r) => (r.id === row.id ? { ...r, ...values } : r)));
 
       setPending((p) => ({ ...p, [lock]: true }));
-      patchRow(next);
+      patchRow(changes);
       setLoadError("");
 
       try {
         if (key === "enabled") {
           await setPromoCodeStatus(row.id, next, row.visible); // PATCH /{id}/status
         } else {
-          await setPromoVisibility(row.id, next); // PUT /{id}: Show -> 2, Hide -> 1
+          await setPromoVisibility(row.id, next); // PUT /{id}: Show -> 2, Hide -> 1 (and Disabled)
         }
         await loadRows(); // reload so the table shows what the server stored
       } catch (err) {
-        patchRow(row[key]); // rollback
+        patchRow({ enabled: row.enabled, visible: row.visible }); // rollback
+        console.error("TOGGLE PROMO ERROR:", err?.response?.status, err?.response?.data);
         setLoadError(apiErrorMessage(err, "Could not update the promo code."));
       } finally {
         setPending((p) => {
@@ -208,18 +226,28 @@ const CPromoCode = () => {
         id: "status",
         header: "Status",
         accessorFn: (r) => (r.enabled ? "Enabled" : "Disabled"),
-        cell: ({ row }) => (
-          <button
-            type="button"
-            className={`pc-pill ${row.original.enabled ? "on" : "off"}`}
-            onClick={() => toggle(row.original, "enabled")}
-            disabled={!!pending[`${row.original.id}:enabled`]}
-            title="Click to change status"
-          >
-            <i></i>
-            {row.original.enabled ? "Enabled" : "Disabled"}
-          </button>
-        ),
+        cell: ({ row }) => {
+          const r = row.original;
+          const blocked = !r.enabled && !r.visible; // Hide code: must be set to Show first
+          return (
+            <button
+              type="button"
+              className={`pc-pill ${r.enabled ? "on" : "off"}`}
+              onClick={() => toggle(r, "enabled")}
+              disabled={!!pending[`${r.id}:enabled`] || blocked}
+              title={
+                blocked
+                  ? "Set Visible Status to Show before enabling"
+                  : r.enabled
+                  ? "Enabled: promo card is shown to users. Click to disable"
+                  : "Disabled: promo card is not shown to users. Click to enable"
+              }
+            >
+              <i></i>
+              {r.enabled ? "Enabled" : "Disabled"}
+            </button>
+          );
+        },
         meta: { className: "text-center", width: "150px" },
       },
       {
@@ -232,7 +260,11 @@ const CPromoCode = () => {
             className={`pc-pill ${row.original.visible ? "on" : "hide"}`}
             onClick={() => toggle(row.original, "visible")}
             disabled={!!pending[`${row.original.id}:visible`]}
-            title="Click to show or hide this promo code"
+            title={
+              row.original.visible
+                ? "Show: promo code works. Click to hide (also disables the card)"
+                : "Hide: promo code does not work. Click to show"
+            }
           >
             <i></i>
             {row.original.visible ? "Show" : "Hide"}
@@ -308,13 +340,14 @@ const CPromoCode = () => {
     setSubmitting(true);
     setError("");
     try {
-      // POST /superadmin/promocodes  (new promo codes: Enabled, visibilityType 1 = Hide)
+      // POST /superadmin/promocodes
+      // New promo codes are saved as Hide (visibilityType 1); Hide always means Disabled too.
       // planIds = [] means All Plans. planLabels = plan names, saved so the table shows them.
       await createPromoCode({
         ...value,
         planIds: value.allPlans ? [] : value.planIds,
         planLabels: value.allPlans ? ["All Plans"] : selectedLabels,
-        enabled: true,
+        enabled: false,
         visible: false,
       });
       handleReset();
@@ -333,11 +366,11 @@ const CPromoCode = () => {
   };
 
   return (
-
     <div className="promo-page-wrapper">
       {/* Shared component: renders its own side button + #promoModal.
           role="superadmin" -> lists ALL promo codes from GET /superadmin/promocodes */}
       <PromoCode role="superadmin" />
+
       {/* ================= FORM ================= */}
       <div className="pc-form-wrap">
         <div className="pc-card">

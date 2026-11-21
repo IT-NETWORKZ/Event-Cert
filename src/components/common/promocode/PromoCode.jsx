@@ -55,18 +55,27 @@ const fmtLong = (iso) => {
   });
 };
 
-// Active = Enabled + today is inside the validity period (Show / Hide is ignored)
+/*
+  RULES
+  - Status  (Enabled / Disabled) -> Enabled = the promo CARD is shown, Disabled = not shown
+  - Visible (Show / Hide)        -> Show = the promo CODE works, Hide = the code does not work
+                                    (enforced by the server)
+  - Hide also sets Status to Disabled, so a code that does not work never has a card
+*/
+
+// Card is shown = Enabled + code works (Show) + today is inside the validity period
 const isActiveNow = (p, today) =>
   p.enabled &&
+  p.visible &&
   (!p.validityStart || p.validityStart <= today) &&
   (!p.expireDate || p.expireDate >= today);
 
-// Status badge (superadmin list). active: true = works, false = inactive
+// Status badge (used only for the All / Active / Inactive tabs and counts, not shown on the cards). active: true = card is shown AND the code works
 const statusOf = (p, today) => {
-  if (!p.enabled) return { key: "disabled", text: "Disabled", active: false };
+  if (!p.visible) return { key: "hidden", text: "Hide · code blocked", active: false };
+  if (!p.enabled) return { key: "disabled", text: "Disabled · card hidden", active: false };
   if (p.expireDate && p.expireDate < today) return { key: "expired", text: "Expired", active: false };
   if (p.validityStart && p.validityStart > today) return { key: "upcoming", text: "Upcoming", active: false };
-  if (!p.visible) return { key: "hidden", text: "Hidden", active: false };
   return { key: "active", text: "Active", active: true };
 };
 
@@ -82,7 +91,7 @@ const toCard = (p, status) => ({
   status,
 });
 
-// admin: every active code, newest first
+// admin: every enabled code that is inside its validity period, newest first
 const toActiveCards = (list) => {
   const today = todayIso();
   return [...list]
@@ -303,18 +312,6 @@ const PromoCode = ({ role = "home" }) => {
                       {/* details */}
                       <div className="coupon-right">
                         <div className="coupon-top">
-                          {isSuper && promo.status ? (
-                            <span className={`coupon-status ${promo.status.active ? "is-active" : "is-inactive"}`}>
-                              <i></i>
-                              {promo.status.text}
-                            </span>
-                          ) : (
-                            <span className="coupon-status is-active">
-                              <i></i>
-                              Active
-                            </span>
-                          )}
-
                           {promo.validTill && (
                             <span className="valid-until">
                               <IconClock />

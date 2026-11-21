@@ -4,7 +4,7 @@ import DataTable from "../../common/Table/DataTable";
 import "../../../css/DesignerTable.css";
 import { useNavigate } from "react-router-dom";
 import { useCanvas } from "../../../context/CanvasContext"; // same context FabricCanvas uses (adjust path if needed)
-import { getApiError, getActiveRecipients, disableRecipients, getWhatsappTemplates, createBulkJob, importRecipients, saveCardDesign, setRecipientStatus, toImageUrl } from "../../../api/adminService"; // adjust path to your service file
+import { getApiError, getActiveRecipients, disableRecipients, getWhatsappTemplates, createBulkJob, getBulkJob, getBulkJobRecipients, importRecipients, saveCardDesign, setRecipientStatus, toImageUrl } from "../../../api/adminService"; // adjust path to your service file
 import DraftModal from "../CustomPlus/DraftModal/DraftModal";
 
 // Demo rows shown until the first Excel file is added
@@ -279,6 +279,8 @@ const DesignerTable = ({
   const [bulkBusy, setBulkBusy] = useState(null); // "disable" | null
   const [bulkMsg, setBulkMsg] = useState({ type: "", text: "" }); // message next to Disable / Remove Users
   const [savedFiles, setSavedFiles] = useState([]); // [{ name, url }] saved by the last Send
+  const [generatedFiles, setGeneratedFiles] = useState([]); // [{ name, url }] made by the server (wwwroot/generated)
+  const pollRef = useRef(0); // a new Send cancels the previous status polling
   const [templates, setTemplates] = useState([]); // WhatsApp templates for the chosen type + image type
   const [tplLoading, setTplLoading] = useState(false);
   const [params, setParams] = useState(["", "", "", ""]); // values for {{1}}..{{4}} ({{1}} is the user's name)
@@ -597,6 +599,7 @@ const DesignerTable = ({
     const used = {}; // same name twice -> Name, Name_2
     const saved = [];
     const failed = [];
+    const jobs = []; // [{ id, name }] one bulk job per user
 
     try {
       setSaving(kind);
@@ -626,7 +629,7 @@ const DesignerTable = ({
             format: "png",
           });
 
-          await createBulkJob({
+          const job = await createBulkJob({
             cardDesignId: design.cardDesignId,
             templateId: templateId > 0 ? templateId : null,
             outputType: isPdf ? "PDF" : "Image",
@@ -638,6 +641,7 @@ const DesignerTable = ({
           });
 
           saved.push({ name: row.name, url: design?.imageUrl || "" });
+          if (job?.jobId) jobs.push({ id: job.jobId, name: row.name });
         } catch (err) {
           console.error(err);
           const msg = err?.response ? getApiError(err, "Request failed.") : err?.message || "Request failed.";
@@ -657,6 +661,72 @@ const DesignerTable = ({
     } finally {
       setSaving(null);
     }
+
+    // watch the jobs until the server has generated the files (not for scheduled sends)
+    if (!scheduledAt && jobs.length) trackJobs(jobs);
+  };
+
+  // sent / failed / total of all jobs, polled every 3 s (max 5 min), then the generated files are listed
+  const isActiveStatus = (st) => !/^(complete|success|sent|done|fail|cancel|error|partial)/i.test(String(st || ""));
+  const generatedUrl = (path) => {
+    const p = String(path || "").replace(/\\/g, "/");
+    const i = p.toLowerCase().indexOf("generated/");
+    return i >= 0 ? `/${p.slice(i)}` : p; // D:\...\wwwroot\generated\Ram.jpg -> /generated/Ram.jpg
+  };
+  const trackJobs = async (jobs) => {
+    const token = ++pollRef.current;
+    setGeneratedFiles([]);
+    const deadline = Date.now() + 5 * 60 * 1000;
+    let latest = [];
+
+    while (Date.now() < deadline && token === pollRef.current) {
+      latest = await Promise.all(
+        jobs.map(async (j) => {
+          try {
+            return { ...j, ...(await getBulkJob(j.id)) };
+          } catch {
+            return { ...j, status: "", total: 0, sent: 0, failed: 0 };
+          }
+        })
+      );
+      const sum = (k) => latest.reduce((n, j) => n + (Number(j[k]) || 0), 0);
+      if (!latest.some((j) => isActiveStatus(j.status))) break;
+      setStatus({ type: "", text: `Processing: ${sum("sent") + sum("failed")} of ${sum("total")} done (${sum("sent")} sent, ${sum("failed")} failed)...` });
+      await new Promise((r) => setTimeout(r, 3000));
+    }
+    if (token !== pollRef.current) return;
+
+    const sum = (k) => latest.reduce((n, j) => n + (Number(j[k]) || 0), 0);
+    const total = sum("total");
+    const sent = sum("sent");
+    const failedCount = sum("failed");
+    const stillRunning = latest.some((j) => isActiveStatus(j.status));
+    const apiSaysFailed = latest.some((j) => /^fail/i.test(String(j.status || "")));
+
+    if (stillRunning) {
+      setStatus({ type: "", text: `Still processing on the server (${sent + failedCount} of ${total} done). Check Sent status later.` });
+    } else if (failedCount === 0 && sent === total && total > 0) {
+      setStatus({
+        type: "ok",
+        text: `Done: ${sent} of ${total} sent.${apiSaysFailed ? " (The API job status says Failed although every user succeeded - check the server worker.)" : ""}`,
+      });
+    } else {
+      setStatus({ type: "error", text: `${sent} sent, ${failedCount} failed of ${total}. Open Sent status for the reason.` });
+    }
+
+    // files created by the server: wwwroot/generated
+    const files = [];
+    for (const j of latest) {
+      try {
+        const recs = await getBulkJobRecipients(j.id);
+        recs.forEach((r) => {
+          if (r.filePath) files.push({ name: r.filePath.split(/[\\/]/).pop(), url: generatedUrl(r.filePath) });
+        });
+      } catch {
+        /* ignore - the list is only a convenience */
+      }
+    }
+    if (token === pollRef.current) setGeneratedFiles(files);
   };
   const handleOnlyText = () => sendForUsers("text");
   const handleSendImage = () => sendForUsers("image");
@@ -803,6 +873,19 @@ const DesignerTable = ({
               </span>
             ))}
             {savedFiles.length > 10 && ` (+${savedFiles.length - 10} more)`}
+          </div>
+        )}
+
+        {generatedFiles.length > 0 && (
+          <div style={{ marginTop: 8, fontSize: 13 }}>
+            Generated:{" "}
+            {generatedFiles.slice(0, 10).map((f, i) => (
+              <span key={i}>
+                {i > 0 && ", "}
+                <a href={toImageUrl(f.url)} target="_blank" rel="noreferrer">{f.name}</a>
+              </span>
+            ))}
+            {generatedFiles.length > 10 && ` (+${generatedFiles.length - 10} more)`}
           </div>
         )}
 
