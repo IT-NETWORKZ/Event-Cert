@@ -32,11 +32,31 @@ export const googleLogin = async (idToken) => {
   return save(data);
 };
 
-export const forgotPassword = (email) =>
-  api.post("/auth/forgot-password", { email });
+// export const forgotPassword = (email) =>
+//   api.post("/auth/forgot-password", { email });
 
-export const resetPassword = (token, newPassword) =>
-  api.post("/auth/reset-password", { token, newPassword });
+// Admin Forgot Password API
+export const adminForgotPassword = async (email) => {
+  const response = await api.post("/auth/admin/forgot-password", {
+    email,
+  });
+  return response.data;
+};
+
+// Admin Reset Password API
+export const adminResetPassword = async (token, newPassword, confirmPassword) => {
+  const response = await api.post("/auth/admin/reset-password", {
+    token,
+    newPassword,
+    confirmPassword,
+  });
+  return response.data;
+};
+
+
+
+// export const resetPassword = (token, newPassword) =>
+//   api.post("/auth/reset-password", { token, newPassword });
 
 
 export const logout = async () => {

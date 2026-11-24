@@ -41,7 +41,12 @@ function Hero() {
         <div className="container pt-5 pb-3">
           <div className="row align-items-center mb-5 hero-row">
             <div className="col-lg-5 col-md-12">
-              <LoginCard onFormSubmit={handleLogin} error={error} />
+              {/* <LoginCard onFormSubmit={handleLogin} error={error} /> */}
+              <LoginCard
+  onFormSubmit={handleLogin}
+  error={error}
+  forgotPasswordPath="/admin/forgot-password"
+/>
             </div>
 
             {/* Right Side */}
