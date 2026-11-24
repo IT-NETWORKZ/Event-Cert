@@ -27,6 +27,7 @@ import UploadEventImages from "../components/admin/AddEvent/UploadEventImages";
 //import MarkAttendance from "./components/admin/AddEvent/MarkAttendance";
 import CustomPastRecords from "../components/admin/CustomPlus/CustomPastRecords";
 import CustomRetrieveRecords from "../components/admin/CustomPlus/CustomRetrieveRecords";
+import AForgotPassword from "../pages/Admin/AForgotPassword";
 
 
 import ResetPassword from "../components/admin/ResetPassword/ResetPassword";
@@ -80,6 +81,7 @@ function AppRoutes() {
             <Route path="/event" element={<Event />} />
             <Route path="/attendance" element={<MarkAttendance />} />
             <Route path="/reset-password" element={<CResetPass />} />
+            <Route path="/admin/forgot-password" element={<AForgotPassword />} />
 
 
 
