@@ -258,3 +258,29 @@
   .dr-head { flex-wrap: wrap; }
   .dr-select { max-width: 100%; flex: 1 1 100%; }
 }
+
+/* ---------- Date dropdown (all-jobs report) ---------- */
+.dr-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding-left: 14px;
+  border: 1px solid #ced4da;
+  border-radius: 999px;
+  background: #fff;
+  color: #6c757d;
+}
+.dr-date .dr-select {
+  border: none;
+  outline: none;
+  min-width: 160px;
+  padding-left: 0;
+  background: transparent;
+}
+.dr-note { margin-bottom: 14px; color: #495057; font-size: 0.9rem; }
+.dr-link { border: none; background: none; padding: 0; color: #0d6efd; font-weight: 600; cursor: pointer; }
+@media (max-width: 767px) {
+  .dr-date { flex: 1 1 100%; }
+  .dr-date .dr-select { flex: 1; }
+}

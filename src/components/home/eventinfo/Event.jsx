@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import "./Event.css";
 import {
@@ -16,6 +17,8 @@ import {
   Info,
   Loader2,
   MapPin,
+  MessageCircle,
+  MessageSquareText,
   Phone,
   Plus,
   UserPlus,
@@ -913,17 +916,37 @@ const Event = () => {
         </div>
       )}
 
-      {/* FLOATING EVENT FEEDBACK BUTTON */}
-      <button
-        type="button"
-        className="floating-event-feedback"
-        onClick={() => window.location.href = "/eventfeedback"}
-        title="Share Your Event Feedback"
-      >
-        <span className="feedback-pulse"></span>
-        <i className="fa-solid fa-comment-dots"></i>
-        <span className="feedback-btn-text">EVENT FEEDBACK</span>
-      </button>
+      {/* ===== FLOATING ICONS (rendered on <body> so no parent can hide them) ===== */}
+      {createPortal(
+        <>
+          {/* Event Survey - right side */}
+          <button
+            type="button"
+            className="evp-fab evp-fab-survey"
+            onClick={() => navigate(`/EventSurvey?nID=${encodeURIComponent(eventKey)}`, { state: { eventTitle: event.title } })}
+            title="Event Survey"
+            aria-label="Open event survey"
+          >
+            <span className="evp-fab-pulse" aria-hidden="true"></span>
+            <MessageSquareText size={26} color="#ffffff" />
+            <span className="evp-fab-tip">Event Survey</span>
+          </button>
+
+          {/* Event Feedback - left side */}
+          <button
+            type="button"
+            className="evp-fab"
+            onClick={() => navigate(`/eventfeedback?nID=${eventKey}`, { state: { eventTitle: event.title } })}
+            title="Event Feedback"
+            aria-label="Open event feedback"
+          >
+            <span className="evp-fab-pulse" aria-hidden="true"></span>
+            <MessageCircle size={26} color="#ffffff" />
+            <span className="evp-fab-tip">Event Feedback</span>
+          </button>
+        </>,
+        document.body
+      )}
 
     </div>
   );

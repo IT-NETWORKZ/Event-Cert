@@ -1,376 +1,435 @@
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  CheckCircle2,
+  ClipboardCheck,
+  Clock,
+  Loader2,
+  Mail,
+  Phone,
+  RefreshCw,
+  Send,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  User,
+} from "lucide-react";
+import "./EventSurvey.css";
 
-import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import "./EventFeedback.css";
-const location = useLocation();
-const navigate = useNavigate();
+/* ====== CONFIG: change to your API ====== */
+const API_BASE = import.meta.env?.VITE_API_BASE || "/api";
+const QUESTIONS_URL = (nID) => `${API_BASE}/EventFeedback/GetQuestions?nID=${encodeURIComponent(nID)}`;
+const SUBMIT_URL = `${API_BASE}/EventFeedback/SubmitFeedback`;
 
-const eventName = location.state?.eventName || "";
+/* Fallback questions if API is not ready.
+   type: rating | choice | yesno | text */
+const FALLBACK_QUESTIONS = [
+  { id: 1, type: "rating", text: "How would you rate the event overall?", required: true },
+  { id: 2, type: "choice", text: "How did you hear about this event?", options: ["Social media", "Friend / colleague", "Email", "WhatsApp", "Other"], required: true },
+  { id: 3, type: "yesno", text: "Was the event content useful to you?", required: true },
+  { id: 4, type: "rating", text: "How was the venue and organisation?", required: false },
+  { id: 5, type: "text", text: "Any suggestions to improve our next event?", required: false },
+];
 
-const [event, setEvent] = useState("");
+const RATE_TEXT = ["Tap a star to rate", "Poor", "Fair", "Good", "Very good", "Excellent"];
+const MAX_TEXT = 500;
 
-const EventFeedback = () => {
-    const [event, setEvent] = useState("");
-    const [overallRating, setOverallRating] = useState(0);
-    const [ratings, setRatings] = useState({
-        organization: 0,
-        speakers: 0,
-        venue: 0,
-        content: 0
-    });
+/* ---------- Captcha ---------- */
+const CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+const makeCode = (n = 5) => Array.from({ length: n }, () => CHARS[Math.floor(Math.random() * CHARS.length)]).join("");
 
-    const [experience, setExperience] = useState("");
-    const [suggestions, setSuggestions] = useState("");
-    const [recommend, setRecommend] = useState("");
-    const [submitted, setSubmitted] = useState(false);
+function Captcha({ code, onRefresh }) {
+  const ref = useRef(null);
 
-    const events = [
-        "Annual Tech Fest 2026",
-        "Web Development Workshop",
-        "AI & Machine Learning Seminar",
-        "Innovation Summit 2026"
-    ];
+  useEffect(() => {
+    const c = ref.current;
+    if (!c) return;
+    const ctx = c.getContext("2d");
+    const w = c.width, h = c.height;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = "#e8f3f1";
+    ctx.fillRect(0, 0, w, h);
 
-    const ratingCategories = [
-        { key: "organization", label: "Event Organization", icon: "fa-calendar-check" },
-        { key: "speakers", label: "Speakers & Presentations", icon: "fa-microphone-lines" },
-        { key: "venue", label: "Venue & Facilities", icon: "fa-location-dot" },
-        { key: "content", label: "Event Content", icon: "fa-book-open" }
-    ];
-
-    const handleCategoryRating = (category, value) => {
-        setRatings(prev => ({
-            ...prev,
-            [category]: value
-        }));
-    };
-
-    const renderStars = (rating, onRate, size = "") => (
-        <div className={`rating-stars ${size}`}>
-            {[1, 2, 3, 4, 5].map(star => (
-                <button
-                    type="button"
-                    key={star}
-                    className={`rating-star ${star <= rating ? "active" : ""}`}
-                    onClick={() => onRate(star)}
-                    aria-label={`Rate ${star} out of 5`}
-                >
-                    <i className="fa-solid fa-star"></i>
-                </button>
-            ))}
-        </div>
-    );
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        if (!event) {
-            alert("Please select an event.");
-            return;
-        }
-
-        if (!overallRating) {
-            alert("Please provide your overall event rating.");
-            return;
-        }
-
-        if (!experience) {
-            alert("Please select your event experience.");
-            return;
-        }
-
-        if (!recommend) {
-            alert("Please select whether you would recommend this event.");
-            return;
-        }
-
-        const feedbackData = {
-            event,
-            overallRating,
-            ratings,
-            experience,
-            suggestions,
-            recommend
-        };
-
-        console.log("Feedback Data:", feedbackData);
-
-        // Connect your API here
-        setSubmitted(true);
-    };
-
-    if (submitted) {
-        return (
-            <section className="feedback-section">
-                <div className="container">
-                    <div className="feedback-success">
-                        <div className="success-icon">
-                            <i className="fa-solid fa-check"></i>
-                        </div>
-                        <h2>Thank You!</h2>
-                        <h4>Your Feedback Has Been Submitted</h4>
-                        <p>
-                            We appreciate your time and valuable feedback.
-                            Your response helps us make future events better.
-                        </p>
-                        <button
-                            className="feedback-submit-btn"
-                            onClick={() => {
-                                setSubmitted(false);
-                                setEvent("");
-                                setOverallRating(0);
-                                setRatings({
-                                    organization: 0,
-                                    speakers: 0,
-                                    venue: 0,
-                                    content: 0
-                                });
-                                setExperience("");
-                                setSuggestions("");
-                                setRecommend("");
-                            }}
-                        >
-                            <i className="fa-solid fa-arrow-left"></i>
-                            Submit Another Feedback
-                        </button>
-                    </div>
-                </div>
-            </section>
-        );
+    for (let i = 0; i < 6; i++) {
+      ctx.strokeStyle = `rgba(${Math.random() * 60 + 20},${Math.random() * 80 + 60},${Math.random() * 80 + 60},.5)`;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(Math.random() * w, Math.random() * h);
+      ctx.bezierCurveTo(Math.random() * w, Math.random() * h, Math.random() * w, Math.random() * h, Math.random() * w, Math.random() * h);
+      ctx.stroke();
+    }
+    for (let i = 0; i < 40; i++) {
+      ctx.fillStyle = `rgba(13,78,67,${Math.random() * 0.25})`;
+      ctx.fillRect(Math.random() * w, Math.random() * h, 2, 2);
     }
 
-    return (
-        <section className="feedback-section">
-            <div className="container">
+    const step = w / (code.length + 1);
+    [...code].forEach((ch, i) => {
+      ctx.save();
+      ctx.translate(step * (i + 1), h / 2 + (Math.random() * 8 - 4));
+      ctx.rotate((Math.random() - 0.5) * 0.55);
+      ctx.font = `700 ${24 + Math.random() * 6}px Georgia, serif`;
+      ctx.fillStyle = ["#0d4e43", "#1e3a8a", "#9a3412", "#4c1d95"][i % 4];
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(ch, 0, 0);
+      ctx.restore();
+    });
+  }, [code]);
 
-                {/* Heading */}
-                <div className="feedback-heading">
-                    <span className="feedback-eyebrow">
-                        <i className="fa-solid fa-comment-dots"></i>
-                        YOUR EXPERIENCE MATTERS
-                    </span>
+  return (
+    <div className="evs-captcha">
+      <canvas ref={ref} width={180} height={52} aria-label="Captcha image" />
+      <button type="button" className="evs-icon-btn" onClick={onRefresh} title="Get a new code" aria-label="Refresh captcha">
+        <RefreshCw size={17} />
+      </button>
+    </div>
+  );
+}
 
-                    <h2 className="about-title">
-                        Event <span className="highlight">Feedback</span>
-                    </h2>
+/* ---------- Question renderers ---------- */
+function RatingInput({ value, onChange }) {
+  const [hover, setHover] = useState(0);
+  const shown = hover || value;
+  return (
+    <div className="evs-rating-wrap">
+      <div className="evs-rating" role="radiogroup" onMouseLeave={() => setHover(0)}>
+        {[1, 2, 3, 4, 5].map((n) => (
+          <button
+            key={n}
+            type="button"
+            role="radio"
+            aria-checked={value === n}
+            aria-label={`${n} star${n > 1 ? "s" : ""}`}
+            className={`evs-star ${shown >= n ? "on" : ""}`}
+            onMouseEnter={() => setHover(n)}
+            onClick={() => onChange(n)}
+          >
+            <Star size={28} fill={shown >= n ? "currentColor" : "none"} />
+          </button>
+        ))}
+      </div>
+      <span className="evs-rating-text">{RATE_TEXT[shown]}</span>
+    </div>
+  );
+}
 
-                    <div className="title-line"></div>
+function ChoiceInput({ options, value, onChange }) {
+  return (
+    <div className="evs-options">
+      {options.map((o) => (
+        <label key={o} className={`evs-option ${value === o ? "sel" : ""}`}>
+          <input type="radio" checked={value === o} onChange={() => onChange(o)} />
+          <span className="evs-radio-dot" />
+          <span>{o}</span>
+        </label>
+      ))}
+    </div>
+  );
+}
 
-                    <p className="feedback-subtitle">
-                        Share your experience with us. Your feedback helps us
-                        create better and more memorable events.
-                    </p>
+/* ---------- Main component ---------- */
+export default function EventSurvey() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [params] = useSearchParams();
+  const eventKey = params.get("nID") || "";
+  const eventTitle = location.state?.eventTitle || "";
+
+  const [step, setStep] = useState(1); // 1 = details, 2 = questions, 3 = done
+  const [form, setForm] = useState({ name: "", phone: "", email: "", captcha: "" });
+  const [errors, setErrors] = useState({});
+  const [code, setCode] = useState(makeCode());
+
+  const [questions, setQuestions] = useState([]);
+  const [answers, setAnswers] = useState({});
+  const [qErrors, setQErrors] = useState({});
+  const [loadingQ, setLoadingQ] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, []);
+
+  const refreshCaptcha = useCallback(() => {
+    setCode(makeCode());
+    setForm((f) => ({ ...f, captcha: "" }));
+  }, []);
+
+  const setField = (k, v) => {
+    setForm((f) => ({ ...f, [k]: v }));
+    setErrors((e) => ({ ...e, [k]: "" }));
+  };
+
+  /* ----- Step 1 validation ----- */
+  const validateDetails = () => {
+    const e = {};
+    if (!form.name.trim() || form.name.trim().length < 2) e.name = "Enter your full name.";
+    if (!/^[6-9]\d{9}$/.test(form.phone)) e.phone = "Enter a valid 10-digit mobile number.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email)) e.email = "Enter a valid email address.";
+    if (form.captcha !== code) e.captcha = "Code does not match. Try again.";
+    setErrors(e);
+    if (e.captcha) refreshCaptcha();
+    return Object.keys(e).length === 0;
+  };
+
+  const loadQuestions = async () => {
+    setLoadingQ(true);
+    try {
+      const res = await fetch(QUESTIONS_URL(eventKey));
+      if (!res.ok) throw new Error("bad response");
+      const data = await res.json();
+      setQuestions(Array.isArray(data) && data.length ? data : FALLBACK_QUESTIONS);
+    } catch {
+      setQuestions(FALLBACK_QUESTIONS);
+    } finally {
+      setLoadingQ(false);
+    }
+  };
+
+  const handleContinue = async (ev) => {
+    ev.preventDefault();
+    if (!validateDetails()) return;
+    setStep(2);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    await loadQuestions();
+  };
+
+  /* ----- Step 2 submit ----- */
+  const setAnswer = (id, v) => {
+    setAnswers((a) => ({ ...a, [id]: v }));
+    setQErrors((e) => ({ ...e, [id]: false }));
+  };
+
+  const handleSubmit = async (ev) => {
+    ev.preventDefault();
+    const e = {};
+    questions.forEach((q) => {
+      const v = answers[q.id];
+      if (q.required && (v === undefined || v === "" || v === null)) e[q.id] = true;
+    });
+    setQErrors(e);
+    if (Object.keys(e).length) {
+      const first = document.querySelector(".evs-q.err");
+      first?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
+    setSubmitting(true);
+    setSubmitError("");
+    try {
+      const payload = {
+        eventKey,
+        name: form.name.trim(),
+        phone: form.phone,
+        email: form.email.trim(),
+        answers: questions.map((q) => ({ questionId: q.id, answer: answers[q.id] ?? "" })),
+      };
+      const res = await fetch(SUBMIT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error("submit failed");
+      setStep(3);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch {
+      setSubmitError("We could not save your feedback. Check your connection and try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const answered = questions.filter((q) => answers[q.id] !== undefined && answers[q.id] !== "").length;
+  const progress = questions.length ? Math.round((answered / questions.length) * 100) : 0;
+
+  const stepItems = [
+    { n: 1, label: "Your details" },
+    { n: 2, label: "Survey questions" },
+  ];
+
+  return (
+    <section className="evs-page">
+      <div className="evs-wrap">
+        <button type="button" className="evs-back" onClick={() => navigate(-1)}>
+          <ArrowLeft size={16} /> Back to event
+        </button>
+
+        <div className="evs-layout">
+          {/* ===== LEFT: INTRO PANEL ===== */}
+          <aside className="evs-aside">
+            <span className="evs-aside-icon"><ClipboardCheck size={26} /></span>
+            <h1>Event Survey</h1>
+            <p className="evs-aside-event">
+              {eventTitle ? <>Tell us how <b>{eventTitle}</b> went.</> : "Tell us how the event went."}
+            </p>
+
+            <ul className="evs-points">
+              <li><Clock size={17} /><span>Takes about two minutes to complete.</span></li>
+              <li><ShieldCheck size={17} /><span>Your email and mobile number stay private.</span></li>
+              <li><Sparkles size={17} /><span>Your answers help us plan better events.</span></li>
+            </ul>
+          </aside>
+
+          {/* ===== RIGHT: FORM PANEL ===== */}
+          <main className="evs-panel">
+            {step !== 3 && (
+              <ol className="evs-steps" aria-label="Progress">
+                {stepItems.map((s, i) => (
+                  <li key={s.n} className={`${step === s.n ? "current" : ""} ${step > s.n ? "done" : ""}`}>
+                    <span className="evs-step-dot">{step > s.n ? <Check size={15} /> : s.n}</span>
+                    <span className="evs-step-label">{s.label}</span>
+                    {i < stepItems.length - 1 && <span className="evs-step-bar" aria-hidden="true" />}
+                  </li>
+                ))}
+              </ol>
+            )}
+
+            {/* ===== STEP 1 ===== */}
+            {step === 1 && (
+              <form onSubmit={handleContinue} noValidate>
+                <div className="evs-form-head">
+                  <h2>Your details</h2>
+                  <p>Tell us who is giving this feedback.</p>
                 </div>
 
-                {/* Event Selection */}
-                <div className="feedback-event-select">
-                    <div className="feedback-select-icon">
-                        <i className="fa-solid fa-calendar-check"></i>
+                <div className="evs-grid">
+                  <div className={`evs-field ${errors.name ? "err" : ""}`}>
+                    <label htmlFor="evs-name">Full name <em>*</em></label>
+                    <div className="evs-input">
+                      <User size={17} />
+                      <input id="evs-name" type="text" value={form.name} autoComplete="name" placeholder="Your name" maxLength={100}
+                        onChange={(e) => setField("name", e.target.value)} />
                     </div>
+                    {errors.name && <small>{errors.name}</small>}
+                  </div>
 
-                    <div className="feedback-select-content">
-                        <label htmlFor="eventSelect">Select Event <span>*</span></label>
-                        <select
-                            id="eventSelect"
-                            className="feedback-event-dropdown"
-                            value={event}
-                            onChange={(e) => setEvent(e.target.value)}
-                        >
-                            <option value="">-- Select Your Event --</option>
-                            {events.map((item, index) => (
-                                <option key={index} value={item}>
-                                    {item}
-                                </option>
-                            ))}
-                        </select>
+                  <div className={`evs-field ${errors.phone ? "err" : ""}`}>
+                    <label htmlFor="evs-phone">Mobile number <em>*</em></label>
+                    <div className="evs-input">
+                      <Phone size={17} />
+                      <span className="evs-prefix">+91</span>
+                      <input id="evs-phone" type="tel" inputMode="numeric" maxLength={10} value={form.phone} autoComplete="tel-national"
+                        placeholder="10-digit number" onChange={(e) => setField("phone", e.target.value.replace(/\D/g, ""))} />
                     </div>
+                    {errors.phone && <small>{errors.phone}</small>}
+                  </div>
+
+                  <div className={`evs-field evs-span2 ${errors.email ? "err" : ""}`}>
+                    <label htmlFor="evs-email">Email <em>*</em></label>
+                    <div className="evs-input">
+                      <Mail size={17} />
+                      <input id="evs-email" type="email" value={form.email} autoComplete="email" placeholder="you@example.com" maxLength={150}
+                        onChange={(e) => setField("email", e.target.value)} />
+                    </div>
+                    {errors.email && <small>{errors.email}</small>}
+                  </div>
+
+                  <div className={`evs-field evs-span2 ${errors.captcha ? "err" : ""}`}>
+                    <label htmlFor="evs-captcha">Type the code shown <em>*</em></label>
+                    <div className="evs-captcha-row">
+                      <Captcha code={code} onRefresh={refreshCaptcha} />
+                      <div className="evs-input evs-captcha-input">
+                        <ShieldCheck size={17} />
+                        <input id="evs-captcha" type="text" value={form.captcha} autoComplete="off" placeholder="Enter code"
+                          onChange={(e) => setField("captcha", e.target.value)} />
+                      </div>
+                    </div>
+                    {errors.captcha && <small>{errors.captcha}</small>}
+                  </div>
                 </div>
 
-                <form className="feedback-card" onSubmit={handleSubmit}>
+                <div className="evs-actions end">
+                  <button type="submit" className="evs-btn">
+                    Continue <ArrowRight size={17} />
+                  </button>
+                </div>
+              </form>
+            )}
 
-                    {/* Card Header */}
-                    <div className="feedback-card-header">
-                        <div>
-                            <span className="feedback-tag">
-                                WE VALUE YOUR OPINION
-                            </span>
-                            <h3>How was your experience?</h3>
-                            <p>Tell us how much you enjoyed the event.</p>
-                        </div>
-
-                        <div className="feedback-header-icon">
-                            <i className="fa-solid fa-star"></i>
-                        </div>
-                    </div>
-
-                    {/* Overall Rating */}
-                    <div className="feedback-question overall-question">
-                        <label className="question-title">
-                            Overall Event Experience <span>*</span>
-                        </label>
-
-                        {renderStars(overallRating, setOverallRating, "large")}
-
-                        <span className="rating-caption">
-                            {["", "Poor", "Fair", "Good", "Very Good", "Excellent"][overallRating]}
-                            {overallRating > 0 && ` (${overallRating}/5)`}
-                        </span>
-                    </div>
-
-                    <div className="feedback-divider"></div>
-
-                    {/* Category Ratings */}
-                    <div className="feedback-question">
-                        <div className="question-heading">
-                            <div>
-                                <h4>Rate Different Aspects</h4>
-                                <p>Help us understand what worked well.</p>
-                            </div>
-                            <span className="optional-label">OPTIONAL</span>
-                        </div>
-
-                        <div className="rating-category-grid">
-                            {ratingCategories.map(category => (
-                                <div className="rating-category" key={category.key}>
-                                    <div className="category-info">
-                                        <div className="category-icon">
-                                            <i className={`fa-solid ${category.icon}`}></i>
-                                        </div>
-                                        <span>{category.label}</span>
-                                    </div>
-
-                                    {renderStars(
-                                        ratings[category.key],
-                                        (value) => handleCategoryRating(category.key, value)
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="feedback-divider"></div>
-
-                    {/* Experience */}
-                    <div className="feedback-question">
-                        <div className="question-heading">
-                            <div>
-                                <h4>How would you describe your experience?</h4>
-                                <p>Select the option that best describes your experience.</p>
-                            </div>
-                            <span className="required-label">REQUIRED</span>
-                        </div>
-
-                        <div className="experience-options">
-                            {[
-                                { value: "Excellent", icon: "fa-face-laugh-beam" },
-                                { value: "Good", icon: "fa-face-smile" },
-                                { value: "Average", icon: "fa-face-meh" },
-                                { value: "Needs Improvement", icon: "fa-face-frown" }
-                            ].map(item => (
-                                <button
-                                    type="button"
-                                    key={item.value}
-                                    className={`experience-option ${
-                                        experience === item.value ? "selected" : ""
-                                    }`}
-                                    onClick={() => setExperience(item.value)}
-                                >
-                                    <i className={`fa-solid ${item.icon}`}></i>
-                                    <span>{item.value}</span>
-                                    {experience === item.value && (
-                                        <i className="fa-solid fa-circle-check selected-check"></i>
-                                    )}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="feedback-divider"></div>
-
-                    {/* Suggestions */}
-                    <div className="feedback-question">
-                        <div className="question-heading">
-                            <div>
-                                <h4>Any Suggestions or Comments?</h4>
-                                <p>Share your thoughts or suggestions for improvement.</p>
-                            </div>
-                            <span className="optional-label">OPTIONAL</span>
-                        </div>
-
-                        <textarea
-                            className="feedback-textarea"
-                            placeholder="Write your feedback or suggestions here..."
-                            rows="5"
-                            maxLength="1000"
-                            value={suggestions}
-                            onChange={(e) => setSuggestions(e.target.value)}
-                        ></textarea>
-
-                        <div className="textarea-footer">
-                            <span>
-                                <i className="fa-solid fa-lightbulb"></i>
-                                Your suggestions help us improve.
-                            </span>
-                            <span>{suggestions.length}/1000</span>
-                        </div>
-                    </div>
-
-                    <div className="feedback-divider"></div>
-
-                    {/* Recommendation */}
-                    <div className="feedback-question">
-                        <div className="question-heading">
-                            <div>
-                                <h4>Would you recommend this event to others?</h4>
-                                <p>Your recommendation means a lot to us.</p>
-                            </div>
-                            <span className="required-label">REQUIRED</span>
-                        </div>
-
-                        <div className="recommend-options">
-                            <button
-                                type="button"
-                                className={`recommend-btn ${recommend === "Yes" ? "selected" : ""}`}
-                                onClick={() => setRecommend("Yes")}
-                            >
-                                <i className="fa-solid fa-thumbs-up"></i>
-                                Yes, Definitely
-                            </button>
-
-                            <button
-                                type="button"
-                                className={`recommend-btn ${recommend === "No" ? "selected" : ""}`}
-                                onClick={() => setRecommend("No")}
-                            >
-                                <i className="fa-solid fa-thumbs-down"></i>
-                                Not Really
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Submit */}
-                    <div className="feedback-submit-area">
-                        <p>
-                            <i className="fa-solid fa-shield-halved"></i>
-                            Your feedback is valuable and will be used to improve future events.
-                        </p>
-
-                        <button type="submit" className="feedback-submit-btn">
-                            Submit Feedback
-                            <i className="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
-
-                </form>
-
-                <div className="feedback-bottom-note">
-                    <i className="fa-solid fa-heart"></i>
-                    Thank you for being a part of our event!
+            {/* ===== STEP 2 ===== */}
+            {step === 2 && (
+              <form onSubmit={handleSubmit} noValidate>
+                <div className="evs-form-head">
+                  <h2>Survey questions</h2>
+                  <p>Questions marked with <em>*</em> are required.</p>
                 </div>
 
-            </div>
-        </section>
-    );
-};
+                {loadingQ ? (
+                  <div className="evs-loading"><Loader2 size={26} className="spin" /> Loading questions…</div>
+                ) : (
+                  <>
+                    <div className="evs-progress-row">
+                      <div className="evs-progress" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
+                        <span style={{ width: `${progress}%` }} />
+                      </div>
+                      <span className="evs-progress-text">{answered} of {questions.length} answered</span>
+                    </div>
 
-export default EventFeedback;
+                    <div className="evs-questions">
+                      {questions.map((q, i) => (
+                        <div key={q.id} className={`evs-q ${qErrors[q.id] ? "err" : ""}`}>
+                          <div className="evs-q-head">
+                            <span className="evs-q-num">{i + 1}</span>
+                            <div className="evs-q-text">
+                              {q.text}
+                              {q.required && <em title="Required"> *</em>}
+                            </div>
+                          </div>
+
+                          <div className="evs-q-body">
+                            {q.type === "rating" && <RatingInput value={answers[q.id] || 0} onChange={(v) => setAnswer(q.id, v)} />}
+                            {q.type === "choice" && <ChoiceInput options={q.options || []} value={answers[q.id]} onChange={(v) => setAnswer(q.id, v)} />}
+                            {q.type === "yesno" && <ChoiceInput options={["Yes", "No"]} value={answers[q.id]} onChange={(v) => setAnswer(q.id, v)} />}
+                            {q.type === "text" && (
+                              <>
+                                <textarea rows={4} maxLength={MAX_TEXT} value={answers[q.id] || ""} placeholder="Type your answer"
+                                  onChange={(e) => setAnswer(q.id, e.target.value)} />
+                                <span className="evs-count">{(answers[q.id] || "").length}/{MAX_TEXT}</span>
+                              </>
+                            )}
+                          </div>
+
+                          {qErrors[q.id] && <small className="evs-q-err">Please answer this question.</small>}
+                        </div>
+                      ))}
+                    </div>
+
+                    {submitError && <div className="evs-alert" role="alert">{submitError}</div>}
+
+                    <div className="evs-actions">
+                      <button type="button" className="evs-btn ghost" onClick={() => setStep(1)}>
+                        <ArrowLeft size={17} /> Back
+                      </button>
+                      <button type="submit" className="evs-btn" disabled={submitting}>
+                        {submitting ? (<><Loader2 size={17} className="spin" /> Sending…</>) : (<><Send size={16} /> Submit survey</>)}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </form>
+            )}
+
+            {/* ===== STEP 3 ===== */}
+            {step === 3 && (
+              <div className="evs-done">
+                <span className="evs-done-icon"><CheckCircle2 size={44} /></span>
+                <h2>Thank you, {form.name.trim().split(" ")[0]}!</h2>
+                <p>Your survey has been recorded. We appreciate the time you took to share your experience.</p>
+                <div className="evs-actions center">
+                  <button type="button" className="evs-btn" onClick={() => navigate(-1)}>
+                    <ArrowLeft size={17} /> Back to event
+                  </button>
+                </div>
+              </div>
+            )}
+          </main>
+        </div>
+      </div>
+    </section>
+  );
+}

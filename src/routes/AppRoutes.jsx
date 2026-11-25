@@ -60,12 +60,15 @@ import AdminTransaction from "../components/cpanel/AdminTransaction/AdminTransac
 import CResetPassword from "../components/cpanel/ResetPassword/CResetPassword";
 import Taxes from "../components/cpanel/Taxes/Taxes";
 import Event from "../components/home/eventinfo/Event";
+import EventFeedback from "../components/home/eventinfo/EventFeedback"; // adjust to where you saved it
+
 import MarkAttendance from "../components/home/eventinfo/MarkAttendance";   // ✅
 
 
 
 import ProtectedRoute from "../routes/ProtectedRoute";
 import PaymentGateway from "../components/PaymentGateway/PaymentGateway";
+import EventSurvey from "../components/home/eventinfo/EventSurvey";
 
 function AppRoutes() {
     return (
@@ -79,6 +82,8 @@ function AppRoutes() {
             <Route path="/register" element={<Register />} />
             <Route path="/subscription" element={<Subscription />} />
             <Route path="/event" element={<Event />} />
+            <Route path="/eventfeedback" element={<EventFeedback />} />
+<Route path="/EventSurvey" element={<EventSurvey />} />
             <Route path="/attendance" element={<MarkAttendance />} />
             <Route path="/reset-password" element={<CResetPass />} />
             <Route path="/admin/forgot-password" element={<AForgotPassword />} />
