@@ -78,9 +78,9 @@ const makeBanner = (title, variant = 0) => {
   const words = title.length > 34 ? `${title.slice(0, 32)}...` : title;
   return toUri(
     `<svg xmlns='http://www.w3.org/2000/svg' width='800' height='520'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='${c[0]}'/><stop offset='1' stop-color='${c[1]}'/></linearGradient></defs>` +
-      `<rect width='800' height='520' fill='url(#g)'/><circle cx='720' cy='60' r='150' fill='white' opacity='.12'/><circle cx='60' cy='480' r='170' fill='white' opacity='.1'/>` +
-      `<text x='400' y='270' font-size='40' font-family='Arial' font-weight='700' fill='white' text-anchor='middle'>${words.replace(/&/g, "&amp;")}</text>` +
-      `<text x='400' y='318' font-size='22' font-family='Arial' fill='white' opacity='.85' text-anchor='middle'>${variant ? "Event Gallery" : "Event Banner"}</text></svg>`
+    `<rect width='800' height='520' fill='url(#g)'/><circle cx='720' cy='60' r='150' fill='white' opacity='.12'/><circle cx='60' cy='480' r='170' fill='white' opacity='.1'/>` +
+    `<text x='400' y='270' font-size='40' font-family='Arial' font-weight='700' fill='white' text-anchor='middle'>${words.replace(/&/g, "&amp;")}</text>` +
+    `<text x='400' y='318' font-size='22' font-family='Arial' fill='white' opacity='.85' text-anchor='middle'>${variant ? "Event Gallery" : "Event Banner"}</text></svg>`
   );
 };
 
@@ -912,6 +912,19 @@ const Event = () => {
           <img className="evp-full-img profile" src={profilePreview} alt="Profile" onClick={(e) => e.stopPropagation()} />
         </div>
       )}
+
+      {/* FLOATING EVENT FEEDBACK BUTTON */}
+      <button
+        type="button"
+        className="floating-event-feedback"
+        onClick={() => window.location.href = "/eventfeedback"}
+        title="Share Your Event Feedback"
+      >
+        <span className="feedback-pulse"></span>
+        <i className="fa-solid fa-comment-dots"></i>
+        <span className="feedback-btn-text">EVENT FEEDBACK</span>
+      </button>
+
     </div>
   );
 };

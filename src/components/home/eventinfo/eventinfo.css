@@ -497,3 +497,128 @@ input.ev-field { cursor: text; }
   outline: 3px solid rgba(13, 78, 67, 0.45);
   outline-offset: 3px;
 }
+
+/* ===================================
+   FLOATING EVENT FEEDBACK BUTTON
+=================================== */
+
+.floating-event-feedback {
+    position: fixed;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 11px;
+
+    padding: 14px 17px 14px 13px;
+
+    background: #0d4e43;
+    color: #ffffff;
+
+    border: none;
+    border-radius: 0 12px 12px 0;
+
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+
+    cursor: pointer;
+    box-shadow: 4px 5px 18px rgba(13, 78, 67, 0.28);
+
+    transition: all 0.3s ease;
+}
+
+/* Icon */
+.floating-event-feedback > i {
+    font-size: 19px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Button Text */
+.feedback-btn-text {
+    position: relative;
+    z-index: 2;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    white-space: nowrap;
+}
+
+/* Hover */
+.floating-event-feedback:hover {
+    padding-left: 18px;
+    padding-right: 20px;
+    background: #0a3d34;
+    box-shadow: 5px 6px 22px rgba(13, 78, 67, 0.4);
+}
+
+/* Pulse Animation */
+.feedback-pulse {
+    position: absolute;
+    inset: 0;
+    border-radius: 0 12px 12px 0;
+    background: rgba(13, 78, 67, 0.45);
+    z-index: 0;
+    animation: feedbackPulse 2s infinite;
+    pointer-events: none;
+}
+
+@keyframes feedbackPulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+
+    70% {
+        transform: scale(1.18, 1.12);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1.18, 1.12);
+        opacity: 0;
+    }
+}
+
+/* Tablet */
+@media (max-width: 767px) {
+    .floating-event-feedback {
+        padding: 12px 11px;
+        gap: 8px;
+    }
+
+    .floating-event-feedback > i {
+        font-size: 17px;
+    }
+
+    .feedback-btn-text {
+        font-size: 10px;
+        letter-spacing: 1px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 420px) {
+    .floating-event-feedback {
+        padding: 11px 9px;
+    }
+
+    .floating-event-feedback > i {
+        font-size: 15px;
+    }
+
+    .feedback-btn-text {
+        font-size: 9px;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .feedback-pulse {
+        animation: none;
+    }
+}

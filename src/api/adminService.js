@@ -183,9 +183,10 @@ export const importRecipients = async (file) => {
   };
 };
 
-// GET api/admin/recipients?search=&page=&pageSize=
-export const getRecipients = async ({ search = "", page = 1, pageSize = 500 } = {}) => {
-  const { data } = await api.get("/admin/recipients", { params: { search, page, pageSize } });
+// GET api/admin/recipients?search=&page=&pageSize=&isActive=
+// isActive: true | false | undefined (undefined = do not filter)
+export const getRecipients = async ({ search = "", page = 1, pageSize = 500, isActive } = {}) => {
+  const { data } = await api.get("/admin/recipients", { params: { search, page, pageSize, isActive } });
   const list = Array.isArray(data)
     ? data
     : data?.rows ?? data?.items ?? data?.data ?? data?.recipients ?? [];

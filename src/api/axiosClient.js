@@ -36,7 +36,7 @@ try {
 
 const api = axios.create({
   // baseURL: "https://eventcert.com/api",
-  baseURL: "https://localhost:7151/api",
+  baseURL: "https://localhost:7151",
   withCredentials: true,
 });
 
@@ -44,7 +44,7 @@ const api = axios.create({
 // Separate LIVE image path
 export const IMAGE_BASE_URL = (
   import.meta.env.VITE_IMAGE_BASE_URL ||
-  "https://eventcert.com/home/rimg"
+  "http://eventcert.com/home/rimg"
 ).replace(/\/$/, "");
 
 
