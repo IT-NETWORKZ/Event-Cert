@@ -632,3 +632,58 @@
   padding: 5px 14px !important;
   white-space: nowrap;
 }
+
+/* ---------- floating feedback icon ---------- */
+.ae-fab {
+  position: fixed;
+  right: 22px;
+  top: 173px;
+  z-index: 99999;
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: #00796b;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 10px 26px rgba(0, 121, 107, .38);
+  transition: transform .2s, background .2s, box-shadow .2s;
+}
+.ae-fab:hover { transform: translateY(-3px); background: #0d4e43; box-shadow: 0 14px 30px rgba(13, 78, 67, .45); }
+.ae-fab:focus-visible { outline: 3px solid rgba(0, 150, 136, .45); outline-offset: 3px; }
+.ae-fab svg { position: relative; z-index: 1; }
+.ae-fab-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0, 150, 136, .45);
+  animation: aeFabPulse 2.2s infinite;
+  pointer-events: none;
+}
+@keyframes aeFabPulse {
+  0% { transform: scale(1); opacity: .7; }
+  70%, 100% { transform: scale(1.55); opacity: 0; }
+}
+.ae-fab-tip {
+  position: absolute;
+  right: 70px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: #0d4e43;
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(6px);
+  pointer-events: none;
+  transition: opacity .2s, transform .2s;
+}
+.ae-fab:hover .ae-fab-tip { opacity: 1; transform: none; }
+@media (max-width: 767px) {
+  .ae-fab { right: 14px; bottom: 16px; width: 52px; height: 52px; }
+  .ae-fab-tip { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .ae-fab-pulse { animation: none; } }

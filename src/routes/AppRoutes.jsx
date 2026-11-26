@@ -16,10 +16,13 @@ import Profile from "../pages/Admin/Profile";
 import Subscriptionplan from "../components/admin/Subscription/Subscriptionplan";
 import FeedbackForm from "../components/admin/FeedbackForm/FeedbackForm";
 import CustomPlus from "../pages/Admin/CustomPlus";
+import UploadShare from "../pages/Admin/UploadShare"; // adjust the path
+
 import Schedular from "../pages/Admin/Schedular";
 import StatusReport from "../components/common/StatusReport/StatusReport";
 import Payment from "../components/admin/Payment/Payment";
 import AddEvent from "../components/admin/AddEvent/AddEvent";
+import AdminEventFeedback from "../components/admin/AddEvent/AdminEventFeedback";
 import AdminParticipate from "../components/admin/AddEvent/AdminParticipate";
 import EventRecipants from "../components/admin/AddEvent/EventRecipants";
 import EventAttendance from "../components/admin/AddEvent/EventAttendance";
@@ -68,7 +71,6 @@ import MarkAttendance from "../components/home/eventinfo/MarkAttendance";   // â
 
 import ProtectedRoute from "../routes/ProtectedRoute";
 import PaymentGateway from "../components/PaymentGateway/PaymentGateway";
-import EventSurvey from "../components/home/eventinfo/EventSurvey";
 
 function AppRoutes() {
     return (
@@ -83,7 +85,6 @@ function AppRoutes() {
             <Route path="/subscription" element={<Subscription />} />
             <Route path="/event" element={<Event />} />
             <Route path="/eventfeedback" element={<EventFeedback />} />
-<Route path="/EventSurvey" element={<EventSurvey />} />
             <Route path="/attendance" element={<MarkAttendance />} />
             <Route path="/reset-password" element={<CResetPass />} />
             <Route path="/admin/forgot-password" element={<AForgotPassword />} />
@@ -119,6 +120,7 @@ function AppRoutes() {
                     <Route path="dashboard" element={<Dashboard />} />
                     {/* /admin/profile */}
                     <Route path="profile" element={<Profile />} />
+                     <Route path="upload-share" element={<UploadShare />} />   {/* here */}
                     {/* /admin/subscriptionplan */}
                     <Route path="subscriptionplan" element={<Subscriptionplan />} />
                     {/* /admin/resetPassword */}
@@ -129,6 +131,7 @@ function AppRoutes() {
                     <Route path="payment" element={<Payment />} />
                     {/* /admin/addevent */}
                     <Route path="addevent" element={<AddEvent />} />
+                    <Route path="/admin/event-feedback" element={<AdminEventFeedback />} />
                     <Route path="admin-participate" element={<AdminParticipate />} />
                     <Route path="event-recipants" element={<EventRecipants />} />
                     <Route path="event-attendance" element={<EventAttendance />} />

@@ -1007,9 +1007,8 @@ const DesignerTable = ({
           <strong>Note:</strong>
           <ul>
             <li>Image size should be a maximum of 1-2 MB.</li>
-            <li>After selecting a template, kindly add parameters below for your WhatsApp messages. {"{{1}}"} is the user's name from the table, so fill from {"{{2}}"}.</li>
-            <li>Preview fills {"{{NAME}}"}, {"{{TEXT1}}"}, {"{{TEXT2}}"}, {"{{TEXT3}}"} from the ticked rows (all rows if none are ticked).</li>
-            <li>Only Text / Send Image / Send PDF: tick at least one user. The design is saved once and one job is created for all ticked users. Pick a Schedule Date to send later, or leave it empty to send now.</li>
+            <li>After selecting a template, kindly add parameters below for your WhatsApp messages.</li>
+            <li>We can use Text3 as a unique ID.</li>
           </ul>
         </div>
       </div>

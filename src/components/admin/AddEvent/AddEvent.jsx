@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
+import { MessagesSquare } from "lucide-react";
 import "./AddEvent.css";
 import DataTable from "../../common/Table/DataTable";
 import { makeAttendanceQrPng } from "../../../api/eventImagesStore";
@@ -756,6 +758,22 @@ const AddEvent = () => {
           />
         )}
       </div>
+
+      {/* ===== FLOATING FEEDBACK ICON -> admin feedback management ===== */}
+      {createPortal(
+        <button
+          type="button"
+          className="ae-fab"
+          onClick={() => navigate("/admin/event-feedback")}
+          title="Event Feedback"
+          aria-label="Open event feedback management"
+        >
+          <span className="ae-fab-pulse" aria-hidden="true"></span>
+          <MessagesSquare size={26} color="#ffffff" />
+          <span className="ae-fab-tip">Event Feedback</span>
+        </button>,
+        document.body
+      )}
     </div>
   );
 };
