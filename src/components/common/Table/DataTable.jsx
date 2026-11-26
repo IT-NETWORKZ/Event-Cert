@@ -11,13 +11,43 @@ import {
 import { ArrowUp, ArrowDown, ChevronsUpDown } from "lucide-react";
 import Button from "../../common/button/Button"
 
+const T4_HEADER = "Text4 / Verification ID";
+
 function DataTable({ columns = [], data = [], onExportExcel, onViewAllDetails }) {
   const [sorting, setSorting] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
 
   // 1. Properly anchor and memoize the data and column configurations
   const memoizedData = useMemo(() => data, [data]);
-  const memoizedColumns = useMemo(() => columns, [columns]);
+  // "Text4 / Verification ID" column:
+  //  - if the page already has a Text4 / Verification ID column, only its heading is renamed
+  //  - otherwise, if the rows carry that field, the column is added at the end
+  const memoizedColumns = useMemo(() => {
+    const isT4 = (c) => {
+      const k = String(c.accessorKey || c.id || "").toLowerCase();
+      return k === "text4" || k === "verificationid";
+    };
+
+    if (columns.some(isT4)) {
+      return columns.map((c) => (isT4(c) ? { ...c, header: T4_HEADER } : c));
+    }
+
+    const hasField = data.some(
+      (r) => r && (r.text4 !== undefined || r.Text4 !== undefined || r.verificationId !== undefined)
+    );
+    if (!hasField) return columns;
+
+    return [
+      ...columns,
+      {
+        id: "text4VerificationId",
+        header: T4_HEADER,
+        accessorFn: (r) => r.text4 ?? r.Text4 ?? r.verificationId ?? "",
+        cell: ({ getValue }) => getValue() || "-",
+        meta: { width: "190px" },
+      },
+    ];
+  }, [columns, data]);
 
   const table = useReactTable({
     data: memoizedData,
@@ -34,7 +64,7 @@ function DataTable({ columns = [], data = [], onExportExcel, onViewAllDetails })
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageSize: 5,
+        pageSize: 25,
       },
     },
   });
@@ -47,7 +77,8 @@ function DataTable({ columns = [], data = [], onExportExcel, onViewAllDetails })
   // 2. Compute how many blank filler rows are needed so every page renders
   // the same number of rows -> table height stays constant -> no "shake"
   // when navigating pages (only applied when there IS data to show).
-  const fillerCount = rows.length > 0 ? Math.max(0, pageSize - rows.length) : 0;
+  const fillerCount =
+    pageCount > 1 && rows.length > 0 ? Math.max(0, pageSize - rows.length) : 0;
 
   const pageNumbers = useMemo(() => {
     const pages = [];
@@ -86,17 +117,26 @@ function DataTable({ columns = [], data = [], onExportExcel, onViewAllDetails })
 
           {/* Left Side - Dropdown + Entries per page */}
           <div className="table-length d-flex align-items-center gap-2">
-            <select
-              className="form-select form-select-sm"
-              style={{ width: "80px" }}
-              value={table.getState().pagination.pageSize}
-              onChange={(e) => table.setPageSize(Number(e.target.value))}
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={15}>15</option>
-              <option value={25}>25</option>
-            </select>
+          <select
+  className="form-select form-select-sm"
+  style={{ width: "80px" }}
+  value={table.getState().pagination.pageSize}
+  onChange={(e) => {
+    const value = e.target.value;
+    table.setPageSize(value === "all" ? data.length || 1 : Number(value));
+    table.setPageIndex(0);
+  }}
+>
+  <option value={25}>25</option>
+  <option value={50}>50</option>
+  <option value={100}>100</option>
+  <option value={200}>200</option>
+  <option value={300}>300</option>
+  <option value={400}>400</option>
+  <option value={500}>500</option>
+  <option value="all">All</option>
+</select>
+             
 
             <span className="text-muted small text-nowrap">
               Entries per page

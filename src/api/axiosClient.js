@@ -35,8 +35,8 @@ try {
 }
 
 const api = axios.create({
-  // baseURL: "https://eventcert.com/api",
-  baseURL: "https://localhost:7151",
+  baseURL: "https://eventcert.com/api",
+  // baseURL: "https://localhost:7151",
   withCredentials: true,
 });
 

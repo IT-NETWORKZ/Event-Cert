@@ -11,6 +11,7 @@ const ITEMS = [
     { key: "text1", label: "{{TEXT1}}", hint: "Text1 column of Excel", value: "{{TEXT1}}", icon: <FaHashtag /> },
     { key: "text2", label: "{{TEXT2}}", hint: "Text2 column of Excel", value: "{{TEXT2}}", icon: <FaHashtag /> },
     { key: "text3", label: "{{TEXT3}}", hint: "Text3 column of Excel", value: "{{TEXT3}}", icon: <FaHashtag /> },
+    { key: "text4", label: "{{Text4 / Verification ID}}", hint: "Text4 / Verification ID column of Excel", value: "{{TEXT4}}", icon: <FaHashtag /> },
 ];
 
 const TemplateSection = ({ activeMenu, setActiveMenu }) => {

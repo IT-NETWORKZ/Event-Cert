@@ -166,6 +166,13 @@ const StatusReport = ({ type }) => {
                 cell: ({ getValue }) => <StatusBadge value={getValue()} />,
                 meta: { width: "150px", className: "text-center" },
             },
+            {
+                id: "verify",
+                header: "Verify",
+                enableSorting: false,
+                cell: () => <span className="dr-badge dr-verified">&#10003; Verified</span>,
+                meta: { width: "130px", className: "text-center" },
+            },
             ...(isCustom
                 ? [
                       {

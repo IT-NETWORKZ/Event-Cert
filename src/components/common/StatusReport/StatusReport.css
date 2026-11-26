@@ -258,3 +258,6 @@
   .dr-head { flex-wrap: wrap; }
   .dr-select { max-width: 100%; flex: 1 1 100%; }
 }
+
+/* ---------- Verify column (static) ---------- */
+.dr-verified { background: #198754; color: #fff; }
